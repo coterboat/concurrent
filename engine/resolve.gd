@@ -11,6 +11,7 @@ const Validate := preload("res://engine/validate.gd")
 const Events := preload("res://engine/events.gd")
 const MapLib := preload("res://engine/map.gd")
 const Setup := preload("res://engine/setup.gd")
+const Cards := preload("res://engine/cards.gd")
 
 
 class Transit extends RefCounted:
@@ -52,7 +53,7 @@ static func resolve_round(world: Types.World, map: Types.MapDef, sheets: Array, 
 	_resolve_destinations(w, transits, match_seed, events, surge_book)
 	_resolve_surges(w, map, match_seed, events, surge_book)
 	_entrench(w, map, held, events)
-	_upkeep(w, map, events)
+	_upkeep(w, map, events, held, match_seed)
 	return {"world": w, "events": events, "errors": PackedStringArray()}
 
 
@@ -73,11 +74,19 @@ static func _apply_regroups(w: Types.World, map: Types.MapDef, by_player: Dictio
 
 
 static func _apply_placements(w: Types.World, map: Types.MapDef, by_player: Dictionary, events: Array) -> void:
+	## Sets cashed this round all pay the table value at lock, then the counter moves.
 	var pids: Array = by_player.keys()
 	pids.sort()
+	var cashed := 0
 	for pid in pids:
 		var sheet: Types.Sheet = by_player[pid]
-		var income: int = Income.income_of(w, map, pid)
+		var bonus: int = Validate.cash_value_of(w, map, sheet)
+		var income: int = Income.income_of(w, map, pid) + bonus
+		if bonus > 0:
+			var ps: Types.PlayerState = w.players[pid]
+			ps.cards = Cards.without(ps.cards, sheet.cash_set)
+			cashed += 1
+			events.append(Events.set_cashed(pid, sheet.cash_set, bonus))
 		var remaining := income
 		var keys: Array = sheet.placements.keys()
 		keys.sort()
@@ -97,6 +106,7 @@ static func _apply_placements(w: Types.World, map: Types.MapDef, by_player: Dict
 				ts.armies += add
 			if add > 0 or overflow > 0:
 				events.append(Events.placed(pid, str(terr_id), add, ts.armies, overflow))
+	w.sets_cashed += cashed
 
 
 static func _vacate(w: Types.World, by_player: Dictionary, events: Array) -> Array:
@@ -379,7 +389,7 @@ static func _entrench(w: Types.World, map: Types.MapDef, held: Dictionary, event
 		events.append(Events.entrenched(str(terr_id), ts.garrison, cap))
 
 
-static func _upkeep(w: Types.World, map: Types.MapDef, events: Array) -> void:
+static func _upkeep(w: Types.World, map: Types.MapDef, events: Array, held: Dictionary, match_seed: int) -> void:
 	var living: Array = []
 	var pids: Array = w.players.keys()
 	pids.sort()
@@ -395,8 +405,17 @@ static func _upkeep(w: Types.World, map: Types.MapDef, events: Array) -> void:
 		if n == 0:
 			ps.alive = false
 			events.append(Events.player_eliminated(pid))
+			_hand_over_cards(w, events, held, str(pid))
 		else:
 			living.append(pid)
+	if map.cards:
+		for pid in living:
+			var ps: Types.PlayerState = w.players[pid]
+			if ps.cards.size() >= Cards.HAND_LIMIT or not _captured_any(w, held, str(pid)):
+				continue
+			var card: String = Cards.draw(match_seed, w.round, str(pid), map.territories.size())
+			ps.cards.append(card)
+			events.append(Events.card_drawn(str(pid), card))
 
 	var scores := {}
 	var leader := ""
@@ -437,6 +456,35 @@ static func _upkeep(w: Types.World, map: Types.MapDef, events: Array) -> void:
 	w.round += 1
 
 
+static func _captured_any(w: Types.World, held: Dictionary, pid: String) -> bool:
+	for terr_id in w.territories.keys():
+		var ts: Types.TerritoryState = w.territories[terr_id]
+		if ts.owner == pid and str(held.get(str(terr_id), "")) != pid:
+			return true
+	return false
+
+
+static func _hand_over_cards(w: Types.World, events: Array, held: Dictionary, victim: String) -> void:
+	## Cards go to whoever took the victim's last land (latest capture in queue order).
+	## If the land was only emptied, the hand is discarded.
+	var ps: Types.PlayerState = w.players[victim]
+	if ps.cards.is_empty():
+		return
+	var taker := ""
+	for e in events:
+		if str(e.get("kind", "")) != Types.EVENT_OCCUPIED:
+			continue
+		var terr_id: String = str(e.get("terrId", ""))
+		if str(held.get(terr_id, "")) == victim and str(e.get("playerId", "")) != victim:
+			taker = str(e.get("playerId", ""))
+	if taker != "" and w.players.has(taker) and taker != Income.NEUTRAL_ID:
+		var to: Types.PlayerState = w.players[taker]
+		for c in ps.cards:
+			to.cards.append(c)
+		events.append(Events.cards_captured(victim, taker, ps.cards))
+	ps.cards = PackedStringArray()
+
+
 static func _better(a: Array, b: Array) -> bool:
 	for i in a.size():
 		if int(a[i]) != int(b[i]):
@@ -454,7 +502,9 @@ static func _take(w: Types.World, events: Array, terr_id: String, owner: String,
 		return
 	w.set_hex(terr_id, owner, armies)
 	if prev != owner:
-		events.append(Events.occupied(owner, terr_id, armies))
+		var e: Dictionary = Events.occupied(owner, terr_id, armies)
+		e["previousOwner"] = prev
+		events.append(e)
 
 
 static func _order_key(match_seed: int, round: int, dest: String, t: Transit) -> String:

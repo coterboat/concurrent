@@ -1,48 +1,95 @@
 # CONCURRENT
 
-Risk II SameTime. Chassis update. Not a new genre.
+A SameTime conquest game. Everyone writes their orders in secret, everyone's orders happen at once, and the armies you send away leave home empty. Whoever strips a border gets walked.
 
-Godot 4.5 kernel. Knife-fight is **The Isthmus**. Golden globe is **The Known World**. Testers: two humans and a Neutral doorstop.
+Two to five commanders on one of three maps. Any seat can be a person at this computer (hotseat) or one of six AI commanders, from easy to hard.
 
-## Run
+## Play it
 
-```bash
-./scripts/test.sh         # G0–G6 kernel + session
-./scripts/probe.sh plan_bugs
-./scripts/combat_sim.sh   # capture bands
-./scripts/monkey.sh       # 1000 random-legal games
-./scripts/cli.sh dump --seed 42 --out match.json
-./scripts/cli.sh replay match.json
-./scripts/cli.sh play --seed 42     # you are red, monkey is blue
-```
-
-Play: open the project in Godot and press Play, or:
+**On this Mac:** build the launcher once, then double-click it like any app.
 
 ```bash
-"$HOME/Downloads/Godot.app/Contents/MacOS/Godot" --path .
+./scripts/make_launcher.sh ~/Desktop
 ```
 
-Pick a map on the title screen. **The Isthmus** (7 lands, 5 rounds) teaches the wheel. **The Known World** (24 lands, 8 rounds) is the playtest globe — Neutral sits on The Strait.
+That puts `CONCURRENT.app` on the Desktop. Drag it to the Dock. It runs through the Godot 4.5 already installed in `~/Downloads/Godot.app`.
 
-**Teach round 1 — sheets open**, then **Hotseat — you and him**. You vs Monkey is the smoke path.
+**On another computer** (no Godot needed there): install Godot's export templates once (Godot → Editor → Manage Export Templates → Download and Install), then:
 
-Click your hexes, place +/−, send 1 to N−1, attack/move chips, LOCK. Cinema is Space / click. After cinema, the round board (who got walked, who took what, score). Ghost arrows are last round’s packets at 30%.
+```bash
+./scripts/export.sh
+```
 
-Esc on the title screen quits.
+That builds `build/CONCURRENT-mac.zip` and `build/windows/CONCURRENT.exe`.
 
-## Sit-down (G6)
+**First time?** Choose *Play the Tutorial* on the title screen. It is a short game on The Isthmus against Captain Oren (the easy commander). The advisor explains one idea each round. The illustrated *How to Play* pages are always one click away, including mid-game via the **? Rules** button.
 
-1. Three-minute rules pass. Wheel only. Neutral is a doorstop, not a third player.
-2. **Teach round 1** with the sheet visible together. He is Red, you are Blue, Neutral sits on The Gate.
-3. After the first cinema + round board, hotseat for real. Hand the Mac over; the map stays, the sheet hides.
-4. Watch for: did he see the cap (`max N` on enemy hexes)? Did a vacated origin get walked? Did cinema make the clash obvious?
-5. Stop after one game. Ask: “Want another?” That answer is G6.
+## The rules in one minute
 
-Replay: `user://last_match.json`. Tuning log: `user://telemetry.jsonl` (vacate-punish, even-fight captures, lead changes). Godot → Editor → Open User Data Folder.
+- **Reinforce.** Each round you get armies: one per three lands you hold (at least 3), plus a little for a big connected empire and a bonus for each whole region. A land can take at most 1 + (your neighboring lands). Unplaced armies are lost.
+- **Attack.** Send armies from your land at a neighbor. They leave home the moment orders are sealed. One must stay behind unless the land is dug in.
+- **Battles.** One roll: armies + one die each. Higher total wins, and ties go to the attacker. The loser is wiped out; the winner loses half as many as the loser had.
+- **Clashes and spoils.** Two lands attacking each other meet in the field first. Several invaders on one land fight the defender, then each other.
+- **Surge.** Name a second target. If the first attack wins, everyone but one pushes on, after all other battles.
+- **Dig in.** Every round you keep a land it gains a dug-in defender (the shield), who never marches.
+- **Cards** (bigger maps). Capturing earns a card. Sets trade for 4, 6, 8, 10, then 5 more each time.
+- **Winning.** After the last round, the highest score wins (lands + region bonuses). Holding 80% of the map, or being the last one standing, wins at once.
 
-## Docs
+## What's in the box
 
-- [BUILD_PLAN.md](BUILD_PLAN.md) — Godot translation of the wheel
-- [CONCURRENT_Build_Bible_v0.2.pdf](CONCURRENT_Build_Bible_v0.2.pdf) — rules lock
+| | |
+|---|---|
+| **Maps** | *The Isthmus* (7 lands, the teaching map), *The Known World* (24 lands, an island sea), *The Wide World* (30 lands, six regions) |
+| **Commanders** | Captain Oren (easy) · Old Bear Hask, The Quartermaster (medium) · Marshal Varek, Lady Ysolde, Commander Imre (hard). Hard commanders simulate several plans against predicted enemy moves before sealing. |
+| **Modes** | Solo vs AI, hotseat for 2–5 people (a cover screen hides each sheet), mixed, or all-AI to watch |
+| **Options** | Game length (short / standard / long / conquest), planning clock, battle speed, text size, advisor tips, colorblind-safe token shapes |
+| **Presentation** | Painted map with shore foam and region borders, battle cinema with dice, round reports, end-of-war chart, music and sound |
+| **Saves** | The campaign autosaves after every round; *Continue* picks it up |
 
-`engine/` has no Nodes, no scenes, no unseeded RNG. If a later idea fights the wheel, the idea loses.
+## Controls
+
+| Do this | By |
+|---|---|
+| Select a land | Click it |
+| Reinforce | Click your selected land again, or **+** in the order sheet. Right-click removes one. |
+| Attack | With your land selected, click an enemy neighbor, or drag from your land onto it |
+| Move (from round 2) | Drag from your land onto another of yours, or **Move** in the sheet |
+| Surge | **Surge onward…** on an order, then click the next land |
+| Seal | **Seal Orders** (or ⌘↩) |
+| Zoom / pan | Mouse wheel or pinch / drag the sea or two-finger scroll; ⤢ shows the whole map |
+| Battle cinema | Space = next, P = pause, Esc = skip to the report |
+| Fullscreen | F11, or Settings |
+
+## For developers
+
+Godot 4.5.1, GDScript, gl_compatibility. The rules kernel in `engine/` has no Nodes and no unseeded randomness. Every match replays to the same world hash from its seed and sheets.
+
+```
+engine/      rules kernel: types, combat, resolve queue, cards, setup, AI (ai.gd), autoplay
+game/core/   session (match controller, saves), style/theme, settings, audio
+game/board/  map shader + board (tokens, arrows, hit-testing, pan/zoom), map art loader
+game/ui/     title, setup, game screen, order sheet, cinema, recap, game over, rules, settings
+maps/        rules graphs (*.json) and generated geography (maps/art/)
+assets/      Ludo.ai art + audio, OFL fonts
+tools/       mapgen (Node), ludo (Python), arena, combat_sim, cli, screenshot probes
+tests/       headless suite: kernel, queue T1–T8, properties, cards, AI, session
+```
+
+| Command | What |
+|---|---|
+| `./scripts/test.sh` | Full headless suite (320 checks) |
+| `godot --headless --path . --script res://tools/arena.gd -- map=world30 n=40 seats=general,veteran,hask` | AI tournament: win rates, game length, walk-ins, combat bands |
+| `./scripts/combat_sim.sh` | Combat capture bands |
+| `node tools/mapgen/mapgen.mjs knife7 known24 world30` | Regenerate map geography from `tools/mapgen/*.geo.json` |
+| `python3 tools/ludo/ludo.py [ids…]` | Generate missing art/audio from `tools/ludo/manifest.json` (reads `LUDO_API_KEY` from `.env.local`; idempotent) |
+| `./scripts/shot.sh ui` | Drive the real client and save screenshots (`SHOT_DIR=…`) |
+| `./scripts/cli.sh play --seed 42` | Text-mode knife-fight vs the monkey |
+
+Design history: [CONCURRENT_Build_Bible.pdf](CONCURRENT_Build_Bible.pdf) → [v0.2](CONCURRENT_Build_Bible_v0.2.pdf) → [BUILD_PLAN.md](BUILD_PLAN.md) → [docs/CHANGELOG.md](docs/CHANGELOG.md) (v1.0 and every rule amendment since the bible).
+
+## Credits
+
+- Art, music and sound effects generated with [Ludo.ai](https://ludo.ai). The prompts are in `tools/ludo/manifest.json` and the job ledger is in `assets/ludo_ledger.json`.
+- Fonts: Cinzel and Alegreya Sans, SIL Open Font License (`assets/fonts/OFL-*.txt`).
+- Built with [Godot Engine](https://godotengine.org) (MIT).
+- An original game in the SameTime tradition. Not affiliated with any published board game.

@@ -1,0 +1,71 @@
+## Player preferences, saved to user://settings.cfg. Autoload "Settings".
+extends Node
+
+const PATH := "user://settings.cfg"
+
+signal changed
+
+var data := {
+	"music": 0.55,
+	"sfx": 0.8,
+	"ambience": 0.35,
+	"speed": "normal", ## slow | normal | fast
+	"tips": true,
+	"fullscreen": false,
+	"ui_scale": 1.0,
+	"ceilings": true,
+	"last_setup": {},
+	"seen_tutorial": false,
+}
+
+
+func _ready() -> void:
+	var cfg := ConfigFile.new()
+	if cfg.load(PATH) == OK:
+		for k in data.keys():
+			if cfg.has_section_key("prefs", k):
+				data[k] = cfg.get_value("prefs", k)
+	apply()
+
+
+func get_value(key: String, fallback: Variant = null) -> Variant:
+	return data.get(key, fallback)
+
+
+func set_value(key: String, value: Variant) -> void:
+	data[key] = value
+	save()
+	apply()
+	changed.emit()
+
+
+func save() -> void:
+	var cfg := ConfigFile.new()
+	for k in data.keys():
+		cfg.set_value("prefs", k, data[k])
+	cfg.save(PATH)
+
+
+func apply() -> void:
+	var win := get_window()
+	if win == null:
+		return
+	var want_full: bool = bool(data["fullscreen"])
+	var is_full: bool = win.mode == Window.MODE_FULLSCREEN or win.mode == Window.MODE_EXCLUSIVE_FULLSCREEN
+	if want_full != is_full and not DisplayServer.get_name().begins_with("headless"):
+		win.mode = Window.MODE_FULLSCREEN if want_full else Window.MODE_WINDOWED
+	win.content_scale_factor = float(data["ui_scale"])
+	var audio := get_node_or_null("/root/Audio")
+	if audio:
+		audio.apply_volumes()
+
+
+func battle_delay() -> float:
+	## Seconds per cinema beat.
+	match str(data["speed"]):
+		"slow":
+			return 2.4
+		"fast":
+			return 0.75
+		_:
+			return 1.4

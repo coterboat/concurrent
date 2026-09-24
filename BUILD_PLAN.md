@@ -1,5 +1,7 @@
 # CONCURRENT — Godot Build Plan
 
+> **v1.0 (24 Sep 2026):** the gates below are built through G12 minus G7 (two devices). What shipped and every rule amendment since v0.2 is in [docs/CHANGELOG.md](docs/CHANGELOG.md).
+
 Risk II SameTime. Chassis is Godot 4.5, not TypeScript. Not a new genre.
 
 v0.2 locked the wheel, combat, sheet, queue, and gates. This plan does not reopen them. It translates the kernel onto a machine you and your dad can launch in one click, sit down, and groan at.

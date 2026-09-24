@@ -2,7 +2,6 @@
 .import/
 export/
 *.translation
-export_presets.cfg
 .DS_Store
 *.apk
 *.aab
@@ -16,3 +15,4 @@ match.json
 telemetry.jsonl
 *.swp
 *~
+build/

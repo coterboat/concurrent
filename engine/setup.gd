@@ -11,6 +11,18 @@ const WORLD_ROUNDS := 8
 const EARLY_END_FRACTION := 0.8
 const NEUTRAL_GATE_ARMIES := 5
 const STARTING_POOL := {2: 18, 3: 35, 4: 30, 5: 25}
+## Bible 3.1: after a scattered deal, a second simultaneous placement pass.
+## Both passes are sealed before anything is revealed, so they fold into one
+## opening sheet whose per-hex ceiling is OPENING_PASSES × cap.
+const OPENING_PASSES := 2
+const SEAT_IDS := ["red", "blue", "green", "gold", "purple"]
+const SEAT_COLORS := {
+	"red": "#c23b2e",
+	"blue": "#2e5aa6",
+	"green": "#2e8b57",
+	"gold": "#c9a227",
+	"purple": "#7b4fa0",
+}
 
 
 static func starting_pool(player_count: int) -> int:
@@ -77,9 +89,61 @@ static func deal_knife7_three_player(map: Types.MapDef, match_seed: int) -> Type
 
 
 static func pool_for(map: Types.MapDef, player_count: int) -> int:
-	if map != null and map.starting_pool > 0:
+	if map != null and map.pools.has(player_count):
+		return int(map.pools[player_count])
+	if map != null and map.starting_pool > 0 and player_count <= 2:
 		return map.starting_pool
 	return starting_pool(player_count)
+
+
+static func opening_cap(world: Types.World, map: Types.MapDef, terr_id: String) -> int:
+	return OPENING_PASSES * Income.cap_of(world, map, terr_id)
+
+
+static func seat_color(seat_id: String) -> String:
+	return str(SEAT_COLORS.get(seat_id, "#888888"))
+
+
+static func deal(map: Types.MapDef, seats: Array, match_seed: int) -> Types.World:
+	## seats: [{id, name}] in seat order. 2 seats add a Neutral doorstop (3.9).
+	## 3+ seats: deal evenly, leftovers unoccupied (3.1).
+	if seats.size() == 2:
+		var w2: Types.World = deal_two_player(map, match_seed, true)
+		return _rename_two(w2, seats)
+	var w: Types.World = Types.World.empty_from_map(map)
+	w.round = 1
+	for seat in seats:
+		var sid: String = str(seat.get("id", ""))
+		w.players[sid] = make_player(sid, str(seat.get("name", sid.capitalize())), seat_color(sid))
+	var ids: Array = []
+	for terr_id in map.territory_ids():
+		ids.append(terr_id)
+	var rng: RefCounted = Rng.derive_stream(match_seed, 0, "deal|%s|%sp" % [map.id, seats.size()])
+	_shuffle(ids, rng)
+	var each: int = ids.size() / seats.size()
+	var i := 0
+	for _k in each:
+		for seat in seats:
+			w.set_hex(str(ids[i]), str(seat.get("id", "")), 1)
+			i += 1
+	return w
+
+
+static func _rename_two(w: Types.World, seats: Array) -> Types.World:
+	## deal_two_player seats red/blue; map them onto the chosen seat ids/names.
+	var remap := {"red": str(seats[0].get("id", "red")), "blue": str(seats[1].get("id", "blue"))}
+	var out: Types.World = w.clone()
+	out.players.clear()
+	for old in ["red", "blue"]:
+		var sid: String = remap[old]
+		var seat: Dictionary = seats[0] if old == "red" else seats[1]
+		out.players[sid] = make_player(sid, str(seat.get("name", sid.capitalize())), seat_color(sid))
+	out.players[Income.NEUTRAL_ID] = w.players[Income.NEUTRAL_ID]
+	for terr_id in out.territories.keys():
+		var ts: Types.TerritoryState = out.territories[terr_id]
+		if remap.has(ts.owner):
+			ts.owner = remap[ts.owner]
+	return out
 
 
 static func rounds_for(map: Types.MapDef) -> int:
@@ -129,7 +193,7 @@ static func deal_two_player(map: Types.MapDef, match_seed: int, pin_neutral: boo
 		w.set_hex(pin, Income.NEUTRAL_ID, map.neutral_armies if map.neutral_armies > 0 else NEUTRAL_GATE_ARMIES)
 	if map.neutral_leftover:
 		while i < ids.size():
-			w.set_hex(str(ids[i]), Income.NEUTRAL_ID, 1)
+			w.set_hex(str(ids[i]), Income.NEUTRAL_ID, map.neutral_leftover_armies)
 			i += 1
 	return w
 
@@ -138,7 +202,7 @@ static func apply_opening(world: Types.World, map: Types.MapDef, placements_by_p
 	## Simultaneous: caps from the post-deal snapshot, then apply.
 	var caps := {}
 	for terr_id in world.territories.keys():
-		caps[str(terr_id)] = Income.cap_of(world, map, str(terr_id))
+		caps[str(terr_id)] = opening_cap(world, map, str(terr_id))
 	var pids: Array = placements_by_player.keys()
 	pids.sort()
 	for pid in pids:

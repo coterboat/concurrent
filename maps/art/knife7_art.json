@@ -1,0 +1,145 @@
+{
+ "id": "knife7",
+ "width": 1600,
+ "height": 1080,
+ "order": [
+  "beacon",
+  "docks",
+  "gate",
+  "harbor",
+  "mill",
+  "quarry",
+  "ridge"
+ ],
+ "anchors": {
+  "beacon": {
+   "x": 350,
+   "y": 254,
+   "depth": 172.5,
+   "area": 194884,
+   "bbox": [
+    79,
+    0,
+    635,
+    521
+   ]
+  },
+  "docks": {
+   "x": 804,
+   "y": 838,
+   "depth": 128.1,
+   "area": 109509,
+   "bbox": [
+    612,
+    607,
+    995,
+    1037
+   ]
+  },
+  "gate": {
+   "x": 796,
+   "y": 540,
+   "depth": 65.8,
+   "area": 29261,
+   "bbox": [
+    673,
+    470,
+    917,
+    616
+   ]
+  },
+  "harbor": {
+   "x": 436,
+   "y": 762,
+   "depth": 169.5,
+   "area": 221686,
+   "bbox": [
+    107,
+    448,
+    714,
+    1063
+   ]
+  },
+  "mill": {
+   "x": 1250,
+   "y": 258,
+   "depth": 179.7,
+   "area": 219420,
+   "bbox": [
+    951,
+    8,
+    1562,
+    539
+   ]
+  },
+  "quarry": {
+   "x": 1166,
+   "y": 766,
+   "depth": 188.8,
+   "area": 229659,
+   "bbox": [
+    873,
+    451,
+    1469,
+    1079
+   ]
+  },
+  "ridge": {
+   "x": 800,
+   "y": 266,
+   "depth": 168,
+   "area": 143408,
+   "bbox": [
+    604,
+    25,
+    993,
+    488
+   ]
+  }
+ },
+ "lanes": [],
+ "regions": {
+  "northshore": {
+   "x": 800,
+   "y": 259
+  },
+  "southshore": {
+   "x": 802,
+   "y": 789
+  }
+ },
+ "landAdjacency": [
+  [
+   "beacon",
+   "ridge"
+  ],
+  [
+   "docks",
+   "gate"
+  ],
+  [
+   "docks",
+   "quarry"
+  ],
+  [
+   "docks",
+   "harbor"
+  ],
+  [
+   "gate",
+   "ridge"
+  ],
+  [
+   "gate",
+   "harbor"
+  ],
+  [
+   "gate",
+   "quarry"
+  ],
+  [
+   "mill",
+   "ridge"
+  ]
+ ]
+}

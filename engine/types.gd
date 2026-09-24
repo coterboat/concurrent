@@ -22,6 +22,8 @@ const EVENT_PLAYER_ELIMINATED := "PlayerEliminated"
 const EVENT_SCORE := "Score"
 const EVENT_ROUND_ENDED := "RoundEnded"
 const EVENT_ENTRENCHED := "Entrenched"
+const EVENT_SET_CASHED := "SetCashed"
+const EVENT_CARDS_CAPTURED := "CardsCaptured"
 
 const UNOCCUPIED := ""
 
@@ -46,6 +48,12 @@ class MapDef extends RefCounted:
 	var pin_neutral: String = ""
 	var neutral_armies: int = 5
 	var neutral_leftover: bool = true
+	var cards: bool = false
+	var neutral_leftover_armies: int = 1
+	var min_players: int = 2
+	var max_players: int = 5
+	var blurb: String = ""
+	var pools: Dictionary = {} ## player count (int) -> starting pool
 
 	func territory_ids() -> PackedStringArray:
 		var ids: Array = territories.keys()
@@ -114,6 +122,15 @@ class MapDef extends RefCounted:
 		m.pin_neutral = str(data.get("pinNeutral", ""))
 		m.neutral_armies = int(data.get("neutralArmies", 5))
 		m.neutral_leftover = bool(data.get("neutralLeftover", m.id == "knife7"))
+		m.cards = bool(data.get("cards", false))
+		m.neutral_leftover_armies = int(data.get("neutralLeftoverArmies", 1))
+		m.min_players = int(data.get("minPlayers", 2))
+		m.max_players = int(data.get("maxPlayers", 5))
+		m.blurb = str(data.get("blurb", ""))
+		var pools: Variant = data.get("pools", {})
+		if typeof(pools) == TYPE_DICTIONARY:
+			for k in pools.keys():
+				m.pools[int(str(k))] = int(pools[k])
 		return m
 
 

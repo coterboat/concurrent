@@ -1,0 +1,672 @@
+{
+ "id": "world30",
+ "width": 2400,
+ "height": 1500,
+ "order": [
+  "ambergate",
+  "briarhold",
+  "cinderplain",
+  "coralreach",
+  "dustmere",
+  "emberwatch",
+  "farwatch",
+  "fenwick",
+  "frosthelm",
+  "glasswaste",
+  "greyharbor",
+  "highcourt",
+  "hollowmere",
+  "icewater",
+  "kelwell",
+  "khartor",
+  "kingsreach",
+  "lanternfall",
+  "millbrook",
+  "mirage",
+  "oakhaven",
+  "pearlbay",
+  "redfield",
+  "saltmarsh",
+  "scorchpass",
+  "skaldmoor",
+  "stonebridge",
+  "sunspire",
+  "tidewatch",
+  "wolfsgate"
+ ],
+ "anchors": {
+  "ambergate": {
+   "x": 1058,
+   "y": 1000,
+   "depth": 99,
+   "area": 56178,
+   "bbox": [
+    882,
+    900,
+    1236,
+    1118
+   ]
+  },
+  "briarhold": {
+   "x": 214,
+   "y": 776,
+   "depth": 136.7,
+   "area": 90601,
+   "bbox": [
+    43,
+    599,
+    428,
+    934
+   ]
+  },
+  "cinderplain": {
+   "x": 1646,
+   "y": 494,
+   "depth": 111,
+   "area": 61993,
+   "bbox": [
+    1467,
+    335,
+    1798,
+    626
+   ]
+  },
+  "coralreach": {
+   "x": 1882,
+   "y": 1024,
+   "depth": 105.1,
+   "area": 44035,
+   "bbox": [
+    1754,
+    897,
+    1994,
+    1134
+   ]
+  },
+  "dustmere": {
+   "x": 2134,
+   "y": 800,
+   "depth": 110,
+   "area": 72899,
+   "bbox": [
+    1941,
+    651,
+    2320,
+    926
+   ]
+  },
+  "emberwatch": {
+   "x": 2148,
+   "y": 514,
+   "depth": 126.1,
+   "area": 81883,
+   "bbox": [
+    1974,
+    327,
+    2322,
+    673
+   ]
+  },
+  "farwatch": {
+   "x": 1852,
+   "y": 704,
+   "depth": 141.6,
+   "area": 87158,
+   "bbox": [
+    1700,
+    527,
+    2026,
+    870
+   ]
+  },
+  "fenwick": {
+   "x": 532,
+   "y": 678,
+   "depth": 118.6,
+   "area": 69046,
+   "bbox": [
+    367,
+    492,
+    670,
+    860
+   ]
+  },
+  "frosthelm": {
+   "x": 556,
+   "y": 282,
+   "depth": 163.8,
+   "area": 107984,
+   "bbox": [
+    361,
+    104,
+    736,
+    466
+   ]
+  },
+  "glasswaste": {
+   "x": 1362,
+   "y": 1298,
+   "depth": 124.9,
+   "area": 78231,
+   "bbox": [
+    1203,
+    1123,
+    1534,
+    1450
+   ]
+  },
+  "greyharbor": {
+   "x": 1462,
+   "y": 266,
+   "depth": 151.3,
+   "area": 110277,
+   "bbox": [
+    1294,
+    52,
+    1686,
+    473
+   ]
+  },
+  "highcourt": {
+   "x": 1034,
+   "y": 810,
+   "depth": 90.7,
+   "area": 63893,
+   "bbox": [
+    875,
+    696,
+    1219,
+    936
+   ]
+  },
+  "hollowmere": {
+   "x": 300,
+   "y": 530,
+   "depth": 117.7,
+   "area": 71843,
+   "bbox": [
+    113,
+    390,
+    490,
+    671
+   ]
+  },
+  "icewater": {
+   "x": 1188,
+   "y": 232,
+   "depth": 122.9,
+   "area": 82227,
+   "bbox": [
+    1014,
+    53,
+    1326,
+    442
+   ]
+  },
+  "kelwell": {
+   "x": 878,
+   "y": 1282,
+   "depth": 113.2,
+   "area": 75693,
+   "bbox": [
+    720,
+    1086,
+    1003,
+    1466
+   ]
+  },
+  "khartor": {
+   "x": 1900,
+   "y": 392,
+   "depth": 132.4,
+   "area": 77102,
+   "bbox": [
+    1745,
+    222,
+    2043,
+    571
+   ]
+  },
+  "kingsreach": {
+   "x": 1016,
+   "y": 596,
+   "depth": 97.9,
+   "area": 61856,
+   "bbox": [
+    855,
+    480,
+    1189,
+    710
+   ]
+  },
+  "lanternfall": {
+   "x": 2160,
+   "y": 1302,
+   "depth": 113,
+   "area": 53489,
+   "bbox": [
+    2029,
+    1178,
+    2295,
+    1444
+   ]
+  },
+  "millbrook": {
+   "x": 740,
+   "y": 570,
+   "depth": 101.5,
+   "area": 57368,
+   "bbox": [
+    589,
+    421,
+    865,
+    709
+   ]
+  },
+  "mirage": {
+   "x": 630,
+   "y": 1200,
+   "depth": 137.8,
+   "area": 80280,
+   "bbox": [
+    463,
+    1044,
+    802,
+    1360
+   ]
+  },
+  "oakhaven": {
+   "x": 346,
+   "y": 990,
+   "depth": 103.8,
+   "area": 98586,
+   "bbox": [
+    104,
+    790,
+    561,
+    1167
+   ]
+  },
+  "pearlbay": {
+   "x": 2154,
+   "y": 1052,
+   "depth": 103.2,
+   "area": 54856,
+   "bbox": [
+    2007,
+    932,
+    2306,
+    1172
+   ]
+  },
+  "redfield": {
+   "x": 1292,
+   "y": 680,
+   "depth": 127,
+   "area": 85205,
+   "bbox": [
+    1126,
+    497,
+    1445,
+    885
+   ]
+  },
+  "saltmarsh": {
+   "x": 1568,
+   "y": 748,
+   "depth": 131.9,
+   "area": 76674,
+   "bbox": [
+    1412,
+    594,
+    1720,
+    910
+   ]
+  },
+  "scorchpass": {
+   "x": 1116,
+   "y": 1222,
+   "depth": 121.2,
+   "area": 65195,
+   "bbox": [
+    988,
+    1066,
+    1251,
+    1383
+   ]
+  },
+  "skaldmoor": {
+   "x": 856,
+   "y": 240,
+   "depth": 90.9,
+   "area": 62116,
+   "bbox": [
+    729,
+    88,
+    1014,
+    417
+   ]
+  },
+  "stonebridge": {
+   "x": 746,
+   "y": 858,
+   "depth": 137.9,
+   "area": 78949,
+   "bbox": [
+    574,
+    701,
+    888,
+    1023
+   ]
+  },
+  "sunspire": {
+   "x": 1564,
+   "y": 1160,
+   "depth": 102,
+   "area": 70872,
+   "bbox": [
+    1413,
+    981,
+    1686,
+    1376
+   ]
+  },
+  "tidewatch": {
+   "x": 1858,
+   "y": 1270,
+   "depth": 106.2,
+   "area": 53838,
+   "bbox": [
+    1712,
+    1144,
+    1998,
+    1401
+   ]
+  },
+  "wolfsgate": {
+   "x": 1000,
+   "y": 394,
+   "depth": 102.6,
+   "area": 61559,
+   "bbox": [
+    828,
+    208,
+    1191,
+    522
+   ]
+  }
+ },
+ "lanes": [
+  {
+   "a": "frosthelm",
+   "b": "hollowmere",
+   "ax": 392,
+   "ay": 388,
+   "bx": 374,
+   "by": 406,
+   "length": 25
+  },
+  {
+   "a": "cinderplain",
+   "b": "greyharbor",
+   "ax": 1588,
+   "ay": 396,
+   "bx": 1576,
+   "by": 376,
+   "length": 23
+  },
+  {
+   "a": "mirage",
+   "b": "oakhaven",
+   "ax": 532,
+   "ay": 1090,
+   "bx": 496,
+   "by": 1074,
+   "length": 39
+  },
+  {
+   "a": "dustmere",
+   "b": "pearlbay",
+   "ax": 2138,
+   "ay": 912,
+   "bx": 2146,
+   "by": 934,
+   "length": 23
+  },
+  {
+   "a": "coralreach",
+   "b": "sunspire",
+   "ax": 1756,
+   "ay": 1050,
+   "bx": 1684,
+   "by": 1072,
+   "length": 75
+  },
+  {
+   "a": "coralreach",
+   "b": "pearlbay",
+   "ax": 1988,
+   "ay": 1028,
+   "bx": 2008,
+   "by": 1030,
+   "length": 20
+  },
+  {
+   "a": "coralreach",
+   "b": "tidewatch",
+   "ax": 1854,
+   "ay": 1132,
+   "bx": 1854,
+   "by": 1160,
+   "length": 28
+  },
+  {
+   "a": "lanternfall",
+   "b": "pearlbay",
+   "ax": 2216,
+   "ay": 1194,
+   "bx": 2220,
+   "by": 1172,
+   "length": 22
+  },
+  {
+   "a": "lanternfall",
+   "b": "tidewatch",
+   "ax": 2030,
+   "ay": 1316,
+   "bx": 1998,
+   "by": 1316,
+   "length": 32
+  },
+  {
+   "a": "sunspire",
+   "b": "tidewatch",
+   "ax": 1662,
+   "ay": 1230,
+   "bx": 1714,
+   "by": 1240,
+   "length": 53
+  },
+  {
+   "a": "coralreach",
+   "b": "dustmere",
+   "ax": 1956,
+   "ay": 912,
+   "bx": 1972,
+   "by": 882,
+   "length": 34
+  }
+ ],
+ "regions": {
+  "heartlands": {
+   "x": 981,
+   "y": 752
+  },
+  "thornwood": {
+   "x": 348,
+   "y": 744
+  },
+  "ashen": {
+   "x": 1875,
+   "y": 609
+  },
+  "sunward": {
+   "x": 2014,
+   "y": 1162
+  },
+  "norrmark": {
+   "x": 1012,
+   "y": 283
+  },
+  "duneveil": {
+   "x": 1110,
+   "y": 1232
+  }
+ },
+ "landAdjacency": [
+  [
+   "ambergate",
+   "highcourt"
+  ],
+  [
+   "ambergate",
+   "scorchpass"
+  ],
+  [
+   "briarhold",
+   "hollowmere"
+  ],
+  [
+   "briarhold",
+   "fenwick"
+  ],
+  [
+   "briarhold",
+   "oakhaven"
+  ],
+  [
+   "cinderplain",
+   "khartor"
+  ],
+  [
+   "cinderplain",
+   "farwatch"
+  ],
+  [
+   "cinderplain",
+   "saltmarsh"
+  ],
+  [
+   "dustmere",
+   "emberwatch"
+  ],
+  [
+   "dustmere",
+   "farwatch"
+  ],
+  [
+   "emberwatch",
+   "khartor"
+  ],
+  [
+   "emberwatch",
+   "farwatch"
+  ],
+  [
+   "farwatch",
+   "khartor"
+  ],
+  [
+   "farwatch",
+   "saltmarsh"
+  ],
+  [
+   "fenwick",
+   "hollowmere"
+  ],
+  [
+   "fenwick",
+   "millbrook"
+  ],
+  [
+   "fenwick",
+   "stonebridge"
+  ],
+  [
+   "fenwick",
+   "oakhaven"
+  ],
+  [
+   "frosthelm",
+   "skaldmoor"
+  ],
+  [
+   "glasswaste",
+   "sunspire"
+  ],
+  [
+   "glasswaste",
+   "scorchpass"
+  ],
+  [
+   "greyharbor",
+   "icewater"
+  ],
+  [
+   "highcourt",
+   "kingsreach"
+  ],
+  [
+   "highcourt",
+   "redfield"
+  ],
+  [
+   "highcourt",
+   "stonebridge"
+  ],
+  [
+   "icewater",
+   "skaldmoor"
+  ],
+  [
+   "icewater",
+   "wolfsgate"
+  ],
+  [
+   "kelwell",
+   "mirage"
+  ],
+  [
+   "kelwell",
+   "scorchpass"
+  ],
+  [
+   "kingsreach",
+   "wolfsgate"
+  ],
+  [
+   "kingsreach",
+   "redfield"
+  ],
+  [
+   "kingsreach",
+   "millbrook"
+  ],
+  [
+   "kingsreach",
+   "stonebridge"
+  ],
+  [
+   "millbrook",
+   "stonebridge"
+  ],
+  [
+   "redfield",
+   "saltmarsh"
+  ],
+  [
+   "skaldmoor",
+   "wolfsgate"
+  ]
+ ]
+}

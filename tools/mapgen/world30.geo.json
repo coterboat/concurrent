@@ -1,0 +1,398 @@
+{
+ "width": 2400,
+ "height": 1500,
+ "seed": 30,
+ "radius": 180,
+ "gap": 26,
+ "adjacency": "derive",
+ "warp": {
+  "amp": 70,
+  "scale": 0.0028
+ },
+ "coast": {
+  "amp": 0.32,
+  "scale": 0.0042
+ },
+ "territories": {
+  "frosthelm": {
+   "pts": [
+    [
+     610,
+     271
+    ],
+    [
+     520,
+     315
+    ]
+   ]
+  },
+  "skaldmoor": {
+   "pts": [
+    [
+     840,
+     245
+    ]
+   ]
+  },
+  "wolfsgate": {
+   "pts": [
+    [
+     1000,
+     385
+    ]
+   ]
+  },
+  "icewater": {
+   "pts": [
+    [
+     1170,
+     245
+    ]
+   ]
+  },
+  "greyharbor": {
+   "pts": [
+    [
+     1420,
+     280
+    ],
+    [
+     1520,
+     315
+    ]
+   ]
+  },
+  "hollowmere": {
+   "pts": [
+    [
+     320,
+     535
+    ]
+   ]
+  },
+  "fenwick": {
+   "pts": [
+    [
+     520,
+     676
+    ]
+   ]
+  },
+  "briarhold": {
+   "pts": [
+    [
+     260,
+     764
+    ]
+   ]
+  },
+  "oakhaven": {
+   "pts": [
+    [
+     400,
+     957
+    ],
+    [
+     320,
+     1001
+    ]
+   ]
+  },
+  "millbrook": {
+   "pts": [
+    [
+     760,
+     588
+    ]
+   ]
+  },
+  "kingsreach": {
+   "pts": [
+    [
+     1010,
+     588
+    ]
+   ]
+  },
+  "stonebridge": {
+   "pts": [
+    [
+     760,
+     817
+    ]
+   ]
+  },
+  "highcourt": {
+   "pts": [
+    [
+     1030,
+     817
+    ]
+   ]
+  },
+  "redfield": {
+   "pts": [
+    [
+     1280,
+     676
+    ]
+   ]
+  },
+  "ambergate": {
+   "pts": [
+    [
+     1060,
+     1010
+    ]
+   ]
+  },
+  "cinderplain": {
+   "pts": [
+    [
+     1640,
+     482
+    ]
+   ]
+  },
+  "khartor": {
+   "pts": [
+    [
+     1900,
+     412
+    ]
+   ]
+  },
+  "emberwatch": {
+   "pts": [
+    [
+     2140,
+     509
+    ]
+   ]
+  },
+  "saltmarsh": {
+   "pts": [
+    [
+     1560,
+     729
+    ]
+   ]
+  },
+  "farwatch": {
+   "pts": [
+    [
+     1860,
+     693
+    ]
+   ]
+  },
+  "dustmere": {
+   "pts": [
+    [
+     2120,
+     799
+    ]
+   ]
+  },
+  "mirage": {
+   "pts": [
+    [
+     640,
+     1204
+    ]
+   ]
+  },
+  "kelwell": {
+   "pts": [
+    [
+     880,
+     1265
+    ]
+   ]
+  },
+  "scorchpass": {
+   "pts": [
+    [
+     1110,
+     1204
+    ]
+   ]
+  },
+  "glasswaste": {
+   "pts": [
+    [
+     1340,
+     1274
+    ]
+   ]
+  },
+  "sunspire": {
+   "pts": [
+    [
+     1560,
+     1169
+    ]
+   ]
+  },
+  "coralreach": {
+   "pts": [
+    [
+     1880,
+     1028
+    ]
+   ],
+   "r": 130
+  },
+  "pearlbay": {
+   "pts": [
+    [
+     2150,
+     1072
+    ]
+   ],
+   "r": 130
+  },
+  "tidewatch": {
+   "pts": [
+    [
+     1860,
+     1265
+    ]
+   ],
+   "r": 130
+  },
+  "lanternfall": {
+   "pts": [
+    [
+     2140,
+     1292
+    ]
+   ],
+   "r": 130
+  }
+ },
+ "separate": [],
+ "lanes": [
+  [
+   "frosthelm",
+   "hollowmere"
+  ],
+  [
+   "greyharbor",
+   "cinderplain"
+  ],
+  [
+   "oakhaven",
+   "mirage"
+  ],
+  [
+   "dustmere",
+   "pearlbay"
+  ],
+  [
+   "coralreach",
+   "sunspire"
+  ],
+  [
+   "coralreach",
+   "pearlbay"
+  ],
+  [
+   "coralreach",
+   "tidewatch"
+  ],
+  [
+   "pearlbay",
+   "lanternfall"
+  ],
+  [
+   "tidewatch",
+   "lanternfall"
+  ],
+  [
+   "tidewatch",
+   "sunspire"
+  ],
+  [
+   "coralreach",
+   "dustmere"
+  ]
+ ],
+ "separateRegions": [
+  [
+   "norrmark",
+   "thornwood",
+   []
+  ],
+  [
+   "norrmark",
+   "heartlands",
+   [
+    [
+     "wolfsgate",
+     "kingsreach"
+    ]
+   ]
+  ],
+  [
+   "norrmark",
+   "ashen",
+   []
+  ],
+  [
+   "duneveil",
+   "thornwood",
+   []
+  ],
+  [
+   "duneveil",
+   "heartlands",
+   [
+    [
+     "ambergate",
+     "scorchpass"
+    ]
+   ]
+  ],
+  [
+   "duneveil",
+   "ashen",
+   []
+  ],
+  [
+   "ashen",
+   "heartlands",
+   [
+    [
+     "redfield",
+     "saltmarsh"
+    ],
+    [
+     "redfield",
+     "cinderplain"
+    ]
+   ]
+  ],
+  [
+   "sunward",
+   "ashen",
+   []
+  ],
+  [
+   "sunward",
+   "duneveil",
+   []
+  ],
+  [
+   "sunward",
+   "heartlands",
+   []
+  ]
+ ],
+ "islands": [
+  "coralreach",
+  "pearlbay",
+  "tidewatch",
+  "lanternfall"
+ ]
+}

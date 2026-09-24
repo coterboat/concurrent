@@ -5,7 +5,7 @@ const Types := preload("res://engine/types.gd")
 const Setup := preload("res://engine/setup.gd")
 const MapLib := preload("res://engine/map.gd")
 const Income := preload("res://engine/income.gd")
-const Session := preload("res://game/match_session.gd")
+const Session := preload("res://game/core/session.gd")
 
 const KNOWN := "res://maps/known24.json"
 
@@ -58,13 +58,20 @@ func run(report: Callable, tree: SceneTree) -> void:
 	report.call(Setup.pool_for(map, 2) == 30, "Known World 2p pool is 30")
 
 	var s: Node = Session.new()
+	s.instant = true
 	tree.root.add_child(s)
-	s.new_game(true, 11, false, KNOWN)
+	s.new_game({"map": KNOWN, "seed": 11, "seats": [
+		{"id": "red", "name": "Dad", "kind": "human", "ai": ""},
+		{"id": "blue", "name": "Varek", "kind": "ai", "ai": "varek"}]})
 	report.call(s.map.id == "known24", "session boots Known World")
 	report.call(s.phase == Session.Phase.OPENING, "Known World starts at opening")
-	report.call(s.pool_left() == 21, "9 standing, 21 left in a pool of 30")
+	report.call(s.income_left() == 21, "9 standing, 21 left in a pool of 30 (got %s)" % s.income_left())
+	s.auto_deploy()
+	report.call(s.income_left() == 0, "the doubled opening cap fits all 21 (left %s)" % s.income_left())
 	s.lock()
-	report.call(s.phase == Session.Phase.PLANNING, "Known World monkey opening auto-locks")
+	report.call(s.phase == Session.Phase.CINEMA, "Known World AI opening resolves into the deployment cinema")
+	s.cinema_done()
+	report.call(s.phase == Session.Phase.PLANNING, "deployment cinema leads to round 1 planning")
 	s.queue_free()
 
 

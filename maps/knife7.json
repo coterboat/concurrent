@@ -1,6 +1,14 @@
 {
   "id": "knife7",
   "name": "The Isthmus",
+  "cards": false,
+  "pools": {
+    "2": 18,
+    "3": 10
+  },
+  "minPlayers": 2,
+  "maxPlayers": 3,
+  "blurb": "Seven lands and one choke. The teaching map: learn the walk-in in five rounds.",
   "rounds": 5,
   "startingPool": 18,
   "dealEach": 3,
@@ -12,49 +20,93 @@
     "southshore": "Southshore"
   },
   "layout": {
-    "beacon": [170, 130],
-    "ridge": [400, 120],
-    "mill": [640, 130],
-    "gate": [400, 330],
-    "harbor": [180, 500],
-    "docks": [400, 660],
-    "quarry": [630, 500]
+    "beacon": [
+      170,
+      130
+    ],
+    "ridge": [
+      400,
+      120
+    ],
+    "mill": [
+      640,
+      130
+    ],
+    "gate": [
+      400,
+      330
+    ],
+    "harbor": [
+      180,
+      500
+    ],
+    "docks": [
+      400,
+      660
+    ],
+    "quarry": [
+      630,
+      500
+    ]
   },
   "territories": {
     "beacon": {
       "name": "Beacon",
       "region": "northshore",
-      "adjacent": ["ridge"]
+      "adjacent": [
+        "ridge"
+      ]
     },
     "ridge": {
       "name": "Ridge",
       "region": "northshore",
-      "adjacent": ["beacon", "mill", "gate"]
+      "adjacent": [
+        "beacon",
+        "mill",
+        "gate"
+      ]
     },
     "mill": {
       "name": "Mill",
       "region": "northshore",
-      "adjacent": ["ridge"]
+      "adjacent": [
+        "ridge"
+      ]
     },
     "gate": {
       "name": "The Gate",
       "region": "",
-      "adjacent": ["ridge", "harbor", "docks", "quarry"]
+      "adjacent": [
+        "ridge",
+        "harbor",
+        "docks",
+        "quarry"
+      ]
     },
     "harbor": {
       "name": "Harbor",
       "region": "southshore",
-      "adjacent": ["gate", "docks"]
+      "adjacent": [
+        "gate",
+        "docks"
+      ]
     },
     "docks": {
       "name": "Docks",
       "region": "southshore",
-      "adjacent": ["harbor", "gate", "quarry"]
+      "adjacent": [
+        "harbor",
+        "gate",
+        "quarry"
+      ]
     },
     "quarry": {
       "name": "Quarry",
       "region": "southshore",
-      "adjacent": ["gate", "docks"]
+      "adjacent": [
+        "gate",
+        "docks"
+      ]
     }
   },
   "regionBonus": {

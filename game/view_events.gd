@@ -43,7 +43,13 @@ static func apply(world: Types.World, event: Dictionary) -> void:
 			if not bool(event.get("attackerWon", false)):
 				var ts: Types.TerritoryState = world.get_territory(str(event.get("to", "")))
 				if ts != null:
-					ts.armies = int(event.get("winnerRemaining", ts.armies))
+					## Same split as resolve: the garrison absorbs losses first.
+					var remnant: int = int(event.get("winnerRemaining", ts.held()))
+					if remnant >= ts.garrison:
+						ts.armies = remnant - ts.garrison
+					else:
+						ts.garrison = maxi(0, remnant)
+						ts.armies = 0
 		Types.EVENT_SPOILS:
 			var dest: String = str(event.get("to", ""))
 			var winner_id: String = str(event.get("winnerId", ""))

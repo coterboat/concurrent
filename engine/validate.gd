@@ -8,6 +8,7 @@ extends RefCounted
 const Types := preload("res://engine/types.gd")
 const MapLib := preload("res://engine/map.gd")
 const Income := preload("res://engine/income.gd")
+const Cards := preload("res://engine/cards.gd")
 
 
 static func validate_sheet(world: Types.World, map: Types.MapDef, sheet: Types.Sheet) -> PackedStringArray:
@@ -24,7 +25,12 @@ static func validate_sheet(world: Types.World, map: Types.MapDef, sheet: Types.S
 		return errors
 
 	if sheet.cash_set.size() > 0:
-		errors.append("cards skipped on this map")
+		if not map.cards:
+			errors.append("cards are off on this map")
+		elif not Cards.is_set(Array(sheet.cash_set)):
+			errors.append("those cards are not a set")
+		elif not Cards.holds(ps.cards, sheet.cash_set):
+			errors.append("you do not hold those cards")
 
 	var projected: Types.World = world.clone()
 	_validate_regroup(projected, map, sheet, errors)
@@ -77,8 +83,18 @@ static func _apply_regroup_to(world: Types.World, sheet: Types.Sheet) -> void:
 		world.set_hex(r.from_id, Types.UNOCCUPIED, 0)
 
 
+static func cash_value_of(world: Types.World, map: Types.MapDef, sheet: Types.Sheet) -> int:
+	## Armies a legal cashed set adds to this sheet's income. 0 if none or illegal.
+	if sheet == null or sheet.cash_set.size() == 0 or not map.cards:
+		return 0
+	var ps: Types.PlayerState = world.players.get(sheet.player_id, null)
+	if ps == null or not Cards.is_set(Array(sheet.cash_set)) or not Cards.holds(ps.cards, sheet.cash_set):
+		return 0
+	return Cards.set_value(world.sets_cashed)
+
+
 static func _apply_placements_to(world: Types.World, map: Types.MapDef, sheet: Types.Sheet) -> void:
-	var income: int = Income.income_of(world, map, sheet.player_id)
+	var income: int = Income.income_of(world, map, sheet.player_id) + cash_value_of(world, map, sheet)
 	var remaining := income
 	var keys: Array = sheet.placements.keys()
 	keys.sort()

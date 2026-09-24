@@ -10,6 +10,8 @@ const PropertiesTest = preload("res://tests/test_properties.gd")
 const MatchTest = preload("res://tests/test_match.gd")
 const ViewEventsTest = preload("res://tests/test_view_events.gd")
 const SessionTest = preload("res://tests/test_session.gd")
+const CardsTest = preload("res://tests/test_cards.gd")
+const AiTest = preload("res://tests/test_ai.gd")
 const MapsTest = preload("res://tests/test_maps.gd")
 const GarrisonTest = preload("res://tests/test_garrison.gd")
 
@@ -20,7 +22,8 @@ var _failed := 0
 
 
 func _initialize() -> void:
-	print("CONCURRENT G0–G6")
+	load("res://game/core/session.gd").SAVE_PATH = "user://test_savegame.json"
+	print("CONCURRENT v1 — kernel, AI, client session")
 	_section("map")
 	var map: EngineTypesScript.MapDef = _test_map()
 	_section("types")
@@ -44,8 +47,14 @@ func _initialize() -> void:
 	MapsTest.new().run(Callable(self, "_ok"), self)
 	_section("garrison")
 	GarrisonTest.new().run(Callable(self, "_ok"))
+	_section("cards + seats")
+	CardsTest.new().run(Callable(self, "_ok"))
+	_section("ai commanders")
+	AiTest.new().run(Callable(self, "_ok"))
 	print("")
-	print("G0–G6 %s  passed=%s  failed=%s" % ["ok" if _failed == 0 else "FAIL", _passed, _failed])
+	if FileAccess.file_exists("user://test_savegame.json"):
+		DirAccess.remove_absolute(ProjectSettings.globalize_path("user://test_savegame.json"))
+	print("CONCURRENT %s  passed=%s  failed=%s" % ["ok" if _failed == 0 else "FAIL", _passed, _failed])
 	quit(0 if _failed == 0 else 1)
 
 

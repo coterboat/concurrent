@@ -1,0 +1,1088 @@
+{
+ "amb_tent": {
+  "credits": 2,
+  "endpoint": "/audio/ambiance",
+  "file": "assets/audio/music/ambience_tent.mp3",
+  "id": "amb_tent",
+  "job": "d5b99540-8f12-4b6f-b424-685c81f6698b",
+  "params": {
+   "augment_prompt": true,
+   "description": "inside a canvas war tent at night: gentle crackling campfire, soft wind against the canvas, very faint distant camp sounds",
+   "duration": 10
+  },
+  "url": "https://storage.googleapis.com/ludo-assets/api/68f97e86657c680226e7a504-88ce7ee8cb996e56ea018715725c294f.mp3"
+ },
+ "art_defeat": {
+  "credits": 0.5,
+  "endpoint": "/assets/image",
+  "file": "assets/art/defeat.webp",
+  "id": "art_defeat",
+  "job": "6bef3548-0991-483c-a567-b554eda194a5",
+  "params": {
+   "art_style": "Hand-Painted",
+   "aspect_ratio": "ar_16_9",
+   "augment_prompt": true,
+   "image_type": "art",
+   "n": 1,
+   "perspective": "Any perspective",
+   "prompt": "A torn fallen battle banner lying in the mud beside an abandoned wooden fort at dusk, cold blue light, crows on the palisade, somber and quiet. Hand-painted board game art, visible brush strokes, palette of deep navy, parchment cream, crimson red and antique gold, candlelit war-room mood, no text, no letters, no watermark"
+  },
+  "url": "https://storage.googleapis.com/ludo-assets/api/9b38b7d992c0a3f352d27158e86e4f67.webp"
+ },
+ "art_victory": {
+  "credits": 0.5,
+  "endpoint": "/assets/image",
+  "file": "assets/art/victory.webp",
+  "id": "art_victory",
+  "job": "17f179df-014a-4de3-b757-6f85b19ce741",
+  "params": {
+   "art_style": "Hand-Painted",
+   "aspect_ratio": "ar_16_9",
+   "augment_prompt": true,
+   "image_type": "art",
+   "n": 1,
+   "perspective": "Any perspective",
+   "prompt": "A triumphant general's crimson and gold banner raised over the battlements of a hilltop castle at golden sunrise, small cheering soldiers below, heroic and warm. Hand-painted board game art, visible brush strokes, palette of deep navy, parchment cream, crimson red and antique gold, candlelit war-room mood, no text, no letters, no watermark"
+  },
+  "url": "https://storage.googleapis.com/ludo-assets/api/6a3729f82617f62c2edda0d6826532b4.webp"
+ },
+ "card_back": {
+  "credits": 0.5,
+  "endpoint": "/assets/image",
+  "file": "assets/cards/back.webp",
+  "id": "card_back",
+  "job": "a6107302-de82-43c1-bdcf-b2cc8549afc5",
+  "params": {
+   "art_style": "Hand-Painted",
+   "aspect_ratio": "ar_3_4",
+   "augment_prompt": true,
+   "image_type": "card-art",
+   "n": 1,
+   "perspective": "Any perspective",
+   "prompt": "Back of an ornate playing card: deep navy background with a symmetrical antique gold compass-rose pattern and crimson border. Hand-painted board game art, visible brush strokes, palette of deep navy, parchment cream, crimson red and antique gold, candlelit war-room mood, no text, no letters, no watermark"
+  },
+  "url": "https://storage.googleapis.com/ludo-assets/api/b76b8a57301ad4ef303f2f94337e19b6.webp"
+ },
+ "card_moon": {
+  "credits": 0.5,
+  "endpoint": "/assets/image",
+  "file": "assets/cards/moon.webp",
+  "id": "card_moon",
+  "job": "7a99c21f-a79d-4a1e-9167-8370fdb30c12",
+  "params": {
+   "art_style": "Hand-Painted",
+   "aspect_ratio": "ar_3_4",
+   "augment_prompt": true,
+   "image_type": "card-art",
+   "n": 1,
+   "perspective": "Any perspective",
+   "prompt": "Front face of an ornate campaign card: a silver crescent moon emblem in the center, cream parchment card with a thin crimson and gold border. Hand-painted board game art, visible brush strokes, palette of deep navy, parchment cream, crimson red and antique gold, candlelit war-room mood, no text, no letters, no watermark"
+  },
+  "url": "https://storage.googleapis.com/ludo-assets/api/2ac8fe7dbf7e4e117cd516d11a601a9f.webp"
+ },
+ "card_star": {
+  "credits": 0.5,
+  "endpoint": "/assets/image",
+  "file": "assets/cards/star.webp",
+  "id": "card_star",
+  "job": "956e4a87-807b-4b10-b335-2c8ed415fbd8",
+  "params": {
+   "art_style": "Hand-Painted",
+   "aspect_ratio": "ar_3_4",
+   "augment_prompt": true,
+   "image_type": "card-art",
+   "n": 1,
+   "perspective": "Any perspective",
+   "prompt": "Front face of an ornate campaign card: a crimson eight-pointed star emblem in the center, cream parchment card with a thin crimson and gold border. Hand-painted board game art, visible brush strokes, palette of deep navy, parchment cream, crimson red and antique gold, candlelit war-room mood, no text, no letters, no watermark"
+  },
+  "url": "https://storage.googleapis.com/ludo-assets/api/2e2361514f6e6b9aaebd16cac741e8c9.webp"
+ },
+ "card_sun": {
+  "credits": 0.5,
+  "endpoint": "/assets/image",
+  "file": "assets/cards/sun.webp",
+  "id": "card_sun",
+  "job": "cfcd5cbd-a5f8-4640-9d08-d0e55c1bad48",
+  "params": {
+   "art_style": "Hand-Painted",
+   "aspect_ratio": "ar_3_4",
+   "augment_prompt": true,
+   "image_type": "card-art",
+   "n": 1,
+   "perspective": "Any perspective",
+   "prompt": "Front face of an ornate campaign card: a radiant golden sun emblem in the center, cream parchment card with a thin crimson and gold border. Hand-painted board game art, visible brush strokes, palette of deep navy, parchment cream, crimson red and antique gold, candlelit war-room mood, no text, no letters, no watermark"
+  },
+  "url": "https://storage.googleapis.com/ludo-assets/api/cf6ef96a3a149e0506be7772bf515dce.webp"
+ },
+ "card_wild": {
+  "credits": 0.5,
+  "endpoint": "/assets/image",
+  "file": "assets/cards/wild.webp",
+  "id": "card_wild",
+  "job": "9b66f760-e5be-40c7-ad4f-cbc8364ef875",
+  "params": {
+   "art_style": "Hand-Painted",
+   "aspect_ratio": "ar_3_4",
+   "augment_prompt": true,
+   "image_type": "card-art",
+   "n": 1,
+   "perspective": "Any perspective",
+   "prompt": "Front face of an ornate campaign card: a golden sun, silver moon and crimson star arranged together in a circle as one emblem, cream parchment card with a thin crimson and gold border. Hand-painted board game art, visible brush strokes, palette of deep navy, parchment cream, crimson red and antique gold, candlelit war-room mood, no text, no letters, no watermark"
+  },
+  "url": "https://storage.googleapis.com/ludo-assets/api/3a5b0e8f5c1e12c80ebf942175fbad15.webp"
+ },
+ "howto_cards": {
+  "credits": 0.5,
+  "endpoint": "/assets/image",
+  "file": "assets/art/howto_cards.webp",
+  "id": "howto_cards",
+  "job": "e2f04302-f145-4640-a9ac-7d34842882c7",
+  "params": {
+   "art_style": "Hand-Painted",
+   "aspect_ratio": "ar_4_3",
+   "augment_prompt": true,
+   "image_type": "art",
+   "n": 1,
+   "perspective": "Any perspective",
+   "prompt": "Three ornate campaign cards fanned out on a wooden war table, one showing a golden sun emblem, one a silver crescent moon, one a crimson star, coins and a small stack of army tokens beside them. Hand-painted board game art, visible brush strokes, palette of deep navy, parchment cream, crimson red and antique gold, candlelit war-room mood, no text, no letters, no watermark"
+  },
+  "url": "https://storage.googleapis.com/ludo-assets/api/4dcf254f8fcc165c0f14541365b356c3.webp"
+ },
+ "howto_clash": {
+  "credits": 0.5,
+  "endpoint": "/assets/image",
+  "file": "assets/art/howto_clash.webp",
+  "id": "howto_clash",
+  "job": "7a1e01a5-fa6c-4eef-952b-8e2ff3973d16",
+  "params": {
+   "art_style": "Hand-Painted",
+   "aspect_ratio": "ar_4_3",
+   "augment_prompt": true,
+   "image_type": "art",
+   "n": 1,
+   "perspective": "Any perspective",
+   "prompt": "Two small armies, one with red banners and one with blue banners, colliding head-on in the middle of a wooden bridge over a river, dust and spears, seen from above at an angle. Hand-painted board game art, visible brush strokes, palette of deep navy, parchment cream, crimson red and antique gold, candlelit war-room mood, no text, no letters, no watermark"
+  },
+  "url": "https://storage.googleapis.com/ludo-assets/api/90ce5c2fb876bdb97996bef8faa068ff.webp"
+ },
+ "howto_dugin": {
+  "credits": 0.5,
+  "endpoint": "/assets/image",
+  "file": "assets/art/howto_dugin.webp",
+  "id": "howto_dugin",
+  "job": "59fa25c1-d8ac-4b35-b727-442c78de5918",
+  "params": {
+   "art_style": "Hand-Painted",
+   "aspect_ratio": "ar_4_3",
+   "augment_prompt": true,
+   "image_type": "art",
+   "n": 1,
+   "perspective": "Any perspective",
+   "prompt": "Soldiers digging earthworks, trenches and a timber palisade around a small hilltop fort, shovels and sandbags, determined defenders. Hand-painted board game art, visible brush strokes, palette of deep navy, parchment cream, crimson red and antique gold, candlelit war-room mood, no text, no letters, no watermark"
+  },
+  "url": "https://storage.googleapis.com/ludo-assets/api/83bb55e8a108d1cfea960a421beba322.webp"
+ },
+ "howto_march": {
+  "credits": 0.5,
+  "endpoint": "/assets/image",
+  "file": "assets/art/howto_march.webp",
+  "id": "howto_march",
+  "job": "51c0067b-73e2-4777-836c-79420c1a0707",
+  "params": {
+   "art_style": "Hand-Painted",
+   "aspect_ratio": "ar_4_3",
+   "augment_prompt": true,
+   "image_type": "art",
+   "n": 1,
+   "perspective": "Any perspective",
+   "prompt": "A long column of small toy-soldier style infantry with red banners marching out through the gate of a stone keep, leaving the keep almost empty behind them, seen from above. Hand-painted board game art, visible brush strokes, palette of deep navy, parchment cream, crimson red and antique gold, candlelit war-room mood, no text, no letters, no watermark"
+  },
+  "url": "https://storage.googleapis.com/ludo-assets/api/df8096be018c3345612eb2b155ccb2fb.webp"
+ },
+ "howto_sealed": {
+  "credits": 0.5,
+  "endpoint": "/assets/image",
+  "file": "assets/art/howto_sealed.webp",
+  "id": "howto_sealed",
+  "job": "49ede8bb-1278-4821-be10-aaafcb7b3c0b",
+  "params": {
+   "art_style": "Hand-Painted",
+   "aspect_ratio": "ar_4_3",
+   "augment_prompt": true,
+   "image_type": "art",
+   "n": 1,
+   "perspective": "Any perspective",
+   "prompt": "Close-up of a quill writing secret battle orders on a parchment sheet beside a red wax seal stamp and a guttering candle on a dark wooden desk. Hand-painted board game art, visible brush strokes, palette of deep navy, parchment cream, crimson red and antique gold, candlelit war-room mood, no text, no letters, no watermark"
+  },
+  "url": "https://storage.googleapis.com/ludo-assets/api/3310a4c868db3f347dd798c95676b304.webp"
+ },
+ "howto_surge": {
+  "credits": 0.5,
+  "endpoint": "/assets/image",
+  "file": "assets/art/howto_surge.webp",
+  "id": "howto_surge",
+  "job": "5a0e92c0-4a73-47ac-9aac-9034c874ed78",
+  "params": {
+   "art_style": "Hand-Painted",
+   "aspect_ratio": "ar_4_3",
+   "augment_prompt": true,
+   "image_type": "art",
+   "n": 1,
+   "perspective": "Any perspective",
+   "prompt": "Cavalry charging through a breached wall and pouring onward toward a second town on the horizon, momentum and dust, seen from above at an angle. Hand-painted board game art, visible brush strokes, palette of deep navy, parchment cream, crimson red and antique gold, candlelit war-room mood, no text, no letters, no watermark"
+  },
+  "url": "https://storage.googleapis.com/ludo-assets/api/4dc2ec3fc41a20e74828b240d570c51a.webp"
+ },
+ "howto_walkin": {
+  "credits": 0.5,
+  "endpoint": "/assets/image",
+  "file": "assets/art/howto_walkin.webp",
+  "id": "howto_walkin",
+  "job": "5da7b104-8333-46de-86e9-6a74c3496a41",
+  "params": {
+   "art_style": "Hand-Painted",
+   "aspect_ratio": "ar_4_3",
+   "augment_prompt": true,
+   "image_type": "art",
+   "n": 1,
+   "perspective": "Any perspective",
+   "prompt": "A sly squad of soldiers with green banners strolling through the open gate of an abandoned, undefended fortress while its garrison marches away in the distance. Hand-painted board game art, visible brush strokes, palette of deep navy, parchment cream, crimson red and antique gold, candlelit war-room mood, no text, no letters, no watermark"
+  },
+  "url": "https://storage.googleapis.com/ludo-assets/api/3577c90eaf52d219eb7396fef6750446.webp"
+ },
+ "icon_app": {
+  "credits": 0.5,
+  "endpoint": "/assets/image",
+  "file": "assets/icons/app.png",
+  "id": "icon_app",
+  "job": "a86333fc-87d4-4fbe-b80d-6b00614eacc3",
+  "params": {
+   "art_style": "Hand-Painted",
+   "aspect_ratio": "ar_1_1",
+   "augment_prompt": true,
+   "image_type": "icon",
+   "n": 1,
+   "perspective": "Any perspective",
+   "prompt": "Emblem of two crimson arrows and one blue arrow converging on a small stone keep inside a round gold medallion, bold dark outline, isolated on plain white background. Hand-painted board game art, visible brush strokes, palette of deep navy, parchment cream, crimson red and antique gold, candlelit war-room mood, no text, no letters, no watermark"
+  },
+  "url": "https://storage.googleapis.com/ludo-assets/api/4a3a1ae34b95d4f732a27506a4814de1.png"
+ },
+ "icon_attack": {
+  "credits": 0.5,
+  "endpoint": "/assets/image",
+  "file": "assets/icons/attack.png",
+  "id": "icon_attack",
+  "job": "ef93ece1-928a-46ad-8e2c-2c021a5bbf31",
+  "params": {
+   "art_style": "Hand-Painted",
+   "aspect_ratio": "ar_1_1",
+   "augment_prompt": true,
+   "image_type": "icon",
+   "n": 1,
+   "perspective": "Any perspective",
+   "prompt": "Crossed swords emblem, bold dark outline, isolated on plain white background. Hand-painted board game art, visible brush strokes, palette of deep navy, parchment cream, crimson red and antique gold, candlelit war-room mood, no text, no letters, no watermark"
+  },
+  "url": "https://storage.googleapis.com/ludo-assets/api/91ab90630fcd18531afcc2df72327711.png"
+ },
+ "icon_book": {
+  "credits": 0.5,
+  "endpoint": "/assets/image",
+  "file": "assets/icons/book.png",
+  "id": "icon_book",
+  "job": "ba5359de-33f0-434b-ad00-976082aad88d",
+  "params": {
+   "art_style": "Hand-Painted",
+   "aspect_ratio": "ar_1_1",
+   "augment_prompt": true,
+   "image_type": "icon",
+   "n": 1,
+   "perspective": "Any perspective",
+   "prompt": "Old leather rulebook with a ribbon bookmark, bold dark outline, isolated on plain white background. Hand-painted board game art, visible brush strokes, palette of deep navy, parchment cream, crimson red and antique gold, candlelit war-room mood, no text, no letters, no watermark"
+  },
+  "url": "https://storage.googleapis.com/ludo-assets/api/f908a600681756dc0c879e87293d1c96.png"
+ },
+ "icon_coins": {
+  "credits": 0.5,
+  "endpoint": "/assets/image",
+  "file": "assets/icons/coins.png",
+  "id": "icon_coins",
+  "job": "0ecc8183-8ee4-4287-8beb-a81bf442a55e",
+  "params": {
+   "art_style": "Hand-Painted",
+   "aspect_ratio": "ar_1_1",
+   "augment_prompt": true,
+   "image_type": "icon",
+   "n": 1,
+   "perspective": "Any perspective",
+   "prompt": "Small pile of gold coins, income emblem, bold dark outline, isolated on plain white background. Hand-painted board game art, visible brush strokes, palette of deep navy, parchment cream, crimson red and antique gold, candlelit war-room mood, no text, no letters, no watermark"
+  },
+  "url": "https://storage.googleapis.com/ludo-assets/api/50ea5b55250a26b2648a70aa8de5718f.png"
+ },
+ "icon_crown": {
+  "credits": 0.5,
+  "endpoint": "/assets/image",
+  "file": "assets/icons/crown.png",
+  "id": "icon_crown",
+  "job": "51e27c57-9dd9-44c6-8bab-fb4c78c8e330",
+  "params": {
+   "art_style": "Hand-Painted",
+   "aspect_ratio": "ar_1_1",
+   "augment_prompt": true,
+   "image_type": "icon",
+   "n": 1,
+   "perspective": "Any perspective",
+   "prompt": "Golden laurel crown emblem, bold dark outline, isolated on plain white background. Hand-painted board game art, visible brush strokes, palette of deep navy, parchment cream, crimson red and antique gold, candlelit war-room mood, no text, no letters, no watermark"
+  },
+  "url": "https://storage.googleapis.com/ludo-assets/api/0b0d6d26b26286679e8a8447d12edf64.png"
+ },
+ "icon_flag": {
+  "credits": 0.5,
+  "endpoint": "/assets/image",
+  "file": "assets/icons/flag.png",
+  "id": "icon_flag",
+  "job": "eeb02ac9-44a0-4883-b489-571e4e4219c1",
+  "params": {
+   "art_style": "Hand-Painted",
+   "aspect_ratio": "ar_1_1",
+   "augment_prompt": true,
+   "image_type": "icon",
+   "n": 1,
+   "perspective": "Any perspective",
+   "prompt": "Small crimson territory flag planted in a mound of earth, bold dark outline, isolated on plain white background. Hand-painted board game art, visible brush strokes, palette of deep navy, parchment cream, crimson red and antique gold, candlelit war-room mood, no text, no letters, no watermark"
+  },
+  "url": "https://storage.googleapis.com/ludo-assets/api/1ba85f957adfa760988b409dc4aa56ef.png"
+ },
+ "icon_gear": {
+  "credits": 0.5,
+  "endpoint": "/assets/image",
+  "file": "assets/icons/gear.png",
+  "id": "icon_gear",
+  "job": "b2da989d-bdb6-40c9-864a-e4fb9e5754c7",
+  "params": {
+   "art_style": "Hand-Painted",
+   "aspect_ratio": "ar_1_1",
+   "augment_prompt": true,
+   "image_type": "icon",
+   "n": 1,
+   "perspective": "Any perspective",
+   "prompt": "Brass cogwheel settings emblem, bold dark outline, isolated on plain white background. Hand-painted board game art, visible brush strokes, palette of deep navy, parchment cream, crimson red and antique gold, candlelit war-room mood, no text, no letters, no watermark"
+  },
+  "url": "https://storage.googleapis.com/ludo-assets/api/3e3ab057846dc529fa3416b9bb4b800e.png"
+ },
+ "icon_horn": {
+  "credits": 0.5,
+  "endpoint": "/assets/image",
+  "file": "assets/icons/horn.png",
+  "id": "icon_horn",
+  "job": "353546be-d1eb-410d-9f04-38ce0e9f388a",
+  "params": {
+   "art_style": "Hand-Painted",
+   "aspect_ratio": "ar_1_1",
+   "augment_prompt": true,
+   "image_type": "icon",
+   "n": 1,
+   "perspective": "Any perspective",
+   "prompt": "Curved war horn with a small crimson banner, charge onward emblem, bold dark outline, isolated on plain white background. Hand-painted board game art, visible brush strokes, palette of deep navy, parchment cream, crimson red and antique gold, candlelit war-room mood, no text, no letters, no watermark"
+  },
+  "url": "https://storage.googleapis.com/ludo-assets/api/f1910cacb61a95710b1a6838204808b1.png"
+ },
+ "icon_hourglass": {
+  "credits": 0.5,
+  "endpoint": "/assets/image",
+  "file": "assets/icons/hourglass.png",
+  "id": "icon_hourglass",
+  "job": "5f561fe8-8c75-4352-8e18-f0455e21f6a7",
+  "params": {
+   "art_style": "Hand-Painted",
+   "aspect_ratio": "ar_1_1",
+   "augment_prompt": true,
+   "image_type": "icon",
+   "n": 1,
+   "perspective": "Any perspective",
+   "prompt": "Brass hourglass with sand running, bold dark outline, isolated on plain white background. Hand-painted board game art, visible brush strokes, palette of deep navy, parchment cream, crimson red and antique gold, candlelit war-room mood, no text, no letters, no watermark"
+  },
+  "url": "https://storage.googleapis.com/ludo-assets/api/5d11d659de3ccf3983b515d4fee1c53f.png"
+ },
+ "icon_move": {
+  "credits": 0.5,
+  "endpoint": "/assets/image",
+  "file": "assets/icons/move.png",
+  "id": "icon_move",
+  "job": "ed08fec9-4f3b-4880-8b49-4cf5e5361b98",
+  "params": {
+   "art_style": "Hand-Painted",
+   "aspect_ratio": "ar_1_1",
+   "augment_prompt": true,
+   "image_type": "icon",
+   "n": 1,
+   "perspective": "Any perspective",
+   "prompt": "Marching boot with a curved arrow emblem, bold dark outline, isolated on plain white background. Hand-painted board game art, visible brush strokes, palette of deep navy, parchment cream, crimson red and antique gold, candlelit war-room mood, no text, no letters, no watermark"
+  },
+  "url": "https://storage.googleapis.com/ludo-assets/api/c9f567d70eb34d7362b183ef90522ed8.png"
+ },
+ "icon_reinforce": {
+  "credits": 0.5,
+  "endpoint": "/assets/image",
+  "file": "assets/icons/reinforce.png",
+  "id": "icon_reinforce",
+  "job": "ef98c1a0-6d5e-4a1a-9ead-4abda0d54d95",
+  "params": {
+   "art_style": "Hand-Painted",
+   "aspect_ratio": "ar_1_1",
+   "augment_prompt": true,
+   "image_type": "icon",
+   "n": 1,
+   "perspective": "Any perspective",
+   "prompt": "Small stack of wooden army blocks with a golden plus sign emblem, bold dark outline, isolated on plain white background. Hand-painted board game art, visible brush strokes, palette of deep navy, parchment cream, crimson red and antique gold, candlelit war-room mood, no text, no letters, no watermark"
+  },
+  "url": "https://storage.googleapis.com/ludo-assets/api/6ff5d55cfb63d864cbe815c6dfd290e9.png"
+ },
+ "icon_scroll": {
+  "credits": 0.5,
+  "endpoint": "/assets/image",
+  "file": "assets/icons/scroll.png",
+  "id": "icon_scroll",
+  "job": "155e29e3-472b-4126-b9a9-1a6154f7e1d0",
+  "params": {
+   "art_style": "Hand-Painted",
+   "aspect_ratio": "ar_1_1",
+   "augment_prompt": true,
+   "image_type": "icon",
+   "n": 1,
+   "perspective": "Any perspective",
+   "prompt": "Rolled parchment scroll tied with a red ribbon, orders emblem, bold dark outline, isolated on plain white background. Hand-painted board game art, visible brush strokes, palette of deep navy, parchment cream, crimson red and antique gold, candlelit war-room mood, no text, no letters, no watermark"
+  },
+  "url": "https://storage.googleapis.com/ludo-assets/api/51d88e279e730e2be56b68c5c26b134b.png"
+ },
+ "icon_seal": {
+  "credits": 0.5,
+  "endpoint": "/assets/image",
+  "file": "assets/icons/seal.png",
+  "id": "icon_seal",
+  "job": "f914000e-5f97-4654-a1f5-bdc7e11b8a02",
+  "params": {
+   "art_style": "Hand-Painted",
+   "aspect_ratio": "ar_1_1",
+   "augment_prompt": true,
+   "image_type": "icon",
+   "n": 1,
+   "perspective": "Any perspective",
+   "prompt": "Red wax seal stamped with a star, sealed orders emblem, bold dark outline, isolated on plain white background. Hand-painted board game art, visible brush strokes, palette of deep navy, parchment cream, crimson red and antique gold, candlelit war-room mood, no text, no letters, no watermark"
+  },
+  "url": "https://storage.googleapis.com/ludo-assets/api/b2b4102a154778ca0aaa8dad1afa34c2.png"
+ },
+ "icon_shield": {
+  "credits": 0.5,
+  "endpoint": "/assets/image",
+  "file": "assets/icons/shield.png",
+  "id": "icon_shield",
+  "job": "45c4546e-c1a9-4106-88d3-7760cebeff7b",
+  "params": {
+   "art_style": "Hand-Painted",
+   "aspect_ratio": "ar_1_1",
+   "augment_prompt": true,
+   "image_type": "icon",
+   "n": 1,
+   "perspective": "Any perspective",
+   "prompt": "Sturdy kite shield with a spade crossed behind it, dug-in defense emblem, bold dark outline, isolated on plain white background. Hand-painted board game art, visible brush strokes, palette of deep navy, parchment cream, crimson red and antique gold, candlelit war-room mood, no text, no letters, no watermark"
+  },
+  "url": "https://storage.googleapis.com/ludo-assets/api/12bcac2c3dc7726a85255d75e2019ceb.png"
+ },
+ "icon_skull": {
+  "credits": 0.5,
+  "endpoint": "/assets/image",
+  "file": "assets/icons/skull.png",
+  "id": "icon_skull",
+  "job": "20d5f09b-b601-43b0-9885-48dbbb503e33",
+  "params": {
+   "art_style": "Hand-Painted",
+   "aspect_ratio": "ar_1_1",
+   "augment_prompt": true,
+   "image_type": "icon",
+   "n": 1,
+   "perspective": "Any perspective",
+   "prompt": "Broken banner pole with a torn flag, defeat emblem, bold dark outline, isolated on plain white background. Hand-painted board game art, visible brush strokes, palette of deep navy, parchment cream, crimson red and antique gold, candlelit war-room mood, no text, no letters, no watermark"
+  },
+  "url": "https://storage.googleapis.com/ludo-assets/api/ba3e2e083ff88d1dd03b1f2114f33e46.png"
+ },
+ "music_battle": {
+  "credits": 3,
+  "endpoint": "/audio/music",
+  "file": "assets/audio/music/battle.mp3",
+  "id": "music_battle",
+  "job": "a4fe8178-247a-4891-b76f-76bd3ec871dd",
+  "params": {
+   "augment_prompt": true,
+   "description": "Driving war drums and low brass ostinato for a battle resolution sequence in a board game, epic but controlled, instrumental, loopable",
+   "duration": 90
+  },
+  "url": "https://storage.googleapis.com/ludo-assets/api/68f97e86657c680226e7a504-0a4f291949798cbc4c85f7ebe94e128d.mp3"
+ },
+ "music_defeat": {
+  "credits": 3,
+  "endpoint": "/audio/music",
+  "file": "assets/audio/music/defeat.mp3",
+  "id": "music_defeat",
+  "job": "0e278562-9d4e-4491-a704-494086b636c2",
+  "params": {
+   "augment_prompt": true,
+   "description": "Short somber orchestral cue for a lost war: solo horn and low strings, instrumental",
+   "duration": 20
+  },
+  "url": "https://storage.googleapis.com/ludo-assets/api/68f97e86657c680226e7a504-9cfc2cf4b5cf1fca86b6539deb1a3cdc.mp3"
+ },
+ "music_menu": {
+  "credits": 3,
+  "endpoint": "/audio/music",
+  "file": "assets/audio/music/menu.mp3",
+  "id": "music_menu",
+  "job": "2db3c049-c8e2-4c05-8682-ea6d45d12c3b",
+  "params": {
+   "augment_prompt": true,
+   "description": "Majestic slow orchestral main theme for a historical grand strategy board game: noble strings, warm low brass, soft snare rolls, contemplative and grand, instrumental, loopable",
+   "duration": 120
+  },
+  "url": "https://storage.googleapis.com/ludo-assets/api/68f97e86657c680226e7a504-3332049b69cc78dfd82b88f1544f4946.mp3"
+ },
+ "music_plan": {
+  "credits": 3,
+  "endpoint": "/audio/music",
+  "file": "assets/audio/music/plan.mp3",
+  "id": "music_plan",
+  "job": "bde55579-5456-4c1e-a6a8-9c9641d163f9",
+  "params": {
+   "augment_prompt": true,
+   "description": "Calm, quietly tense strategy planning music: soft pizzicato strings, low cello pulse, light harpsichord, understated so a player can think, instrumental background loop",
+   "duration": 150
+  },
+  "url": "https://storage.googleapis.com/ludo-assets/api/68f97e86657c680226e7a504-edd3545e696ba043adf802fabc706c65.mp3"
+ },
+ "music_victory": {
+  "credits": 3,
+  "endpoint": "/audio/music",
+  "file": "assets/audio/music/victory.mp3",
+  "id": "music_victory",
+  "job": "ffe06c0d-9608-40c9-acf3-4a454b9f3ece",
+  "params": {
+   "augment_prompt": true,
+   "description": "Short triumphant orchestral victory fanfare with brass and timpani, instrumental",
+   "duration": 20
+  },
+  "url": "https://storage.googleapis.com/ludo-assets/api/68f97e86657c680226e7a504-3976413a8c3c32471ff80c96b1bfbc40.mp3"
+ },
+ "portrait_advisor": {
+  "credits": 0.5,
+  "endpoint": "/assets/image",
+  "file": "assets/portraits/advisor.webp",
+  "id": "portrait_advisor",
+  "job": "c448f8a4-d1b9-404a-a8bf-7c4d2f64a577",
+  "params": {
+   "art_style": "Hand-Painted",
+   "aspect_ratio": "ar_1_1",
+   "augment_prompt": true,
+   "image_type": "portrait",
+   "n": 1,
+   "perspective": "Any perspective",
+   "prompt": "Bust portrait of a friendly elderly military advisor with white beard, reading glasses and a pointer stick, warm helpful expression, dark background. Hand-painted board game art, visible brush strokes, palette of deep navy, parchment cream, crimson red and antique gold, candlelit war-room mood, no text, no letters, no watermark"
+  },
+  "url": "https://storage.googleapis.com/ludo-assets/api/42c22325da3376c48127350cd96d2bdc.webp"
+ },
+ "portrait_hask": {
+  "credits": 0.5,
+  "endpoint": "/assets/image",
+  "file": "assets/portraits/hask.webp",
+  "id": "portrait_hask",
+  "job": "8a5929f2-b8ac-4861-acd4-f234166c9c9a",
+  "params": {
+   "art_style": "Hand-Painted",
+   "aspect_ratio": "ar_1_1",
+   "augment_prompt": true,
+   "image_type": "portrait",
+   "n": 1,
+   "perspective": "Any perspective",
+   "prompt": "Bust portrait of a huge bearded northern warlord in a bear-fur cloak with a battered iron helmet, fierce but amused expression, dark background. Hand-painted board game art, visible brush strokes, palette of deep navy, parchment cream, crimson red and antique gold, candlelit war-room mood, no text, no letters, no watermark"
+  },
+  "url": "https://storage.googleapis.com/ludo-assets/api/611df60cc2be6c657d015edadb0964e9.webp"
+ },
+ "portrait_imre": {
+  "credits": 0.5,
+  "endpoint": "/assets/image",
+  "file": "assets/portraits/imre.webp",
+  "id": "portrait_imre",
+  "job": "60dd1941-290c-4e18-a1f5-b5d1a9a477c3",
+  "params": {
+   "art_style": "Hand-Painted",
+   "aspect_ratio": "ar_1_1",
+   "augment_prompt": true,
+   "image_type": "portrait",
+   "n": 1,
+   "perspective": "Any perspective",
+   "prompt": "Bust portrait of a calm, sharp-eyed woman tactician with short dark hair and a rolled map in hand, plain navy uniform, faint knowing smile, dark background. Hand-painted board game art, visible brush strokes, palette of deep navy, parchment cream, crimson red and antique gold, candlelit war-room mood, no text, no letters, no watermark"
+  },
+  "url": "https://storage.googleapis.com/ludo-assets/api/c72648ddddfef126dc162a9693210caf.webp"
+ },
+ "portrait_oren": {
+  "credits": 0.5,
+  "endpoint": "/assets/image",
+  "file": "assets/portraits/oren.webp",
+  "id": "portrait_oren",
+  "job": "473f2268-d06e-4487-bc61-12d7ef1e537c",
+  "params": {
+   "art_style": "Hand-Painted",
+   "aspect_ratio": "ar_1_1",
+   "augment_prompt": true,
+   "image_type": "portrait",
+   "n": 1,
+   "perspective": "Any perspective",
+   "prompt": "Bust portrait of a young, reckless cavalry captain with windswept hair, plumed helmet under his arm, eager grin, green and gold uniform, dark background. Hand-painted board game art, visible brush strokes, palette of deep navy, parchment cream, crimson red and antique gold, candlelit war-room mood, no text, no letters, no watermark"
+  },
+  "url": "https://storage.googleapis.com/ludo-assets/api/033510c8891e777e1524566bc8b8c601.webp"
+ },
+ "portrait_player": {
+  "credits": 0.5,
+  "endpoint": "/assets/image",
+  "file": "assets/portraits/player.webp",
+  "id": "portrait_player",
+  "job": "ad6661a0-eb22-4d39-a31d-c6457ac8f9b7",
+  "params": {
+   "art_style": "Hand-Painted",
+   "aspect_ratio": "ar_1_1",
+   "augment_prompt": true,
+   "image_type": "portrait",
+   "n": 1,
+   "perspective": "Any perspective",
+   "prompt": "Silhouette bust of an anonymous commander in a tricorn hat and greatcoat, backlit by candlelight, face in shadow, dark background. Hand-painted board game art, visible brush strokes, palette of deep navy, parchment cream, crimson red and antique gold, candlelit war-room mood, no text, no letters, no watermark"
+  },
+  "url": "https://storage.googleapis.com/ludo-assets/api/3097db649e308650019a7511f6299236.webp"
+ },
+ "portrait_quill": {
+  "credits": 0.5,
+  "endpoint": "/assets/image",
+  "file": "assets/portraits/quill.webp",
+  "id": "portrait_quill",
+  "job": "3a61da2d-2680-4f3d-8e36-9ff5664883eb",
+  "params": {
+   "art_style": "Hand-Painted",
+   "aspect_ratio": "ar_1_1",
+   "augment_prompt": true,
+   "image_type": "portrait",
+   "n": 1,
+   "perspective": "Any perspective",
+   "prompt": "Bust portrait of a portly, cunning quartermaster with round spectacles, ledger under his arm and a sly smile, brown officer coat, dark background. Hand-painted board game art, visible brush strokes, palette of deep navy, parchment cream, crimson red and antique gold, candlelit war-room mood, no text, no letters, no watermark"
+  },
+  "url": "https://storage.googleapis.com/ludo-assets/api/bbf76b7a5a8598c8a411c54e82b1a78c.webp"
+ },
+ "portrait_varek": {
+  "credits": 0.5,
+  "endpoint": "/assets/image",
+  "file": "assets/portraits/varek.webp",
+  "id": "portrait_varek",
+  "job": "fa8f61b2-60b9-46da-8282-8eae1bc08530",
+  "params": {
+   "art_style": "Hand-Painted",
+   "aspect_ratio": "ar_1_1",
+   "augment_prompt": true,
+   "image_type": "portrait",
+   "n": 1,
+   "perspective": "Any perspective",
+   "prompt": "Bust portrait of a grizzled old field marshal with an eyepatch, grey mustache, navy greatcoat with gold epaulettes, stern confident expression, dark background. Hand-painted board game art, visible brush strokes, palette of deep navy, parchment cream, crimson red and antique gold, candlelit war-room mood, no text, no letters, no watermark"
+  },
+  "url": "https://storage.googleapis.com/ludo-assets/api/7c3c97c79a1e134d7c7eec6ac7f7a9f0.webp"
+ },
+ "portrait_ysolde": {
+  "credits": 0.5,
+  "endpoint": "/assets/image",
+  "file": "assets/portraits/ysolde.webp",
+  "id": "portrait_ysolde",
+  "job": "944037d2-7555-49d3-a8b7-d0abfeb506a5",
+  "params": {
+   "art_style": "Hand-Painted",
+   "aspect_ratio": "ar_1_1",
+   "augment_prompt": true,
+   "image_type": "portrait",
+   "n": 1,
+   "perspective": "Any perspective",
+   "prompt": "Bust portrait of a stern noblewoman general in her forties with a silver circlet and crimson cloak over steel armor, calculating gaze, dark background. Hand-painted board game art, visible brush strokes, palette of deep navy, parchment cream, crimson red and antique gold, candlelit war-room mood, no text, no letters, no watermark"
+  },
+  "url": "https://storage.googleapis.com/ludo-assets/api/3b2165efdf393fb9fe86f0170402f0d6.webp"
+ },
+ "sfx_capture": {
+  "credits": 2,
+  "endpoint": "/audio/sound-effect",
+  "file": "assets/audio/sfx/capture.mp3",
+  "id": "sfx_capture",
+  "job": "39534863-6bed-4b2f-8d71-566481119f36",
+  "params": {
+   "augment_prompt": true,
+   "description": "short triumphant brass fanfare sting announcing a captured town, bright, two seconds",
+   "duration": 2.0,
+   "loop": false
+  },
+  "url": "https://storage.googleapis.com/ludo-assets/api/68f97e86657c680226e7a504-353b0c37935cd0cee95a7c12894a61da.mp3"
+ },
+ "sfx_card": {
+  "credits": 2,
+  "endpoint": "/audio/sound-effect",
+  "file": "assets/audio/sfx/card.mp3",
+  "id": "sfx_card",
+  "job": "10f24bff-4c92-4652-a135-7e8798cede8e",
+  "params": {
+   "augment_prompt": true,
+   "description": "single playing card flipped and dealt onto a table, crisp paper snap",
+   "duration": 0.8,
+   "loop": false
+  },
+  "url": "https://storage.googleapis.com/ludo-assets/api/68f97e86657c680226e7a504-b7c739970940de2c2aa3cc9e0dc69308.mp3"
+ },
+ "sfx_cash": {
+  "credits": 2,
+  "endpoint": "/audio/sound-effect",
+  "file": "assets/audio/sfx/cash.mp3",
+  "id": "sfx_cash",
+  "job": "fc0be8f1-fec1-41fa-af60-a11749ec008b",
+  "params": {
+   "augment_prompt": true,
+   "description": "handful of gold coins poured onto a wooden table with a bright chime",
+   "duration": 1.5,
+   "loop": false
+  },
+  "url": "https://storage.googleapis.com/ludo-assets/api/68f97e86657c680226e7a504-54c4d8c65d7fbb05906971f9f8e40115.mp3"
+ },
+ "sfx_clash": {
+  "credits": 2,
+  "endpoint": "/audio/sound-effect",
+  "file": "assets/audio/sfx/clash.mp3",
+  "id": "sfx_clash",
+  "job": "39e387b9-cdae-4a49-868d-722a90b8af12",
+  "params": {
+   "augment_prompt": true,
+   "description": "short medieval battle clash: swords and shields colliding, a few shouts, quick",
+   "duration": 2.0,
+   "loop": false
+  },
+  "url": "https://storage.googleapis.com/ludo-assets/api/68f97e86657c680226e7a504-ad40c0eb404756e11451cd142671d723.mp3"
+ },
+ "sfx_click": {
+  "credits": 2,
+  "endpoint": "/audio/sound-effect",
+  "file": "assets/audio/sfx/click.mp3",
+  "id": "sfx_click",
+  "job": "488c1780-5247-4306-95ef-0260c3ac16c2",
+  "params": {
+   "augment_prompt": true,
+   "description": "single soft wooden click of a game piece tapped on a wooden board, dry, very short",
+   "duration": 0.5,
+   "loop": false
+  },
+  "url": "https://storage.googleapis.com/ludo-assets/api/68f97e86657c680226e7a504-daaffa2084ce401dee32d6736a1a6888.mp3"
+ },
+ "sfx_dice": {
+  "credits": 2,
+  "endpoint": "/audio/sound-effect",
+  "file": "assets/audio/sfx/dice.mp3",
+  "id": "sfx_dice",
+  "job": "f97ffc31-3ab5-4a67-85eb-b18f6d0a9bbc",
+  "params": {
+   "augment_prompt": true,
+   "description": "two wooden dice shaken in a hand and rolled onto a wooden table, rattling and settling",
+   "duration": 1.2,
+   "loop": false
+  },
+  "url": "https://storage.googleapis.com/ludo-assets/api/68f97e86657c680226e7a504-a829df13ba07fad4b8f55a14bc12e614.mp3"
+ },
+ "sfx_eliminated": {
+  "credits": 2,
+  "endpoint": "/audio/sound-effect",
+  "file": "assets/audio/sfx/eliminated.mp3",
+  "id": "sfx_eliminated",
+  "job": "6e68ddb1-9911-44d9-8d73-7d8247a23875",
+  "params": {
+   "augment_prompt": true,
+   "description": "slow deep funeral drum hits with a mournful low horn, a faction is destroyed",
+   "duration": 3.0,
+   "loop": false
+  },
+  "url": "https://storage.googleapis.com/ludo-assets/api/68f97e86657c680226e7a504-b6ae0f7fcc80fc71cc49b227f6799af0.mp3"
+ },
+ "sfx_error": {
+  "credits": 2,
+  "endpoint": "/audio/sound-effect",
+  "file": "assets/audio/sfx/error.mp3",
+  "id": "sfx_error",
+  "job": "ed7473b8-a8ad-4907-a1ff-b06b5b504bff",
+  "params": {
+   "augment_prompt": true,
+   "description": "soft dull wooden thunk, gentle negative feedback, very short",
+   "duration": 0.5,
+   "loop": false
+  },
+  "url": "https://storage.googleapis.com/ludo-assets/api/68f97e86657c680226e7a504-e3d660338c91d0c1ab505a6af88f8060.mp3"
+ },
+ "sfx_hold": {
+  "credits": 2,
+  "endpoint": "/audio/sound-effect",
+  "file": "assets/audio/sfx/hold.mp3",
+  "id": "sfx_hold",
+  "job": "aa2dec1b-dd83-4172-a132-7a78ec3fb167",
+  "params": {
+   "augment_prompt": true,
+   "description": "heavy wooden shield blocking a blow with a solid thud, then a short low defiant horn",
+   "duration": 1.5,
+   "loop": false
+  },
+  "url": "https://storage.googleapis.com/ludo-assets/api/68f97e86657c680226e7a504-a3c84f1a3211660376c4d19ea7ac93be.mp3"
+ },
+ "sfx_march": {
+  "credits": 2,
+  "endpoint": "/audio/sound-effect",
+  "file": "assets/audio/sfx/march.mp3",
+  "id": "sfx_march",
+  "job": "31b16c3a-cdff-4fe1-986d-5e2c9b5d05c0",
+  "params": {
+   "augment_prompt": true,
+   "description": "an army company marching quickly on a dirt road, boots and jingling armor, passing by",
+   "duration": 2.5,
+   "loop": false
+  },
+  "url": "https://storage.googleapis.com/ludo-assets/api/68f97e86657c680226e7a504-bb0d392ff4afd148aa62c46550f9345d.mp3"
+ },
+ "sfx_order_attack": {
+  "credits": 2,
+  "endpoint": "/audio/sound-effect",
+  "file": "assets/audio/sfx/order_attack.mp3",
+  "id": "sfx_order_attack",
+  "job": "0f3fe44a-f8cc-465b-b53e-e03ed3b020ea",
+  "params": {
+   "augment_prompt": true,
+   "description": "metal sword drawn quickly from a leather scabbard, crisp, short",
+   "duration": 1.2,
+   "loop": false
+  },
+  "url": "https://storage.googleapis.com/ludo-assets/api/68f97e86657c680226e7a504-310e05cb89e44eec7f509aff1a367de2.mp3"
+ },
+ "sfx_order_move": {
+  "credits": 2,
+  "endpoint": "/audio/sound-effect",
+  "file": "assets/audio/sfx/order_move.mp3",
+  "id": "sfx_order_move",
+  "job": "6c7929d9-2981-4f38-a544-a205a758ff7e",
+  "params": {
+   "augment_prompt": true,
+   "description": "a few soldiers' boots marching in step on dirt, short",
+   "duration": 1.2,
+   "loop": false
+  },
+  "url": "https://storage.googleapis.com/ludo-assets/api/68f97e86657c680226e7a504-e96460051ef9521b58816eff4caa6aa4.mp3"
+ },
+ "sfx_pass": {
+  "credits": 2,
+  "endpoint": "/audio/sound-effect",
+  "file": "assets/audio/sfx/pass.mp3",
+  "id": "sfx_pass",
+  "job": "b4346985-310d-4095-a0ce-45163f63a5cb",
+  "params": {
+   "augment_prompt": true,
+   "description": "a sheet of parchment turned over and slid across a table, short",
+   "duration": 1.2,
+   "loop": false
+  },
+  "url": "https://storage.googleapis.com/ludo-assets/api/68f97e86657c680226e7a504-ea356d9d7ff67e1b54ee7939565f6fb2.mp3"
+ },
+ "sfx_place": {
+  "credits": 2,
+  "endpoint": "/audio/sound-effect",
+  "file": "assets/audio/sfx/place.mp3",
+  "id": "sfx_place",
+  "job": "b14c089f-6c2d-483e-8e2e-b22a10ecc8b5",
+  "params": {
+   "augment_prompt": true,
+   "description": "small wooden army block placed firmly onto a wooden game board, single knock, short",
+   "duration": 0.6,
+   "loop": false
+  },
+  "url": "https://storage.googleapis.com/ludo-assets/api/68f97e86657c680226e7a504-a5b46a7c5f97cec7084caa5ca7c1b7ed.mp3"
+ },
+ "sfx_reveal": {
+  "credits": 2,
+  "endpoint": "/audio/sound-effect",
+  "file": "assets/audio/sfx/reveal.mp3",
+  "id": "sfx_reveal",
+  "job": "27e4c173-f7a1-42be-81fe-5baa5df34b8a",
+  "params": {
+   "augment_prompt": true,
+   "description": "parchment scroll unrolled quickly followed by a short distant war horn call",
+   "duration": 2.5,
+   "loop": false
+  },
+  "url": "https://storage.googleapis.com/ludo-assets/api/68f97e86657c680226e7a504-da19d45db7531a2d558ca7eb9c7cc403.mp3"
+ },
+ "sfx_round": {
+  "credits": 2,
+  "endpoint": "/audio/sound-effect",
+  "file": "assets/audio/sfx/round.mp3",
+  "id": "sfx_round",
+  "job": "72b675bf-7e99-422d-9945-cc6402eb0169",
+  "params": {
+   "augment_prompt": true,
+   "description": "single large bronze bell toll ringing out and fading, marking the end of a round",
+   "duration": 3.0,
+   "loop": false
+  },
+  "url": "https://storage.googleapis.com/ludo-assets/api/68f97e86657c680226e7a504-f71ed0edea05047b947bb37f48d3a5e6.mp3"
+ },
+ "sfx_seal": {
+  "credits": 2,
+  "endpoint": "/audio/sound-effect",
+  "file": "assets/audio/sfx/seal.mp3",
+  "id": "sfx_seal",
+  "job": "1079b765-9623-4cea-9315-edb3353d2757",
+  "params": {
+   "augment_prompt": true,
+   "description": "wax seal stamp pressed firmly onto parchment followed by a single deep war drum hit",
+   "duration": 1.5,
+   "loop": false
+  },
+  "url": "https://storage.googleapis.com/ludo-assets/api/68f97e86657c680226e7a504-edd6cf10a0190a2e6307d2ff5d78fab9.mp3"
+ },
+ "sfx_surge": {
+  "credits": 2,
+  "endpoint": "/audio/sound-effect",
+  "file": "assets/audio/sfx/surge.mp3",
+  "id": "sfx_surge",
+  "job": "86b6a556-64b4-479c-a5c7-a58f52ebc1c1",
+  "params": {
+   "augment_prompt": true,
+   "description": "cavalry charge: galloping horses and a rising battle cry, short",
+   "duration": 2.0,
+   "loop": false
+  },
+  "url": "https://storage.googleapis.com/ludo-assets/api/68f97e86657c680226e7a504-c2e872e2707c236da9bcf4f5af312d07.mp3"
+ },
+ "sfx_tick": {
+  "credits": 2,
+  "endpoint": "/audio/sound-effect",
+  "file": "assets/audio/sfx/tick.mp3",
+  "id": "sfx_tick",
+  "job": "345bf778-1bd9-47b2-8230-e6159f9d5d6b",
+  "params": {
+   "augment_prompt": true,
+   "description": "single mechanical clock tick, crisp, very short",
+   "duration": 0.5,
+   "loop": false
+  },
+  "url": "https://storage.googleapis.com/ludo-assets/api/68f97e86657c680226e7a504-dc00571dd7aad00761dd86b10bd5ae89.mp3"
+ },
+ "sfx_unplace": {
+  "credits": 2,
+  "endpoint": "/audio/sound-effect",
+  "file": "assets/audio/sfx/unplace.mp3",
+  "id": "sfx_unplace",
+  "job": "0a047bf0-8aba-4be7-a3e9-e64915d6aa47",
+  "params": {
+   "augment_prompt": true,
+   "description": "small wooden game piece lifted off a board and slid away, light scrape, short",
+   "duration": 0.5,
+   "loop": false
+  },
+  "url": "https://storage.googleapis.com/ludo-assets/api/68f97e86657c680226e7a504-bc8cdc9b00a3a79ec897246451e82f56.mp3"
+ },
+ "sfx_walkin": {
+  "credits": 2,
+  "endpoint": "/audio/sound-effect",
+  "file": "assets/audio/sfx/walkin.mp3",
+  "id": "sfx_walkin",
+  "job": "883f6449-30bd-46e0-a4a2-74989afd812c",
+  "params": {
+   "augment_prompt": true,
+   "description": "ominous low brass and timpani sting, sneaky and dramatic, a nasty surprise",
+   "duration": 2.5,
+   "loop": false
+  },
+  "url": "https://storage.googleapis.com/ludo-assets/api/68f97e86657c680226e7a504-02080477a69d3105103ce64de662a8ed.mp3"
+ },
+ "splash_title": {
+  "credits": 0.5,
+  "endpoint": "/assets/image",
+  "file": "assets/art/splash_title.webp",
+  "id": "splash_title",
+  "job": "5569d767-f491-4975-9c69-ab9cb2d2b655",
+  "params": {
+   "art_style": "Hand-Painted",
+   "aspect_ratio": "ar_16_9",
+   "augment_prompt": true,
+   "image_type": "splash",
+   "n": 1,
+   "perspective": "Any perspective",
+   "prompt": "A candlelit war-room table seen from a high angle: a large hand-drawn campaign map of an imaginary continent with painted coastlines, small colored wooden army blocks in red, blue, green and gold placed on the territories, sealed order envelopes with red wax seals, a brass compass and a quill, dramatic warm light falling on the center, dark vignette edges. Hand-painted board game art, visible brush strokes, palette of deep navy, parchment cream, crimson red and antique gold, candlelit war-room mood, no text, no letters, no watermark"
+  },
+  "url": "https://storage.googleapis.com/ludo-assets/api/de6bd3bfead56483234d2a3a445ef269.webp"
+ },
+ "tex_land": {
+  "credits": 0.5,
+  "endpoint": "/assets/image",
+  "file": "assets/tex/land.webp",
+  "id": "tex_land",
+  "job": "694a2758-f642-46c3-8b20-645d366c28df",
+  "params": {
+   "art_style": "Hand-Painted",
+   "aspect_ratio": "ar_1_1",
+   "augment_prompt": true,
+   "image_type": "texture",
+   "n": 1,
+   "perspective": "Any perspective",
+   "prompt": "Seamless tileable hand-painted top-down terrain texture of rolling grassland, small hills and scattered tiny trees, muted desaturated earthy colors, painterly brush strokes, even lighting, flat"
+  },
+  "url": "https://storage.googleapis.com/ludo-assets/api/a2b6b145d6ca5377bedf96af59b7dc84.webp"
+ },
+ "tex_parchment": {
+  "credits": 0.5,
+  "endpoint": "/assets/image",
+  "file": "assets/tex/parchment.webp",
+  "id": "tex_parchment",
+  "job": "f1b12d23-290d-4421-817b-cf5253460920",
+  "params": {
+   "art_style": "Hand-Painted",
+   "aspect_ratio": "ar_1_1",
+   "augment_prompt": true,
+   "image_type": "texture",
+   "n": 1,
+   "perspective": "Any perspective",
+   "prompt": "Seamless tileable texture of aged parchment paper, soft fibers and faint stains, light warm cream, even lighting, flat, top-down, no objects"
+  },
+  "url": "https://storage.googleapis.com/ludo-assets/api/15359483ce1650b6bfef3cef553c6242.webp"
+ },
+ "tex_sea": {
+  "credits": 0.5,
+  "endpoint": "/assets/image",
+  "file": "assets/tex/sea.webp",
+  "id": "tex_sea",
+  "job": "6fcd0aef-c742-4a60-a675-b08754671bce",
+  "params": {
+   "art_style": "Hand-Painted",
+   "aspect_ratio": "ar_1_1",
+   "augment_prompt": true,
+   "image_type": "texture",
+   "n": 1,
+   "perspective": "Any perspective",
+   "prompt": "Seamless tileable hand-painted ocean water texture seen from directly above, deep navy blue with subtle lighter brush-stroke ripples, even lighting, flat, no objects, no foam"
+  },
+  "url": "https://storage.googleapis.com/ludo-assets/api/ed2186cb27270e30fbc2d194435d3e36.webp"
+ },
+ "tex_wood": {
+  "credits": 0.5,
+  "endpoint": "/assets/image",
+  "file": "assets/tex/wood.webp",
+  "id": "tex_wood",
+  "job": "d4680d69-a8ba-4f47-8faa-337c8ed905de",
+  "params": {
+   "art_style": "Hand-Painted",
+   "aspect_ratio": "ar_1_1",
+   "augment_prompt": true,
+   "image_type": "texture",
+   "n": 1,
+   "perspective": "Any perspective",
+   "prompt": "Seamless tileable dark walnut wood tabletop texture, rich grain, subtle scratches, even lighting, flat, top-down"
+  },
+  "url": "https://storage.googleapis.com/ludo-assets/api/bc047a5948f9aaff66a91ce3a9eb4025.webp"
+ }
+}

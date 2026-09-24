@@ -142,6 +142,18 @@ static func entrenched(terr_id: String, garrison: int, cap: int) -> Dictionary:
 	}
 
 
+static func set_cashed(player_id: String, cards: PackedStringArray, value: int) -> Dictionary:
+	return {"kind": Types.EVENT_SET_CASHED, "playerId": player_id, "cards": Array(cards), "value": value}
+
+
+static func card_drawn(player_id: String, card: String) -> Dictionary:
+	return {"kind": Types.EVENT_CARD_DRAWN, "playerId": player_id, "card": card}
+
+
+static func cards_captured(from_id: String, to_id: String, cards: PackedStringArray) -> Dictionary:
+	return {"kind": Types.EVENT_CARDS_CAPTURED, "from": from_id, "to": to_id, "cards": Array(cards)}
+
+
 static func round_ended(round: int, winner: String, early: bool) -> Dictionary:
 	return {
 		"kind": Types.EVENT_ROUND_ENDED,

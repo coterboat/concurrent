@@ -1,0 +1,311 @@
+{
+  "id": "world30",
+  "name": "The Wide World",
+  "rounds": 10,
+  "cards": true,
+  "pools": {
+    "2": 28,
+    "3": 26,
+    "4": 22,
+    "5": 20
+  },
+  "dealEach": 10,
+  "pinNeutral": "",
+  "neutralLeftover": true,
+  "neutralLeftoverArmies": 2,
+  "minPlayers": 2,
+  "maxPlayers": 5,
+  "blurb": "Six regions, thirty lands. The rich Heartlands sit in the middle with five doors.",
+  "regionNames": {
+    "thornwood": "Thornwood",
+    "norrmark": "The Norrmark",
+    "heartlands": "The Heartlands",
+    "ashen": "Ashen Steppe",
+    "duneveil": "Duneveil",
+    "sunward": "Sunward Isles"
+  },
+  "regionBonus": {
+    "thornwood": 2,
+    "norrmark": 3,
+    "heartlands": 5,
+    "ashen": 4,
+    "duneveil": 3,
+    "sunward": 2
+  },
+  "territories": {
+    "hollowmere": {
+      "name": "Hollowmere",
+      "region": "thornwood",
+      "adjacent": [
+        "briarhold",
+        "fenwick",
+        "frosthelm"
+      ]
+    },
+    "fenwick": {
+      "name": "Fenwick",
+      "region": "thornwood",
+      "adjacent": [
+        "briarhold",
+        "hollowmere",
+        "millbrook",
+        "oakhaven",
+        "stonebridge"
+      ]
+    },
+    "briarhold": {
+      "name": "Briarhold",
+      "region": "thornwood",
+      "adjacent": [
+        "fenwick",
+        "hollowmere",
+        "oakhaven"
+      ]
+    },
+    "oakhaven": {
+      "name": "Oakhaven",
+      "region": "thornwood",
+      "adjacent": [
+        "briarhold",
+        "fenwick",
+        "mirage"
+      ]
+    },
+    "frosthelm": {
+      "name": "Frosthelm",
+      "region": "norrmark",
+      "adjacent": [
+        "hollowmere",
+        "skaldmoor"
+      ]
+    },
+    "skaldmoor": {
+      "name": "Skaldmoor",
+      "region": "norrmark",
+      "adjacent": [
+        "frosthelm",
+        "icewater",
+        "wolfsgate"
+      ]
+    },
+    "wolfsgate": {
+      "name": "Wolfsgate",
+      "region": "norrmark",
+      "adjacent": [
+        "icewater",
+        "kingsreach",
+        "skaldmoor"
+      ]
+    },
+    "icewater": {
+      "name": "Icewater",
+      "region": "norrmark",
+      "adjacent": [
+        "greyharbor",
+        "skaldmoor",
+        "wolfsgate"
+      ]
+    },
+    "greyharbor": {
+      "name": "Greyharbor",
+      "region": "norrmark",
+      "adjacent": [
+        "cinderplain",
+        "icewater"
+      ]
+    },
+    "millbrook": {
+      "name": "Millbrook",
+      "region": "heartlands",
+      "adjacent": [
+        "fenwick",
+        "kingsreach",
+        "stonebridge"
+      ]
+    },
+    "kingsreach": {
+      "name": "Kingsreach",
+      "region": "heartlands",
+      "adjacent": [
+        "highcourt",
+        "millbrook",
+        "redfield",
+        "stonebridge",
+        "wolfsgate"
+      ]
+    },
+    "stonebridge": {
+      "name": "Stonebridge",
+      "region": "heartlands",
+      "adjacent": [
+        "fenwick",
+        "highcourt",
+        "kingsreach",
+        "millbrook"
+      ]
+    },
+    "highcourt": {
+      "name": "Highcourt",
+      "region": "heartlands",
+      "adjacent": [
+        "ambergate",
+        "kingsreach",
+        "redfield",
+        "stonebridge"
+      ]
+    },
+    "redfield": {
+      "name": "Redfield",
+      "region": "heartlands",
+      "adjacent": [
+        "highcourt",
+        "kingsreach",
+        "saltmarsh"
+      ]
+    },
+    "ambergate": {
+      "name": "Ambergate",
+      "region": "heartlands",
+      "adjacent": [
+        "highcourt",
+        "scorchpass"
+      ]
+    },
+    "cinderplain": {
+      "name": "Cinderplain",
+      "region": "ashen",
+      "adjacent": [
+        "farwatch",
+        "greyharbor",
+        "khartor",
+        "saltmarsh"
+      ]
+    },
+    "khartor": {
+      "name": "Khar Tor",
+      "region": "ashen",
+      "adjacent": [
+        "cinderplain",
+        "emberwatch",
+        "farwatch"
+      ]
+    },
+    "emberwatch": {
+      "name": "Emberwatch",
+      "region": "ashen",
+      "adjacent": [
+        "dustmere",
+        "farwatch",
+        "khartor"
+      ]
+    },
+    "saltmarsh": {
+      "name": "Saltmarsh",
+      "region": "ashen",
+      "adjacent": [
+        "cinderplain",
+        "farwatch",
+        "redfield"
+      ]
+    },
+    "farwatch": {
+      "name": "Farwatch",
+      "region": "ashen",
+      "adjacent": [
+        "cinderplain",
+        "dustmere",
+        "emberwatch",
+        "khartor",
+        "saltmarsh"
+      ]
+    },
+    "dustmere": {
+      "name": "Dustmere",
+      "region": "ashen",
+      "adjacent": [
+        "coralreach",
+        "emberwatch",
+        "farwatch",
+        "pearlbay"
+      ]
+    },
+    "mirage": {
+      "name": "Mirage",
+      "region": "duneveil",
+      "adjacent": [
+        "kelwell",
+        "oakhaven"
+      ]
+    },
+    "kelwell": {
+      "name": "Kelwell",
+      "region": "duneveil",
+      "adjacent": [
+        "mirage",
+        "scorchpass"
+      ]
+    },
+    "scorchpass": {
+      "name": "Scorchpass",
+      "region": "duneveil",
+      "adjacent": [
+        "ambergate",
+        "glasswaste",
+        "kelwell"
+      ]
+    },
+    "glasswaste": {
+      "name": "Glasswaste",
+      "region": "duneveil",
+      "adjacent": [
+        "scorchpass",
+        "sunspire"
+      ]
+    },
+    "sunspire": {
+      "name": "Sunspire",
+      "region": "duneveil",
+      "adjacent": [
+        "coralreach",
+        "glasswaste",
+        "tidewatch"
+      ]
+    },
+    "coralreach": {
+      "name": "Coralreach",
+      "region": "sunward",
+      "adjacent": [
+        "dustmere",
+        "pearlbay",
+        "sunspire",
+        "tidewatch"
+      ]
+    },
+    "pearlbay": {
+      "name": "Pearl Bay",
+      "region": "sunward",
+      "adjacent": [
+        "coralreach",
+        "dustmere",
+        "lanternfall"
+      ]
+    },
+    "tidewatch": {
+      "name": "Tidewatch",
+      "region": "sunward",
+      "adjacent": [
+        "coralreach",
+        "lanternfall",
+        "sunspire"
+      ]
+    },
+    "lanternfall": {
+      "name": "Lanternfall",
+      "region": "sunward",
+      "adjacent": [
+        "pearlbay",
+        "tidewatch"
+      ]
+    }
+  }
+}

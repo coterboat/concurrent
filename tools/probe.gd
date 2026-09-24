@@ -12,6 +12,8 @@ var _failed := false
 
 
 func _ready() -> void:
+	## Probes drive the real client; keep them out of the player's save slot.
+	load("res://game/core/session.gd").SAVE_PATH = "user://probe_savegame.json"
 	_parse_args()
 	if _script_path == "":
 		push_error("probe: --script=res://... is required")
