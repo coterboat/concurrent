@@ -1,0 +1,142 @@
+## validate_sheet against the planning-window world (pre-lock).
+## Packet legality is checked on the post-regroup, post-place projection
+## because just-placed armies may attack this round.
+## Cap overflow is not an error — it vanishes. Illegal leftover is an error.
+## No Node. No UI. No RNG.
+extends RefCounted
+
+const Types := preload("res://engine/types.gd")
+const MapLib := preload("res://engine/map.gd")
+const Income := preload("res://engine/income.gd")
+
+
+static func validate_sheet(world: Types.World, map: Types.MapDef, sheet: Types.Sheet) -> PackedStringArray:
+	var errors := PackedStringArray()
+	if sheet == null or sheet.player_id == "":
+		errors.append("sheet missing playerId")
+		return errors
+	if sheet.player_id == Income.NEUTRAL_ID:
+		errors.append("neutral does not plan")
+		return errors
+	var ps: Types.PlayerState = world.players.get(sheet.player_id, null)
+	if ps == null or not ps.alive:
+		errors.append("%s is not a living player" % sheet.player_id)
+		return errors
+
+	if sheet.cash_set.size() > 0:
+		errors.append("cards skipped on this map")
+
+	var projected: Types.World = world.clone()
+	_validate_regroup(projected, map, sheet, errors)
+	if errors.size() > 0:
+		return errors
+	_apply_regroup_to(projected, sheet)
+	_apply_placements_to(projected, map, sheet) ## overflow lost, not an error
+	_validate_packets(projected, map, sheet, errors)
+	return errors
+
+
+static func _validate_regroup(world: Types.World, map: Types.MapDef, sheet: Types.Sheet, errors: PackedStringArray) -> void:
+	if sheet.regroup == null:
+		return
+	if world.round <= 1:
+		errors.append("round 1 has no regroup")
+		return
+	var r: Types.Regroup = sheet.regroup
+	if r.strength < 1:
+		errors.append("regroup strength must be >= 1")
+		return
+	var from_ts: Types.TerritoryState = world.get_territory(r.from_id)
+	var to_ts: Types.TerritoryState = world.get_territory(r.to_id)
+	if from_ts == null or to_ts == null:
+		errors.append("regroup hex does not exist")
+		return
+	if from_ts.owner != sheet.player_id or to_ts.owner != sheet.player_id:
+		errors.append("regroup must be friendly to friendly")
+		return
+	if not MapLib.is_adjacent(map, r.from_id, r.to_id):
+		errors.append("regroup requires adjacent hexes")
+		return
+	if r.from_id == r.to_id:
+		errors.append("regroup to self")
+		return
+	var max_move: int = Income.max_send(from_ts)
+	if r.strength > max_move:
+		errors.append("illegal leftover: regroup %s sends %s" % [r.from_id, r.strength])
+
+
+static func _apply_regroup_to(world: Types.World, sheet: Types.Sheet) -> void:
+	if sheet.regroup == null:
+		return
+	var r: Types.Regroup = sheet.regroup
+	var from_ts: Types.TerritoryState = world.get_territory(r.from_id)
+	var to_ts: Types.TerritoryState = world.get_territory(r.to_id)
+	from_ts.armies -= r.strength
+	to_ts.armies += r.strength
+	if from_ts.armies < 1 and from_ts.garrison < 1:
+		world.set_hex(r.from_id, Types.UNOCCUPIED, 0)
+
+
+static func _apply_placements_to(world: Types.World, map: Types.MapDef, sheet: Types.Sheet) -> void:
+	var income: int = Income.income_of(world, map, sheet.player_id)
+	var remaining := income
+	var keys: Array = sheet.placements.keys()
+	keys.sort()
+	for terr_id in keys:
+		if remaining <= 0:
+			break
+		var want: int = int(sheet.placements[terr_id])
+		if want < 0:
+			continue
+		var ts: Types.TerritoryState = world.get_territory(str(terr_id))
+		if ts == null or ts.owner != sheet.player_id:
+			continue
+		var cap: int = Income.cap_of(world, map, str(terr_id))
+		var spent: int = mini(want, remaining)
+		var add: int = mini(spent, cap)
+		remaining -= spent
+		if add > 0:
+			ts.armies += add
+
+
+static func _validate_packets(world: Types.World, map: Types.MapDef, sheet: Types.Sheet, errors: PackedStringArray) -> void:
+	var outgoing := {} ## from_id -> total strength
+	var i := 0
+	for raw in sheet.packets:
+		var p: Types.Packet = raw
+		var tag := "packet[%s]" % i
+		i += 1
+		if p.strength < 1:
+			errors.append("%s strength must be >= 1" % tag)
+			continue
+		var from_ts: Types.TerritoryState = world.get_territory(p.from_id)
+		var to_ts: Types.TerritoryState = world.get_territory(p.to_id)
+		if from_ts == null or to_ts == null:
+			errors.append("%s hex does not exist" % tag)
+			continue
+		if from_ts.owner != sheet.player_id:
+			errors.append("%s from is not yours" % tag)
+			continue
+		if not MapLib.is_adjacent(map, p.from_id, p.to_id):
+			errors.append("%s to is not adjacent" % tag)
+			continue
+		if p.to_id == p.from_id:
+			errors.append("%s to equals from" % tag)
+			continue
+		if to_ts.owner == sheet.player_id:
+			errors.append("%s cannot attack a friendly hex" % tag)
+			continue
+		if p.surge_to != "":
+			if p.surge_to == p.from_id:
+				errors.append("%s surgeTo cannot be from" % tag)
+			elif not MapLib.is_adjacent(map, p.to_id, p.surge_to):
+				errors.append("%s surgeTo must be adjacent to to" % tag)
+		outgoing[p.from_id] = int(outgoing.get(p.from_id, 0)) + p.strength
+
+	for from_id in outgoing.keys():
+		var ts: Types.TerritoryState = world.get_territory(from_id)
+		if ts == null:
+			continue
+		var max_out: int = Income.max_send(ts)
+		if int(outgoing[from_id]) > max_out:
+			errors.append("illegal leftover: %s sends %s leaving %s" % [from_id, outgoing[from_id], ts.armies - int(outgoing[from_id])])

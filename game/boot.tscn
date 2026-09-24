@@ -1,0 +1,55 @@
+[gd_scene load_steps=2 format=3 uid="uid://bconcurrentboot0001"]
+
+[ext_resource type="Script" path="res://game/boot.gd" id="1_boot"]
+
+[node name="Boot" type="Control"]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+script = ExtResource("1_boot")
+
+[node name="Background" type="ColorRect" parent="."]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+color = Color(0.043, 0.071, 0.125, 1)
+
+[node name="Center" type="CenterContainer" parent="."]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="Copy" type="VBoxContainer" parent="Center"]
+layout_mode = 2
+theme_override_constants/separation = 12
+
+[node name="Title" type="Label" parent="Center/Copy"]
+layout_mode = 2
+theme_override_colors/font_color = Color(0.91, 0.878, 0.816, 1)
+theme_override_font_sizes/font_size = 42
+text = "CONCURRENT"
+horizontal_alignment = 1
+
+[node name="Sub" type="Label" parent="Center/Copy"]
+layout_mode = 2
+theme_override_colors/font_color = Color(0.76, 0.23, 0.18, 1)
+theme_override_font_sizes/font_size = 18
+text = "G4 CLI  ·  ./scripts/cli.sh play"
+horizontal_alignment = 1
+
+[node name="Hint" type="Label" parent="Center/Copy"]
+layout_mode = 2
+theme_override_colors/font_color = Color(0.71, 0.69, 0.64, 1)
+theme_override_font_sizes/font_size = 16
+text = "Nothing to click. Esc quits.
+./scripts/test.sh    ./scripts/combat_sim.sh"
+horizontal_alignment = 1
