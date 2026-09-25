@@ -53,7 +53,7 @@ func _ready() -> void:
 	_banner = PanelContainer.new()
 	_banner.add_theme_stylebox_override("panel", Style.flat(Color(0.03, 0.04, 0.07, 0.88), Color(Style.GOLD, 0.6), 1, 8, 14))
 	_banner.set_anchors_preset(PRESET_CENTER_TOP)
-	_banner.offset_top = 14
+	_banner.offset_top = 92 ## below the commander strip, so a wide caption never covers it
 	_banner.grow_horizontal = Control.GROW_DIRECTION_BOTH
 	_banner.mouse_filter = Control.MOUSE_FILTER_IGNORE
 	add_child(_banner)
@@ -90,10 +90,12 @@ func _ready() -> void:
 	_left = _Side.new()
 	row.add_child(_left)
 	_dice_l = _Die.new()
+	_dice_l.size_flags_vertical = Control.SIZE_SHRINK_CENTER
 	row.add_child(_dice_l)
 	_vs = Style.label("vs", 22, Style.MUTED, "display")
 	row.add_child(_vs)
 	_dice_r = _Die.new()
+	_dice_r.size_flags_vertical = Control.SIZE_SHRINK_CENTER
 	row.add_child(_dice_r)
 	_right = _Side.new()
 	row.add_child(_right)
@@ -207,6 +209,8 @@ func _finish() -> void:
 	board.fx.clear()
 	board.shake.clear()
 	board.battle = {}
+	board.dimmed = {}
+	board.clash = []
 	board.orders = []
 	board.refresh()
 	finished.emit()
@@ -301,7 +305,7 @@ func _build_beats() -> Array:
 			sub += ", %d move%s" % [moves, "" if moves == 1 else "s"]
 		if not cashes.is_empty():
 			sub += ". " + ". ".join(cashes)
-		out.append({"upto": last_setup, "caption": "The armies deploy" if opening else "Reinforcements arrive", "sub": sub + ".", "sound": "place", "delay": 1.0, "placed": true})
+		out.append({"upto": last_setup, "caption": "The armies deploy" if opening else "Recruits muster", "sub": sub + ".", "sound": "place", "delay": 1.0, "placed": true})
 		i = last_setup + 1
 	if opening:
 		return out
@@ -358,6 +362,28 @@ func _build_beats() -> Array:
 				b["event"] = e
 				out.append(b)
 				i = upto
+			Types.EVENT_MELEE:
+				var to3: String = str(e["to"])
+				var names: Array = []
+				var froms: Array = [to3]
+				var attackers: Array = []
+				var human := ""
+				for f in e.get("fronts", []):
+					var ap: String = str(f["attackerId"])
+					attackers.append(ap)
+					names.append("%s (%d)" % [_name(ap), int(f["size"])])
+					froms.append(str(f["from"]))
+					if human == "" and session.is_human(ap):
+						human = ap
+				var held: bool = int(e.get("defenderLeft", 0)) > 0
+				var upto3 := i
+				if not held and i + 1 < n and str(evs[i + 1]["kind"]) == Types.EVENT_OCCUPIED:
+					upto3 = i + 1
+				var outcome: String = ("%s holds with %d left." % [_name(str(e["defenderId"])), int(e["defenderLeft"])]) if held else "The defenders are overrun!"
+				out.append({"upto": upto3, "caption": "Melee at %s" % _hex(to3), "sub": "%s storm %s's %d at once. %s" % [" and ".join(names), _name(str(e["defenderId"])), int(e["defenderSize"]), outcome],
+					"fight": true, "melee": true, "event": e, "a": human if human != "" else attackers[0], "b": str(e["defenderId"]), "attackers": attackers,
+					"focus": froms, "resolves": to3, "delay": 2.6, "sound": "melee", "a_won": not held})
+				i = upto3
 			Types.EVENT_SPOILS:
 				var to2: String = str(e["to"])
 				var upto2 := i
@@ -440,7 +466,26 @@ func _show(b: Dictionary) -> void:
 	for f in focus:
 		board.battle[f] = true
 	board.focus_on(focus)
-	_card.visible = bool(b.get("fight", false))
+	## the fight that's on: its lands ringed, everyone else dimmed, its arrows bright
+	board.dimmed = {}
+	board.clash = []
+	var ev: Dictionary = b.get("event", {})
+	if bool(b.get("fight", false)) or b.has("walkin"):
+		for t in board.world.territories.keys():
+			if not focus.has(str(t)):
+				board.dimmed[str(t)] = true
+		var land: String = str(b.get("resolves", ""))
+		for o in board.orders:
+			var live: bool = (land != "" and str(o["to"]) == land) or (focus.has(str(o["from"])) and focus.has(str(o["to"])))
+			if live:
+				o["alpha"] = 1.0
+			else:
+				o["alpha"] = 0.28 if _resolved.has(str(o["to"])) else 0.4
+	if str(ev.get("kind", "")) == Types.EVENT_CLASH:
+		board.clash = [str(ev["hexA"]), str(ev["hexB"])]
+		Audio.sfx("border_clash", -2.0)
+		_caption.text = "BORDER CLASH!"
+	_card.visible = bool(b.get("fight", false)) and not bool(b.get("melee", false))
 	if _card.visible:
 		_start_fight(b)
 	else:
@@ -474,6 +519,7 @@ func _open_theater(first: Dictionary) -> void:
 			session.release_live() ## the officers call whatever is left
 		_waiting = false
 		_banner.visible = true
+		board.swoop_back(0.6)
 		var grp: Array = _group_at(_group_first)
 		var last_index: int = _group_first + grp.size() - 1
 		_group_first = -1
@@ -490,7 +536,27 @@ func _open_theater(first: Dictionary) -> void:
 			_theater_off = true
 		_wait = 0.4
 	theater.finished.connect(_theater_cb, CONNECT_ONE_SHOT)
-	theater.play(session, group, human)
+	## the camera swoops down on the fight, then the battlefield opens
+	var land: String = str(first.get("resolves", ""))
+	var focus: Array = first.get("focus", [])
+	board.battle = {}
+	board.dimmed = {}
+	for f in focus:
+		board.battle[f] = true
+	for t in board.world.territories.keys():
+		if not focus.has(str(t)):
+			board.dimmed[str(t)] = true
+	board.clash = [str(focus[0]), str(focus[1])] if bool(first.get("event", {}).get("kind", "") == Types.EVENT_CLASH) and focus.size() >= 2 else []
+	board.refresh()
+	Audio.sfx("zoom_in", -3.0)
+	var tw: Tween = board.swoop_to(focus if not focus.is_empty() else [land], 2.8, 0.8)
+	var go := func():
+		if _waiting and _active:
+			theater.play(session, group, human)
+	if tw != null:
+		tw.finished.connect(go, CONNECT_ONE_SHOT)
+	else:
+		go.call()
 
 
 func _apply(b: Dictionary) -> void:

@@ -17,6 +17,7 @@ var to_id := ""
 var _box: VBoxContainer
 var _slider: HSlider
 var _building := false
+var kind := "attack" ## attack | move (a march in the reinforcement phase)
 
 
 func _ready() -> void:
@@ -30,6 +31,7 @@ func _ready() -> void:
 
 
 func show_for(a: String, b: String) -> void:
+	kind = "attack"
 	from_id = a
 	to_id = b
 	visible = a != "" and session.packet_index(a, b) >= 0
@@ -37,7 +39,81 @@ func show_for(a: String, b: String) -> void:
 		rebuild()
 
 
+func show_move(a: String, b: String) -> void:
+	kind = "move"
+	from_id = a
+	to_id = b
+	visible = a != "" and session.move_index(a, b) >= 0
+	if visible:
+		rebuild()
+
+
+func _rebuild_move() -> void:
+	var s = session
+	var idx: int = s.move_index(from_id, to_id)
+	if idx < 0:
+		visible = false
+		return
+	_building = true
+	for c in _box.get_children():
+		_box.remove_child(c)
+		c.queue_free()
+	var m: Dictionary = s.my_moves()[idx]
+	var h := HBoxContainer.new()
+	var t := Style.label("%s ➜ %s" % [s.hex_name(from_id), s.hex_name(to_id)], 20, Style.CREAM, "display")
+	t.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	h.add_child(t)
+	h.add_child(Style.chip("✕", func(): gs.edit_order("", ""), Style.MUTED, 13))
+	_box.add_child(h)
+	_box.add_child(Style.label("March to reinforce — one land, no further", 14, Style.PARCH, "italic"))
+	var mx: int = maxi(1, s.can_move_from(from_id, idx))
+	var row := HBoxContainer.new()
+	row.add_theme_constant_override("separation", 8)
+	row.add_child(Style.chip(" − ", func(): _set_move(int(m["n"]) - 1), Style.CREAM, 17))
+	_slider = HSlider.new()
+	_slider.min_value = 1
+	_slider.max_value = mx
+	_slider.step = 1
+	_slider.value = int(m["n"])
+	_slider.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	_slider.custom_minimum_size = Vector2(100, 28)
+	_slider.value_changed.connect(func(v):
+		if not _building:
+			_set_move(int(v)))
+	row.add_child(_slider)
+	row.add_child(Style.chip(" + ", func(): _set_move(int(m["n"]) + 1), Style.CREAM, 17))
+	var n := Style.label("%d" % int(m["n"]), 26, Style.GOOD, "display")
+	n.custom_minimum_size = Vector2(40, 0)
+	n.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+	row.add_child(n)
+	_box.add_child(row)
+	var w = s.maneuver_world()
+	_box.add_child(Style.label("%s keeps %d · %s will hold %d" % [s.hex_name(from_id), w.get_territory(from_id).held(), s.hex_name(to_id), w.get_territory(to_id).held()], 15, Style.PARCH))
+	var act := HBoxContainer.new()
+	act.add_theme_constant_override("separation", 6)
+	act.add_child(Style.chip("Cancel march", func():
+		gs.edit_order("", "")
+		s.remove_move(idx)
+		Audio.sfx("unplace"), Style.CRIMSON.lightened(0.3), 14))
+	_box.add_child(act)
+	_box.add_child(_ok_button())
+	_building = false
+	reset_size()
+	gs.place_order_card(self, from_id, to_id)
+
+
+func _set_move(v: int) -> void:
+	var idx: int = session.move_index(from_id, to_id)
+	if idx < 0:
+		return
+	session.set_move(idx, v)
+	Audio.sfx("place", -8.0)
+
+
 func rebuild() -> void:
+	if kind == "move":
+		_rebuild_move()
+		return
 	var s = session
 	var idx: int = s.packet_index(from_id, to_id)
 	if idx < 0:
@@ -134,9 +210,21 @@ func rebuild() -> void:
 		Audio.sfx("unplace"), Style.CRIMSON.lightened(0.3), 14)
 	act.add_child(rm)
 	_box.add_child(act)
+	_box.add_child(_ok_button())
 	_building = false
 	reset_size()
 	gs.place_order_card(self, from_id, to_id)
+
+
+func _ok_button() -> Button:
+	## done with this order: close the card (the ✕ does the same; this one is where the eye ends)
+	var ok := Style.chip("✓  OK", func():
+		Audio.sfx("click", -6.0)
+		gs.edit_order("", ""), Style.GOOD, 17)
+	ok.custom_minimum_size = Vector2(0, 38)
+	ok.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	ok.tooltip_text = "Keep this order and close the card (Enter)"
+	return ok
 
 
 func _set_strength(v: int) -> void:

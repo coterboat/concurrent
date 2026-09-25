@@ -15,8 +15,9 @@ const Rng := preload("res://engine/rng.gd")
 const Hash := preload("res://engine/hash.gd")
 const Ai := preload("res://engine/ai.gd")
 const Telemetry := preload("res://engine/telemetry.gd")
+const Maneuver := preload("res://engine/maneuver.gd")
 
-enum Phase { NONE, OPENING, PASS, PLANNING, RESOLVING, CINEMA, RECAP, GAME_OVER }
+enum Phase { NONE, OPENING, PASS, PLANNING, RESOLVING, CINEMA, RECAP, GAME_OVER, MANEUVER }
 
 static var SAVE_PATH := "user://savegame.json"
 const SAVE_VERSION := 1
@@ -56,6 +57,9 @@ var round_sheets: Array = [] ## this round's sheets while its battles are being 
 var live: Array = [] ## humans calling their own battles this round
 var pending: Dictionary = {} ## the battle call the round is waiting on (empty = none)
 var force_live := false ## tests: call battles live even when instant
+var moves := {} ## pid -> [{from, to, n}] being written in the reinforcement phase
+var maneuvers_log: Array = [] ## per resolved round: {pid: [moves]} made after its battles
+var move_ghosts: Array = [] ## the last reinforcement phase's marches, for the board
 
 
 # ================================================================ lifecycle
@@ -75,6 +79,8 @@ func new_game(p_config: Dictionary) -> void:
 		world.players[Income.NEUTRAL_ID].display_name = "Neutral"
 	setup_dict = {}
 	rounds_log = []
+	maneuvers_log = []
+	move_ghosts = []
 	hashes = []
 	history = []
 	stats = {}
@@ -94,6 +100,11 @@ func new_game(p_config: Dictionary) -> void:
 func _apply_length() -> void:
 	map.battle = str(config.get("battle", "volleys"))
 	config["battle"] = map.battle ## saves must replay with the same dice
+	## v1.3 rules for new games: a reinforcement phase, and a deck of men, horses and cannon
+	map.maneuvers = bool(config.get("maneuvers", true))
+	config["maneuvers"] = map.maneuvers
+	map.wild_cards = bool(config.get("wild_cards", false))
+	config["wild_cards"] = map.wild_cards
 	var base: int = Setup.rounds_for(map)
 	var mode: String = str(config.get("length", "standard"))
 	var k: float = float(LENGTHS.get(mode, 1.0))
@@ -161,9 +172,12 @@ func _start_window(kind: int) -> void:
 	locked = {}
 	error_text = ""
 	queue = living_humans()
+	moves = {}
 	for pid in MapLib.living_player_ids(world):
 		if kind == Phase.OPENING:
 			opening[pid] = {}
+		elif kind == Phase.MANEUVER:
+			moves[pid] = []
 		else:
 			drafts[pid] = _empty(pid)
 	if queue.is_empty():
@@ -203,9 +217,17 @@ func lock() -> String:
 	error_text = ""
 	if phase == Phase.OPENING:
 		locked[planner] = opening.get(planner, {})
+	elif phase == Phase.MANEUVER:
+		var mine: Array = moves.get(planner, [])
+		var errs0 := Maneuver.validate(world, map, planner, mine)
+		if not errs0.is_empty():
+			error_text = errs0[0]
+			changed.emit()
+			return error_text
+		locked[planner] = mine.duplicate(true)
 	elif phase == Phase.PLANNING:
 		var s: Types.Sheet = sheet()
-		if world.round <= 1:
+		if world.round <= 1 or map.maneuvers:
 			s.regroup = null
 		clamp_packets()
 		var errs := Validate.validate_sheet(world, map, s)
@@ -244,8 +266,29 @@ func _finish_window(kind: int) -> void:
 		await get_tree().process_frame
 	if kind == Phase.OPENING:
 		_resolve_opening()
+	elif kind == Phase.MANEUVER:
+		_resolve_maneuvers()
 	else:
 		_resolve_round()
+
+
+func _resolve_maneuvers() -> void:
+	## Everyone's marches land at once (they only touch their own lands).
+	var by := {}
+	for pid in MapLib.living_player_ids(world):
+		if pid == Income.NEUTRAL_ID:
+			continue
+		by[pid] = locked[pid] if locked.has(pid) else Maneuver.plan(world, map, pid)
+	var evs: Array = Maneuver.apply(world, map, by)
+	while maneuvers_log.size() < rounds_log.size():
+		maneuvers_log.append({})
+	if not rounds_log.is_empty():
+		maneuvers_log[rounds_log.size() - 1] = by.duplicate(true)
+	move_ghosts = []
+	for e in evs:
+		move_ghosts.append({"from": str(e["from"]), "to": str(e["to"]), "strength": int(e["strength"]), "owner": str(e["playerId"]), "kind": "move"})
+	save()
+	_start_window(Phase.PLANNING)
 
 
 func _resolve_opening() -> void:
@@ -289,6 +332,91 @@ func _resolve_round() -> void:
 	round_sheets = sheets
 	live = _live_players()
 	_run(true)
+
+
+# ================================================================ reinforcement phase
+
+func maneuver_world() -> Types.World:
+	## the planner's own marches drawn in (what the board shows while they write them)
+	var w: Types.World = world.clone()
+	for m in moves.get(planner, []):
+		w.get_territory(str(m["from"])).armies -= int(m["n"])
+		w.get_territory(str(m["to"])).armies += int(m["n"])
+	return w
+
+
+func my_moves() -> Array:
+	return moves.get(planner, [])
+
+
+func move_index(from_id: String, to_id: String) -> int:
+	var i := 0
+	for m in my_moves():
+		if str(m["from"]) == from_id and str(m["to"]) == to_id:
+			return i
+		i += 1
+	return -1
+
+
+func can_move_from(from_id: String, skip: int = -1) -> int:
+	## soldiers who could still march out of from_id (each moves one land, once)
+	var n: int = Maneuver.can_leave(world, from_id)
+	var i := 0
+	for m in my_moves():
+		if i != skip and str(m["from"]) == from_id:
+			n -= int(m["n"])
+		i += 1
+	return maxi(0, n)
+
+
+func add_move(from_id: String, to_id: String, n: int = -1) -> String:
+	if phase != Phase.MANEUVER:
+		return "Troops march in the reinforcement phase, after the battles."
+	var a: Types.TerritoryState = world.get_territory(from_id)
+	var b: Types.TerritoryState = world.get_territory(to_id)
+	if a == null or b == null or a.owner != planner or b.owner != planner:
+		return "March between two of your own lands."
+	if not map.is_adjacent(from_id, to_id):
+		return "One land at a time: %s does not border %s." % [hex_name(to_id), hex_name(from_id)]
+	var idx: int = move_index(from_id, to_id)
+	var mx: int = can_move_from(from_id, idx)
+	if mx < 1:
+		if Maneuver.can_leave(world, from_id) < 1:
+			return "%s has nobody who can march (one stays unless it is dug in; soldiers who just arrived stay put)." % hex_name(from_id)
+		return "Everyone who can leave %s is already marching." % hex_name(from_id)
+	var k: int = mx if n < 0 else clampi(n, 1, mx)
+	if idx >= 0:
+		my_moves()[idx]["n"] = k
+	else:
+		my_moves().append({"from": from_id, "to": to_id, "n": k})
+	changed.emit()
+	return ""
+
+
+func set_move(i: int, n: int) -> void:
+	if i < 0 or i >= my_moves().size():
+		return
+	var m: Dictionary = my_moves()[i]
+	m["n"] = clampi(n, 1, maxi(1, can_move_from(str(m["from"]), i)))
+	changed.emit()
+
+
+func remove_move(i: int) -> void:
+	if i < 0 or i >= my_moves().size():
+		return
+	my_moves().remove_at(i)
+	changed.emit()
+
+
+func clear_moves() -> void:
+	moves[planner] = []
+	changed.emit()
+
+
+func advise_moves() -> void:
+	## the chief of staff's marches, adopted in one click
+	moves[planner] = Maneuver.plan(world, map, planner)
+	changed.emit()
 
 
 func _setting(key: String, fallback: Variant) -> Variant:
@@ -420,6 +548,22 @@ func _tally(evs: Array) -> void:
 					stats[a]["armies_lost"] += att_lost
 				if stats.has(d):
 					stats[d]["armies_lost"] += def_lost
+			Types.EVENT_MELEE:
+				var held: bool = int(e.get("defenderLeft", 0)) > 0
+				var dp: String = str(e.get("defenderId", ""))
+				if stats.has(dp):
+					stats[dp]["battles"] += 1
+					stats[dp]["armies_lost"] += int(e.get("defenderSize", 0)) - int(e.get("defenderLeft", 0))
+					if held:
+						stats[dp]["won"] += 1
+				for f in e.get("fronts", []):
+					var ap: String = str(f.get("attackerId", ""))
+					if not stats.has(ap):
+						continue
+					stats[ap]["battles"] += 1
+					stats[ap]["armies_lost"] += int(f.get("size", 0)) + int(f.get("reservesAdded", 0)) - int(f.get("left", 0))
+					if not held and int(f.get("left", 0)) > 0 and not bool(f.get("fellBack", false)):
+						stats[ap]["won"] += 1
 			Types.EVENT_CLASH, Types.EVENT_SPOILS:
 				var w: String = str(e["winnerId"])
 				for pid in [str(e["playerA"]), str(e["playerB"])]:
@@ -469,7 +613,8 @@ func next_round() -> void:
 		clear_save()
 		_emit_phase()
 		return
-	_start_window(Phase.PLANNING)
+	move_ghosts = []
+	_start_window(Phase.MANEUVER if map.maneuvers else Phase.PLANNING)
 
 
 func watch_on() -> void:
@@ -693,6 +838,7 @@ func set_attack(from_id: String, to_id: String, strength: int = -1) -> String:
 		p.to_id = to_id
 		p.strength = n
 		p.stance = str(_setting("stance", Combat.STANCE_JUDGMENT))
+		p.surge_to = str(sheet().surges.get(to_id, "")) ## joins the surge already ordered from there
 		sheet().packets.append(p)
 	changed.emit()
 	return ""
@@ -732,7 +878,14 @@ func reserves_at(from_id: String) -> int:
 func remove_packet(i: int) -> void:
 	if i < 0 or i >= sheet().packets.size():
 		return
+	var to: String = (sheet().packets[i] as Types.Packet).to_id
 	sheet().packets.remove_at(i)
+	var still := false
+	for raw in sheet().packets:
+		if (raw as Types.Packet).to_id == to:
+			still = true
+	if not still:
+		sheet().surges.erase(to)
 	changed.emit()
 
 
@@ -741,7 +894,10 @@ func set_surge(i: int, target: String) -> String:
 		return ""
 	var p: Types.Packet = sheet().packets[i]
 	if target == "":
-		p.surge_to = ""
+		for raw in sheet().packets:
+			if (raw as Types.Packet).to_id == p.to_id:
+				(raw as Types.Packet).surge_to = ""
+		sheet().surges.erase(p.to_id)
 		changed.emit()
 		return ""
 	if target == p.from_id or not map.is_adjacent(p.to_id, target):
@@ -749,7 +905,9 @@ func set_surge(i: int, target: String) -> String:
 	if world.get_territory(target).owner == planner:
 		return "Surge targets an enemy or empty land."
 	p.surge_to = target
-	## Same-destination packets merge; keep their surge in step.
+	## v1.3: the surge belongs to the land being taken, so every army converging on it
+	## (from any of your lands) pushes on together
+	sheet().surges[p.to_id] = target
 	for raw in sheet().packets:
 		var q: Types.Packet = raw
 		if q.to_id == p.to_id:
@@ -816,12 +974,22 @@ func hand() -> PackedStringArray:
 func toggle_cash() -> String:
 	var s: Types.Sheet = sheet()
 	if s.cash_set.size() > 0:
-		s.cash_set = PackedStringArray()
-	else:
-		var best: PackedStringArray = Cards.best_set(hand())
-		if best.is_empty():
-			return "You need three matching cards or one of each."
-		s.cash_set = best
+		return set_cash(PackedStringArray())
+	var best: PackedStringArray = Cards.best_set(hand())
+	if best.is_empty():
+		return "You need three matching cards or one of each."
+	return set_cash(best)
+
+
+func set_cash(cards: PackedStringArray) -> String:
+	## turn in exactly these three cards this round (empty = keep them all)
+	var s: Types.Sheet = sheet()
+	if cards.size() > 0:
+		if not Cards.is_set(Array(cards)):
+			return "Three alike, or one of each."
+		if not Cards.holds(hand(), cards):
+			return "You don't hold those cards."
+	s.cash_set = cards
 	## Income changed: placements beyond it are trimmed.
 	while placed_total() > income_total():
 		var keys: Array = s.placements.keys()
@@ -907,6 +1075,7 @@ func save() -> void:
 		"rounds": map.rounds,
 		"setup": setup_dict,
 		"sheets": rounds_log,
+		"maneuvers": maneuvers_log,
 		"hashes": hashes,
 		"saved": Time.get_datetime_string_from_system(false, true),
 	}
@@ -949,6 +1118,8 @@ func load_save() -> bool:
 	map = Types.MapDef.from_file(str(config["map"]))
 	map.rounds = int(d.get("rounds", map.rounds))
 	map.battle = str(config.get("battle", "decisive"))
+	map.maneuvers = bool(config.get("maneuvers", false)) ## saves from before v1.3 had no reinforcement phase
+	map.wild_cards = bool(config.get("wild_cards", true))
 	seats = config["seats"]
 	stats = {}
 	for s in seats:
@@ -956,11 +1127,14 @@ func load_save() -> bool:
 	setup_dict = d["setup"]
 	world = Types.World.from_dict(setup_dict)
 	rounds_log = []
+	maneuvers_log = []
+	move_ghosts = []
 	hashes = []
 	history = []
 	winner = ""
 	watching = false
 	_snapshot_history(0)
+	var saved_moves: Array = d.get("maneuvers", [])
 	for round_sheets in d["sheets"]:
 		var sheets: Array = []
 		for raw in round_sheets:
@@ -971,6 +1145,12 @@ func load_save() -> bool:
 			return false
 		rounds_log.append(round_sheets)
 		_absorb(sheets, result)
+		var k: int = rounds_log.size() - 1
+		if k < saved_moves.size() and typeof(saved_moves[k]) == TYPE_DICTIONARY and not (saved_moves[k] as Dictionary).is_empty():
+			Maneuver.apply(world, map, saved_moves[k])
+			maneuvers_log.append(saved_moves[k])
+		else:
+			maneuvers_log.append({})
 	var saved_hashes: Array = d.get("hashes", [])
 	if saved_hashes.size() == hashes.size() and not saved_hashes.is_empty() and str(saved_hashes[-1]) != str(hashes[-1]):
 		push_warning("save replay hash differs from recorded hash")
@@ -979,7 +1159,11 @@ func load_save() -> bool:
 		phase = Phase.GAME_OVER
 		_emit_phase()
 		return true
-	_start_window(Phase.PLANNING)
+	## saved between the battles and the marches: pick up in the reinforcement phase
+	if map.maneuvers and not rounds_log.is_empty() and (maneuvers_log[-1] as Dictionary).is_empty():
+		_start_window(Phase.MANEUVER)
+	else:
+		_start_window(Phase.PLANNING)
 	return true
 
 
@@ -988,7 +1172,7 @@ func load_save() -> bool:
 func _process(delta: float) -> void:
 	if time_left <= 0.0:
 		return
-	if phase != Phase.PLANNING and phase != Phase.OPENING:
+	if phase != Phase.PLANNING and phase != Phase.OPENING and phase != Phase.MANEUVER:
 		return
 	time_left -= delta
 	if time_left <= 0.0:

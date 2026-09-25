@@ -2,6 +2,116 @@
 
 The bible says amendments come with a dated entry and the test or band that justified them. Everything below has both.
 
+## v1.3 — 25 Sep 2026: the campaign pass
+
+### Amendment 10: the melee
+
+Before, when two commanders invaded the same land, they fought the defender one at a time, in an order set by a hash. The first invader soaked up the defenders, and the second often just mopped up. Now:
+
+> When invaders of two or more commanders storm a held land, they fight it at once. Every salvo, each invader fights its own volley against the defenders, who split their strength across the fronts in proportion to the invaders: *score = 5 × die + defenders × this invader ÷ all invaders*. The loser of each volley loses one, so a defender can lose a man on every front in a single salvo, or win them all. Battle calls still come after every exchange, front by front. When the defenders fall, the surviving invaders fight each other for the spoils.
+
+**Why split, not full strength on every front?** `tools/melee_sim.py` measured three candidate rules. With the split, a dogpile hits exactly like one combined attack of the same total, so being attacked from two sides is as dangerous as it should be. With full strength on every front, a defender held about as often as under the old one-at-a-time rule.
+
+| 6 + 6 invaders vs 8 defenders | Defender holds |
+|---|---|
+| One at a time (v1.2) | ~40% |
+| Split (v1.3) | 7% |
+| One attack of 12 | 5% |
+
+- **Where it applies.** A lone invader still fights an ordinary assault. The decisive-roll battle style keeps the old sequence.
+- **Checked by** `tests/test_v13.gd`:
+  - 300 melees, each with army conservation and the replay agreeing
+  - both double losses and double wins seen in a single salvo
+  - a live melee pausing for each watching invader's call and replaying from the saved sheets
+
+### Amendment 11: the reinforcement phase
+
+After the battles, everyone marches troops between their own neighbouring lands at the same time, before the next orders.
+
+- **One land per soldier.** Only soldiers who were there when the phase began may leave, so nobody moves twice.
+- **What stays.** Dug-in defenders never march, and a land with no dug-in defender keeps one soldier.
+- **Simultaneous.** Moves only touch your own lands, so everyone's marches land together. Hotseat players each get the pass screen.
+- **It replaces the old one-move regroup.** That regroup was written on the orders sheet before the battles. Old saves keep it.
+- **The AI marches too.** Quiet lands send every spare man one step toward the front, and a well-held front lends to a hard-pressed neighbour.
+- **The record.** The marches are saved with the round. A game saved between the battles and the marches resumes in the reinforcement phase.
+- **Checked by:**
+  - 10 session checks, covering clamping, no chaining, no marching into enemy land, the save, and replay to the same hash
+  - AI marches that are legal and conserving on every map
+  - whole wars replayed with their marches
+
+### Amendment 12: surges belong to the land being taken
+
+A surge is now ordered from the land you are attacking, not from each attack's origin (`Sheet.surges`). Every army converging on that land, from any direction, pushes on together with everything but one man.
+
+- **The bug this fixes.** A second attack added after the surge was ordered used to cancel the surge.
+- **Checked by:** armies converging from two lands surge on together (59 of 59 captures). A surge from a land nobody attacks is refused.
+
+### Amendment 13: men, horses and cannon
+
+New games deal campaign cards in three kinds: infantry, cavalry and artillery. There are no wild cards. Three alike or one of each turn in. Any five cards still always hold a set, and `test_v13` checks all 243 hands. Old saves keep their wild cards.
+
+### Bands after v1.3
+
+Arena, 60 games per matchup on the Known World and 30 on the Wide World, under all v1.3 rules:
+
+| | v1.2 | v1.3 |
+|---|---|---|
+| General vs two Veterans (coin flip 33%) | 42% | 40% |
+| Recruit vs two Veterans | 17% | 7% |
+| General vs three Veterans, Wide World (coin flip 25%) | 37% | 43% |
+| Melees per game (3 seats / 4 / 5) | — | 2.3 / 3.7 / 4.9 |
+| Known World 3-seat games ending early by domination | 18% | 45% |
+
+The reinforcement phase lets armies mass at the front, so wars are more decisive. More Known World games now end in domination before the last round, and the recruit, who plans without looking ahead, is punished harder.
+
+### Seeing the war
+
+- **Fights on the map.** Every fight in the battle report rings its lands in fire and dims everyone else, and only the arrows in play stay bright.
+- **Border clashes.** Two columns meeting head on get a starburst with crossed swords on the border between them, a "BORDER CLASH!" banner and a drum-and-steel crash.
+- **The camera swoops.** When your own troops fight, attacking or defending, the map rings the battle, pans and zooms in on it, and the battlefield opens out of the map. It eases back out afterwards.
+- **Garrisons have their own number.**
+  - A land's big number is its army, the soldiers who can march.
+  - Dug-in defenders sit on a gold shield beside it.
+  - A faint empty shield means nobody is dug in yet.
+  - Cards and tips say "3 armies · 1 dug in" instead of adding them together.
+- **Orders.** Attack and march cards have a ✓ OK button (and Enter) as well as the ✕.
+- **Cards on the table.** The Cards button opens your hand as painted cards. Pick three, or let it pick the best set, and turn them in. It says what a set is worth right now.
+- **Wording.** Placing new troops is now "recruits", so "reinforcement" means the phase after the battles.
+
+### The battlefield grows up
+
+- **Risk pieces.** Armies are counted in Risk pieces: a cannon for every 10, a cavalryman for every 5, and infantry for the rest.
+  - A loss that can't come from the men topples a horse, and four men march up to make change.
+  - The same goes for a cannon: it becomes a horse and four men.
+- **New tin figures and moves** (Ludo):
+  - A dragoon on a base plate that idles, gallops, charges and rears.
+  - A field gun with crew that idles, fires with a big smoke burst and reloads.
+  - Infantry now also kneel and fire, reload, charge with the bayonet, and cheer.
+  - Every sheet is checked for clipping and loop seams. The breathing idles play back and forth where their loops weren't seamless. Kneel-and-fire and the cheer rise out of the stance, played in a custom frame order.
+- **Melees on the field.** Several invaders share the left of the field, each army in its own band with its own ring, count, dice and calls.
+- **Victory.** Winners cheer, and horses rear.
+
+### Sound
+
+- **Music that doesn't restart.** Each mood is now a playlist of takes. A take plays through once, and six seconds before its ending it crossfades into another take of the same mood. It never snaps from a crescendo back to a quiet opening.
+- **New tracks.** Eight were written as steady loops with no intro or ending:
+  - a second anthem
+  - two war-council takes
+  - two battle marches
+  - two cavalry charges
+  - a marching tune for the reinforcement phase
+- **New sounds.** Melee, border clash, the march, a war horse, a heavy gun, cards fanned out and turned in, and the camera's swoop.
+- **New lines.** The chief of staff now has lines for the reinforcement phase and for melees.
+- **Commander voices, second take.** Settings → Commander voices → *New take*. The advisor's clone had a long, calm sample line, and the commanders' had short shouted ones. The new takes are cloned from long, natural samples. The originals remain the default.
+
+### Tools
+
+- `tools/melee_sim.py`: compares melee rule candidates.
+- `tools/shots/v13.gd`: the v1.3 probe. It plays a three-way melee with live calls and replays it, then runs the reinforcement phase, a border clash and the cards.
+- The arena counts melees and follows the v1.3 rules by default (`moves=1 wild=0`).
+- `tools/ludo/v13_content.py`: the figures, music and sound, and the second voice take.
+- Ludo credits this pass: about 150, for 91 generations. The running total is about 560.
+
 ## v1.2 — 25 Sep 2026: the empire pass
 
 ### Amendment 9: battle calls — press on, reserves, or fall back

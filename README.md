@@ -30,10 +30,11 @@ That builds `build/CONCURRENT-mac.zip` and `build/windows/CONCURRENT.exe`.
 - **Attack.** Send armies from your land at a neighbor. They leave home the moment orders are sealed. One must stay behind unless the land is dug in.
 - **Battles.** Roll by roll: each volley both sides score die × 5 + armies, and the lower score loses a man (ties go to the attacker). In your own battles you press ROLL. A setup option switches to one decisive roll (armies + a die); both styles give the same odds.
 - **Battle calls.** An assault runs in exchanges of three volleys. After each one the attacker calls it: **press on**, throw in the **reserves** still at home (once), or **fall back** and save the survivors. Watch your own battles and you make the calls. Otherwise your officers follow the standing order on the attack (officer's judgment, to the last man, all in, or fall back if it turns).
-- **Clashes and spoils.** Two lands attacking each other meet in the field first. Several invaders on one land fight the defender, then each other.
-- **Surge.** Name a second target. If the first attack wins, everyone but one pushes on, after all other battles.
-- **Dig in.** Every round you keep a land it gains a dug-in defender (the shield), who never marches.
-- **Cards** (bigger maps). Capturing earns a card. Sets trade for 4, 6, 8, 10, then 5 more each time.
+- **Clashes and melees.** Two lands attacking each other meet in the field first. Several commanders storming one land fight it at once: the defenders split their strength across the fronts, and the survivors then fight for the spoils.
+- **Surge.** Order it from the land you're attacking: if you take it, everyone who took it (from every direction) but one pushes on, after all other battles.
+- **Reinforcement phase.** After the battles, everyone marches troops between their own neighbouring lands, one land per soldier, then the next orders begin.
+- **Dig in.** Every round you keep a land it gains a dug-in defender, who never marches. The big number on a land is its army; the dug-in defenders sit on the gold shield beside it.
+- **Cards** (bigger maps). Capturing earns a card: infantry, cavalry or artillery. Three alike or one of each turn in for 4, 6, 8, 10, then 5 more each time.
 - **Winning.** After the last round, the highest score wins (lands + region bonuses). Holding 80% of the map, or being the last one standing, wins at once.
 
 ## What's in the box
@@ -55,11 +56,12 @@ That builds `build/CONCURRENT-mac.zip` and `build/windows/CONCURRENT.exe`.
 | Select a land | Click it |
 | Reinforce | Click your selected land again, or **+** in the order sheet. Right-click removes one. |
 | Attack | With your land selected, click an enemy neighbor, or drag from your land onto it |
-| Move (from round 2) | Drag from your land onto another of yours, or **Move** in the sheet |
+| March (reinforcement phase) | Drag from your land onto a neighbouring land of yours, or click one then the other; **Advisor's marches** plans them all |
 | Surge | **Surge onward…** on an order, then click the next land |
 | Seal | **Seal Orders** (or ⌘↩) |
 | Zoom / pan | Mouse wheel or pinch / drag the sea or two-finger scroll; ⤢ shows the whole map |
-| Edit an attack | Click the number on its arrow |
+| Edit an attack or march | Click the number on its arrow; ✓ OK or Enter closes the card |
+| Cards | **Cards** in the command bar opens your hand |
 | Advisor's plan | The button in the dispatch panel drafts a whole sheet; adopt it or keep yours |
 | Map view | **View** coin or V: owner colours ↔ region colours |
 | Battle scene | Space / ROLL = roll the next exchange; at a call Space = press on, R = reserves, F = fall back; Esc = skip the battles |
@@ -83,13 +85,13 @@ tests/       headless suite: kernel, queue T1–T8, properties, cards, AI, sessi
 
 | Command | What |
 |---|---|
-| `./scripts/test.sh` | Full headless suite (367 checks) |
+| `./scripts/test.sh` | Full headless suite (399 checks) |
 | `godot --headless --path . --script res://tools/compile_check.gd` | Compile every script (catches UI errors in seconds) |
 | `godot --headless --path . --script res://tools/arena.gd -- map=world30 n=40 seats=general,veteran,hask` | AI tournament: win rates, game length, walk-ins, combat bands |
 | `./scripts/combat_sim.sh` | Combat capture bands |
 | `node tools/mapgen/mapgen.mjs knife7 known24 world30` | Regenerate map geography from `tools/mapgen/*.geo.json` |
 | `python3 tools/ludo/ludo.py [ids…]` | Generate missing art/audio from `tools/ludo/manifest.json` (reads `LUDO_API_KEY` from `.env.local`; idempotent) |
-| `./scripts/shot.sh ui` | Drive the real client and save screenshots (`SHOT_DIR=…`); `calls` plays a battle with live calls, `input` clicks with the real mouse path |
+| `./scripts/shot.sh ui` | Drive the real client and save screenshots (`SHOT_DIR=…`); `calls` plays a battle with live calls, `v13` a melee, the reinforcement phase and the cards, `input` clicks with the real mouse path |
 | `python3 tools/ludo/v12_content.py` | Rewrite the v1.2 manifest entries and `game/data/lines.json` (version-bumps anything whose prompt changed) |
 | `python3 tools/ludo/pack_anims.py [--fetch]` | Pack Ludo animation masters into game sheets, checking every loop's seam and clipping |
 | `./scripts/cli.sh play --seed 42` | Text-mode knife-fight vs the monkey |

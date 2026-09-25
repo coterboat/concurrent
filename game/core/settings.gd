@@ -20,6 +20,9 @@ var data := {
 	"ceilings": true,
 	"last_setup": {},
 	"seen_tutorial": false,
+	"commander_voices": "classic", ## classic | new (v1.3 second take)
+	"stance": "judgment",
+	"calls_seen": 0,
 }
 
 

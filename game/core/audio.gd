@@ -102,23 +102,75 @@ func sfx(name: String, volume_db: float = 0.0, pitch_jitter: float = 0.04) -> vo
 	p.play()
 
 
+## v1.3 music: each mood is a playlist of takes. A take plays through once, and a few
+## seconds before its ending swells it crossfades into another take of the same mood,
+## so the music never snaps from a crescendo back to a quiet opening.
+const PLAYLISTS := {
+	"menu": ["menu", "menu_2"],
+	"plan": ["plan", "plan_2", "plan_3"],
+	"battle": ["battle", "battle_2", "battle_3"],
+	"charge": ["charge", "charge_2", "charge_3"],
+	"muster": ["muster", "plan_2"],
+}
+const XFADE := 6.0 ## seconds of overlap between takes
+var _take := "" ## file playing now
+var _player_now: AudioStreamPlayer
+var _looping := true
+
+
 func music(name: String, fade: float = 1.2, loop: bool = true) -> void:
 	if name == _current:
 		return
 	_current = name
-	var s: AudioStream = _stream(MUSIC_DIR + name, loop) if name != "" else null
-	var old: AudioStreamPlayer = _music_a if _music_a.playing else _music_b
+	_looping = loop
+	if name == "":
+		_crossfade("", fade)
+		return
+	_crossfade(_next_take(name), fade)
+
+
+func _next_take(mood: String) -> String:
+	var takes: Array = PLAYLISTS.get(mood, [mood])
+	var have: Array = []
+	for t in takes:
+		if _stream(MUSIC_DIR + str(t)) != null:
+			have.append(str(t))
+	if have.is_empty():
+		return mood
+	if have.size() > 1:
+		have.erase(_take) ## never the same take twice running
+	return str(have[randi() % have.size()])
+
+
+func _crossfade(take: String, fade: float) -> void:
+	var old: AudioStreamPlayer = _player_now if _player_now != null else _music_a
 	var nxt: AudioStreamPlayer = _music_b if old == _music_a else _music_a
 	if old.playing:
 		var tw := create_tween()
 		tw.tween_property(old, "volume_db", -40.0, fade)
 		tw.tween_callback(old.stop)
-	if s != null:
-		nxt.stream = s
-		nxt.volume_db = -40.0
-		nxt.play()
-		var tw2 := create_tween()
-		tw2.tween_property(nxt, "volume_db", 0.0, fade)
+	_take = take
+	if take == "":
+		_player_now = nxt
+		return
+	var s: AudioStream = _stream(MUSIC_DIR + take, false) ## played through once; the playlist does the looping
+	if s == null:
+		return
+	nxt.stream = s
+	nxt.volume_db = -40.0
+	nxt.play()
+	_player_now = nxt
+	var tw2 := create_tween()
+	tw2.tween_property(nxt, "volume_db", 0.0, fade)
+
+
+func _process(_delta: float) -> void:
+	## hand over to the next take before this one's ending
+	if not _looping or _player_now == null or not _player_now.playing or _player_now.stream == null or _current == "":
+		return
+	var length: float = _player_now.stream.get_length()
+	if length > XFADE * 3.0 and _player_now.get_playback_position() >= length - XFADE:
+		_crossfade(_next_take(_current), XFADE)
 
 
 func voice(path: String) -> float:

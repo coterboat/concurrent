@@ -61,6 +61,87 @@
   "url": "https://storage.googleapis.com/ludo-assets/api/c635925a0742dbad92e95a8fd7941734.webp",
   "v": 2
  },
+ "cannon_fire_anim": {
+  "credits": 4,
+  "endpoint": "/assets/sprite/animate",
+  "file": "assets/raw/battle/cannon_fire.webp",
+  "id": "cannon_fire_anim",
+  "job": "47b437af-0d9d-43ec-9a72-5ffb5ce7fd6b",
+  "params": {
+   "crop": false,
+   "duration": 2,
+   "final_image": "data:image/png;base64,iVBORw0KGgoAAAANSU...(base64)",
+   "frame_size": -9,
+   "frames": 16,
+   "image_type": "sprite",
+   "initial_image": "data:image/png;base64,iVBORw0KGgoAAAANSU...(base64)",
+   "loop": false,
+   "model": "forge",
+   "motion_prompt": "the cannon fires with a big burst of smoke and flame from the muzzle on the right and recoils backward, then the crew roll it back into place exactly as at the start"
+  },
+  "url": "https://storage.googleapis.com/ludo-assets/api/8a42a4bb44ba26c370b9b527e6b4285a.webp",
+  "v": 1
+ },
+ "cannon_idle_anim": {
+  "credits": 4,
+  "endpoint": "/assets/sprite/animate",
+  "file": "assets/raw/battle/cannon_idle.webp",
+  "id": "cannon_idle_anim",
+  "job": "73ae7c98-4f2e-457c-9bc1-a0ed1ac172b7",
+  "params": {
+   "crop": false,
+   "duration": 2,
+   "final_image": "data:image/png;base64,iVBORw0KGgoAAAANSU...(base64)",
+   "frame_size": -9,
+   "frames": 16,
+   "image_type": "sprite",
+   "initial_image": "data:image/png;base64,iVBORw0KGgoAAAANSU...(base64)",
+   "loop": false,
+   "model": "forge",
+   "motion_prompt": "the crew stand ready beside the cannon, breathing, small natural movements"
+  },
+  "url": "https://storage.googleapis.com/ludo-assets/api/3be2e0fafb80cef95259ce03f1a64bfd.webp",
+  "v": 1
+ },
+ "cannon_reload_anim": {
+  "credits": 4,
+  "endpoint": "/assets/sprite/animate",
+  "file": "assets/raw/battle/cannon_reload.webp",
+  "id": "cannon_reload_anim",
+  "job": "81d8cbef-5f5d-43cf-8f4e-361f75c33f0c",
+  "params": {
+   "crop": false,
+   "duration": 2,
+   "final_image": "data:image/png;base64,iVBORw0KGgoAAAANSU...(base64)",
+   "frame_size": -9,
+   "frames": 16,
+   "image_type": "sprite",
+   "initial_image": "data:image/png;base64,iVBORw0KGgoAAAANSU...(base64)",
+   "loop": false,
+   "model": "forge",
+   "motion_prompt": "the crew swab and ram the barrel, then stand ready again exactly as at the start"
+  },
+  "url": "https://storage.googleapis.com/ludo-assets/api/12afddd51b575c11e6def37eb40b1eb0.webp",
+  "v": 1
+ },
+ "cannon_stand": {
+  "credits": 0.5,
+  "endpoint": "/assets/image",
+  "file": "assets/raw/battle/cannon_stand.png",
+  "id": "cannon_stand",
+  "job": "ca259d6c-abf8-43bd-be64-1a6c419063c9",
+  "params": {
+   "art_style": "Hand-Painted",
+   "aspect_ratio": "ar_4_3",
+   "augment_prompt": true,
+   "image_type": "sprite",
+   "n": 1,
+   "perspective": "Side-Scroll",
+   "prompt": "A single toy field cannon on a wooden-wheeled carriage with two artillerymen crew standing beside it holding a rammer, full body side view with the barrel pointing right, the whole figure painted pure white and very light grey with no other colors, glossy painted tin-soldier miniature look, isolated on a plain white background"
+  },
+  "url": "https://storage.googleapis.com/ludo-assets/api/a83e0a11b11658d79502ea439dc4185e.png",
+  "v": 1
+ },
  "card_back": {
   "credits": 0.5,
   "endpoint": "/assets/image",
@@ -150,6 +231,108 @@
   },
   "url": "https://storage.googleapis.com/ludo-assets/api/48e09e5ca946f46727859fba4fe4f607.webp",
   "v": 2
+ },
+ "cavalry_charge_anim": {
+  "credits": 4,
+  "endpoint": "/assets/sprite/animate",
+  "file": "assets/raw/battle/cavalry_charge.webp",
+  "id": "cavalry_charge_anim",
+  "job": "a1fabb30-8073-4b9b-aa8a-129ae3bffd53",
+  "params": {
+   "crop": false,
+   "duration": 2,
+   "final_image": "data:image/png;base64,iVBORw0KGgoAAAANSU...(base64)",
+   "frame_size": -9,
+   "frames": 16,
+   "image_type": "sprite",
+   "initial_image": "data:image/png;base64,iVBORw0KGgoAAAANSU...(base64)",
+   "loop": false,
+   "model": "forge",
+   "motion_prompt": "charges at full gallop with the sabre pointed forward, a gallop cycle"
+  },
+  "url": "https://storage.googleapis.com/ludo-assets/api/d23a45db3291ce1cd1f61715ea190593.webp",
+  "v": 1
+ },
+ "cavalry_gallop_anim": {
+  "credits": 4,
+  "endpoint": "/assets/sprite/animate",
+  "file": "assets/raw/battle/cavalry_gallop.webp",
+  "id": "cavalry_gallop_anim",
+  "job": "b30c63a7-3e54-4107-811c-dcebe93ad583",
+  "params": {
+   "crop": false,
+   "duration": 2,
+   "final_image": "data:image/png;base64,iVBORw0KGgoAAAANSU...(base64)",
+   "frame_size": -9,
+   "frames": 16,
+   "image_type": "sprite",
+   "initial_image": "data:image/png;base64,iVBORw0KGgoAAAANSU...(base64)",
+   "loop": false,
+   "model": "forge",
+   "motion_prompt": "gallops forward in place, a smooth gallop cycle, the rider holding the sabre"
+  },
+  "url": "https://storage.googleapis.com/ludo-assets/api/c094ae9bddf2c5554e4197f4c9076b80.webp",
+  "v": 1
+ },
+ "cavalry_idle_anim": {
+  "credits": 4,
+  "endpoint": "/assets/sprite/animate",
+  "file": "assets/raw/battle/cavalry_idle.webp",
+  "id": "cavalry_idle_anim",
+  "job": "43c0892a-d59a-4a12-912d-8efdd15b01f3",
+  "params": {
+   "crop": false,
+   "duration": 2,
+   "final_image": "data:image/png;base64,iVBORw0KGgoAAAANSU...(base64)",
+   "frame_size": -9,
+   "frames": 16,
+   "image_type": "sprite",
+   "initial_image": "data:image/png;base64,iVBORw0KGgoAAAANSU...(base64)",
+   "loop": false,
+   "model": "forge",
+   "motion_prompt": "the horse shifts its weight and swishes its tail while the rider sits still, subtle idle motion"
+  },
+  "url": "https://storage.googleapis.com/ludo-assets/api/f22257a5e1e3e037f50b9fd361ac3e77.webp",
+  "v": 1
+ },
+ "cavalry_rear_anim": {
+  "credits": 4,
+  "endpoint": "/assets/sprite/animate",
+  "file": "assets/raw/battle/cavalry_rear.webp",
+  "id": "cavalry_rear_anim",
+  "job": "8e452543-855b-459c-9437-2fc950f2c459",
+  "params": {
+   "crop": false,
+   "duration": 2,
+   "final_image": "data:image/png;base64,iVBORw0KGgoAAAANSU...(base64)",
+   "frame_size": -9,
+   "frames": 16,
+   "image_type": "sprite",
+   "initial_image": "data:image/png;base64,iVBORw0KGgoAAAANSU...(base64)",
+   "loop": false,
+   "model": "forge",
+   "motion_prompt": "the horse rears up on its hind legs while the rider raises the sabre high, then comes back down exactly as at the start"
+  },
+  "url": "https://storage.googleapis.com/ludo-assets/api/175485fc5541d67611431cf4849dfe35.webp",
+  "v": 1
+ },
+ "cavalry_stand": {
+  "credits": 0.5,
+  "endpoint": "/assets/image",
+  "file": "assets/raw/battle/cavalry_stand.png",
+  "id": "cavalry_stand",
+  "job": "cd6bf7ab-5eb9-4165-92ee-324855320439",
+  "params": {
+   "art_style": "Hand-Painted",
+   "aspect_ratio": "ar_4_3",
+   "augment_prompt": true,
+   "image_type": "sprite",
+   "n": 1,
+   "perspective": "Side-Scroll",
+   "prompt": "A single toy cavalry dragoon on horseback, the rider in a tall crested helmet holding a sabre upright, the horse standing square, full body side view facing right, the whole figure painted pure white and very light grey with no other colors, glossy painted tin-soldier miniature look, isolated on a plain white background"
+  },
+  "url": "https://storage.googleapis.com/ludo-assets/api/0bf791e1c914b944a4145cd1b5cc13fe.png",
+  "v": 1
  },
  "chart_cartouche": {
   "credits": 0.5,
@@ -1124,6 +1307,708 @@
   },
   "url": "https://storage.googleapis.com/ludo-assets/api/ba3e2e083ff88d1dd03b1f2114f33e46.png"
  },
+ "line2_hask_attack": {
+  "credits": 1,
+  "endpoint": "/audio/speech",
+  "file": "assets/voice13/hask/attack.mp3",
+  "id": "line2_hask_attack",
+  "job": "6d9add00-a01e-4e69-8843-5b991103934a",
+  "params": {
+   "sample": "https://storage.googleapis.com/ludo-assets/api/68f97e86657c680226e7a504-3d2eec8e8b2e5a8f9142ab29d97cbcd7.mp3",
+   "text": "Haaa! Break them! Burn their boats!"
+  },
+  "url": "https://storage.googleapis.com/ludo-assets/api/68f97e86657c680226e7a504-69c8f4c061e56359c2fe5d4c16dc82fa.mp3",
+  "v": 1
+ },
+ "line2_hask_eliminated": {
+  "credits": 1,
+  "endpoint": "/audio/speech",
+  "file": "assets/voice13/hask/eliminated.mp3",
+  "id": "line2_hask_eliminated",
+  "job": "8815e974-18e4-4e78-b63a-fcdba2bcfeee",
+  "params": {
+   "sample": "https://storage.googleapis.com/ludo-assets/api/68f97e86657c680226e7a504-3d2eec8e8b2e5a8f9142ab29d97cbcd7.mp3",
+   "text": "Bah! Pour me a drink. I am done."
+  },
+  "url": "https://storage.googleapis.com/ludo-assets/api/68f97e86657c680226e7a504-7f8846fdfc1d9a2cc6d8b87b985dd1ad.mp3",
+  "v": 1
+ },
+ "line2_hask_greet": {
+  "credits": 1,
+  "endpoint": "/audio/speech",
+  "file": "assets/voice13/hask/greet.mp3",
+  "id": "line2_hask_greet",
+  "job": "8cb6ec5d-17b3-42fb-8bb0-0ee269c8b251",
+  "params": {
+   "sample": "https://storage.googleapis.com/ludo-assets/api/68f97e86657c680226e7a504-3d2eec8e8b2e5a8f9142ab29d97cbcd7.mp3",
+   "text": "Commodore Hask, the Old Bear! Bring me your best, little general, and I will sink it!"
+  },
+  "url": "https://storage.googleapis.com/ludo-assets/api/68f97e86657c680226e7a504-47b71edf4d74c1c6bee035a378989f1d.mp3",
+  "v": 1
+ },
+ "line2_hask_lose": {
+  "credits": 1,
+  "endpoint": "/audio/speech",
+  "file": "assets/voice13/hask/lose.mp3",
+  "id": "line2_hask_lose",
+  "job": "ceb7490c-76de-4808-902f-7c44b1f8aab3",
+  "params": {
+   "sample": "https://storage.googleapis.com/ludo-assets/api/68f97e86657c680226e7a504-3d2eec8e8b2e5a8f9142ab29d97cbcd7.mp3",
+   "text": "Grr. Lucky blow."
+  },
+  "url": "https://storage.googleapis.com/ludo-assets/api/68f97e86657c680226e7a504-4552e68532c25678246a724e542a4f23.mp3",
+  "v": 1
+ },
+ "line2_hask_reserves": {
+  "credits": 1,
+  "endpoint": "/audio/speech",
+  "file": "assets/voice13/hask/reserves.mp3",
+  "id": "line2_hask_reserves",
+  "job": "3c563e1c-78e2-4264-bb12-4c6d8c2e3678",
+  "params": {
+   "sample": "https://storage.googleapis.com/ludo-assets/api/68f97e86657c680226e7a504-3d2eec8e8b2e5a8f9142ab29d97cbcd7.mp3",
+   "text": "More! Send more! The Bear is hungry!"
+  },
+  "url": "https://storage.googleapis.com/ludo-assets/api/68f97e86657c680226e7a504-3e85dfe0ed20a34e2249d426c8612c44.mp3",
+  "v": 1
+ },
+ "line2_hask_retreat": {
+  "credits": 1,
+  "endpoint": "/audio/speech",
+  "file": "assets/voice13/hask/retreat.mp3",
+  "id": "line2_hask_retreat",
+  "job": "87a0e543-f1c9-4f66-869e-f27f0aae4728",
+  "params": {
+   "sample": "https://storage.googleapis.com/ludo-assets/api/68f97e86657c680226e7a504-3d2eec8e8b2e5a8f9142ab29d97cbcd7.mp3",
+   "text": "Back to the ships! I will be back for you!"
+  },
+  "url": "https://storage.googleapis.com/ludo-assets/api/68f97e86657c680226e7a504-f13e6409524b18e93fdb3efc0ff749b9.mp3",
+  "v": 1
+ },
+ "line2_hask_victory": {
+  "credits": 1,
+  "endpoint": "/audio/speech",
+  "file": "assets/voice13/hask/victory.mp3",
+  "id": "line2_hask_victory",
+  "job": "72ffaea2-53fb-47fb-896c-8381957a9c19",
+  "params": {
+   "sample": "https://storage.googleapis.com/ludo-assets/api/68f97e86657c680226e7a504-3d2eec8e8b2e5a8f9142ab29d97cbcd7.mp3",
+   "text": "The Bear rules land and sea! Ha ha ha!"
+  },
+  "url": "https://storage.googleapis.com/ludo-assets/api/68f97e86657c680226e7a504-32c5c309225d387c2192d3de2902e3d7.mp3",
+  "v": 1
+ },
+ "line2_hask_walkin": {
+  "credits": 1,
+  "endpoint": "/audio/speech",
+  "file": "assets/voice13/hask/walkin.mp3",
+  "id": "line2_hask_walkin",
+  "job": "c2935797-f87d-411b-a876-dbbbe970eb59",
+  "params": {
+   "sample": "https://storage.googleapis.com/ludo-assets/api/68f97e86657c680226e7a504-3d2eec8e8b2e5a8f9142ab29d97cbcd7.mp3",
+   "text": "Empty? Then it is mine!"
+  },
+  "url": "https://storage.googleapis.com/ludo-assets/api/68f97e86657c680226e7a504-fdc88f76b37b80422e59760405913900.mp3",
+  "v": 1
+ },
+ "line2_hask_win": {
+  "credits": 1,
+  "endpoint": "/audio/speech",
+  "file": "assets/voice13/hask/win.mp3",
+  "id": "line2_hask_win",
+  "job": "22fc4bf8-55d6-4316-a2ab-9e811de66751",
+  "params": {
+   "sample": "https://storage.googleapis.com/ludo-assets/api/68f97e86657c680226e7a504-3d2eec8e8b2e5a8f9142ab29d97cbcd7.mp3",
+   "text": "Hah! Soft as butter!"
+  },
+  "url": "https://storage.googleapis.com/ludo-assets/api/68f97e86657c680226e7a504-2873e7b4609ef6af3bda925921274d7a.mp3",
+  "v": 1
+ },
+ "line2_imre_attack": {
+  "credits": 1,
+  "endpoint": "/audio/speech",
+  "file": "assets/voice13/imre/attack.mp3",
+  "id": "line2_imre_attack",
+  "job": "7c9310b9-5389-4a0b-af49-763ca278896f",
+  "params": {
+   "sample": "https://storage.googleapis.com/ludo-assets/api/68f97e86657c680226e7a504-19c95d3411c64cbe9552b17ed229dd62.mp3",
+   "text": "Exactly as planned. Proceed."
+  },
+  "url": "https://storage.googleapis.com/ludo-assets/api/68f97e86657c680226e7a504-7409a36f899a39141851a06e44ea9890.mp3",
+  "v": 1
+ },
+ "line2_imre_eliminated": {
+  "credits": 1,
+  "endpoint": "/audio/speech",
+  "file": "assets/voice13/imre/eliminated.mp3",
+  "id": "line2_imre_eliminated",
+  "job": "e890c3f2-0892-4c49-ba99-e8385d369513",
+  "params": {
+   "sample": "https://storage.googleapis.com/ludo-assets/api/68f97e86657c680226e7a504-19c95d3411c64cbe9552b17ed229dd62.mp3",
+   "text": "Well played. I underestimated you."
+  },
+  "url": "https://storage.googleapis.com/ludo-assets/api/68f97e86657c680226e7a504-27c10ae517c725d6a0643f6ef505eb2f.mp3",
+  "v": 1
+ },
+ "line2_imre_greet": {
+  "credits": 1,
+  "endpoint": "/audio/speech",
+  "file": "assets/voice13/imre/greet.mp3",
+  "id": "line2_imre_greet",
+  "job": "412effc6-4bcf-4a36-bc6e-72f106f171b8",
+  "params": {
+   "sample": "https://storage.googleapis.com/ludo-assets/api/68f97e86657c680226e7a504-19c95d3411c64cbe9552b17ed229dd62.mp3",
+   "text": "Admiral Imre. I have already read your plan."
+  },
+  "url": "https://storage.googleapis.com/ludo-assets/api/68f97e86657c680226e7a504-ec6d849e9f8232d0d8e5e4707dc3d193.mp3",
+  "v": 1
+ },
+ "line2_imre_lose": {
+  "credits": 1,
+  "endpoint": "/audio/speech",
+  "file": "assets/voice13/imre/lose.mp3",
+  "id": "line2_imre_lose",
+  "job": "0cd9e330-6011-4db0-875b-05bca354bbb7",
+  "params": {
+   "sample": "https://storage.googleapis.com/ludo-assets/api/68f97e86657c680226e7a504-19c95d3411c64cbe9552b17ed229dd62.mp3",
+   "text": "Interesting. I will adjust."
+  },
+  "url": "https://storage.googleapis.com/ludo-assets/api/68f97e86657c680226e7a504-16da636753280b2ad64cbe6cfcc8a7d3.mp3",
+  "v": 1
+ },
+ "line2_imre_reserves": {
+  "credits": 1,
+  "endpoint": "/audio/speech",
+  "file": "assets/voice13/imre/reserves.mp3",
+  "id": "line2_imre_reserves",
+  "job": "6ab06cd7-e724-4c53-8b49-7148e22f6ece",
+  "params": {
+   "sample": "https://storage.googleapis.com/ludo-assets/api/68f97e86657c680226e7a504-19c95d3411c64cbe9552b17ed229dd62.mp3",
+   "text": "Commit the reserve. Now."
+  },
+  "url": "https://storage.googleapis.com/ludo-assets/api/68f97e86657c680226e7a504-7e60bde3623bd106743ccb4a861896ed.mp3",
+  "v": 1
+ },
+ "line2_imre_retreat": {
+  "credits": 1,
+  "endpoint": "/audio/speech",
+  "file": "assets/voice13/imre/retreat.mp3",
+  "id": "line2_imre_retreat",
+  "job": "022ad2da-f9fe-486d-a96a-1ff5a0729d7e",
+  "params": {
+   "sample": "https://storage.googleapis.com/ludo-assets/api/68f97e86657c680226e7a504-19c95d3411c64cbe9552b17ed229dd62.mp3",
+   "text": "The odds have turned. We withdraw."
+  },
+  "url": "https://storage.googleapis.com/ludo-assets/api/68f97e86657c680226e7a504-0c3776f30e502e5995674e6d1719012b.mp3",
+  "v": 1
+ },
+ "line2_imre_victory": {
+  "credits": 1,
+  "endpoint": "/audio/speech",
+  "file": "assets/voice13/imre/victory.mp3",
+  "id": "line2_imre_victory",
+  "job": "931c3cdf-3faa-4756-a2c6-8e5a7eb70308",
+  "params": {
+   "sample": "https://storage.googleapis.com/ludo-assets/api/68f97e86657c680226e7a504-19c95d3411c64cbe9552b17ed229dd62.mp3",
+   "text": "Checkmate."
+  },
+  "url": "https://storage.googleapis.com/ludo-assets/api/68f97e86657c680226e7a504-dce143eaa2b85e35177763706680f5b5.mp3",
+  "v": 1
+ },
+ "line2_imre_walkin": {
+  "credits": 1,
+  "endpoint": "/audio/speech",
+  "file": "assets/voice13/imre/walkin.mp3",
+  "id": "line2_imre_walkin",
+  "job": "176255a6-fd93-4124-9f3a-b06efcdc61a0",
+  "params": {
+   "sample": "https://storage.googleapis.com/ludo-assets/api/68f97e86657c680226e7a504-19c95d3411c64cbe9552b17ed229dd62.mp3",
+   "text": "You moved. I did not. That was the whole trick."
+  },
+  "url": "https://storage.googleapis.com/ludo-assets/api/68f97e86657c680226e7a504-4b5aa8ee5a7f2a8fe61ad7aae98406ce.mp3",
+  "v": 1
+ },
+ "line2_imre_win": {
+  "credits": 1,
+  "endpoint": "/audio/speech",
+  "file": "assets/voice13/imre/win.mp3",
+  "id": "line2_imre_win",
+  "job": "d075434d-9339-4ce5-9f87-8a9a4b7d4694",
+  "params": {
+   "sample": "https://storage.googleapis.com/ludo-assets/api/68f97e86657c680226e7a504-19c95d3411c64cbe9552b17ed229dd62.mp3",
+   "text": "Calculated."
+  },
+  "url": "https://storage.googleapis.com/ludo-assets/api/68f97e86657c680226e7a504-2d1c75a5f0b086d57aeace2cf89f88ba.mp3",
+  "v": 1
+ },
+ "line2_oren_attack": {
+  "credits": 1,
+  "endpoint": "/audio/speech",
+  "file": "assets/voice13/oren/attack.mp3",
+  "id": "line2_oren_attack",
+  "job": "1d6a70e9-8586-4c2b-b607-2bfd376e8fa3",
+  "params": {
+   "sample": "https://storage.googleapis.com/ludo-assets/api/68f97e86657c680226e7a504-8b67f52eb26e376da40b43970205f352.mp3",
+   "text": "Charge! For glory!"
+  },
+  "url": "https://storage.googleapis.com/ludo-assets/api/68f97e86657c680226e7a504-1a52b2aeab80678c0712e874681d4d61.mp3",
+  "v": 1
+ },
+ "line2_oren_eliminated": {
+  "credits": 1,
+  "endpoint": "/audio/speech",
+  "file": "assets/voice13/oren/eliminated.mp3",
+  "id": "line2_oren_eliminated",
+  "job": "f0ab7425-6507-4767-85f1-baea05b0c86a",
+  "params": {
+   "sample": "https://storage.googleapis.com/ludo-assets/api/68f97e86657c680226e7a504-8b67f52eb26e376da40b43970205f352.mp3",
+   "text": "I will be back. With more horses."
+  },
+  "url": "https://storage.googleapis.com/ludo-assets/api/68f97e86657c680226e7a504-a97deb1ba7ee90f17480d5842b5c9740.mp3",
+  "v": 1
+ },
+ "line2_oren_greet": {
+  "credits": 1,
+  "endpoint": "/audio/speech",
+  "file": "assets/voice13/oren/greet.mp3",
+  "id": "line2_oren_greet",
+  "job": "ef003961-5355-4054-97df-c1916c21dded",
+  "params": {
+   "sample": "https://storage.googleapis.com/ludo-assets/api/68f97e86657c680226e7a504-8b67f52eb26e376da40b43970205f352.mp3",
+   "text": "Captain Oren of the Hussars! First war, but I have a very fast horse!"
+  },
+  "url": "https://storage.googleapis.com/ludo-assets/api/68f97e86657c680226e7a504-e570bbce55d8af62ce33e3e1465df7a3.mp3",
+  "v": 1
+ },
+ "line2_oren_lose": {
+  "credits": 1,
+  "endpoint": "/audio/speech",
+  "file": "assets/voice13/oren/lose.mp3",
+  "id": "line2_oren_lose",
+  "job": "c1989994-00db-4371-bac5-4e9f7ad93925",
+  "params": {
+   "sample": "https://storage.googleapis.com/ludo-assets/api/68f97e86657c680226e7a504-8b67f52eb26e376da40b43970205f352.mp3",
+   "text": "Wait, that was not supposed to happen!"
+  },
+  "url": "https://storage.googleapis.com/ludo-assets/api/68f97e86657c680226e7a504-4a1bec15bc26a8a5cad11a6946ef05bc.mp3",
+  "v": 1
+ },
+ "line2_oren_reserves": {
+  "credits": 1,
+  "endpoint": "/audio/speech",
+  "file": "assets/voice13/oren/reserves.mp3",
+  "id": "line2_oren_reserves",
+  "job": "20d3bdf3-c8c4-460f-8f73-c53dd79e96d4",
+  "params": {
+   "sample": "https://storage.googleapis.com/ludo-assets/api/68f97e86657c680226e7a504-8b67f52eb26e376da40b43970205f352.mp3",
+   "text": "Everybody! Everybody charge!"
+  },
+  "url": "https://storage.googleapis.com/ludo-assets/api/68f97e86657c680226e7a504-534907cfbcc78ea6ca64149d40fcea9f.mp3",
+  "v": 1
+ },
+ "line2_oren_retreat": {
+  "credits": 1,
+  "endpoint": "/audio/speech",
+  "file": "assets/voice13/oren/retreat.mp3",
+  "id": "line2_oren_retreat",
+  "job": "98e9d2cf-f8f2-4b9c-a391-fadd3a4bf75c",
+  "params": {
+   "sample": "https://storage.googleapis.com/ludo-assets/api/68f97e86657c680226e7a504-8b67f52eb26e376da40b43970205f352.mp3",
+   "text": "Retreat! Tactical retreat! Very tactical!"
+  },
+  "url": "https://storage.googleapis.com/ludo-assets/api/68f97e86657c680226e7a504-3561a58805f1ddff9ea5649c276cb7a6.mp3",
+  "v": 1
+ },
+ "line2_oren_victory": {
+  "credits": 1,
+  "endpoint": "/audio/speech",
+  "file": "assets/voice13/oren/victory.mp3",
+  "id": "line2_oren_victory",
+  "job": "d4e9c590-8081-4692-8e5b-309c8c486c1b",
+  "params": {
+   "sample": "https://storage.googleapis.com/ludo-assets/api/68f97e86657c680226e7a504-8b67f52eb26e376da40b43970205f352.mp3",
+   "text": "I won? I won! Somebody tell my mother!"
+  },
+  "url": "https://storage.googleapis.com/ludo-assets/api/68f97e86657c680226e7a504-0dc14c593f7297b28bb19c4cc2721bf2.mp3",
+  "v": 1
+ },
+ "line2_oren_walkin": {
+  "credits": 1,
+  "endpoint": "/audio/speech",
+  "file": "assets/voice13/oren/walkin.mp3",
+  "id": "line2_oren_walkin",
+  "job": "67e97b39-efb6-4838-8df0-13c7afe1ea3f",
+  "params": {
+   "sample": "https://storage.googleapis.com/ludo-assets/api/68f97e86657c680226e7a504-8b67f52eb26e376da40b43970205f352.mp3",
+   "text": "Nobody home? Do not mind if I do!"
+  },
+  "url": "https://storage.googleapis.com/ludo-assets/api/68f97e86657c680226e7a504-838334a65a9ffb5943091268fb3e873d.mp3",
+  "v": 1
+ },
+ "line2_oren_win": {
+  "credits": 1,
+  "endpoint": "/audio/speech",
+  "file": "assets/voice13/oren/win.mp3",
+  "id": "line2_oren_win",
+  "job": "50eb41e3-c74e-4097-b8bb-221f2b4b9bcf",
+  "params": {
+   "sample": "https://storage.googleapis.com/ludo-assets/api/68f97e86657c680226e7a504-8b67f52eb26e376da40b43970205f352.mp3",
+   "text": "Ha! Did you see that?"
+  },
+  "url": "https://storage.googleapis.com/ludo-assets/api/68f97e86657c680226e7a504-a10016b362e6016521c25d9dee232ca0.mp3",
+  "v": 1
+ },
+ "line2_quill_attack": {
+  "credits": 1,
+  "endpoint": "/audio/speech",
+  "file": "assets/voice13/quill/attack.mp3",
+  "id": "line2_quill_attack",
+  "job": "66b33d73-80d1-4fb6-9cf0-781bda9fda24",
+  "params": {
+   "sample": "https://storage.googleapis.com/ludo-assets/api/68f97e86657c680226e7a504-cf9f39d78debf0feb86cb518794fa307.mp3",
+   "text": "An investment opportunity, lads. Go and collect."
+  },
+  "url": "https://storage.googleapis.com/ludo-assets/api/68f97e86657c680226e7a504-7437822d1f3389587b26ceb3d71154ce.mp3",
+  "v": 1
+ },
+ "line2_quill_eliminated": {
+  "credits": 1,
+  "endpoint": "/audio/speech",
+  "file": "assets/voice13/quill/eliminated.mp3",
+  "id": "line2_quill_eliminated",
+  "job": "7c827844-c9ff-4796-9baf-afbf5c5aa654",
+  "params": {
+   "sample": "https://storage.googleapis.com/ludo-assets/api/68f97e86657c680226e7a504-cf9f39d78debf0feb86cb518794fa307.mp3",
+   "text": "Bankrupt. Well, it was lovely doing business."
+  },
+  "url": "https://storage.googleapis.com/ludo-assets/api/68f97e86657c680226e7a504-03a736200210a6432c80dc477a695d02.mp3",
+  "v": 1
+ },
+ "line2_quill_greet": {
+  "credits": 1,
+  "endpoint": "/audio/speech",
+  "file": "assets/voice13/quill/greet.mp3",
+  "id": "line2_quill_greet",
+  "job": "fc402fdf-3393-4b13-9886-5ce581aecedb",
+  "params": {
+   "sample": "https://storage.googleapis.com/ludo-assets/api/68f97e86657c680226e7a504-cf9f39d78debf0feb86cb518794fa307.mp3",
+   "text": "Governor Quill, of the Company. Everything has its price, and I intend to buy the world."
+  },
+  "url": "https://storage.googleapis.com/ludo-assets/api/68f97e86657c680226e7a504-8be7ae4c23f614c85792281d5883316d.mp3",
+  "v": 1
+ },
+ "line2_quill_lose": {
+  "credits": 1,
+  "endpoint": "/audio/speech",
+  "file": "assets/voice13/quill/lose.mp3",
+  "id": "line2_quill_lose",
+  "job": "c4252279-e894-4f3a-be2e-a46fe8b1e198",
+  "params": {
+   "sample": "https://storage.googleapis.com/ludo-assets/api/68f97e86657c680226e7a504-cf9f39d78debf0feb86cb518794fa307.mp3",
+   "text": "Hm. That will cost me."
+  },
+  "url": "https://storage.googleapis.com/ludo-assets/api/68f97e86657c680226e7a504-16491682727f141549c3e0559d8a3d49.mp3",
+  "v": 1
+ },
+ "line2_quill_reserves": {
+  "credits": 1,
+  "endpoint": "/audio/speech",
+  "file": "assets/voice13/quill/reserves.mp3",
+  "id": "line2_quill_reserves",
+  "job": "52abbd29-b94d-48c1-bdb8-bbdb0dd7aeab",
+  "params": {
+   "sample": "https://storage.googleapis.com/ludo-assets/api/68f97e86657c680226e7a504-cf9f39d78debf0feb86cb518794fa307.mp3",
+   "text": "Double the investment! Send the reserves!"
+  },
+  "url": "https://storage.googleapis.com/ludo-assets/api/68f97e86657c680226e7a504-e14a2958f244d6828aaff3e96dfdd97d.mp3",
+  "v": 1
+ },
+ "line2_quill_retreat": {
+  "credits": 1,
+  "endpoint": "/audio/speech",
+  "file": "assets/voice13/quill/retreat.mp3",
+  "id": "line2_quill_retreat",
+  "job": "69fd1f3d-5ecb-47d8-99ce-d0174289e5dc",
+  "params": {
+   "sample": "https://storage.googleapis.com/ludo-assets/api/68f97e86657c680226e7a504-cf9f39d78debf0feb86cb518794fa307.mp3",
+   "text": "Cut our losses, lads. Back to the ships."
+  },
+  "url": "https://storage.googleapis.com/ludo-assets/api/68f97e86657c680226e7a504-89ff257ffda059b5621e0c43224d9a84.mp3",
+  "v": 1
+ },
+ "line2_quill_victory": {
+  "credits": 1,
+  "endpoint": "/audio/speech",
+  "file": "assets/voice13/quill/victory.mp3",
+  "id": "line2_quill_victory",
+  "job": "117738a4-ce63-485f-8240-da576ea9b9cd",
+  "params": {
+   "sample": "https://storage.googleapis.com/ludo-assets/api/68f97e86657c680226e7a504-cf9f39d78debf0feb86cb518794fa307.mp3",
+   "text": "Tally it up. The Company owns the lot."
+  },
+  "url": "https://storage.googleapis.com/ludo-assets/api/68f97e86657c680226e7a504-f0f8fa3bc6e4e365e3782a0e6c1a06c2.mp3",
+  "v": 1
+ },
+ "line2_quill_walkin": {
+  "credits": 1,
+  "endpoint": "/audio/speech",
+  "file": "assets/voice13/quill/walkin.mp3",
+  "id": "line2_quill_walkin",
+  "job": "5f8b310d-55c9-4ec5-8b0b-d934fb7e5bf4",
+  "params": {
+   "sample": "https://storage.googleapis.com/ludo-assets/api/68f97e86657c680226e7a504-cf9f39d78debf0feb86cb518794fa307.mp3",
+   "text": "Unguarded goods. Finders keepers."
+  },
+  "url": "https://storage.googleapis.com/ludo-assets/api/68f97e86657c680226e7a504-6eaf54e070b778443d2e63cfe33c3d2a.mp3",
+  "v": 1
+ },
+ "line2_quill_win": {
+  "credits": 1,
+  "endpoint": "/audio/speech",
+  "file": "assets/voice13/quill/win.mp3",
+  "id": "line2_quill_win",
+  "job": "b7dfe2d3-cbd9-4451-b407-d9cfc13ea3b7",
+  "params": {
+   "sample": "https://storage.googleapis.com/ludo-assets/api/68f97e86657c680226e7a504-cf9f39d78debf0feb86cb518794fa307.mp3",
+   "text": "Profit!"
+  },
+  "url": "https://storage.googleapis.com/ludo-assets/api/68f97e86657c680226e7a504-979b21b8ade5ae58c841cabefbbb63d0.mp3",
+  "v": 1
+ },
+ "line2_varek_attack": {
+  "credits": 1,
+  "endpoint": "/audio/speech",
+  "file": "assets/voice13/varek/attack.mp3",
+  "id": "line2_varek_attack",
+  "job": "ab339d4f-fa2b-416a-a5f4-d2cfa82066c8",
+  "params": {
+   "sample": "https://storage.googleapis.com/ludo-assets/api/68f97e86657c680226e7a504-c13808872f9c05429740345041b30464.mp3",
+   "text": "Advance. Fix bayonets. No quarter."
+  },
+  "url": "https://storage.googleapis.com/ludo-assets/api/68f97e86657c680226e7a504-dfd0ed7a2f9455b9611f43ca4aaef0c2.mp3",
+  "v": 1
+ },
+ "line2_varek_eliminated": {
+  "credits": 1,
+  "endpoint": "/audio/speech",
+  "file": "assets/voice13/varek/eliminated.mp3",
+  "id": "line2_varek_eliminated",
+  "job": "ffa5a72a-645f-4646-b4e1-156f27e95a2d",
+  "params": {
+   "sample": "https://storage.googleapis.com/ludo-assets/api/68f97e86657c680226e7a504-c13808872f9c05429740345041b30464.mp3",
+   "text": "My war is over. Remember the old soldier."
+  },
+  "url": "https://storage.googleapis.com/ludo-assets/api/68f97e86657c680226e7a504-048d371606443aa5bba8fd120d0288b0.mp3",
+  "v": 1
+ },
+ "line2_varek_greet": {
+  "credits": 1,
+  "endpoint": "/audio/speech",
+  "file": "assets/voice13/varek/greet.mp3",
+  "id": "line2_varek_greet",
+  "job": "fa5d7807-ea31-4da8-96bb-b16e525086cc",
+  "params": {
+   "sample": "https://storage.googleapis.com/ludo-assets/api/68f97e86657c680226e7a504-c13808872f9c05429740345041b30464.mp3",
+   "text": "Grand Marshal Varek. I have buried a hundred generals. You will be a hundred and one."
+  },
+  "url": "https://storage.googleapis.com/ludo-assets/api/68f97e86657c680226e7a504-3edd9d89a649b309f40b142653cca4a2.mp3",
+  "v": 1
+ },
+ "line2_varek_lose": {
+  "credits": 1,
+  "endpoint": "/audio/speech",
+  "file": "assets/voice13/varek/lose.mp3",
+  "id": "line2_varek_lose",
+  "job": "53bd35a4-28c6-460c-98ef-41a2f92f60b7",
+  "params": {
+   "sample": "https://storage.googleapis.com/ludo-assets/api/68f97e86657c680226e7a504-c13808872f9c05429740345041b30464.mp3",
+   "text": "A setback. They will pay for it in blood."
+  },
+  "url": "https://storage.googleapis.com/ludo-assets/api/68f97e86657c680226e7a504-c1244c805e3e1b5f6e9d07378ba62dd8.mp3",
+  "v": 1
+ },
+ "line2_varek_reserves": {
+  "credits": 1,
+  "endpoint": "/audio/speech",
+  "file": "assets/voice13/varek/reserves.mp3",
+  "id": "line2_varek_reserves",
+  "job": "9967b19c-e8e4-4d46-a56d-5be6c4f7a53c",
+  "params": {
+   "sample": "https://storage.googleapis.com/ludo-assets/api/68f97e86657c680226e7a504-c13808872f9c05429740345041b30464.mp3",
+   "text": "Bring up the reserves. End this."
+  },
+  "url": "https://storage.googleapis.com/ludo-assets/api/68f97e86657c680226e7a504-fc6ec761b0fc4b4af6cdfb1bc0c98548.mp3",
+  "v": 1
+ },
+ "line2_varek_retreat": {
+  "credits": 1,
+  "endpoint": "/audio/speech",
+  "file": "assets/voice13/varek/retreat.mp3",
+  "id": "line2_varek_retreat",
+  "job": "a3214f79-d5a5-47af-9176-e3cf27c24160",
+  "params": {
+   "sample": "https://storage.googleapis.com/ludo-assets/api/68f97e86657c680226e7a504-c13808872f9c05429740345041b30464.mp3",
+   "text": "Fall back. Regroup. We return at dawn."
+  },
+  "url": "https://storage.googleapis.com/ludo-assets/api/68f97e86657c680226e7a504-c217e495d27782ef4ebddd918546fbac.mp3",
+  "v": 1
+ },
+ "line2_varek_victory": {
+  "credits": 1,
+  "endpoint": "/audio/speech",
+  "file": "assets/voice13/varek/victory.mp3",
+  "id": "line2_varek_victory",
+  "job": "0ee9e448-aefe-4647-b14d-b71ff54230d7",
+  "params": {
+   "sample": "https://storage.googleapis.com/ludo-assets/api/68f97e86657c680226e7a504-c13808872f9c05429740345041b30464.mp3",
+   "text": "The world is mine. It always was."
+  },
+  "url": "https://storage.googleapis.com/ludo-assets/api/68f97e86657c680226e7a504-25468a75c7ded645ba1d6423ae332ab8.mp3",
+  "v": 1
+ },
+ "line2_varek_walkin": {
+  "credits": 1,
+  "endpoint": "/audio/speech",
+  "file": "assets/voice13/varek/walkin.mp3",
+  "id": "line2_varek_walkin",
+  "job": "5c84cd46-e73c-4826-ae32-7125e57ddaa1",
+  "params": {
+   "sample": "https://storage.googleapis.com/ludo-assets/api/68f97e86657c680226e7a504-c13808872f9c05429740345041b30464.mp3",
+   "text": "You left it empty. I merely accepted the invitation."
+  },
+  "url": "https://storage.googleapis.com/ludo-assets/api/68f97e86657c680226e7a504-bdab994ed422653099ec5d9ae5e69126.mp3",
+  "v": 1
+ },
+ "line2_varek_win": {
+  "credits": 1,
+  "endpoint": "/audio/speech",
+  "file": "assets/voice13/varek/win.mp3",
+  "id": "line2_varek_win",
+  "job": "86027116-092c-458f-8867-5b4e4763f5c9",
+  "params": {
+   "sample": "https://storage.googleapis.com/ludo-assets/api/68f97e86657c680226e7a504-c13808872f9c05429740345041b30464.mp3",
+   "text": "As expected."
+  },
+  "url": "https://storage.googleapis.com/ludo-assets/api/68f97e86657c680226e7a504-6942d782a5694ec281fca7d9eb5ac2c0.mp3",
+  "v": 1
+ },
+ "line2_ysolde_attack": {
+  "credits": 1,
+  "endpoint": "/audio/speech",
+  "file": "assets/voice13/ysolde/attack.mp3",
+  "id": "line2_ysolde_attack",
+  "job": "50640bd3-ef4f-4bc8-9aef-c29c337fedb3",
+  "params": {
+   "sample": "https://storage.googleapis.com/ludo-assets/api/68f97e86657c680226e7a504-9ff299865ba350b17a54af2408b478a6.mp3",
+   "text": "Take it. Leave nothing standing."
+  },
+  "url": "https://storage.googleapis.com/ludo-assets/api/68f97e86657c680226e7a504-2e1a28953bb604c809c20a3f99bd6fa2.mp3",
+  "v": 1
+ },
+ "line2_ysolde_eliminated": {
+  "credits": 1,
+  "endpoint": "/audio/speech",
+  "file": "assets/voice13/ysolde/eliminated.mp3",
+  "id": "line2_ysolde_eliminated",
+  "job": "e6f3cd4e-fc66-4573-af27-d80dd001b95d",
+  "params": {
+   "sample": "https://storage.googleapis.com/ludo-assets/api/68f97e86657c680226e7a504-9ff299865ba350b17a54af2408b478a6.mp3",
+   "text": "This is not the end of my house."
+  },
+  "url": "https://storage.googleapis.com/ludo-assets/api/68f97e86657c680226e7a504-dae0083e3f5543a9213f7694fcc11f13.mp3",
+  "v": 1
+ },
+ "line2_ysolde_greet": {
+  "credits": 1,
+  "endpoint": "/audio/speech",
+  "file": "assets/voice13/ysolde/greet.mp3",
+  "id": "line2_ysolde_greet",
+  "job": "725d8b98-71a6-4caf-b423-2dc4c8cbfebe",
+  "params": {
+   "sample": "https://storage.googleapis.com/ludo-assets/api/68f97e86657c680226e7a504-9ff299865ba350b17a54af2408b478a6.mp3",
+   "text": "Viceroy Ysolde. Every land at this table will fly my banner. Guard your doors."
+  },
+  "url": "https://storage.googleapis.com/ludo-assets/api/68f97e86657c680226e7a504-ba47ef08adb95ce81bf9bff4e53a31e0.mp3",
+  "v": 1
+ },
+ "line2_ysolde_lose": {
+  "credits": 1,
+  "endpoint": "/audio/speech",
+  "file": "assets/voice13/ysolde/lose.mp3",
+  "id": "line2_ysolde_lose",
+  "job": "d340b93c-67c1-4ce9-8210-bae53e572148",
+  "params": {
+   "sample": "https://storage.googleapis.com/ludo-assets/api/68f97e86657c680226e7a504-9ff299865ba350b17a54af2408b478a6.mp3",
+   "text": "You will pay for that. Dearly."
+  },
+  "url": "https://storage.googleapis.com/ludo-assets/api/68f97e86657c680226e7a504-33281f91a1f087c014931fdab4b51629.mp3",
+  "v": 1
+ },
+ "line2_ysolde_reserves": {
+  "credits": 1,
+  "endpoint": "/audio/speech",
+  "file": "assets/voice13/ysolde/reserves.mp3",
+  "id": "line2_ysolde_reserves",
+  "job": "a3ee9da7-044b-4d4a-85ed-e34eb4f2285f",
+  "params": {
+   "sample": "https://storage.googleapis.com/ludo-assets/api/68f97e86657c680226e7a504-9ff299865ba350b17a54af2408b478a6.mp3",
+   "text": "Send everything. I do not lose."
+  },
+  "url": "https://storage.googleapis.com/ludo-assets/api/68f97e86657c680226e7a504-d9efabf476593cbdf80e06531cf24448.mp3",
+  "v": 1
+ },
+ "line2_ysolde_retreat": {
+  "credits": 1,
+  "endpoint": "/audio/speech",
+  "file": "assets/voice13/ysolde/retreat.mp3",
+  "id": "line2_ysolde_retreat",
+  "job": "b18bea4e-434f-4e86-adcb-d3af94f7e6b4",
+  "params": {
+   "sample": "https://storage.googleapis.com/ludo-assets/api/68f97e86657c680226e7a504-9ff299865ba350b17a54af2408b478a6.mp3",
+   "text": "Withdraw. For now."
+  },
+  "url": "https://storage.googleapis.com/ludo-assets/api/68f97e86657c680226e7a504-282fbc5d99d120d8e7619a5fa15dbb8f.mp3",
+  "v": 1
+ },
+ "line2_ysolde_victory": {
+  "credits": 1,
+  "endpoint": "/audio/speech",
+  "file": "assets/voice13/ysolde/victory.mp3",
+  "id": "line2_ysolde_victory",
+  "job": "76eab91c-d542-4606-882b-b6c4540b2487",
+  "params": {
+   "sample": "https://storage.googleapis.com/ludo-assets/api/68f97e86657c680226e7a504-9ff299865ba350b17a54af2408b478a6.mp3",
+   "text": "Kneel. The empire is mine."
+  },
+  "url": "https://storage.googleapis.com/ludo-assets/api/68f97e86657c680226e7a504-42793028b76f9064b9b1fa9e3bc5f68d.mp3",
+  "v": 1
+ },
+ "line2_ysolde_walkin": {
+  "credits": 1,
+  "endpoint": "/audio/speech",
+  "file": "assets/voice13/ysolde/walkin.mp3",
+  "id": "line2_ysolde_walkin",
+  "job": "0a9dc55f-1119-4de7-a410-6d96bf51453e",
+  "params": {
+   "sample": "https://storage.googleapis.com/ludo-assets/api/68f97e86657c680226e7a504-9ff299865ba350b17a54af2408b478a6.mp3",
+   "text": "An empty fort is an insult to its owner. I have corrected it."
+  },
+  "url": "https://storage.googleapis.com/ludo-assets/api/68f97e86657c680226e7a504-f1df54fa93b25fb80eeef4621c2de642.mp3",
+  "v": 1
+ },
+ "line2_ysolde_win": {
+  "credits": 1,
+  "endpoint": "/audio/speech",
+  "file": "assets/voice13/ysolde/win.mp3",
+  "id": "line2_ysolde_win",
+  "job": "f161f4d3-2eb3-4fbd-8438-0d521f2163cb",
+  "params": {
+   "sample": "https://storage.googleapis.com/ludo-assets/api/68f97e86657c680226e7a504-9ff299865ba350b17a54af2408b478a6.mp3",
+   "text": "Predictable."
+  },
+  "url": "https://storage.googleapis.com/ludo-assets/api/68f97e86657c680226e7a504-dee728b7701f3539442faa9b4d4aa370.mp3",
+  "v": 1
+ },
  "line_advisor_attack_hint": {
   "credits": 1,
   "endpoint": "/audio/speech",
@@ -1318,6 +2203,32 @@
   },
   "url": "https://storage.googleapis.com/ludo-assets/api/68f97e86657c680226e7a504-fb43c96620392014c4c6d0bd38ac0449.mp3",
   "v": 2
+ },
+ "line_advisor_maneuver": {
+  "credits": 1,
+  "endpoint": "/audio/speech",
+  "file": "assets/voice/advisor/maneuver.mp3",
+  "id": "line_advisor_maneuver",
+  "job": "aa84d93a-46fd-4e60-8928-8f8af35e8210",
+  "params": {
+   "sample": "https://storage.googleapis.com/ludo-assets/api/68f97e86657c680226e7a504-f315f52bb2200802cd805e5d61d284aa.mp3",
+   "text": "The dust has settled, Commander. March the men up to the front before the next assault."
+  },
+  "url": "https://storage.googleapis.com/ludo-assets/api/68f97e86657c680226e7a504-990e1adb3e9ec32c8d283c8fbba76281.mp3",
+  "v": 1
+ },
+ "line_advisor_melee": {
+  "credits": 1,
+  "endpoint": "/audio/speech",
+  "file": "assets/voice/advisor/melee.mp3",
+  "id": "line_advisor_melee",
+  "job": "00597f1f-9202-4810-9bde-825552f9a0b8",
+  "params": {
+   "sample": "https://storage.googleapis.com/ludo-assets/api/68f97e86657c680226e7a504-f315f52bb2200802cd805e5d61d284aa.mp3",
+   "text": "A melee, Commander! Every army piling in at once. Steady on every front!"
+  },
+  "url": "https://storage.googleapis.com/ludo-assets/api/68f97e86657c680226e7a504-7cdbd63ea33fff5750fa2fa698b4c3c5.mp3",
+  "v": 1
  },
  "line_advisor_opening_bad": {
   "credits": 1,
@@ -2534,6 +3445,34 @@
   "url": "https://storage.googleapis.com/ludo-assets/api/68f97e86657c680226e7a504-5292489fd4fbdb94ea50e25cee2f4b8c.mp3",
   "v": 2
  },
+ "music_battle_2": {
+  "credits": 3,
+  "endpoint": "/audio/music",
+  "file": "assets/audio/music/battle_2.mp3",
+  "id": "music_battle_2",
+  "job": "4ca187aa-9577-404c-9a95-65e55b1b5549",
+  "params": {
+   "augment_prompt": true,
+   "description": "Relentless battle march: pounding war drums, snare rolls, blaring brass fanfares, fife and drum corps, cannon-like timpani hits. Seamless loop: steady intensity from the first bar to the last, no intro, no fade, no big ending, no final crescendo",
+   "duration": 150
+  },
+  "url": "https://storage.googleapis.com/ludo-assets/api/68f97e86657c680226e7a504-fb89831a46593d5002cf410550d42e7e.mp3",
+  "v": 1
+ },
+ "music_battle_3": {
+  "credits": 3,
+  "endpoint": "/audio/music",
+  "file": "assets/audio/music/battle_3.mp3",
+  "id": "music_battle_3",
+  "job": "0af28e34-8360-4316-9f95-e9909cebe37f",
+  "params": {
+   "augment_prompt": true,
+   "description": "Driving orchestral war music: galloping low strings ostinato, stabbing brass, big drums, heroic and aggressive, a world at war. Seamless loop: steady intensity from the first bar to the last, no intro, no fade, no big ending, no final crescendo",
+   "duration": 150
+  },
+  "url": "https://storage.googleapis.com/ludo-assets/api/68f97e86657c680226e7a504-05e5b9a73b3a5a07f38d98d4f5242f19.mp3",
+  "v": 1
+ },
  "music_charge": {
   "credits": 3,
   "endpoint": "/audio/music",
@@ -2546,6 +3485,34 @@
    "duration": 90
   },
   "url": "https://storage.googleapis.com/ludo-assets/api/68f97e86657c680226e7a504-22890ffccde70ba2c79ea49c650524fa.mp3",
+  "v": 1
+ },
+ "music_charge_2": {
+  "credits": 3,
+  "endpoint": "/audio/music",
+  "file": "assets/audio/music/charge_2.mp3",
+  "id": "music_charge_2",
+  "job": "1308cbbc-ee08-43c8-9838-73ca8e59fffc",
+  "params": {
+   "augment_prompt": true,
+   "description": "Cavalry charge battle music: breathless galloping strings, bugle calls, crashing cymbals, brass heroics. Seamless loop: steady intensity from the first bar to the last, no intro, no fade, no big ending, no final crescendo",
+   "duration": 120
+  },
+  "url": "https://storage.googleapis.com/ludo-assets/api/68f97e86657c680226e7a504-c97083aba3605163168f92500c7f87b6.mp3",
+  "v": 1
+ },
+ "music_charge_3": {
+  "credits": 3,
+  "endpoint": "/audio/music",
+  "file": "assets/audio/music/charge_3.mp3",
+  "id": "music_charge_3",
+  "job": "ab181296-30b2-48f5-9f39-f5cf676f365c",
+  "params": {
+   "augment_prompt": true,
+   "description": "Fierce skirmish music for a tabletop battle: snare drums, fifes, brass stabs and rolling timpani, tense and exciting. Seamless loop: steady intensity from the first bar to the last, no intro, no fade, no big ending, no final crescendo",
+   "duration": 120
+  },
+  "url": "https://storage.googleapis.com/ludo-assets/api/68f97e86657c680226e7a504-cabbe8f7e53ba3409b50315c1b6dee98.mp3",
   "v": 1
  },
  "music_defeat": {
@@ -2576,6 +3543,34 @@
   "url": "https://storage.googleapis.com/ludo-assets/api/68f97e86657c680226e7a504-fcf28c838edb140ecffaf4b36c9b5315.mp3",
   "v": 2
  },
+ "music_menu_2": {
+  "credits": 3,
+  "endpoint": "/audio/music",
+  "file": "assets/audio/music/menu_2.mp3",
+  "id": "music_menu_2",
+  "job": "803f4b0f-3ced-4d46-9b8c-f1f0d144151e",
+  "params": {
+   "augment_prompt": true,
+   "description": "Imperial march for a conquest strategy game: proud brass melody over marching snare and timpani, strings and a wordless choir, confident and glorious. Seamless loop: steady intensity from the first bar to the last, no intro, no fade, no big ending, no final crescendo",
+   "duration": 150
+  },
+  "url": "https://storage.googleapis.com/ludo-assets/api/68f97e86657c680226e7a504-07d032421ac91626b069e9f370e03ad5.mp3",
+  "v": 1
+ },
+ "music_muster": {
+  "credits": 3,
+  "endpoint": "/audio/music",
+  "file": "assets/audio/music/muster.mp3",
+  "id": "music_muster",
+  "job": "14fe10ac-1c98-46da-8af6-9ad63b23d221",
+  "params": {
+   "augment_prompt": true,
+   "description": "Troops redeploying between battles: a steady marching drum and fife tune with low strings, purposeful and brisk, soldiers on the move. Seamless loop: steady intensity from the first bar to the last, no intro, no fade, no big ending, no final crescendo",
+   "duration": 150
+  },
+  "url": "https://storage.googleapis.com/ludo-assets/api/68f97e86657c680226e7a504-bb78db4b9226963b8a45145948e1225d.mp3",
+  "v": 1
+ },
  "music_plan": {
   "credits": 3,
   "endpoint": "/audio/music",
@@ -2589,6 +3584,34 @@
   },
   "url": "https://storage.googleapis.com/ludo-assets/api/68f97e86657c680226e7a504-b49948ed3becced239a6164bff48b0c6.mp3",
   "v": 2
+ },
+ "music_plan_2": {
+  "credits": 3,
+  "endpoint": "/audio/music",
+  "file": "assets/audio/music/plan_2.mp3",
+  "id": "music_plan_2",
+  "job": "f1c0e980-622e-4ddf-8b79-692b6e66139b",
+  "params": {
+   "augment_prompt": true,
+   "description": "War council music: a steady military snare cadence, pizzicato strings and low brass, fifes in the distance, a quiet menace of armies gathering. Seamless loop: steady intensity from the first bar to the last, no intro, no fade, no big ending, no final crescendo",
+   "duration": 150
+  },
+  "url": "https://storage.googleapis.com/ludo-assets/api/68f97e86657c680226e7a504-ff1466292e1e8b7ba8a1e67f9940b46b.mp3",
+  "v": 1
+ },
+ "music_plan_3": {
+  "credits": 3,
+  "endpoint": "/audio/music",
+  "file": "assets/audio/music/plan_3.mp3",
+  "id": "music_plan_3",
+  "job": "458c197a-6462-47c7-a9c6-116bd3f4c02e",
+  "params": {
+   "augment_prompt": true,
+   "description": "Map-room strategy music: harpsichord and strings over a soft war drum pulse, scheming and determined, empires plotting conquest. Seamless loop: steady intensity from the first bar to the last, no intro, no fade, no big ending, no final crescendo",
+   "duration": 150
+  },
+  "url": "https://storage.googleapis.com/ludo-assets/api/68f97e86657c680226e7a504-362842a7c0813f65786133aa0d2ab81a.mp3",
+  "v": 1
  },
  "music_victory": {
   "credits": 3,
@@ -2748,6 +3771,21 @@
   },
   "url": "https://storage.googleapis.com/ludo-assets/api/68f97e86657c680226e7a504-9acbfa8fee8f9fdd71e5edbb1c0fa4a3.mp3"
  },
+ "sfx_border_clash": {
+  "credits": 2,
+  "endpoint": "/audio/sound-effect",
+  "file": "assets/audio/sfx/border_clash.mp3",
+  "id": "sfx_border_clash",
+  "job": "04bf76b8-a20f-43ab-a9b4-2894baca120f",
+  "params": {
+   "augment_prompt": true,
+   "description": "two marching columns collide head on: drums, a roar and a crash of steel, short",
+   "duration": 3,
+   "loop": false
+  },
+  "url": "https://storage.googleapis.com/ludo-assets/api/68f97e86657c680226e7a504-e1ef5b404aee8e3539c9af5a3e2946a3.mp3",
+  "v": 1
+ },
  "sfx_cannon": {
   "credits": 2,
   "endpoint": "/audio/sound-effect",
@@ -2761,6 +3799,21 @@
    "loop": false
   },
   "url": "https://storage.googleapis.com/ludo-assets/api/68f97e86657c680226e7a504-b561c332badc14764ca29df34d24ef7b.mp3"
+ },
+ "sfx_cannon_big": {
+  "credits": 2,
+  "endpoint": "/audio/sound-effect",
+  "file": "assets/audio/sfx/cannon_big.mp3",
+  "id": "sfx_cannon_big",
+  "job": "c80905cb-c1a7-491b-b3aa-89534f019a3d",
+  "params": {
+   "augment_prompt": true,
+   "description": "a heavy field cannon fires, deep boom, echo and rumble",
+   "duration": 3,
+   "loop": false
+  },
+  "url": "https://storage.googleapis.com/ludo-assets/api/68f97e86657c680226e7a504-92bac2c25e9564a00dd7e2e45e742f55.mp3",
+  "v": 1
  },
  "sfx_capture": {
   "credits": 2,
@@ -2790,6 +3843,21 @@
    "loop": false
   },
   "url": "https://storage.googleapis.com/ludo-assets/api/68f97e86657c680226e7a504-b7c739970940de2c2aa3cc9e0dc69308.mp3"
+ },
+ "sfx_cards_open": {
+  "credits": 2,
+  "endpoint": "/audio/sound-effect",
+  "file": "assets/audio/sfx/cards_open.mp3",
+  "id": "sfx_cards_open",
+  "job": "9fa49e60-bd43-4f08-8108-64dd30d07bbc",
+  "params": {
+   "augment_prompt": true,
+   "description": "a leather folio opened and playing cards fanned out on a table",
+   "duration": 2,
+   "loop": false
+  },
+  "url": "https://storage.googleapis.com/ludo-assets/api/68f97e86657c680226e7a504-23fa3c1dfa51222b473e83f4e19940a2.mp3",
+  "v": 1
  },
  "sfx_cash": {
   "credits": 2,
@@ -2976,6 +4044,21 @@
   "url": "https://storage.googleapis.com/ludo-assets/api/68f97e86657c680226e7a504-b2c985105bd0743aa731a5cd6abe1cfd.mp3",
   "v": 1
  },
+ "sfx_maneuver": {
+  "credits": 2,
+  "endpoint": "/audio/sound-effect",
+  "file": "assets/audio/sfx/maneuver.mp3",
+  "id": "sfx_maneuver",
+  "job": "81363318-d4bd-474f-a7a5-ab924b7e685a",
+  "params": {
+   "augment_prompt": true,
+   "description": "a company of soldiers marching off to a new post with a drum beat, short",
+   "duration": 2,
+   "loop": false
+  },
+  "url": "https://storage.googleapis.com/ludo-assets/api/68f97e86657c680226e7a504-f8dfa04e1e7ee56a7a8891206e5733bb.mp3",
+  "v": 1
+ },
  "sfx_march": {
   "credits": 2,
   "endpoint": "/audio/sound-effect",
@@ -2989,6 +4072,36 @@
    "loop": false
   },
   "url": "https://storage.googleapis.com/ludo-assets/api/68f97e86657c680226e7a504-bb0d392ff4afd148aa62c46550f9345d.mp3"
+ },
+ "sfx_melee": {
+  "credits": 2,
+  "endpoint": "/audio/sound-effect",
+  "file": "assets/audio/sfx/melee.mp3",
+  "id": "sfx_melee",
+  "job": "5807a9cf-3d1f-4ff5-8976-65016ec4a95b",
+  "params": {
+   "augment_prompt": true,
+   "description": "a chaotic melee: many muskets and sabres clashing, shouts from several sides, short",
+   "duration": 3,
+   "loop": false
+  },
+  "url": "https://storage.googleapis.com/ludo-assets/api/68f97e86657c680226e7a504-dd91c3af82e178e3ffe71c4d377cf26c.mp3",
+  "v": 1
+ },
+ "sfx_neigh": {
+  "credits": 2,
+  "endpoint": "/audio/sound-effect",
+  "file": "assets/audio/sfx/neigh.mp3",
+  "id": "sfx_neigh",
+  "job": "670c6ccb-c647-4b30-b453-b127dcb0c8a2",
+  "params": {
+   "augment_prompt": true,
+   "description": "a war horse neighs and rears, short",
+   "duration": 2,
+   "loop": false
+  },
+  "url": "https://storage.googleapis.com/ludo-assets/api/68f97e86657c680226e7a504-cc749b9f6497f1a64e9e3fe78ba85b96.mp3",
+  "v": 1
  },
  "sfx_order_attack": {
   "credits": 2,
@@ -3148,6 +4261,21 @@
   },
   "url": "https://storage.googleapis.com/ludo-assets/api/68f97e86657c680226e7a504-dc00571dd7aad00761dd86b10bd5ae89.mp3"
  },
+ "sfx_turn_in": {
+  "credits": 2,
+  "endpoint": "/audio/sound-effect",
+  "file": "assets/audio/sfx/turn_in.mp3",
+  "id": "sfx_turn_in",
+  "job": "e36c5ad2-5df5-4558-9333-092b88f8a399",
+  "params": {
+   "augment_prompt": true,
+   "description": "cards slapped down on a table followed by a trumpet flourish and coins",
+   "duration": 2,
+   "loop": false
+  },
+  "url": "https://storage.googleapis.com/ludo-assets/api/68f97e86657c680226e7a504-c0629e8e3a4048b746c23e314f9dc038.mp3",
+  "v": 1
+ },
  "sfx_unplace": {
   "credits": 2,
   "endpoint": "/audio/sound-effect",
@@ -3190,6 +4318,63 @@
   },
   "url": "https://storage.googleapis.com/ludo-assets/api/68f97e86657c680226e7a504-909b0b7a43a3ffe27485e296856756ab.mp3",
   "v": 2
+ },
+ "sfx_zoom_in": {
+  "credits": 2,
+  "endpoint": "/audio/sound-effect",
+  "file": "assets/audio/sfx/zoom_in.mp3",
+  "id": "sfx_zoom_in",
+  "job": "327dacab-15fd-452b-957c-04e546e79a4b",
+  "params": {
+   "augment_prompt": true,
+   "description": "a short whoosh with a low drum hit, a camera swooping down on a battlefield",
+   "duration": 1,
+   "loop": false
+  },
+  "url": "https://storage.googleapis.com/ludo-assets/api/68f97e86657c680226e7a504-d7b00cd73c79fa53eadd039f0933ac1e.mp3",
+  "v": 1
+ },
+ "soldier_charge_anim": {
+  "credits": 4,
+  "endpoint": "/assets/sprite/animate",
+  "file": "assets/raw/battle/soldier_charge.webp",
+  "id": "soldier_charge_anim",
+  "job": "59b6876c-ee0c-43bb-b2e7-9390a54ff6be",
+  "params": {
+   "crop": false,
+   "duration": 2,
+   "final_image": "data:image/png;base64,iVBORw0KGgoAAAANSU...(base64)",
+   "frame_size": -9,
+   "frames": 16,
+   "image_type": "sprite",
+   "initial_image": "data:image/png;base64,iVBORw0KGgoAAAANSU...(base64)",
+   "loop": false,
+   "model": "forge",
+   "motion_prompt": "charges forward at a run with the bayonet levelled to the right, a running cycle"
+  },
+  "url": "https://storage.googleapis.com/ludo-assets/api/b33caf42121766993d78d1e0bdfce6a4.webp",
+  "v": 1
+ },
+ "soldier_cheer_anim": {
+  "credits": 4,
+  "endpoint": "/assets/sprite/animate",
+  "file": "assets/raw/battle/soldier_cheer.webp",
+  "id": "soldier_cheer_anim",
+  "job": "bbeb0b31-61b2-49fd-b3ca-9a7520c29884",
+  "params": {
+   "crop": false,
+   "duration": 2,
+   "final_image": "data:image/png;base64,iVBORw0KGgoAAAANSU...(base64)",
+   "frame_size": -9,
+   "frames": 16,
+   "image_type": "sprite",
+   "initial_image": "data:image/png;base64,iVBORw0KGgoAAAANSU...(base64)",
+   "loop": false,
+   "model": "forge",
+   "motion_prompt": "raises the musket high above his head and cheers in victory, then lowers it back exactly as at the start"
+  },
+  "url": "https://storage.googleapis.com/ludo-assets/api/ab022d3ce244dff466d2bbb4aa1c27ca.webp",
+  "v": 1
  },
  "soldier_fall_anim": {
   "credits": 4,
@@ -3285,6 +4470,27 @@
   "url": "https://storage.googleapis.com/ludo-assets/api/be78e394398b4a22d154f1bbe25ee8ad.webp",
   "v": 3
  },
+ "soldier_kneel_anim": {
+  "credits": 4,
+  "endpoint": "/assets/sprite/animate",
+  "file": "assets/raw/battle/soldier_kneel.webp",
+  "id": "soldier_kneel_anim",
+  "job": "94b3ecaf-1e07-4be6-b1eb-4a90b1b702be",
+  "params": {
+   "crop": false,
+   "duration": 2,
+   "final_image": "data:image/png;base64,iVBORw0KGgoAAAANSU...(base64)",
+   "frame_size": -9,
+   "frames": 16,
+   "image_type": "sprite",
+   "initial_image": "data:image/png;base64,iVBORw0KGgoAAAANSU...(base64)",
+   "loop": false,
+   "model": "forge",
+   "motion_prompt": "kneels on one knee, aims the musket straight ahead to the right and fires with a puff of smoke from the muzzle, then stands back up exactly as at the start"
+  },
+  "url": "https://storage.googleapis.com/ludo-assets/api/77b868e78437d977dc936e20a2be0684.webp",
+  "v": 1
+ },
  "soldier_march_anim": {
   "credits": 4,
   "endpoint": "/assets/sprite/animate",
@@ -3305,6 +4511,27 @@
   },
   "url": "https://storage.googleapis.com/ludo-assets/api/5fc1caf44a3c0fd6d85fb3e931d0d3d1.webp",
   "v": 3
+ },
+ "soldier_reload_anim": {
+  "credits": 4,
+  "endpoint": "/assets/sprite/animate",
+  "file": "assets/raw/battle/soldier_reload.webp",
+  "id": "soldier_reload_anim",
+  "job": "7163b53a-181e-435a-b0ec-2018c24cc4a4",
+  "params": {
+   "crop": false,
+   "duration": 2,
+   "final_image": "data:image/png;base64,iVBORw0KGgoAAAANSU...(base64)",
+   "frame_size": -9,
+   "frames": 16,
+   "image_type": "sprite",
+   "initial_image": "data:image/png;base64,iVBORw0KGgoAAAANSU...(base64)",
+   "loop": false,
+   "model": "forge",
+   "motion_prompt": "reloads the musket: bites a cartridge and rams the ramrod down the barrel, then shoulders the musket exactly as at the start"
+  },
+  "url": "https://storage.googleapis.com/ludo-assets/api/9ae0a389491230ef5e89181adb995bbb.webp",
+  "v": 1
  },
  "soldier_stand": {
   "credits": 0.5,
@@ -3431,6 +4658,96 @@
    "prompt": "Seamless tileable dark walnut wood tabletop texture, rich grain, subtle scratches, even lighting, flat, top-down"
   },
   "url": "https://storage.googleapis.com/ludo-assets/api/bc047a5948f9aaff66a91ce3a9eb4025.webp"
+ },
+ "voice2_hask": {
+  "credits": 1,
+  "endpoint": "/audio/voice",
+  "file": "assets/voice13/hask/_sample.mp3",
+  "id": "voice2_hask",
+  "job": "648e7458-f33d-4399-b362-8f2480e019db",
+  "params": {
+   "augment_prompt": true,
+   "text": "Commodore Hask, the Old Bear himself! I have sunk more ships than you have eaten suppers, laddie. Bring me your best, and bring me a drink while you are at it. Ha! We sail at dawn.",
+   "type": "human",
+   "voice_description": "Big Scottish sea captain in his fifties, deep booming bass, hearty and rough, chuckles as he talks, natural speech"
+  },
+  "url": "https://storage.googleapis.com/ludo-assets/api/68f97e86657c680226e7a504-3d2eec8e8b2e5a8f9142ab29d97cbcd7.mp3",
+  "v": 1
+ },
+ "voice2_imre": {
+  "credits": 1,
+  "endpoint": "/audio/voice",
+  "file": "assets/voice13/imre/_sample.mp3",
+  "id": "voice2_imre",
+  "job": "2c22ad0f-65e6-40cb-a48d-05b35ae89ab3",
+  "params": {
+   "augment_prompt": true,
+   "text": "Admiral Imre. I read your plan before you finished writing it. It was a good plan. Mine is better. Proceed, Commander, and try not to look surprised when it all goes exactly as I said.",
+   "type": "human",
+   "voice_description": "Hungarian-accented woman naval officer in her thirties, low calm alto, dry wit, unhurried precise delivery, natural speech"
+  },
+  "url": "https://storage.googleapis.com/ludo-assets/api/68f97e86657c680226e7a504-19c95d3411c64cbe9552b17ed229dd62.mp3",
+  "v": 1
+ },
+ "voice2_oren": {
+  "credits": 1,
+  "endpoint": "/audio/voice",
+  "file": "assets/voice13/oren/_sample.mp3",
+  "id": "voice2_oren",
+  "job": "29ea5c71-d888-4d77-b324-b0cb578459b4",
+  "params": {
+   "augment_prompt": true,
+   "text": "Captain Oren of the Hussars! Honestly, this is my very first war, but I have an excellent horse and I have read absolutely every book. Right then. Charge! No, wait. Yes. Charge!",
+   "type": "human",
+   "voice_description": "Young English cavalry officer in his early twenties, bright tenor, eager and cheerful, fast excited delivery, natural speech"
+  },
+  "url": "https://storage.googleapis.com/ludo-assets/api/68f97e86657c680226e7a504-8b67f52eb26e376da40b43970205f352.mp3",
+  "v": 1
+ },
+ "voice2_quill": {
+  "credits": 1,
+  "endpoint": "/audio/voice",
+  "file": "assets/voice13/quill/_sample.mp3",
+  "id": "voice2_quill",
+  "job": "c802dd22-37a9-4c60-a390-0a901efb9e3a",
+  "params": {
+   "augment_prompt": true,
+   "text": "Governor Quill, of the Company, at your service. Everything has its price, my friend, even a war. Especially a war. Now then, shall we discuss terms, or shall I simply send the lads?",
+   "type": "human",
+   "voice_description": "Middle-aged English merchant governor, jovial and sly, slightly nasal tenor, quick chatty delivery with a smile in the voice, natural speech"
+  },
+  "url": "https://storage.googleapis.com/ludo-assets/api/68f97e86657c680226e7a504-cf9f39d78debf0feb86cb518794fa307.mp3",
+  "v": 1
+ },
+ "voice2_varek": {
+  "credits": 1,
+  "endpoint": "/audio/voice",
+  "file": "assets/voice13/varek/_sample.mp3",
+  "id": "voice2_varek",
+  "job": "3e15f9ac-76dd-431b-9095-f5595e5e4946",
+  "params": {
+   "augment_prompt": true,
+   "text": "Grand Marshal Varek. I have buried a hundred generals, and every one of them taught me patience. Advance. Fix bayonets. We take the ridge by nightfall, and we hold it until the sun comes up again.",
+   "type": "human",
+   "voice_description": "Elderly British army field marshal, deep weathered baritone, slow and deliberate, dry and stern, clipped aristocratic delivery, natural conversational speech"
+  },
+  "url": "https://storage.googleapis.com/ludo-assets/api/68f97e86657c680226e7a504-c13808872f9c05429740345041b30464.mp3",
+  "v": 1
+ },
+ "voice2_ysolde": {
+  "credits": 1,
+  "endpoint": "/audio/voice",
+  "file": "assets/voice13/ysolde/_sample.mp3",
+  "id": "voice2_ysolde",
+  "job": "ba55f8c0-0393-4f5d-ad71-8756b153e18c",
+  "params": {
+   "augment_prompt": true,
+   "text": "Viceroy Ysolde. I do not raise my voice, Commander, and I do not repeat myself. Take the fort. Leave nothing standing. When it is done, you may tell me how easy it was.",
+   "type": "human",
+   "voice_description": "Aristocratic English woman in her forties, cool low alto, crisp precise diction, measured and imperious, natural speech"
+  },
+  "url": "https://storage.googleapis.com/ludo-assets/api/68f97e86657c680226e7a504-9ff299865ba350b17a54af2408b478a6.mp3",
+  "v": 1
  },
  "voice_advisor": {
   "credits": 1,

@@ -12,6 +12,8 @@ const Hash := preload("res://engine/hash.gd")
 const Ai := preload("res://engine/ai.gd")
 const Bot := preload("res://engine/bot.gd")
 const Telemetry := preload("res://engine/telemetry.gd")
+const Maneuver := preload("res://engine/maneuver.gd")
+const Income := preload("res://engine/income.gd")
 
 
 ## seats: [{id, name, ai: "general"|"veteran"|"recruit"|commander id|"monkey"}]
@@ -35,6 +37,7 @@ static func play(map: Types.MapDef, seats: Array, match_seed: int, max_rounds: i
 	var rounds: Array = []
 	var sheets_log: Array = []
 	var hashes: Array = []
+	var maneuvers_log: Array = []
 	var territory_history: Array = [] ## per round: {pid: territories}
 	var winner := ""
 	var early := false
@@ -74,6 +77,19 @@ static func play(map: Types.MapDef, seats: Array, match_seed: int, max_rounds: i
 		if got != expected:
 			violations.append("r%s army leak: expected %s got %s" % [world.round, expected, got])
 		world = result["world"]
+		## v1.3 reinforcement phase: everyone marches, then the next round
+		if map.maneuvers and str(Telemetry.summarize_events(result["events"]).get("winner", "")) == "":
+			var by := {}
+			for pid in MapLib.living_player_ids(world):
+				if pid != Income.NEUTRAL_ID:
+					by[pid] = Maneuver.plan(world, map, pid)
+			var before_moves: int = MapLib.sum_armies(world)
+			Maneuver.apply(world, map, by)
+			if MapLib.sum_armies(world) != before_moves:
+				violations.append("r%s maneuvers changed the army count" % world.round)
+			maneuvers_log.append(by)
+		else:
+			maneuvers_log.append({})
 		var err: String = MapLib.hex_invariant_error(world)
 		if err != "":
 			violations.append("r%s %s" % [world.round - 1, err])
@@ -98,6 +114,7 @@ static func play(map: Types.MapDef, seats: Array, match_seed: int, max_rounds: i
 		"world": world,
 		"setup": setup,
 		"sheets": sheets_log,
+		"maneuvers": maneuvers_log,
 		"hashes": hashes,
 		"history": territory_history,
 		"brains": brains,

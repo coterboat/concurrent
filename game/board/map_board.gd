@@ -23,6 +23,7 @@ var hovered := ""
 var targets := {} ## id -> true, pulsing gold
 var dimmed := {}
 var battle := {}
+var clash: Array = [] ## [land a, land b]: a border clash being fought on the line between them
 var orders: Array = [] ## [{from, to, strength, owner, surge, kind: "attack"|"move"}]
 var ghosts: Array = [] ## last round's packets
 var placements := {} ## id -> queued reinforcements (viewer)
@@ -205,6 +206,49 @@ func zoom_at(screen_p: Vector2, factor: float) -> void:
 	_apply_view()
 
 
+func swoop_to(ids: Array, zmult: float, dur: float) -> Tween:
+	## the cinema camera: ease in on a battle (centre and zoom), for the fights that matter
+	var c := Vector2.ZERO
+	var n := 0
+	for id in ids:
+		if art.anchors.has(id):
+			c += art.anchors[id]
+			n += 1
+	if n == 0:
+		return null
+	c /= float(n)
+	var z0: float = zoom
+	var o0: Vector2 = offset
+	var z1: float = clampf(fit * zmult, fit, fit * 3.5)
+	var mid := Vector2(size.x * 0.5, pad_top + (size.y - pad_top - pad_bottom) * 0.5)
+	var o1: Vector2 = mid - c * z1
+	_at_fit = false
+	var tw := create_tween()
+	tw.tween_method(func(t: float):
+		var e: float = ease(t, -2.2)
+		zoom = lerpf(z0, z1, e)
+		offset = o0.lerp(o1, e)
+		_apply_view(), 0.0, 1.0, dur)
+	return tw
+
+
+func swoop_back(dur: float) -> Tween:
+	var z0: float = zoom
+	var o0: Vector2 = offset
+	var avail2 := Vector2(size.x, size.y - pad_top - pad_bottom)
+	var o1 := Vector2((size.x - art.size.x * fit) * 0.5, pad_top + (avail2.y - art.size.y * fit) * 0.5)
+	var tw := create_tween()
+	tw.tween_method(func(t: float):
+		var e: float = ease(t, -2.2)
+		zoom = lerpf(z0, fit, e)
+		offset = o0.lerp(o1, e)
+		_apply_view(), 0.0, 1.0, dur)
+	tw.tween_callback(func():
+		_at_fit = true
+		_on_resized())
+	return tw
+
+
 func focus_on(ids: Array, min_zoom: float = 0.0) -> void:
 	## Cinema camera: frame these territories if we are zoomed in.
 	if ids.is_empty() or art == null or zoom <= fit * 1.05:
@@ -310,7 +354,7 @@ func _process(delta: float) -> void:
 		shake[k] = float(shake[k]) - delta
 		if float(shake[k]) <= 0.0:
 			shake.erase(k)
-	if not fx.is_empty() or not shake.is_empty() or not battle.is_empty() or drag_from != "":
+	if not fx.is_empty() or not shake.is_empty() or not battle.is_empty() or not clash.is_empty() or drag_from != "":
 		live = true
 	## the ships ride the swell
 	if art != null and not art.ornaments.is_empty() and Engine.get_frames_drawn() % 2 == 0:
@@ -349,17 +393,19 @@ func _draw_overlay() -> void:
 	if plain:
 		return
 	for g in ghosts:
-		_draw_arrow(ci, str(g["from"]), str(g["to"]), int(g.get("strength", 1)), str(g.get("owner", "")), str(g.get("surgeTo", "")), "attack", 0.22, false)
+		_draw_arrow(ci, str(g["from"]), str(g["to"]), int(g.get("strength", 1)), str(g.get("owner", "")), str(g.get("surgeTo", "")), str(g.get("kind", "attack")), 0.22, false)
 	for o in orders:
 		_draw_arrow(ci, str(o["from"]), str(o["to"]), int(o.get("strength", 1)), str(o.get("owner", "")), str(o.get("surge", "")), str(o.get("kind", "attack")), float(o.get("alpha", 1.0)), true)
 	if drag_from != "":
 		var a: Vector2 = anchor(drag_from)
 		ci.draw_line(a, _mouse, Color(1, 0.9, 0.6, 0.85), 5.0, true)
 		ci.draw_circle(_mouse, 7.0, Color(1, 0.9, 0.6, 0.85))
+	_draw_battle_marks(ci)
 	var ids: Array = art.order.duplicate()
 	ids.sort_custom(func(x, y): return art.anchors[x].y < art.anchors[y].y)
 	for id in ids:
 		_draw_token(ci, str(id))
+	_draw_clash(ci)
 	for f in fx:
 		var t: float = float(f["t"]) / float(f["dur"])
 		var p: Vector2 = map_to_screen(f["map"]) + Vector2(0, -34 - 46 * t)
@@ -405,6 +451,46 @@ func _draw_ornaments(ci: CanvasItem) -> void:
 						fs = int(fs * cw * 0.62 / tw)
 						tw = f.get_string_size(title, HORIZONTAL_ALIGNMENT_LEFT, -1, fs).x
 					ci.draw_string(f, p + Vector2(-tw * 0.5, fs * 0.25), title, HORIZONTAL_ALIGNMENT_LEFT, -1, fs, Color(0.35, 0.12, 0.08, 0.95))
+
+
+func _draw_battle_marks(ci: CanvasItem) -> void:
+	## the lands fighting right now: a pulsing ring of fire under their tokens
+	if battle.is_empty():
+		return
+	var r := token_radius()
+	var k: float = 0.5 + 0.5 * sin(_time * 7.0)
+	for id in battle.keys():
+		if not art.anchors.has(id):
+			continue
+		var p: Vector2 = anchor(str(id))
+		ci.draw_circle(p, r * (1.9 + 0.25 * k), Color(1.0, 0.35, 0.15, 0.10 + 0.08 * k))
+		ci.draw_arc(p, r * (1.55 + 0.2 * k), 0, TAU, 40, Color(1.0, 0.78, 0.35, 0.55 + 0.35 * k), 3.0, true)
+		ci.draw_arc(p, r * (1.3 + 0.1 * k), 0, TAU, 40, Color(0.9, 0.2, 0.1, 0.5), 2.0, true)
+
+
+func _draw_clash(ci: CanvasItem) -> void:
+	## two columns meeting on the border: a starburst and crossed swords where they collide
+	if clash.size() < 2 or not art.anchors.has(clash[0]) or not art.anchors.has(clash[1]):
+		return
+	var a: Vector2 = anchor(str(clash[0]))
+	var b: Vector2 = anchor(str(clash[1]))
+	var m: Vector2 = (a + b) * 0.5
+	var k: float = 0.5 + 0.5 * sin(_time * 9.0)
+	var R: float = token_radius() * (1.5 + 0.2 * k)
+	var star := PackedVector2Array()
+	for i in 24:
+		var ang: float = TAU * i / 24.0 + _time * 0.6
+		star.append(m + Vector2.from_angle(ang) * (R if i % 2 == 0 else R * 0.55))
+	ci.draw_colored_polygon(star, Color(1.0, 0.55, 0.15, 0.85))
+	var star2 := PackedVector2Array()
+	for i in 24:
+		var ang2: float = TAU * i / 24.0 - _time * 0.4
+		star2.append(m + Vector2.from_angle(ang2) * (R * 0.8 if i % 2 == 0 else R * 0.45))
+	ci.draw_colored_polygon(star2, Color(1.0, 0.9, 0.5, 0.95))
+	var sw: Texture2D = Style.icon("attack")
+	if sw != null:
+		var sz: float = R * 1.1
+		ci.draw_texture_rect(sw, Rect2(m - Vector2(sz, sz) * 0.5, Vector2(sz, sz)), false)
 
 
 func _draw_region_labels(ci: CanvasItem) -> void:
@@ -546,19 +632,29 @@ func _draw_token(ci: CanvasItem, id: String) -> void:
 	## lacquer sheen: a soft highlight up and to the left, a shade below
 	Style.draw_shape(ci, shape, p + Vector2(0, r * 0.12), r * 0.78, Color(0, 0, 0, 0.12), Color(0, 0, 0, 0), 0.0)
 	ci.draw_circle(p + Vector2(-r * 0.3, -r * 0.34), r * 0.42, Color(1, 1, 1, 0.13))
-	var n: int = ts.armies + ts.garrison
-	var txt := str(n)
-	var fs := 22 if n < 100 else 18
+	var n: int = ts.armies + ts.garrison ## everyone who defends (the ceiling counts them all)
+	## v1.3: the token's number is the army that can march; the dug-in defenders who never
+	## march sit on their own shield. Two separate numbers, never one inside the other.
+	var txt := str(ts.armies)
+	var fs := 22 if ts.armies < 100 else 18
 	var tw: float = f.get_string_size(txt, HORIZONTAL_ALIGNMENT_LEFT, -1, fs).x
+	var num_col := Color(1, 0.98, 0.92) if ts.armies > 0 else Color(1, 0.98, 0.92, 0.5)
 	ci.draw_string_outline(f, p + Vector2(-tw * 0.5, fs * 0.36), txt, HORIZONTAL_ALIGNMENT_LEFT, -1, fs, 4, Color(0.05, 0.03, 0.02, 0.9))
-	ci.draw_string(f, p + Vector2(-tw * 0.5, fs * 0.36), txt, HORIZONTAL_ALIGNMENT_LEFT, -1, fs, Color(1, 0.98, 0.92))
-	## dug-in garrison: a small shield badge top-left
+	ci.draw_string(f, p + Vector2(-tw * 0.5, fs * 0.36), txt, HORIZONTAL_ALIGNMENT_LEFT, -1, fs, num_col)
+	## the garrison's shield, on the token's left shoulder
+	var gp: Vector2 = p + Vector2(-r * 1.05, -r * 0.55)
+	var gr: float = clampf(r * 0.52, 9.0, 14.0)
 	if ts.garrison > 0:
-		var gp: Vector2 = p + Vector2(-r * 0.95, -r * 0.8)
-		Style.draw_shape(ci, "shield", gp, 9.0, Color(0.2, 0.17, 0.12), Color(0.9, 0.78, 0.5), 1.5)
+		ci.draw_circle(gp + Vector2(1.5, 2.5), gr, Color(0, 0, 0, 0.35))
+		Style.draw_shape(ci, "shield", gp, gr, Color(0.36, 0.24, 0.08), Color(1.0, 0.84, 0.45), 2.0)
 		var gt := str(ts.garrison)
-		var gw: float = f.get_string_size(gt, HORIZONTAL_ALIGNMENT_LEFT, -1, 12).x
-		ci.draw_string(f, gp + Vector2(-gw * 0.5, 5), gt, HORIZONTAL_ALIGNMENT_LEFT, -1, 12, Color(1, 0.92, 0.7))
+		var gs: int = int(gr * 1.15)
+		var gw: float = f.get_string_size(gt, HORIZONTAL_ALIGNMENT_LEFT, -1, gs).x
+		ci.draw_string_outline(f, gp + Vector2(-gw * 0.5, gs * 0.36), gt, HORIZONTAL_ALIGNMENT_LEFT, -1, gs, 3, Color(0.1, 0.06, 0.02, 0.9))
+		ci.draw_string(f, gp + Vector2(-gw * 0.5, gs * 0.36), gt, HORIZONTAL_ALIGNMENT_LEFT, -1, gs, Color(1, 0.94, 0.72))
+	elif owner != "neutral":
+		## nobody dug in yet: a faint empty shield, so the absence reads too
+		Style.draw_shape(ci, "shield", gp, gr * 0.8, Color(0, 0, 0, 0.0), Color(0.95, 0.9, 0.78, 0.28), 1.2)
 	## queued reinforcements: gold "+n" top-right
 	var q: int = int(placements.get(id, 0))
 	if q > 0:

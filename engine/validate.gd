@@ -149,6 +149,18 @@ static func _validate_packets(world: Types.World, map: Types.MapDef, sheet: Type
 				errors.append("%s surgeTo must be adjacent to to" % tag)
 		outgoing[p.from_id] = int(outgoing.get(p.from_id, 0)) + p.strength
 
+	## v1.3 surges belong to the land being attacked
+	for dest in sheet.surges.keys():
+		var to: String = str(sheet.surges[dest])
+		var attacked := false
+		for raw in sheet.packets:
+			if (raw as Types.Packet).to_id == str(dest):
+				attacked = true
+		if not attacked:
+			errors.append("surge from %s: nothing attacks it" % dest)
+		elif to == str(dest) or not MapLib.is_adjacent(map, str(dest), to):
+			errors.append("surge from %s must go to a neighbouring land" % dest)
+
 	for from_id in outgoing.keys():
 		var ts: Types.TerritoryState = world.get_territory(from_id)
 		if ts == null:

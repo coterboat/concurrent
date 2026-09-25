@@ -200,6 +200,11 @@ func _on_phase(ph: int) -> void:
 	drawer.visible = false
 	edit_order("", "")
 	match ph:
+		Session.Phase.MANEUVER:
+			select("")
+			Audio.music("muster")
+			_say_once("maneuver", "neutral")
+			log_line("Reinforcement phase: march troops one land toward the front.", Style.GOOD)
 		Session.Phase.OPENING, Session.Phase.PLANNING:
 			select("")
 			Audio.music("plan")
@@ -210,6 +215,7 @@ func _on_phase(ph: int) -> void:
 				_intro_done = true
 			if ph == Session.Phase.PLANNING:
 				_pre_regions = _regions_of_humans()
+				_note_rival_marches()
 				if session.is_last_round() and not session.conquest():
 					_say_once("final", "alarm")
 				elif session.world.round == 1 and not bool(session.config.get("tutorial", false)):
@@ -252,7 +258,26 @@ func _refresh() -> void:
 	roster.refresh()
 	bar.refresh()
 	var planning: bool = ph == Session.Phase.OPENING or ph == Session.Phase.PLANNING
-	if planning:
+	if ph == Session.Phase.MANEUVER:
+		board.interactive = true
+		board.viewer = session.planner
+		board.world = session.maneuver_world()
+		board.show_ceiling = false
+		board.selected = selected
+		board.placements = {}
+		board.ghosts = session.ghosts
+		var arrows: Array = []
+		for m in session.my_moves():
+			arrows.append({"from": str(m["from"]), "to": str(m["to"]), "strength": int(m["n"]), "owner": session.planner, "kind": "move"})
+		board.orders = arrows
+		board.targets = _march_targets()
+		board.battle = {}
+		board.refresh()
+		land_card.show_for(selected if not order_card.visible else "")
+		if order_card.visible:
+			order_card.rebuild()
+		bar.set_counsel([{"key": "maneuver", "text": "Reinforcement phase. The battles are done: march troops one land at a time toward the front. Soldiers who arrive stay put, and dug-in defenders never leave.", "mood": "neutral", "voice": "", "focus": [], "rank": 50}])
+	elif planning:
 		board.interactive = true
 		board.viewer = session.planner
 		board.world = session.projected_world()
@@ -263,7 +288,7 @@ func _refresh() -> void:
 		var src: Dictionary = session.opening.get(session.planner, {}) if ph == Session.Phase.OPENING else session.sheet().placements
 		for k in src.keys():
 			board.placements[k] = int(src[k])
-		board.ghosts = session.ghosts if ph == Session.Phase.PLANNING else []
+		board.ghosts = (session.ghosts + session.move_ghosts) if ph == Session.Phase.PLANNING else []
 		board.orders = _my_arrows()
 		board.targets = _targets()
 		board.battle = {}
@@ -308,6 +333,8 @@ func _refresh_plate() -> void:
 			_plate_phase.text = "Deployment — %s" % s.name_of(s.planner)
 		Session.Phase.PLANNING:
 			_plate_phase.text = ("FINAL ROUND — " if s.is_last_round() and not s.conquest() else "") + "Orders for %s" % s.name_of(s.planner)
+		Session.Phase.MANEUVER:
+			_plate_phase.text = "Reinforcement phase — %s" % s.name_of(s.planner)
 		Session.Phase.CINEMA:
 			_plate_phase.text = "Battle report"
 		Session.Phase.RECAP:
@@ -412,8 +439,50 @@ func select(id: String) -> void:
 	_refresh()
 
 
+func _march_targets() -> Dictionary:
+	var t := {}
+	if selected == "" or session.world.get_territory(selected).owner != session.planner or session.can_move_from(selected) < 1:
+		return t
+	for n in MapLib.neighbors(session.map, selected):
+		if session.world.get_territory(n).owner == session.planner:
+			t[n] = true
+	return t
+
+
+func order_march(from_id: String, to_id: String) -> void:
+	var err: String = session.add_move(from_id, to_id)
+	if err != "":
+		_toast(err)
+		Audio.sfx("error")
+		return
+	Audio.sfx("maneuver", -4.0)
+	var n: int = int(session.my_moves()[session.move_index(from_id, to_id)]["n"])
+	log_line("March: %s ➜ %s with %d." % [session.hex_name(from_id), session.hex_name(to_id), n], Style.GOOD)
+	selected = from_id
+	edit_order(from_id, to_id)
+
+
+func _note_rival_marches() -> void:
+	var n := 0
+	for g in session.move_ghosts:
+		if not session.is_human(str(g["owner"])):
+			n += int(g["strength"])
+	if n > 0:
+		log_line("Your rivals marched %d soldiers toward their fronts (the pale arrows)." % n, Style.PARCH)
+
+
 func _on_click(id: String, button: int) -> void:
 	var ph: int = session.phase
+	if ph == Session.Phase.MANEUVER:
+		var own: bool = session.world.get_territory(id).owner == session.planner
+		if own and selected != "" and selected != id and session.world.get_territory(selected).owner == session.planner and session.map.is_adjacent(selected, id):
+			order_march(selected, id)
+		elif own:
+			select(id if selected != id else "")
+			Audio.sfx("click", -8.0)
+		else:
+			select(id)
+		return
 	if ph != Session.Phase.OPENING and ph != Session.Phase.PLANNING:
 		return
 	var ts: Types.TerritoryState = session.world.get_territory(id)
@@ -446,6 +515,13 @@ func _on_click(id: String, button: int) -> void:
 
 
 func _on_drag(from_id: String, to_id: String) -> void:
+	if session.phase == Session.Phase.MANEUVER:
+		if session.world.get_territory(from_id).owner == session.planner and session.world.get_territory(to_id).owner == session.planner:
+			order_march(from_id, to_id)
+		else:
+			_toast("March between two of your own lands.")
+			Audio.sfx("error")
+		return
 	if session.phase != Session.Phase.PLANNING:
 		return
 	if session.world.get_territory(from_id).owner != session.planner:
@@ -455,7 +531,10 @@ func _on_drag(from_id: String, to_id: String) -> void:
 		Audio.sfx("error")
 		return
 	selected = from_id
-	if session.world.get_territory(to_id).owner == session.planner:
+	if session.world.get_territory(to_id).owner == session.planner and session.map.maneuvers:
+		_toast("Troops march between your lands in the reinforcement phase, after the battles.")
+		Audio.sfx("error")
+	elif session.world.get_territory(to_id).owner == session.planner:
 		order_move(from_id, to_id)
 	else:
 		order_attack(from_id, to_id)
@@ -474,7 +553,7 @@ func _on_hover(id: String) -> void:
 	if ts.owner == Types.UNOCCUPIED:
 		lines.append("Empty")
 	else:
-		lines.append("%s · %s%s" % [session.name_of(ts.owner), Style.plural(ts.held(), "army", "armies"), (" (%d dug in)" % ts.garrison) if ts.garrison > 0 else ""])
+		lines.append("%s · %s%s" % [session.name_of(ts.owner), Style.plural(ts.armies, "army", "armies"), (" · %d dug in" % ts.garrison) if ts.garrison > 0 else " · none dug in"])
 	_hover_label.text = "\n".join(lines)
 	_hover_tip.visible = true
 	_hover_tip.reset_size()
@@ -608,7 +687,10 @@ func edit_order(a: String, b: String) -> void:
 	if a == "":
 		order_card.visible = false
 		return
-	order_card.show_for(a, b)
+	if session.phase == Session.Phase.MANEUVER:
+		order_card.show_move(a, b)
+	else:
+		order_card.show_for(a, b)
 	_refresh()
 
 
@@ -624,6 +706,15 @@ func primary_action() -> void:
 	match session.phase:
 		Session.Phase.OPENING, Session.Phase.PLANNING:
 			try_seal()
+		Session.Phase.MANEUVER:
+			var err: String = session.lock()
+			if err != "":
+				_toast(err)
+				Audio.sfx("error")
+			else:
+				Audio.sfx("maneuver")
+				log_line("The marches are sealed.", Style.GOOD)
+				selected = ""
 		Session.Phase.CINEMA:
 			if not theater.visible:
 				cinema.advance()
@@ -664,6 +755,15 @@ func toggle_view() -> void:
 	_toast("Map shows %s" % ("region colours — owners ride the borders" if m == 1 else "owner colours"))
 
 
+func open_cards() -> void:
+	if session.phase != Session.Phase.PLANNING or not session.map.cards:
+		return
+	var d: Control = load("res://game/ui/cards_dialog.gd").new()
+	d.session = session
+	d.closed.connect(func(): _refresh())
+	add_child(d)
+
+
 func open_drawer() -> void:
 	drawer.visible = not drawer.visible
 	if drawer.visible:
@@ -692,6 +792,9 @@ func _theater_wants(b: Dictionary) -> bool:
 		"off":
 			return false
 		"all":
+			return true
+	for a in b.get("attackers", []):
+		if session.is_human(str(a)):
 			return true
 	return session.is_human(str(b["a"])) or session.is_human(str(b["b"]))
 
@@ -857,7 +960,8 @@ func _show_pass() -> void:
 	var t := Style.label("Pass the computer to %s" % session.name_of(pid), 40, Style.seat_color(pid).lightened(0.4), "display")
 	t.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
 	v.add_child(t)
-	var what := "place your starting armies" if int(session.get_meta("after_pass", 0)) == Session.Phase.OPENING else "write your orders for round %d" % session.world.round
+	var after: int = int(session.get_meta("after_pass", 0))
+	var what := "place your starting armies" if after == Session.Phase.OPENING else ("march your troops to the front" if after == Session.Phase.MANEUVER else "write your orders for round %d" % session.world.round)
 	var sub := Style.label("Everyone else, look away. %s, it's your turn to %s." % [session.name_of(pid), what], 20, Style.PARCH, "italic")
 	sub.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
 	sub.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
@@ -1002,6 +1106,9 @@ func _unhandled_input(event: InputEvent) -> void:
 		get_viewport().set_input_as_handled()
 	elif event.keycode == KEY_ENTER and (event.meta_pressed or event.ctrl_pressed):
 		try_seal()
+		get_viewport().set_input_as_handled()
+	elif (event.keycode == KEY_ENTER or event.keycode == KEY_KP_ENTER) and order_card.visible:
+		edit_order("", "") ## OK: keep the order, close the card
 		get_viewport().set_input_as_handled()
 	elif event.keycode == KEY_V and session.phase != Session.Phase.CINEMA:
 		toggle_view()

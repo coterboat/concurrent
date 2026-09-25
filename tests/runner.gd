@@ -16,6 +16,7 @@ const VolleysTest = preload("res://tests/test_volleys.gd")
 const MapsTest = preload("res://tests/test_maps.gd")
 const GarrisonTest = preload("res://tests/test_garrison.gd")
 const CallsTest = preload("res://tests/test_calls.gd")
+const V13Test = preload("res://tests/test_v13.gd")
 
 const KNIFE7 := "res://maps/knife7.json"
 
@@ -55,6 +56,8 @@ func _initialize() -> void:
 	VolleysTest.new().run(Callable(self, "_ok"))
 	_section("battle calls")
 	CallsTest.new().run(Callable(self, "_ok"))
+	_section("v1.3: melee, surges, cards, marches")
+	V13Test.new().run(Callable(self, "_ok"))
 	_section("ai commanders")
 	AiTest.new().run(Callable(self, "_ok"))
 	print("")

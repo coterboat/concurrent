@@ -27,6 +27,7 @@ func _ready() -> void:
 	v.add_child(_slider("Sound effects", "sfx"))
 	v.add_child(_slider("Campfire ambience", "ambience"))
 	v.add_child(_slider("Voices", "voices"))
+	v.add_child(_choice("Commander voices", "commander_voices", ["Classic", "New take (v1.3)"], ["classic", "new"]))
 	v.add_child(_choice("Battle scenes", "battles", ["Show my battles", "Show every battle", "Map only"], ["mine", "all", "off"]))
 	v.add_child(_toggle("Roll the dice yourself in your battles", "roll_yourself"))
 	v.add_child(_choice("Battle speed", "speed", ["Slow — savor every roll", "Normal", "Fast"], ["slow", "normal", "fast"]))

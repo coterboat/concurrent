@@ -138,7 +138,7 @@ func _header() -> void:
 
 
 func _reinforcements() -> void:
-	var box := _section("Reinforcements" if session.phase == Session.Phase.PLANNING else "Starting armies", "reinforce")
+	var box := _section("Recruits" if session.phase == Session.Phase.PLANNING else "Starting armies", "reinforce")
 	var left: int = session.income_left()
 	var total: int = session.income_total()
 	var h := HBoxContainer.new()
@@ -276,7 +276,7 @@ func _selected() -> void:
 func _hint_text() -> String:
 	if session.phase == Session.Phase.OPENING:
 		return "Click one of your lands to select it. Click it again (or press +) to add armies. Right-click takes one back."
-	return "Click one of your lands to select it. Then click an enemy neighbor to attack, or drag from your land onto the target. Click your selected land again to reinforce it."
+	return "Click one of your lands to select it. Then click an enemy neighbor to attack, or drag from your land onto the target. Click your selected land again to add a recruit."
 
 
 func _attack_row(from_id: String, to_id: String, from_enemy_view: bool) -> Control:
@@ -331,6 +331,8 @@ func _move_row(from_id: String, to_id: String) -> Control:
 	var r: Types.Regroup = session.sheet().regroup
 	if r != null and r.from_id == from_id and r.to_id == to_id:
 		row.add_child(Style.label("moving %d" % r.strength, 15, Style.GOLD, "bold"))
+	elif session.map.maneuvers:
+		row.add_child(Style.label("march after the battles", 13, Style.MUTED, "italic"))
 	elif session.world.round > 1:
 		var b := Style.chip("Move", func(): gs.order_move(from_id, to_id), Style.PARCH, 15)
 		b.disabled = session.max_regroup(from_id) < 1

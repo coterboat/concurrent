@@ -13,6 +13,7 @@ const Types := preload("res://engine/types.gd")
 const Lines := preload("res://game/core/lines.gd")
 const Combat := preload("res://engine/combat.gd")
 const LeaderFace := preload("res://game/ui/leader_face.gd")
+const BattleField := preload("res://game/ui/battle_field.gd")
 
 signal finished(skip_rest: bool)
 
@@ -45,7 +46,11 @@ var _count_a: Label
 var _count_b: Label
 var _name_a: Label
 var _name_b: Label
-var _field: _Field
+var _field: Control ## BattleField
+var _melee := false ## several invaders at once (v1.3): fronts, one per invader
+var _fronts: Array = [] ## the melee's fronts from the event
+var _left: Array = [] ## men standing per army: fronts (or the one attacker) first, the defender last
+var _extra: Array = [] ## [{face, name, count}] rings for the second and third invaders
 var _dice_a: HBoxContainer
 var _dice_b: HBoxContainer
 var _score: Label
@@ -77,7 +82,7 @@ func _ready() -> void:
 	shade.set_anchors_and_offsets_preset(PRESET_FULL_RECT)
 	shade.mouse_filter = Control.MOUSE_FILTER_IGNORE
 	add_child(shade)
-	_field = _Field.new()
+	_field = BattleField.new()
 	_field.set_anchors_and_offsets_preset(PRESET_FULL_RECT)
 	_field.offset_top = 250
 	_field.offset_bottom = -190
@@ -273,6 +278,8 @@ func _shade_tex() -> GradientTexture2D:
 
 # ------------------------------------------------------------------ flow
 
+# ------------------------------------------------------------------ flow
+
 func play(p_session: Node, beats: Array, human_involved: bool) -> void:
 	session = p_session
 	_beats = beats
@@ -286,8 +293,13 @@ func play(p_session: Node, beats: Array, human_involved: bool) -> void:
 	if human_involved:
 		_advisor.setup("advisor", "", "Chief of Staff")
 	visible = true
+	## the camera has swooped down on the map; the field opens out of it
 	modulate.a = 0.0
-	create_tween().tween_property(self, "modulate:a", 1.0, 0.3)
+	pivot_offset = size * 0.5
+	scale = Vector2(1.1, 1.1)
+	var tw := create_tween().set_parallel(true)
+	tw.tween_property(self, "modulate:a", 1.0, 0.35)
+	tw.tween_property(self, "scale", Vector2.ONE, 0.45).set_trans(Tween.TRANS_CUBIC).set_ease(Tween.EASE_OUT)
 	Audio.ambience(true, "ambience_battle")
 	Audio.music("charge")
 	Audio.sfx("charge", -3.0)
@@ -298,7 +310,10 @@ func extend(beats: Array) -> void:
 	## The session resolved further after a call: same fights, longer log.
 	_beats = beats
 	if _bi >= 0 and _bi < _beats.size():
-		_rolls = (_beats[_bi]["event"] as Dictionary).get("rolls", [])
+		var e: Dictionary = _beats[_bi]["event"]
+		_rolls = e.get("salvos", []) if _melee else e.get("rolls", [])
+		if _melee:
+			_fronts = e.get("fronts", [])
 
 
 func _set_manual(m: bool) -> void:
@@ -317,6 +332,7 @@ func abort() -> void:
 	## Closed from outside (the whole report was skipped): no signal, no fade.
 	_state = "idle"
 	visible = false
+	scale = Vector2.ONE
 	_face_a.hush()
 	_face_b.hush()
 	_advisor.hush()
@@ -333,6 +349,7 @@ func _close(skip_rest: bool) -> void:
 	tw.tween_property(self, "modulate:a", 0.0, 0.25)
 	tw.tween_callback(func():
 		visible = false
+		scale = Vector2.ONE
 		_face_a.hush()
 		_face_b.hush()
 		_advisor.hush()
@@ -388,6 +405,11 @@ func _event() -> Dictionary:
 	return _beats[_bi]["event"] if _bi >= 0 and _bi < _beats.size() else {}
 
 
+func _def() -> int:
+	## the defender's army index on the field
+	return _left.size() - 1
+
+
 func _next_engagement() -> void:
 	_bi += 1
 	if _bi >= _beats.size():
@@ -399,17 +421,36 @@ func _next_engagement() -> void:
 	var land: String = str(b.get("resolves", ""))
 	if land == "":
 		land = str((b.get("focus", [""]) as Array)[0])
-	_a_pid = str(b["a"])
-	_b_pid = str(b["b"])
-	_a_left = int(b["a_size"])
-	_b_left = int(b["b_size"])
-	_rolls = e.get("rolls", [])
-	_volley_mode = not _rolls.is_empty() and (_rolls[0] as Dictionary).has("sa")
-	_ri = 0
-	_exchange = 0
+	_melee = kind == Types.EVENT_MELEE
 	_seen_calls = {}
+	_exchange = 0
 	_advised = false
+	_ri = 0
 	_call_plate.visible = false
+	var list: Array = []
+	if _melee:
+		_fronts = e.get("fronts", [])
+		_rolls = e.get("salvos", [])
+		_volley_mode = true
+		_left = []
+		for f in _fronts:
+			list.append({"pid": str(f["attackerId"]), "side": 0, "n": int(f["size"])})
+			_left.append(int(f["size"]))
+		list.append({"pid": str(e["defenderId"]), "side": 1, "n": int(e["defenderSize"])})
+		_left.append(int(e["defenderSize"]))
+		## the lead ring goes to a watching commander if there is one
+		_a_pid = str(b["a"])
+		_b_pid = str(e["defenderId"])
+	else:
+		_fronts = []
+		_a_pid = str(b["a"])
+		_b_pid = str(b["b"])
+		_rolls = e.get("rolls", [])
+		_volley_mode = not _rolls.is_empty() and (_rolls[0] as Dictionary).has("sa")
+		_left = [int(b["a_size"]), int(b["b_size"])]
+		list = [{"pid": _a_pid, "side": 0, "n": _left[0]}, {"pid": _b_pid, "side": 1, "n": _left[1]}]
+	_a_left = _left[0]
+	_b_left = _left[_def()]
 	## the ground under this fight
 	var region: String = session.map.get_territory(land).region if land != "" else ""
 	var terrain: String = str(session.map.region_terrain.get(region, "grass"))
@@ -417,30 +458,92 @@ func _next_engagement() -> void:
 	_title.text = str(b["caption"]).to_upper()
 	match kind:
 		"Clash":
-			_sub.text = "Both armies march at once and meet in the field — no retreat"
+			_sub.text = "Border clash! Both columns march at once and meet in the field — no retreat"
 		"Spoils":
 			_sub.text = "Two invaders, one prize — no retreat"
+		Types.EVENT_MELEE:
+			_sub.text = "%d armies storm it at once — the defenders must hold every front" % _fronts.size()
 		_:
-			var attacker_from: String = session.hex_name(str(e.get("from", "")))
-			_sub.text = "%s attacks from %s" % [session.name_of(_a_pid), attacker_from]
-	_setup_side(_face_a, _name_a, _a_pid, true)
+			_sub.text = "%s attacks from %s" % [session.name_of(_a_pid), session.hex_name(str(e.get("from", "")))]
+	_setup_side(_face_a, _name_a, _melee_lead_pid() if _melee else _a_pid, true)
 	_setup_side(_face_b, _name_b, _b_pid, false)
+	_setup_extras()
 	_update_counts()
-	_field.setup(_a_pid, _a_left, _b_pid, _b_left)
+	_field.setup(list)
 	_result.text = ""
-	_score.text = "Each volley: die × 5 + armies. Loser of the volley loses one." if _volley_mode else "One roll: armies + die. Higher total wins."
+	_score.text = ("Every front fights at once: die × 5 + armies against the defenders' share there." if _melee else "Each volley: die × 5 + armies. Loser of the volley loses one.") if _volley_mode else "One roll: armies + die. Higher total wins."
 	_clear_dice()
 	_progress.text = "Battle %d of %d at this land" % [_bi + 1, _beats.size()] if _beats.size() > 1 else ""
 	if not _spoken_attack:
 		_spoken_attack = true
-		var who: String = _who(_a_pid)
+		var who: String = _who(_melee_lead_pid() if _melee else _a_pid)
 		if Lines.has(who, "attack"):
 			_face_a.react("win", "attack", 2.4)
 		else:
 			_face_a.react("happy")
+		if _melee:
+			Audio.sfx("melee", -4.0)
+			if _advisor.visible:
+				get_tree().create_timer(1.2).timeout.connect(func(): _advisor.react("alarm", "melee", 3.0))
 	_state = "ready"
-	_auto_t = 1.3 ## let them march in
+	_auto_t = 1.4 ## let them march in
 	_dial.set_label("ROLL", "Space")
+
+
+func _melee_lead_pid() -> String:
+	return str(_fronts[_lead_front()]["attackerId"]) if not _fronts.is_empty() else _a_pid
+
+
+func _lead_front() -> int:
+	for i in _fronts.size():
+		if str(_fronts[i]["attackerId"]) == _a_pid:
+			return i
+	return 0
+
+
+func _army_of_front(i: int) -> int:
+	return i
+
+
+func _setup_extras() -> void:
+	## rings for the other invaders in a melee, beside the lead one
+	for x in _extra:
+		(x["face"] as Control).queue_free()
+		(x["name"] as Control).queue_free()
+		(x["count"] as Control).queue_free()
+	_extra = []
+	if not _melee:
+		return
+	var k := 0
+	for i in _fronts.size():
+		if i == _lead_front():
+			continue
+		var pid: String = str(_fronts[i]["attackerId"])
+		var face: Control = LeaderFace.new()
+		face.bubble_side = "bottom"
+		face.position = Vector2(236 + k * 138, 40)
+		face.size = Vector2(124, 124)
+		add_child(face)
+		face.setup(_who(pid), pid, session.name_of(pid))
+		var nm := _side_label(18)
+		nm.text = session.name_of(pid)
+		nm.add_theme_color_override("font_color", Style.seat_color(pid).lightened(0.45))
+		nm.position = Vector2(206 + k * 138, 164)
+		nm.size = Vector2(184, 26)
+		var ct := _side_label(34)
+		ct.position = Vector2(206 + k * 138, 188)
+		ct.size = Vector2(184, 44)
+		_extra.append({"face": face, "name": nm, "count": ct, "front": i})
+		k += 1
+
+
+func _face_of_front(i: int) -> Control:
+	if not _melee or i == _lead_front():
+		return _face_a
+	for x in _extra:
+		if int(x["front"]) == i:
+			return x["face"]
+	return _face_a
 
 
 func _who(pid: String) -> String:
@@ -467,7 +570,12 @@ func _setup_side(face: Control, name_l: Label, pid: String, left: bool) -> void:
 
 
 func _update_counts() -> void:
-	_count_a.text = str(maxi(0, _a_left))
+	if _melee:
+		_count_a.text = str(maxi(0, int(_left[_lead_front()])))
+		for x in _extra:
+			(x["count"] as Label).text = str(maxi(0, int(_left[int(x["front"])])))
+	else:
+		_count_a.text = str(maxi(0, _a_left))
 	_count_b.text = str(maxi(0, _b_left))
 
 
@@ -486,9 +594,13 @@ func _roll_exchange() -> void:
 	_call_plate.visible = false
 	_dial.set_label("…", "")
 	_clear_dice()
-	## one exchange: three volleys (or the single decisive roll with its rerolls)
+	## one exchange: three volleys (or three salvos of a melee, or the one decisive roll)
 	var chunk: Array = []
-	if _volley_mode:
+	if _melee:
+		while _ri < _rolls.size() and chunk.size() < Combat.EXCHANGE:
+			chunk.append(_rolls[_ri])
+			_ri += 1
+	elif _volley_mode:
 		var decided := 0
 		while _ri < _rolls.size() and decided < Combat.EXCHANGE:
 			chunk.append(_rolls[_ri])
@@ -498,58 +610,85 @@ func _roll_exchange() -> void:
 	else:
 		chunk = _rolls.duplicate()
 		_ri = _rolls.size()
-	var dice_pairs: Array = []
+	Audio.sfx("dice")
+	var t := 0.55 if manual else 0.4
+	var tw := create_tween()
+	tw.tween_interval(t)
 	for r in chunk:
+		tw.tween_callback(func(): _show_roll(r))
+		tw.tween_interval(0.5 if _melee else (0.42 if _volley_mode else 0.2))
+	tw.tween_callback(func(): _after_exchange())
+
+
+func _show_roll(r: Variant) -> void:
+	## lay out this volley's (or salvo's) dice, then settle them
+	_clear_dice()
+	var pairs: Array = r if _melee else [r]
+	var made: Array = []
+	for v in pairs:
+		var ap: String = str(_fronts[int(v["i"])]["attackerId"]) if _melee else _a_pid
 		var da := _Die.new()
-		da.tint = Style.seat_color(_a_pid)
+		da.tint = Style.seat_color(ap)
 		da.rolling = true
 		_dice_a.add_child(da)
 		var db := _Die.new()
 		db.tint = Style.seat_color(_b_pid)
 		db.rolling = true
 		_dice_b.add_child(db)
-		dice_pairs.append([da, db, r])
-	Audio.sfx("dice")
-	var t := 0.55 if manual else 0.4
+		made.append([da, db, v])
 	var tw := create_tween()
-	tw.tween_interval(t)
-	for i in dice_pairs.size():
-		var pair: Array = dice_pairs[i]
-		tw.tween_callback(func(): _settle(pair[0], pair[1], pair[2]))
-		tw.tween_interval(0.42 if _volley_mode else 0.2)
-	tw.tween_callback(func(): _after_exchange())
+	tw.tween_interval(0.18)
+	tw.tween_callback(func():
+		var lines: Array = []
+		for m in made:
+			lines.append(_settle(m[0], m[1], m[2]))
+		if _melee:
+			_score.text = "    ·    ".join(lines))
 
 
-func _settle(da: _Die, db: _Die, r: Dictionary) -> void:
+func _settle(da: _Die, db: _Die, r: Dictionary) -> String:
 	da.rolling = false
 	db.rolling = false
 	da.value = int(r["a"])
 	db.value = int(r["b"])
 	var w: String = str(r.get("w", ""))
 	if not _volley_mode:
-		return
-	var sa: int = 5 * int(r["a"]) + int(r["sa"])
-	var sb: int = 5 * int(r["b"]) + int(r["sd"])
+		return ""
+	var fi: int = int(r.get("i", 0))
+	var army: int = _army_of_front(fi) if _melee else 0
+	var ap: String = str(_fronts[fi]["attackerId"]) if _melee else _a_pid
+	var sa: float = 5.0 * int(r["a"]) + float(r["sa"])
+	var sb: float = 5.0 * int(r["b"]) + float(r["sd"])
 	if w == "":
-		_score.text = "%d vs %d — a tie in the field. Roll again." % [sa, sb]
+		_score.text = "%d vs %d — a tie in the field. Roll again." % [int(sa), int(sb)]
 		da.dim = true
 		db.dim = true
-		return
-	_score.text = "%s  5×%d + %d = %d    vs    %s  5×%d + %d = %d" % [session.name_of(_a_pid), r["a"], r["sa"], sa, session.name_of(_b_pid) if _b_pid != "neutral" else "Neutral", r["b"], r["sd"], sb]
+		return ""
+	var line: String
+	if _melee:
+		line = "%s %s" % [session.name_of(ap), "✔" if w == "a" else "✘"]
+	else:
+		_score.text = "%s  5×%d + %d = %d    vs    %s  5×%d + %d = %d" % [session.name_of(ap), r["a"], r["sa"], int(sa), session.name_of(_b_pid) if _b_pid != "neutral" else "Neutral", r["b"], r["sd"], int(sb)]
+		line = ""
+	var sound := "volley"
 	if w == "a":
 		db.dim = true
-		_b_left -= 1
-		_field.volley(true)
+		_left[_def()] = int(_left[_def()]) - 1
+		sound = _field.volley(army)
 		_flinch(_face_b)
 	else:
 		da.dim = true
-		_a_left -= 1
-		_field.volley(false)
-		_flinch(_face_a)
-	_field.set_alive(_a_left, _b_left)
+		_left[army] = int(_left[army]) - 1
+		sound = _field.volley(_def())
+		_flinch(_face_of_front(fi) if _melee else _face_a)
+	_a_left = int(_left[0])
+	_b_left = int(_left[_def()])
+	_field.set_count(army, maxi(0, int(_left[army])))
+	_field.set_count(_def(), maxi(0, int(_left[_def()])))
 	_update_counts()
-	Audio.sfx("volley", -5.0, 0.12)
+	Audio.sfx(sound, -5.0 if sound == "volley" else -3.0, 0.12)
 	get_tree().create_timer(0.12).timeout.connect(func(): Audio.sfx("hit", -9.0, 0.15))
+	return line
 
 
 func _flinch(face: Control) -> void:
@@ -575,26 +714,26 @@ func _after_exchange() -> void:
 		var left: int = int(b["left"])
 		_a_left = left if a_won else 0
 		_b_left = 0 if a_won else left
-		var dice_a: Array = _dice_a.get_children()
-		var dice_b: Array = _dice_b.get_children()
-		if a_won and not dice_b.is_empty():
-			(dice_b[-1] as _Die).dim = true
-		elif not a_won and not dice_a.is_empty():
-			(dice_a[-1] as _Die).dim = true
 		Audio.sfx("cannon", -4.0)
-		_field.rout(a_won, _a_left, _b_left)
+		_field.volley(0 if a_won else 1)
+		get_tree().create_timer(0.35).timeout.connect(func():
+			_field.set_count(0, _a_left)
+			_field.set_count(1, _b_left))
 		_update_counts()
 		get_tree().create_timer(1.1).timeout.connect(func(): _finish_engagement())
 		return
 	_exchange += 1
-	if _a_left <= 0 or _b_left <= 0:
-		get_tree().create_timer(0.4).timeout.connect(func(): _finish_engagement())
+	_field.reload(0)
+	_field.reload(_def())
+	if _all_down():
+		get_tree().create_timer(0.5).timeout.connect(func(): _finish_engagement())
 		return
-	## a call already on the log (an officer's, or a replayed one) happens here
-	var c: Dictionary = _call_at(_ri)
-	if not c.is_empty():
-		_seen_calls[_ri] = true
-		_show_call(c, false)
+	## calls already on the log (officers', or replayed) happen here, front by front
+	var calls: Array = _calls_at(_ri)
+	if not calls.is_empty():
+		for c in calls:
+			_seen_calls["%d|%d" % [int(c.get("front", 0)), _ri]] = true
+		_show_calls(calls)
 		return
 	if bool(_event().get("pending", false)) and _ri >= _rolls.size():
 		_ask()
@@ -607,13 +746,37 @@ func _after_exchange() -> void:
 	_dial.set_label("ROLL", "%d vs %d" % [_a_left, _b_left])
 
 
-func _call_at(at: int) -> Dictionary:
-	if _seen_calls.has(at):
-		return {}
-	for c in _event().get("calls", []):
-		if int(c.get("at", -1)) == at:
-			return c
-	return {}
+func _all_down() -> bool:
+	if int(_left[_def()]) <= 0:
+		return true
+	for i in range(0, _def()):
+		if int(_left[i]) > 0 and not _fled(i):
+			return false
+	return true
+
+
+func _fled(i: int) -> bool:
+	return _melee and bool(_fronts[i].get("fellBack", false)) and _seen_calls.has("fell|%d" % i)
+
+
+func _calls_at(at: int) -> Array:
+	var out: Array = []
+	if _melee:
+		for i in _fronts.size():
+			if _seen_calls.has("%d|%d" % [i, at]):
+				continue
+			for c in _fronts[i].get("calls", []):
+				if int(c.get("at", -1)) == at:
+					var cc: Dictionary = c.duplicate()
+					cc["front"] = i
+					out.append(cc)
+	else:
+		if _seen_calls.has("0|%d" % at):
+			return out
+		for c in _event().get("calls", []):
+			if int(c.get("at", -1)) == at:
+				out.append(c)
+	return out
 
 
 func _ask() -> void:
@@ -625,7 +788,8 @@ func _ask() -> void:
 	var res: int = int(p.get("reserves", 0))
 	var refuge: String = str(p.get("refuge", ""))
 	var pr: float = Combat.capture_rate(a, d, Combat.MODE_VOLLEYS)
-	_odds.text = "From here: %s — %d%% to take it" % [Combat.odds_word(a, d, Combat.MODE_VOLLEYS), int(round(pr * 100.0))]
+	var who: String = session.name_of(str(p.get("attacker", "")))
+	_odds.text = ("%s's call · " % who if _melee else "") + "From here: %s — %d%% to take it" % [Combat.odds_word(a, d, Combat.MODE_VOLLEYS), int(round(pr * 100.0))]
 	if res > 0:
 		var pr2: float = Combat.capture_rate(a + res, d, Combat.MODE_VOLLEYS)
 		_odds.text += "   ·   with the reserves: %d%%" % int(round(pr2 * 100.0))
@@ -636,7 +800,6 @@ func _ask() -> void:
 	_btn_fall.text = "↩ Fall back to %s   (F)" % session.hex_name(refuge) if refuge != "" else "Cut off — no retreat!"
 	_btn_fall.disabled = refuge == ""
 	if manual:
-		## the first few times, say what the plate is for
 		var seen: int = int(Settings.get_value("calls_seen", 0))
 		_hint.visible = seen < 4
 		if seen < 4:
@@ -653,13 +816,15 @@ func _ask() -> void:
 
 func _counsel(a: int, d: int, res: int, refuge: String) -> void:
 	## The chief of staff reads the opening exchange once per battle.
-	if _advised or not _advisor.visible or not session.is_human(_a_pid):
+	var att: String = str(session.pending.get("attacker", _a_pid))
+	if _advised or not _advisor.visible or not session.is_human(att):
 		return
 	_advised = true
-	var start_a: int = int(_beats[_bi]["a_size"])
-	var start_d: int = int(_beats[_bi]["b_size"])
+	var fi: int = int(session.pending.get("front", 0))
+	var start_a: int = int(_fronts[fi]["size"]) if _melee else int(_beats[_bi]["a_size"])
+	var start_d: int = int(_event().get("defenderSize", _beats[_bi].get("b_size", d))) if _melee else int(_beats[_bi]["b_size"])
 	var lost_a: int = start_a - a
-	var lost_d: int = start_d - d
+	var lost_d: int = start_d - (int(session.pending.get("dTotal", d)) if _melee else d)
 	if refuge == "" and lost_a >= lost_d:
 		_advisor.react("alarm", "cut_off", 3.0)
 	elif lost_a >= 2 and lost_d == 0 or lost_a - lost_d >= 2:
@@ -676,59 +841,88 @@ func _answer(call: String) -> void:
 	_dial.set_label("…", "")
 	var p: Dictionary = session.pending.duplicate()
 	var at: int = int(p.get("rolls", _ri))
+	var fi: int = int(p.get("front", 0))
 	session.answer(call) ## re-resolves; the cinema hands us the longer log (extend)
-	_seen_calls[at] = true
+	_seen_calls["%d|%d" % [fi, at]] = true
 	if call == Combat.CALL_PRESS:
-		if _advised and _advisor.visible and session.is_human(_a_pid) and _exchange == 1:
+		if _advised and _advisor.visible and session.is_human(str(p.get("attacker", ""))) and _exchange == 1:
 			_advisor.react("happy", "press", 2.0)
+		_field.charge(fi if _melee else 0)
+		## in a melee other fronts may also have called at this moment: show them, then go on
+		var rest: Array = _calls_at(at)
+		if not rest.is_empty():
+			for c in rest:
+				_seen_calls["%d|%d" % [int(c.get("front", 0)), at]] = true
+			_show_calls(rest)
+			return
+		if bool(_event().get("pending", false)) and _ri >= _rolls.size():
+			_ask()
+			return
 		_roll_exchange()
 		return
-	var entry := {"call": call, "at": at, "to": str(p.get("refuge", ""))}
+	var entry := {"call": call, "at": at, "to": str(p.get("refuge", "")), "front": fi}
 	entry["n"] = int(p.get("reserves", 0)) if call == Combat.CALL_RESERVES else int(p.get("a", _a_left))
-	_show_call(entry, true)
+	_show_calls([entry])
 
 
-func _show_call(c: Dictionary, live: bool) -> void:
+func _show_calls(calls: Array) -> void:
+	## reserves and retreats, shown one after another; then the battle goes on (or ends)
 	_state = "wait"
+	var delay := 0.0
+	var ends := false
+	for c in calls:
+		var cc: Dictionary = c
+		get_tree().create_timer(delay).timeout.connect(func(): _show_call(cc))
+		delay += 1.5 if str(cc.get("call", "")) == Combat.CALL_RESERVES else 1.8
+		if str(cc.get("call", "")) == Combat.CALL_FALL_BACK and not _melee:
+			ends = true
+	get_tree().create_timer(delay).timeout.connect(func():
+		if _state != "wait":
+			return
+		if ends or _all_down():
+			_finish_engagement()
+		elif bool(_event().get("pending", false)) and _ri >= _rolls.size():
+			_ask()
+		else:
+			_state = "ready"
+			_auto_t = 0.3
+			_dial.set_label("ROLL", "%d vs %d" % [_a_left, _b_left]))
+
+
+func _show_call(c: Dictionary) -> void:
 	var call: String = str(c.get("call", ""))
-	var who: String = _who(_a_pid)
+	var fi: int = int(c.get("front", 0))
+	var army: int = fi if _melee else 0
+	var pid: String = str(_fronts[fi]["attackerId"]) if _melee else _a_pid
+	var who: String = _who(pid)
+	var face: Control = _face_of_front(fi)
 	match call:
 		Combat.CALL_RESERVES:
 			var n: int = int(c.get("n", 0))
-			_a_left += n
+			_left[army] = int(_left[army]) + n
+			_a_left = int(_left[0])
 			_update_counts()
-			_field.reinforce(0, _a_left)
+			_field.set_count(army, int(_left[army]))
 			_shout_text("RESERVES!  +%d" % n, Style.GOLD)
-			_sub.text = "%s throws in the reserves from home" % session.name_of(_a_pid)
+			_sub.text = "%s throws in the reserves from home" % session.name_of(pid)
 			Audio.sfx("reserves", -2.0)
 			get_tree().create_timer(0.5).timeout.connect(func(): Audio.sfx("hurrah", -4.0))
 			if Lines.has(who, "reserves"):
-				_face_a.react("happy", "reserves", 2.4)
-			elif _advisor.visible and session.is_human(_a_pid):
-				_face_a.react("happy")
+				face.react("happy", "reserves", 2.4)
+			elif _advisor.visible and session.is_human(pid):
+				face.react("happy")
 				_advisor.react("happy", "reserves", 2.4)
-			get_tree().create_timer(1.5).timeout.connect(func():
-				if _state != "wait":
-					return
-				_state = "ready"
-				_auto_t = 0.3
-				_dial.set_label("ROLL", "%d vs %d" % [_a_left, _b_left]))
 		Combat.CALL_FALL_BACK:
 			_shout_text("FALL BACK!", Style.PARCH)
-			_sub.text = "%s sounds the retreat to %s" % [session.name_of(_a_pid), session.hex_name(str(c.get("to", "")))]
+			_sub.text = "%s sounds the retreat to %s" % [session.name_of(pid), session.hex_name(str(c.get("to", "")))]
 			Audio.sfx("retreat", -2.0)
-			_field.retreat(0)
+			_field.retreat(army)
+			_seen_calls["fell|%d" % fi] = true
 			if Lines.has(who, "retreat"):
-				_face_a.react("lose", "retreat", 2.6)
-			elif _advisor.visible and session.is_human(_a_pid):
-				_face_a.react("lose")
+				face.react("lose", "retreat", 2.6)
+			elif _advisor.visible and session.is_human(pid):
+				face.react("lose")
 				_advisor.react("alarm", "retreat", 2.6)
-			get_tree().create_timer(1.8).timeout.connect(func():
-				if _state == "wait":
-					_finish_engagement())
-		_:
-			_state = "ready"
-			_auto_t = 0.3
 
 
 func _shout_text(t: String, col: Color) -> void:
@@ -746,23 +940,30 @@ func _shout_text(t: String, col: Color) -> void:
 func _finish_engagement() -> void:
 	if _bi < 0 or _bi >= _beats.size():
 		return
+	if _state == "done":
+		return
 	var b: Dictionary = _beats[_bi]
 	var e: Dictionary = b["event"]
+	var kind: String = str(e["kind"])
+	var land: String = str(b.get("resolves", ""))
+	if _melee:
+		_finish_melee(e, land)
+		return
 	var a_won: bool = bool(b["a_won"])
 	var fell: bool = bool(e.get("fellBack", false))
 	var winner: String = _a_pid if a_won else _b_pid
 	var loser: String = _b_pid if a_won else _a_pid
-	var land: String = str(b.get("resolves", ""))
-	var kind: String = str(e["kind"])
 	## make the board agree exactly with the log before the verdict
 	if fell:
 		_a_left = int(e.get("attackerLeft", 0))
 		_b_left = int(b["left"])
-		_field.set_alive(0, _b_left, true) ## the attackers have already marched off
+		_field.set_count(1, _b_left)
 	else:
 		_a_left = int(b["left"]) if a_won else 0
 		_b_left = 0 if a_won else int(b["left"])
-		_field.set_alive(_a_left, _b_left)
+		_field.set_count(0, _a_left)
+		_field.set_count(1, _b_left)
+	_left = [_a_left, _b_left]
 	_update_counts()
 	if fell:
 		_result.text = ("%s falls back to %s — %d saved" % [session.name_of(_a_pid), session.hex_name(str(e.get("refuge", ""))), _a_left]).to_upper()
@@ -774,6 +975,7 @@ func _finish_engagement() -> void:
 		_result.text = ("%s wins the field" % session.name_of(winner)).to_upper()
 		Audio.sfx("clash")
 	_result.add_theme_color_override("font_color", Style.seat_color(winner).lightened(0.5))
+	_field.cheer(0 if a_won else 1)
 	get_tree().create_timer(0.35).timeout.connect(func(): Audio.sfx("cheer", -6.0))
 	## reactions: winner exults, loser curses; AI commanders speak one line
 	var face_w: Control = _face_a if a_won else _face_b
@@ -799,311 +1001,45 @@ func _finish_engagement() -> void:
 	_dial.set_label("NEXT" if _bi < _beats.size() - 1 else "DONE", "")
 
 
-# ------------------------------------------------------------------ the field
-
-class _Field extends Control:
-	const Style := preload("res://game/core/style.gd")
-	const MAX_FIGS := 24
-	const FIG_H := 104.0 ## a front-rank soldier's height in pixels at scale 1
-	var a_pid := ""
-	var b_pid := ""
-	var figs: Array = [] ## {side, pos, cur, scale, state, t, alive, order, phase, alpha}
-	var unit_a := 1
-	var unit_b := 1
-	var puffs: Array = [] ## {pos, t, big}
-	var _clock := 0.0
-	var _anims := {} ## name -> {tex, cols, frames, fw, fh, ax, ay, fill}
-	var _flag_x := [0.0, 0.0] ## where each colour party is now (it marches with its men)
-	var _flag_fled := [-1.0, -1.0] ## seconds since that side sounded the retreat, -1 = standing
-
-	func _ready() -> void:
-		mouse_filter = Control.MOUSE_FILTER_IGNORE
-		## a tin soldier falls the way tin soldiers do: stiffly, over backwards, drawn in
-		## code (a rigid topple about the feet), so it can never clip or reset
-		for n in ["idle", "fire", "march"]:
-			_anims[n] = _sheet("res://assets/battle/soldier_%s" % n)
-		_anims["flag"] = _sheet("res://assets/battle/flag_wave")
-		## v1.1 fallback: tight-cropped 4x4 sheets, no idle or march
-		if _anims["fire"].is_empty():
-			var fire: Texture2D = Style.tex("res://assets/battle/soldier_fire.webp")
-			if fire != null:
-				_anims["fire"] = {"tex": fire, "cols": 4, "frames": 16, "fw": fire.get_width() / 4.0, "fh": fire.get_height() / 4.0, "ax": 0.5, "ay": 1.0, "fill": 1.0}
-		for n in ["idle", "march"]:
-			if _anims[n].is_empty() and not _anims["fire"].is_empty():
-				_anims[n] = _anims["fire"].duplicate()
-				_anims[n]["frames"] = 1
-		if _anims["flag"].is_empty():
-			var flag: Texture2D = Style.tex("res://assets/battle/soldier_flag.png")
-			if flag != null:
-				_anims["flag"] = {"tex": flag, "cols": 1, "frames": 1, "fw": float(flag.get_width()), "fh": float(flag.get_height()), "ax": 0.5, "ay": 1.0, "fill": 1.0}
-
-	func _sheet(base: String) -> Dictionary:
-		var t: Texture2D = Style.tex(base + ".webp")
-		if t == null or not FileAccess.file_exists(base + ".json"):
-			return {}
-		var m: Variant = JSON.parse_string(FileAccess.get_file_as_string(base + ".json"))
-		if typeof(m) != TYPE_DICTIONARY or not (m as Dictionary).has("fw"):
-			return {} ## a v1.1 sheet (tight-cropped): handled by the fallback
-		## padded canvas: feet at (0.55, 0.92); the soldier is 450/768 of the frame
-		return {"tex": t, "cols": int(m["cols"]), "frames": int(m["frames"]), "fw": float(m["fw"]), "fh": float(m["fh"]),
-			"ax": float(m.get("ax", 0.55)), "ay": float(m.get("ay", 0.92)), "fill": float(m.get("fill", 450.0 / 768.0)),
-			"order": m.get("order", [])}
-
-	func _len(an: Dictionary) -> int:
-		## playback length: an explicit frame order (ping-pong, raise-fire-lower) or the sheet
-		var o: Array = an.get("order", [])
-		return o.size() if not o.is_empty() else int(an["frames"])
-
-	func _pick(an: Dictionary, k: int, loop: bool) -> int:
-		var n: int = _len(an)
-		k = posmod(k, n) if loop else clampi(k, 0, n - 1)
-		var o: Array = an.get("order", [])
-		return int(o[k]) if not o.is_empty() else k
-
-	func setup(pa: String, na: int, pb: String, nb: int) -> void:
-		a_pid = pa
-		b_pid = pb
-		unit_a = int(ceil(float(na) / MAX_FIGS))
-		unit_b = int(ceil(float(nb) / MAX_FIGS))
-		figs = []
-		puffs = []
-		_flag_x = [-160.0, size.x + 160.0]
-		_flag_fled = [-1.0, -1.0]
-		_place(0, int(ceil(float(na) / unit_a)), 0)
-		_place(1, int(ceil(float(nb) / unit_b)), 0)
-		queue_redraw()
-
-	func _slot(side: int, i: int, n_total: int) -> Dictionary:
-		## Rows run into the distance (up the screen); files march back from the front line.
-		var rows: int = clampi(int(ceil(sqrt(float(n_total) * 0.9))), 1, 5)
-		var row: int = i % rows
-		var file: int = i / rows
-		var depth: float = 0.0 if rows == 1 else float(row) / float(rows - 1)
-		var sc: float = 1.0 - depth * 0.28
-		var gap: float = 70.0 * sc
-		var front: float = 90.0 + (row % 2) * 24.0
-		var cx: float = size.x * 0.5
-		var x: float = cx - (front + file * gap) if side == 0 else cx + (front + file * gap)
-		return {"pos": Vector2(x, size.y * (0.97 - depth * 0.5)), "scale": sc}
-
-	func _place(side: int, n: int, first: int) -> void:
-		for i in range(first, first + n):
-			var s: Dictionary = _slot(side, i, maxi(n + first, 1))
-			var pos: Vector2 = s["pos"]
-			## everyone marches in from their own edge of the field
-			var start := Vector2(-80.0 - randf() * 120.0 if side == 0 else size.x + 80.0 + randf() * 120.0, pos.y)
-			figs.append({"side": side, "pos": pos, "cur": start, "scale": s["scale"], "state": "march", "t": 0.0,
-				"alive": true, "order": i, "phase": randf() * 3.0, "alpha": 1.0})
-
-	func _flag_target(side: int) -> float:
-		## the colours stand just behind the last file of their side
-		var n := 0
-		for f in figs:
-			if f["side"] == side and f["alive"] and f["state"] != "flee":
-				n += 1
-		n = maxi(n, 1)
-		var rows: int = clampi(int(ceil(sqrt(float(n) * 0.9))), 1, 5)
-		var files: int = int(ceil(float(n) / rows))
-		return size.x * 0.5 + (-1 if side == 0 else 1) * (90.0 + 70.0 * (files + 0.4))
-
-	func _alive(side: int) -> Array:
-		var out: Array = []
-		for f in figs:
-			if f["side"] == side and f["alive"]:
-				out.append(f)
-		return out
-
-	func set_alive(na: int, nb: int, keep_fled: bool = false) -> void:
-		_trim(0, int(ceil(float(maxi(0, na)) / unit_a)), keep_fled)
-		_trim(1, int(ceil(float(maxi(0, nb)) / unit_b)), keep_fled)
-
-	func _trim(side: int, want: int, keep_fled: bool = false) -> void:
-		var alive := _alive(side)
-		if keep_fled:
-			alive = alive.filter(func(f): return f["state"] != "flee")
-		## the front of the line falls first
-		alive.sort_custom(func(x, y): return int(x["order"]) < int(y["order"]))
-		var k := alive.size() - want
-		for i in range(maxi(0, k)):
-			var f: Dictionary = alive[i]
-			f["alive"] = false
-			f["state"] = "fall"
-			f["t"] = 0.0
-			puffs.append({"pos": f["cur"] + Vector2(0, -52 * f["scale"]), "t": 0.0, "big": false, "seed": randf() * TAU})
-
-	func reinforce(side: int, armies: int) -> void:
-		## the reserves march up behind the line
-		var unit: int = unit_a if side == 0 else unit_b
-		var want: int = int(ceil(float(armies) / unit))
-		var have := _alive(side).size()
-		if want <= have:
-			return
-		var top := 0
-		for f in figs:
-			if f["side"] == side:
-				top = maxi(top, int(f["order"]) + 1)
-		var n: int = mini(want - have, MAX_FIGS)
-		for i in range(top, top + n):
-			var s: Dictionary = _slot(side, i, maxi(top + n, 1))
-			var pos: Vector2 = s["pos"]
-			figs.append({"side": side, "pos": pos, "cur": Vector2(-100.0 - randf() * 160.0 if side == 0 else size.x + 100.0 + randf() * 160.0, pos.y),
-				"scale": s["scale"], "state": "march", "t": 0.0, "alive": true, "order": i, "phase": randf() * 3.0, "alpha": 1.0})
-
-	func retreat(side: int) -> void:
-		## about face, and march off the field — colours and all
-		_flag_fled[side] = 0.0
-		for f in _alive(side):
-			f["state"] = "flee"
-			f["t"] = randf() * 0.25
-
-	func volley(a_fires: bool) -> void:
-		var shooters := _alive(0 if a_fires else 1).filter(func(f): return f["state"] == "idle")
-		if shooters.is_empty():
-			return
-		shooters.shuffle()
-		for i in mini(3, shooters.size()):
-			var f: Dictionary = shooters[i]
-			f["state"] = "fire"
-			f["t"] = randf() * 0.1
-			var dir := 1.0 if f["side"] == 0 else -1.0
-			puffs.append({"pos": f["cur"] + Vector2(dir * 40 * f["scale"], -62 * f["scale"]), "t": -0.3, "big": false, "seed": randf() * TAU})
-
-	func rout(a_won: bool, na: int, nb: int) -> void:
-		## decisive roll: two quick volleys, then the losers go down
-		volley(a_won)
-		volley(not a_won)
-		get_tree().create_timer(0.35).timeout.connect(func(): set_alive(na, nb))
-		for i in 3:
-			puffs.append({"pos": Vector2(size.x * (0.35 + 0.15 * i), size.y * 0.6), "t": -0.1 * i, "big": true})
-
-	func _process(delta: float) -> void:
-		_clock += delta
-		for f in figs:
-			match str(f["state"]):
-				"march":
-					var to: Vector2 = f["pos"]
-					var step: float = 380.0 * float(f["scale"]) * delta
-					var cur: Vector2 = f["cur"]
-					if cur.distance_to(to) <= step:
-						f["cur"] = to
-						f["state"] = "idle"
-					else:
-						f["cur"] = cur.move_toward(to, step)
-				"fire":
-					f["t"] = float(f["t"]) + delta
-					if float(f["t"]) > 0.85:
-						f["state"] = "idle"
-				"fall":
-					f["t"] = float(f["t"]) + delta
-					if float(f["t"]) > 0.75:
-						f["state"] = "dead"
-				"flee":
-					f["t"] = float(f["t"]) + delta
-					var away := -1.0 if f["side"] == 0 else 1.0
-					if float(f["t"]) > 0.25:
-						f["cur"] = f["cur"] + Vector2(away * 200.0 * float(f["scale"]) * delta, 0)
-					f["alpha"] = clampf(1.6 - float(f["t"]) * 0.8, 0.0, 1.0)
-					if float(f["alpha"]) <= 0.0:
-						f["state"] = "gone"
-						f["alive"] = false
-		for side in [0, 1]:
-			if float(_flag_fled[side]) >= 0.0:
-				_flag_fled[side] = float(_flag_fled[side]) + delta
-				if float(_flag_fled[side]) > 0.25:
-					_flag_x[side] = float(_flag_x[side]) + (-1.0 if side == 0 else 1.0) * 200.0 * delta
-			else:
-				_flag_x[side] = move_toward(float(_flag_x[side]), _flag_target(side), 380.0 * delta)
-		var i := puffs.size() - 1
-		while i >= 0:
-			puffs[i]["t"] = float(puffs[i]["t"]) + delta
-			if float(puffs[i]["t"]) > 1.4:
-				puffs.remove_at(i)
-			i -= 1
-		queue_redraw()
-
-	func _frame(an: Dictionary, idx: int) -> Rect2:
-		var cols: int = int(an["cols"])
-		idx = clampi(idx, 0, int(an["frames"]) - 1)
-		return Rect2((idx % cols) * float(an["fw"]), (idx / cols) * float(an["fh"]), float(an["fw"]), float(an["fh"]))
-
-	func _draw() -> void:
-		if _anims.get("fire", {}).is_empty():
-			return
-		## flag bearers behind each line, colours flying
-		var flag: Dictionary = _anims.get("flag", {})
-		for side in [0, 1]:
-			var fled: float = float(_flag_fled[side])
-			if flag.is_empty() or (_alive(side).is_empty() and fled < 0.0):
-				continue
-			var pid: String = a_pid if side == 0 else b_pid
-			var alpha: float = 1.0 if fled < 0.0 else clampf(1.6 - fled * 0.8, 0.0, 1.0)
-			if alpha <= 0.0:
-				continue
-			var an: Dictionary = flag
-			var fi: int = _pick(an, int((_clock + side * 0.7) * 10.0), true)
-			var flip: bool = side == 1
-			if fled >= 0.0:
-				flip = not flip
-			_draw_anim(an, fi, Vector2(float(_flag_x[side]), size.y * 0.8), 1.05, flip, _tint(pid), alpha)
-		var order := figs.duplicate()
-		order.sort_custom(func(x, y): return x["cur"].y < y["cur"].y)
-		for f in order:
-			if f["state"] == "gone":
-				continue
-			var pid2: String = a_pid if f["side"] == 0 else b_pid
-			var col: Color = _tint(pid2)
-			var an: Dictionary = _anims["idle"]
-			var fi := 0
-			var flip: bool = f["side"] == 1
-			match str(f["state"]):
-				"idle":
-					fi = _pick(an, int((_clock + float(f["phase"])) * 9.0), true)
-				"march":
-					an = _anims["march"]
-					fi = _pick(an, int((_clock + float(f["phase"])) * 14.0), true)
-				"flee":
-					an = _anims["march"]
-					fi = _pick(an, int((_clock + float(f["phase"])) * 14.0), true)
-					flip = not flip
-				"fire":
-					an = _anims["fire"]
-					fi = _pick(an, int(float(f["t"]) / 0.85 * float(_len(an))), false)
-				"fall", "dead":
-					fi = _pick(an, 0, false)
-			var tilt := 0.0
-			if f["state"] == "fall" or f["state"] == "dead":
-				## over backwards, away from the enemy, with a little bounce as he lands
-				var k: float = clampf(float(f["t"]) / 0.42, 0.0, 1.0) if f["state"] == "fall" else 1.0
-				var e: float = k * k
-				if k >= 1.0 and f["state"] == "fall":
-					e = 1.0 - 0.06 * sin(clampf((float(f["t"]) - 0.42) / 0.3, 0.0, 1.0) * PI)
-				tilt = (1.0 if flip else -1.0) * PI * 0.5 * e
-				col = col.darkened(0.45 * e)
-			_draw_anim(an, fi, f["cur"], float(f["scale"]), flip, col, float(f["alpha"]), tilt)
-		for p in puffs:
-			var t: float = float(p["t"])
-			if t < 0.0:
-				continue
-			## powder smoke: a soft cluster of billows that swells, drifts up and thins
-			var r: float = (20.0 if p["big"] else 9.0) + t * (58.0 if p["big"] else 24.0)
-			var a: float = clampf(0.34 - t * 0.24, 0.0, 0.34)
-			var c: Vector2 = p["pos"] + Vector2(t * 10.0, -t * 20.0)
-			for k in 5:
-				var off := Vector2.from_angle(float(k) * 1.26 + float(p.get("seed", 0.0))) * r * 0.55
-				draw_circle(c + off, r * (0.62 + 0.08 * k), Color(0.88, 0.87, 0.83, a * (0.7 + 0.06 * k)))
-			if t < 0.09:
-				draw_circle(p["pos"], 8.0, Color(1.0, 0.8, 0.35, 0.9 * (1.0 - t / 0.09)))
-
-	func _draw_anim(an: Dictionary, idx: int, foot: Vector2, sc: float, flip: bool, col: Color, alpha: float, tilt: float = 0.0) -> void:
-		## Drawn from the feet: the soldier stands FIG_H * sc tall whatever the canvas.
-		var h: float = FIG_H * 1.75 * sc / float(an["fill"])
-		var w: float = h * float(an["fw"]) / float(an["fh"])
-		draw_set_transform(foot, tilt, Vector2(-1 if flip else 1, 1))
-		draw_texture_rect_region(an["tex"], Rect2(Vector2(-w * float(an["ax"]), -h * float(an["ay"])), Vector2(w, h)), _frame(an, idx), Color(col, col.a * alpha))
-		draw_set_transform(Vector2.ZERO, 0.0, Vector2.ONE)
-
-	func _tint(pid: String) -> Color:
-		return Style.seat_color(pid).lightened(0.18) if pid != "neutral" else Color(0.72, 0.7, 0.66)
+func _finish_melee(e: Dictionary, land: String) -> void:
+	var held: bool = int(e.get("defenderLeft", 0)) > 0
+	for i in _fronts.size():
+		_left[i] = int(_fronts[i].get("left", 0))
+		if not bool(_fronts[i].get("fellBack", false)):
+			_field.set_count(i, int(_left[i]))
+	_left[_def()] = int(e.get("defenderLeft", 0))
+	_field.set_count(_def(), int(_left[_def()]))
+	_a_left = int(_left[0])
+	_b_left = int(_left[_def()])
+	_update_counts()
+	if held:
+		_result.text = ("%s HOLDS %s AGAINST ALL COMERS" % [session.name_of(_b_pid) if _b_pid != "neutral" else "THE GARRISON", session.hex_name(land)]).to_upper()
+		_result.add_theme_color_override("font_color", Style.seat_color(_b_pid).lightened(0.5))
+		Audio.sfx("hold")
+		_field.cheer(_def())
+		if Lines.has(_who(_b_pid), "win"):
+			_face_b.react("win", "win", 2.6)
+		else:
+			_face_b.react("win")
+		_face_a.react("lose")
+	else:
+		var standing: Array = []
+		for i in _fronts.size():
+			if int(_left[i]) > 0 and not bool(_fronts[i].get("fellBack", false)):
+				standing.append(i)
+				_field.cheer(i)
+		_result.text = ("THE DEFENDERS OF %s ARE OVERRUN" % session.hex_name(land)).to_upper() + ("" if standing.size() < 2 else " — NOW FOR THE SPOILS")
+		_result.add_theme_color_override("font_color", Style.GOLD)
+		Audio.sfx("capture")
+		if Lines.has(_who(_melee_lead_pid()), "win"):
+			_face_a.react("win", "win", 2.6)
+		else:
+			_face_a.react("win")
+		_face_b.react("lose")
+	get_tree().create_timer(0.35).timeout.connect(func(): Audio.sfx("cheer", -6.0))
+	_state = "done"
+	_auto_t = 2.6
+	_dial.set_label("NEXT" if _bi < _beats.size() - 1 else "DONE", "")
 
 
 class _Die extends Control:

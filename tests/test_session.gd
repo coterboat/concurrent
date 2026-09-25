@@ -71,9 +71,10 @@ func _solo(report: Callable, tree: SceneTree) -> void:
 	tree.root.add_child(t)
 	report.call(t.load_save(), "save loads")
 	report.call(Hash.world_hash(t.world) == hash_before, "replayed save matches the live world hash")
-	report.call(t.phase == Session.Phase.PLANNING and t.planner == "red", "loaded game resumes at planning")
+	report.call(t.phase == Session.Phase.MANEUVER and t.planner == "red", "a game saved after its battles resumes in the reinforcement phase")
 	t.queue_free()
 	s.next_round()
+	_maneuver(report, tree, s)
 	## play it out holding with auto-placement
 	var guard := 0
 	while s.phase != Session.Phase.GAME_OVER and guard < 60:
@@ -81,6 +82,9 @@ func _solo(report: Callable, tree: SceneTree) -> void:
 		match s.phase:
 			Session.Phase.PLANNING:
 				s.auto_deploy()
+				s.lock()
+			Session.Phase.MANEUVER:
+				s.advise_moves()
 				s.lock()
 			Session.Phase.CINEMA:
 				s.cinema_done()
@@ -92,6 +96,52 @@ func _solo(report: Callable, tree: SceneTree) -> void:
 	report.call(not Session.has_save(), "a finished game clears the save")
 	report.call(s.standings().size() == 3, "standings list every seat")
 	s.queue_free()
+
+
+func _maneuver(report: Callable, tree: SceneTree, s: Node) -> void:
+	## the reinforcement phase: one land per soldier, own lands only, sealed, replayable
+	report.call(s.phase == Session.Phase.MANEUVER and s.planner == "red", "after the report comes the reinforcement phase")
+	var from := ""
+	var to := ""
+	var third := ""
+	for a in MapLib.player_territory_ids(s.world, "red"):
+		if s.can_move_from(a) < 1:
+			continue
+		for b in MapLib.neighbors(s.map, a):
+			if s.world.get_territory(b).owner == "red":
+				from = a
+				to = b
+				for c in MapLib.neighbors(s.map, b):
+					if c != a and s.world.get_territory(c).owner == "red":
+						third = c
+	if from == "":
+		report.call(true, "no march possible on this deal (skipped)")
+		s.lock()
+		return
+	var can: int = s.can_move_from(from)
+	var before_from: int = s.world.get_territory(from).armies
+	var before_to: int = s.world.get_territory(to).armies
+	report.call(s.add_move(from, to) == "" and s.my_moves().size() == 1 and int(s.my_moves()[0]["n"]) == can, "a march takes everyone who can go (%d)" % can)
+	report.call(s.add_move(from, to, 999) == "" and int(s.my_moves()[0]["n"]) == can, "a march clamps to who can go")
+	report.call(s.maneuver_world().get_territory(to).armies == before_to + can, "the board shows the march at once")
+	if third != "":
+		var chained: int = s.can_move_from(to)
+		report.call(chained == Session.Maneuver.can_leave(s.world, to), "arrivals cannot march on: %s can send only its own (%d)" % [to, chained])
+	var enemy := ""
+	for n in MapLib.neighbors(s.map, from):
+		if s.world.get_territory(n).owner != "red":
+			enemy = n
+	if enemy != "":
+		report.call(s.add_move(from, enemy) != "", "no marching into someone else's land")
+	var err: String = s.lock()
+	report.call(err == "" and s.phase == Session.Phase.PLANNING, "sealing the marches opens the next orders (%s)" % err)
+	report.call(s.world.get_territory(from).armies == before_from - can and s.world.get_territory(to).armies == before_to + can, "the march landed")
+	report.call(s.maneuvers_log.size() == s.rounds_log.size() and (s.maneuvers_log[-1] as Dictionary).has("red"), "the marches are on the record")
+	var t: Node = Session.new()
+	t.instant = true
+	tree.root.add_child(t)
+	report.call(t.load_save() and Hash.world_hash(t.world) == Hash.world_hash(s.world) and t.phase == Session.Phase.PLANNING, "a saved game replays its marches and resumes at the orders")
+	t.queue_free()
 
 
 func _hotseat(report: Callable, tree: SceneTree) -> void:

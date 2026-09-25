@@ -157,6 +157,11 @@ static func _combat_deaths(events: Array) -> int:
 			n += int(e.get("attackerSize", 0)) + int(e.get("reservesAdded", 0)) + int(e.get("defenderSize", 0)) - int(e.get("winnerRemaining", 0))
 			if bool(e.get("fellBack", false)):
 				n -= int(e.get("attackerLeft", 0))
+		elif kind == Types.EVENT_MELEE:
+			## everyone who went in, less everyone still standing (survivors may fight on for the spoils)
+			n += int(e.get("defenderSize", 0)) - int(e.get("defenderLeft", 0))
+			for f in e.get("fronts", []):
+				n += int(f.get("size", 0)) + int(f.get("reservesAdded", 0)) - int(f.get("left", 0))
 	return n
 
 

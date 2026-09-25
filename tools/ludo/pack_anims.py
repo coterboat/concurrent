@@ -84,23 +84,50 @@ def main():
         if seam > mx:
             patch(out, order=list(range(0, n)) + list(range(n - 2, 0, -1)))
             print("  -> ping-pong (seam %.2f > max step %.2f)" % (seam, mx))
-    battle = {
-        "soldier_idle": dict(order=list(range(0, 16)) + list(range(14, 0, -1))),
-        "soldier_fire": dict(order=[7, 6, 5, 4, 0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15]),
-        "soldier_march": {},
-        "flag_wave": dict(order=list(range(0, 16)) + list(range(14, 0, -1))),
-    }
-    for name, extra in battle.items():
+    ## (name, frame order or None, anchor x, baseline, figure height / canvas height)
+    inf = (0.55, 0.92, 450.0 / 768.0)
+    cav = (0.55, 0.92, 500.0 / 768.0)
+    gun = (0.45, 0.92, 300.0 / 768.0)
+    ping = list(range(0, 16)) + list(range(14, 0, -1))
+    battle = [
+        ("soldier_idle", ping, inf),
+        ("soldier_fire", [7, 6, 5, 4, 0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15], inf),
+        ("soldier_march", None, inf),
+        ("flag_wave", ping, inf),
+        ## these start mid-motion: play the recovery backwards first, so they rise out of the stance
+        ("soldier_kneel", [9, 8, 0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15], inf),
+        ("soldier_cheer", [11, 9, 7, 0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15], inf),
+        ("soldier_reload", None, inf),
+        ("soldier_charge", None, inf),
+        ("cavalry_idle", None, cav),
+        ("cavalry_gallop", None, cav),
+        ("cavalry_charge", None, cav),
+        ("cavalry_rear", None, cav),
+        ("cannon_idle", None, gun),
+        ("cannon_fire", None, gun),
+        ("cannon_reload", None, gun),
+    ]
+    for name, order, (ax, ay, fill) in battle:
         raw = os.path.join(ROOT, "assets/raw/battle/%s.webp" % name)
         if not os.path.exists(raw):
             print("missing", name)
             continue
         m = meta_of(raw)
         out = "assets/battle/%s.webp" % name
-        print(tool("check", raw, str(m["cols"]), str(m["rows"]), str(m["frames"])))
+        report = tool("check", raw, str(m["cols"]), str(m["rows"]), str(m["frames"]))
+        print(report)
         print(tool("shrink", raw, str(m["cols"]), str(m["rows"]), "384", out, str(m["frames"])))
-        ## feet at (0.55, 0.92) of the padded canvas; the figure is 450 of 768 px tall
-        patch(out, ax=0.55, ay=0.92, fill=450.0 / 768.0, **extra)
+        extra = {"ax": ax, "ay": ay, "fill": fill}
+        if order:
+            extra["order"] = order
+        elif name.endswith(("idle", "gallop", "charge", "march")):
+            ## a loop: if its seam is worse than any step, ping-pong it
+            mx = float(re.search(r"max_step ([0-9.]+)", report).group(1))
+            seam = float(re.search(r"seam\(last->first\) ([0-9.]+)", report).group(1))
+            if seam > mx:
+                extra["order"] = ping
+                print("  -> ping-pong (seam %.2f > max step %.2f)" % (seam, mx))
+        patch(out, **extra)
 
 
 if __name__ == "__main__":

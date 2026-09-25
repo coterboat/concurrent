@@ -81,7 +81,7 @@ static func advice(s: Node) -> Array:
 		out.append(_item("soft_" + best_soft, "%s %s. A small force takes it." % [who, s.hex_name(best_soft)], "pleased", "", [best_soft], 45))
 	## 6. cards
 	if map.cards and s.sheet().cash_set.is_empty() and Cards.best_set(s.hand()).size() == 3:
-		out.append(_item("cards", "We hold a set of cards. Trade it in for %d more troops this round." % s.set_value_now(), "pleased", "cards", [], 55))
+		out.append(_item("cards", "We hold a set of cards. Open the Cards and turn them in for %d more troops this round." % s.set_value_now(), "pleased", "cards", [], 55))
 	## 7. the clock
 	if s.is_last_round() and not s.conquest():
 		out.append(_item("final", "Final round. Only land counts when this resolves — spend every soldier.", "alarmed", "final", [], 90))
@@ -148,7 +148,7 @@ static func explain(s: Node, sheet: Types.Sheet) -> Array:
 		keys.sort_custom(func(a, b): return int(sheet.placements[a]) > int(sheet.placements[b]))
 		for k in keys:
 			parts.append("%d on %s" % [int(sheet.placements[k]), s.hex_name(str(k))])
-		lines.append(["reinforce", "Reinforce: " + ", ".join(parts) + "."])
+		lines.append(["reinforce", "Recruits: " + ", ".join(parts) + "."])
 	if sheet.regroup != null:
 		lines.append(["move", "Move %d from %s to %s, toward the front." % [sheet.regroup.strength, s.hex_name(sheet.regroup.from_id), s.hex_name(sheet.regroup.to_id)]])
 	var by_target := {}
@@ -185,6 +185,8 @@ static func adopt(s: Node, sheet: Types.Sheet) -> void:
 		q.surge_to = p.surge_to
 		q.stance = p.stance if p.stance != "" else "judgment" ## the advisor's own doctrine
 		mine.packets.append(q)
+		if q.surge_to != "":
+			mine.surges[q.to_id] = q.surge_to ## v1.3: the surge belongs to the land being taken
 	if sheet.regroup != null and s.world.round > 1:
 		var r := Types.Regroup.new()
 		r.from_id = sheet.regroup.from_id
@@ -218,7 +220,7 @@ static func lesson(s: Node, surge_pick: int) -> Dictionary:
 				return _item("t-r1b", "Now attack: with our land selected, click an enemy or empty neighbor, or drag onto it. Every order happens at once — and armies you send LEAVE HOME.", "neutral", "attack_hint", [], 150)
 			return _item("t-r1c", battle_rule + " Happy? Press SEAL, then watch it unfold — you roll the dice in your own battles.", "pleased", "", [], 150)
 		if r == 2:
-			return _item("t-r2", "Lands we hold dig in: each round a held land gains a dug-in defender (the little shield). They never march, so a dug-in land can send every other soldier and still stay ours. From now on we may also make one move: drag onto a land of ours.", "neutral", "dug_in", [], 150)
+			return _item("t-r2", "Lands we hold dig in: each round a held land gains a dug-in defender (the gold shield beside its number). They never march, so a dug-in land can send every other soldier and still stay ours. And after every round's battles comes the reinforcement phase, when we march troops one land toward the front." if s.map.maneuvers else "Lands we hold dig in: each round a held land gains a dug-in defender (the little shield). They never march, so a dug-in land can send every other soldier and still stay ours. From now on we may also make one move: drag onto a land of ours.", "neutral", "dug_in", [], 150)
 		if r == 3:
 			return _item("t-r3", "Surge: click the number on an attack arrow and press 'Surge onward'. If the attack wins, the survivors push on into the next land — after every other battle.", "neutral", "surge", [], 150)
 		if s.is_last_round():

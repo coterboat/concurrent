@@ -239,7 +239,7 @@ static func _heuristic(world: Types.World, map: Types.MapDef, pid: String, rng: 
 
 	var p := Planner.new()
 	p.setup(world, map, pid, rng, _endgame(world, map, prof))
-	if world.round > 1:
+	if world.round > 1 and not map.maneuvers: ## v1.3: troops move in the reinforcement phase instead
 		sheet.regroup = p.choose_regroup()
 		if sheet.regroup != null:
 			Validate._apply_regroup_to(p.w, sheet)

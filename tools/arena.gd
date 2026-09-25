@@ -8,7 +8,7 @@ const Setup := preload("res://engine/setup.gd")
 
 
 func _initialize() -> void:
-	var args := {"map": "known24", "n": "30", "seats": "general,veteran,recruit", "rounds": "0", "seed": "1000", "battle": "decisive"}
+	var args := {"map": "known24", "n": "30", "seats": "general,veteran,recruit", "rounds": "0", "seed": "1000", "battle": "volleys", "moves": "1", "wild": "0"}
 	for a in OS.get_cmdline_user_args():
 		var kv := a.split("=", true, 1)
 		if kv.size() == 2:
@@ -25,11 +25,14 @@ func _initialize() -> void:
 	var inv := 0
 	var res := 0
 	var fb := 0
+	var mel := 0
 	var ms := 0.0
 	var lengths: Array = []
 	for i in n:
 		var map: Types.MapDef = Types.MapDef.from_file("res://maps/%s.json" % args["map"])
 		map.battle = str(args["battle"])
+		map.maneuvers = str(args["moves"]) == "1"
+		map.wild_cards = str(args["wild"]) == "1"
 		var seats: Array = []
 		## rotate seats so no brain always sits in the same chair
 		for k in brains.size():
@@ -52,6 +55,7 @@ func _initialize() -> void:
 			inv += int(rd.get("invasions", 0))
 			res += int(rd.get("reserves", 0))
 			fb += int(rd.get("fallbacks", 0))
+			mel += int(rd.get("melees", 0))
 		ms += float(r["planMs"])
 	lengths.sort()
 	print("map=%s seats=%s n=%s" % [args["map"], args["seats"], n])
@@ -60,6 +64,7 @@ func _initialize() -> void:
 	print("  walk-ins    %.2f per game" % (float(walks) / n))
 	print("  even fights %s, attacker took %.0f%%" % [even, 100.0 * even_cap / maxf(1.0, even)])
 	print("  assaults    %.1f per game: reserves called in %.0f%%, fell back in %.0f%%" % [float(inv) / n, 100.0 * res / maxf(1.0, inv), 100.0 * fb / maxf(1.0, inv)])
+	print("  melees      %.1f per game" % (float(mel) / n))
 	print("  plan time   %.1f ms per sheet" % (ms / n))
 	print("  violations  %s" % bad)
 	quit(0 if bad == 0 else 1)

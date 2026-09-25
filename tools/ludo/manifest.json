@@ -415,6 +415,336 @@
    "final_same": true
   },
   {
+   "id": "cavalry_stand",
+   "kind": "image",
+   "type": "sprite",
+   "cutout": true,
+   "style": false,
+   "art_style": "Hand-Painted",
+   "perspective": "Side-Scroll",
+   "aspect": "ar_4_3",
+   "out": "assets/raw/battle/cavalry_stand",
+   "prompt": "A single toy cavalry dragoon on horseback, the rider in a tall crested helmet holding a sabre upright, the horse standing square, full body side view facing right, the whole figure painted pure white and very light grey with no other colors, glossy painted tin-soldier miniature look, isolated on a plain white background",
+   "v": 1
+  },
+  {
+   "id": "cannon_stand",
+   "kind": "image",
+   "type": "sprite",
+   "cutout": true,
+   "style": false,
+   "art_style": "Hand-Painted",
+   "perspective": "Side-Scroll",
+   "aspect": "ar_4_3",
+   "out": "assets/raw/battle/cannon_stand",
+   "prompt": "A single toy field cannon on a wooden-wheeled carriage with two artillerymen crew standing beside it holding a rammer, full body side view with the barrel pointing right, the whole figure painted pure white and very light grey with no other colors, glossy painted tin-soldier miniature look, isolated on a plain white background",
+   "v": 1
+  },
+  {
+   "id": "soldier_kneel_anim",
+   "kind": "animate",
+   "from_file": "assets/raw/battle/soldier_stand_pad.png",
+   "prompt": "kneels on one knee, aims the musket straight ahead to the right and fires with a puff of smoke from the muzzle, then stands back up exactly as at the start",
+   "image_type": "sprite",
+   "model": "forge",
+   "duration": 2,
+   "frames": 16,
+   "frame_size": -9,
+   "loop": false,
+   "crop": false,
+   "out": "assets/raw/battle/soldier_kneel",
+   "final_same": true,
+   "v": 1
+  },
+  {
+   "id": "soldier_reload_anim",
+   "kind": "animate",
+   "from_file": "assets/raw/battle/soldier_stand_pad.png",
+   "prompt": "reloads the musket: bites a cartridge and rams the ramrod down the barrel, then shoulders the musket exactly as at the start",
+   "image_type": "sprite",
+   "model": "forge",
+   "duration": 2,
+   "frames": 16,
+   "frame_size": -9,
+   "loop": false,
+   "crop": false,
+   "out": "assets/raw/battle/soldier_reload",
+   "final_same": true,
+   "v": 1
+  },
+  {
+   "id": "soldier_charge_anim",
+   "kind": "animate",
+   "from_file": "assets/raw/battle/soldier_stand_pad.png",
+   "prompt": "charges forward at a run with the bayonet levelled to the right, a running cycle",
+   "image_type": "sprite",
+   "model": "forge",
+   "duration": 2,
+   "frames": 16,
+   "frame_size": -9,
+   "loop": false,
+   "crop": false,
+   "out": "assets/raw/battle/soldier_charge",
+   "final_same": true,
+   "v": 1
+  },
+  {
+   "id": "soldier_cheer_anim",
+   "kind": "animate",
+   "from_file": "assets/raw/battle/soldier_stand_pad.png",
+   "prompt": "raises the musket high above his head and cheers in victory, then lowers it back exactly as at the start",
+   "image_type": "sprite",
+   "model": "forge",
+   "duration": 2,
+   "frames": 16,
+   "frame_size": -9,
+   "loop": false,
+   "crop": false,
+   "out": "assets/raw/battle/soldier_cheer",
+   "final_same": true,
+   "v": 1
+  },
+  {
+   "id": "music_menu_2",
+   "kind": "music",
+   "duration": 150,
+   "out": "assets/audio/music/menu_2",
+   "prompt": "Imperial march for a conquest strategy game: proud brass melody over marching snare and timpani, strings and a wordless choir, confident and glorious. Seamless loop: steady intensity from the first bar to the last, no intro, no fade, no big ending, no final crescendo",
+   "v": 1
+  },
+  {
+   "id": "music_plan_2",
+   "kind": "music",
+   "duration": 150,
+   "out": "assets/audio/music/plan_2",
+   "prompt": "War council music: a steady military snare cadence, pizzicato strings and low brass, fifes in the distance, a quiet menace of armies gathering. Seamless loop: steady intensity from the first bar to the last, no intro, no fade, no big ending, no final crescendo",
+   "v": 1
+  },
+  {
+   "id": "music_plan_3",
+   "kind": "music",
+   "duration": 150,
+   "out": "assets/audio/music/plan_3",
+   "prompt": "Map-room strategy music: harpsichord and strings over a soft war drum pulse, scheming and determined, empires plotting conquest. Seamless loop: steady intensity from the first bar to the last, no intro, no fade, no big ending, no final crescendo",
+   "v": 1
+  },
+  {
+   "id": "music_battle_2",
+   "kind": "music",
+   "duration": 150,
+   "out": "assets/audio/music/battle_2",
+   "prompt": "Relentless battle march: pounding war drums, snare rolls, blaring brass fanfares, fife and drum corps, cannon-like timpani hits. Seamless loop: steady intensity from the first bar to the last, no intro, no fade, no big ending, no final crescendo",
+   "v": 1
+  },
+  {
+   "id": "music_battle_3",
+   "kind": "music",
+   "duration": 150,
+   "out": "assets/audio/music/battle_3",
+   "prompt": "Driving orchestral war music: galloping low strings ostinato, stabbing brass, big drums, heroic and aggressive, a world at war. Seamless loop: steady intensity from the first bar to the last, no intro, no fade, no big ending, no final crescendo",
+   "v": 1
+  },
+  {
+   "id": "music_charge_2",
+   "kind": "music",
+   "duration": 120,
+   "out": "assets/audio/music/charge_2",
+   "prompt": "Cavalry charge battle music: breathless galloping strings, bugle calls, crashing cymbals, brass heroics. Seamless loop: steady intensity from the first bar to the last, no intro, no fade, no big ending, no final crescendo",
+   "v": 1
+  },
+  {
+   "id": "music_charge_3",
+   "kind": "music",
+   "duration": 120,
+   "out": "assets/audio/music/charge_3",
+   "prompt": "Fierce skirmish music for a tabletop battle: snare drums, fifes, brass stabs and rolling timpani, tense and exciting. Seamless loop: steady intensity from the first bar to the last, no intro, no fade, no big ending, no final crescendo",
+   "v": 1
+  },
+  {
+   "id": "music_muster",
+   "kind": "music",
+   "duration": 150,
+   "out": "assets/audio/music/muster",
+   "prompt": "Troops redeploying between battles: a steady marching drum and fife tune with low strings, purposeful and brisk, soldiers on the move. Seamless loop: steady intensity from the first bar to the last, no intro, no fade, no big ending, no final crescendo",
+   "v": 1
+  },
+  {
+   "id": "sfx_melee",
+   "kind": "sfx",
+   "duration": 3,
+   "out": "assets/audio/sfx/melee",
+   "prompt": "a chaotic melee: many muskets and sabres clashing, shouts from several sides, short",
+   "v": 1
+  },
+  {
+   "id": "sfx_border_clash",
+   "kind": "sfx",
+   "duration": 3,
+   "out": "assets/audio/sfx/border_clash",
+   "prompt": "two marching columns collide head on: drums, a roar and a crash of steel, short",
+   "v": 1
+  },
+  {
+   "id": "sfx_maneuver",
+   "kind": "sfx",
+   "duration": 2,
+   "out": "assets/audio/sfx/maneuver",
+   "prompt": "a company of soldiers marching off to a new post with a drum beat, short",
+   "v": 1
+  },
+  {
+   "id": "sfx_neigh",
+   "kind": "sfx",
+   "duration": 2,
+   "out": "assets/audio/sfx/neigh",
+   "prompt": "a war horse neighs and rears, short",
+   "v": 1
+  },
+  {
+   "id": "sfx_cannon_big",
+   "kind": "sfx",
+   "duration": 3,
+   "out": "assets/audio/sfx/cannon_big",
+   "prompt": "a heavy field cannon fires, deep boom, echo and rumble",
+   "v": 1
+  },
+  {
+   "id": "sfx_cards_open",
+   "kind": "sfx",
+   "duration": 2,
+   "out": "assets/audio/sfx/cards_open",
+   "prompt": "a leather folio opened and playing cards fanned out on a table",
+   "v": 1
+  },
+  {
+   "id": "sfx_turn_in",
+   "kind": "sfx",
+   "duration": 2,
+   "out": "assets/audio/sfx/turn_in",
+   "prompt": "cards slapped down on a table followed by a trumpet flourish and coins",
+   "v": 1
+  },
+  {
+   "id": "sfx_zoom_in",
+   "kind": "sfx",
+   "duration": 1,
+   "out": "assets/audio/sfx/zoom_in",
+   "prompt": "a short whoosh with a low drum hit, a camera swooping down on a battlefield",
+   "v": 1
+  },
+  {
+   "id": "cavalry_idle_anim",
+   "kind": "animate",
+   "from_file": "assets/raw/battle/cavalry_stand_pad.png",
+   "prompt": "the horse shifts its weight and swishes its tail while the rider sits still, subtle idle motion",
+   "image_type": "sprite",
+   "model": "forge",
+   "duration": 2,
+   "frames": 16,
+   "frame_size": -9,
+   "loop": false,
+   "crop": false,
+   "final_same": true,
+   "out": "assets/raw/battle/cavalry_idle",
+   "v": 1
+  },
+  {
+   "id": "cavalry_gallop_anim",
+   "kind": "animate",
+   "from_file": "assets/raw/battle/cavalry_stand_pad.png",
+   "prompt": "gallops forward in place, a smooth gallop cycle, the rider holding the sabre",
+   "image_type": "sprite",
+   "model": "forge",
+   "duration": 2,
+   "frames": 16,
+   "frame_size": -9,
+   "loop": false,
+   "crop": false,
+   "final_same": true,
+   "out": "assets/raw/battle/cavalry_gallop",
+   "v": 1
+  },
+  {
+   "id": "cavalry_charge_anim",
+   "kind": "animate",
+   "from_file": "assets/raw/battle/cavalry_stand_pad.png",
+   "prompt": "charges at full gallop with the sabre pointed forward, a gallop cycle",
+   "image_type": "sprite",
+   "model": "forge",
+   "duration": 2,
+   "frames": 16,
+   "frame_size": -9,
+   "loop": false,
+   "crop": false,
+   "final_same": true,
+   "out": "assets/raw/battle/cavalry_charge",
+   "v": 1
+  },
+  {
+   "id": "cavalry_rear_anim",
+   "kind": "animate",
+   "from_file": "assets/raw/battle/cavalry_stand_pad.png",
+   "prompt": "the horse rears up on its hind legs while the rider raises the sabre high, then comes back down exactly as at the start",
+   "image_type": "sprite",
+   "model": "forge",
+   "duration": 2,
+   "frames": 16,
+   "frame_size": -9,
+   "loop": false,
+   "crop": false,
+   "final_same": true,
+   "out": "assets/raw/battle/cavalry_rear",
+   "v": 1
+  },
+  {
+   "id": "cannon_idle_anim",
+   "kind": "animate",
+   "from_file": "assets/raw/battle/cannon_stand_pad.png",
+   "prompt": "the crew stand ready beside the cannon, breathing, small natural movements",
+   "image_type": "sprite",
+   "model": "forge",
+   "duration": 2,
+   "frames": 16,
+   "frame_size": -9,
+   "loop": false,
+   "crop": false,
+   "final_same": true,
+   "out": "assets/raw/battle/cannon_idle",
+   "v": 1
+  },
+  {
+   "id": "cannon_fire_anim",
+   "kind": "animate",
+   "from_file": "assets/raw/battle/cannon_stand_pad.png",
+   "prompt": "the cannon fires with a big burst of smoke and flame from the muzzle on the right and recoils backward, then the crew roll it back into place exactly as at the start",
+   "image_type": "sprite",
+   "model": "forge",
+   "duration": 2,
+   "frames": 16,
+   "frame_size": -9,
+   "loop": false,
+   "crop": false,
+   "final_same": true,
+   "out": "assets/raw/battle/cannon_fire",
+   "v": 1
+  },
+  {
+   "id": "cannon_reload_anim",
+   "kind": "animate",
+   "from_file": "assets/raw/battle/cannon_stand_pad.png",
+   "prompt": "the crew swab and ram the barrel, then stand ready again exactly as at the start",
+   "image_type": "sprite",
+   "model": "forge",
+   "duration": 2,
+   "frames": 16,
+   "frame_size": -9,
+   "loop": false,
+   "crop": false,
+   "final_same": true,
+   "out": "assets/raw/battle/cannon_reload",
+   "v": 1
+  },
+  {
    "id": "portrait_advisor",
    "kind": "image",
    "type": "portrait",
@@ -1651,6 +1981,22 @@
    "v": 1
   },
   {
+   "id": "line_advisor_maneuver",
+   "kind": "speech",
+   "voice": "voice_advisor",
+   "text": "The dust has settled, Commander. March the men up to the front before the next assault.",
+   "out": "assets/voice/advisor/maneuver",
+   "v": 1
+  },
+  {
+   "id": "line_advisor_melee",
+   "kind": "speech",
+   "voice": "voice_advisor",
+   "text": "A melee, Commander! Every army piling in at once. Steady on every front!",
+   "out": "assets/voice/advisor/melee",
+   "v": 1
+  },
+  {
    "id": "line_varek_greet",
    "kind": "speech",
    "voice": "voice_varek",
@@ -2080,6 +2426,486 @@
    "voice": "voice_imre",
    "text": "Commit the reserve. Now.",
    "out": "assets/voice/imre/reserves",
+   "v": 1
+  },
+  {
+   "id": "voice2_varek",
+   "kind": "voice",
+   "describe": "Elderly British army field marshal, deep weathered baritone, slow and deliberate, dry and stern, clipped aristocratic delivery, natural conversational speech",
+   "text": "Grand Marshal Varek. I have buried a hundred generals, and every one of them taught me patience. Advance. Fix bayonets. We take the ridge by nightfall, and we hold it until the sun comes up again.",
+   "out": "assets/voice13/varek/_sample",
+   "v": 1
+  },
+  {
+   "id": "line2_varek_greet",
+   "kind": "speech",
+   "voice": "voice2_varek",
+   "text": "Grand Marshal Varek. I have buried a hundred generals. You will be a hundred and one.",
+   "out": "assets/voice13/varek/greet",
+   "v": 1
+  },
+  {
+   "id": "line2_varek_attack",
+   "kind": "speech",
+   "voice": "voice2_varek",
+   "text": "Advance. Fix bayonets. No quarter.",
+   "out": "assets/voice13/varek/attack",
+   "v": 1
+  },
+  {
+   "id": "line2_varek_win",
+   "kind": "speech",
+   "voice": "voice2_varek",
+   "text": "As expected.",
+   "out": "assets/voice13/varek/win",
+   "v": 1
+  },
+  {
+   "id": "line2_varek_lose",
+   "kind": "speech",
+   "voice": "voice2_varek",
+   "text": "A setback. They will pay for it in blood.",
+   "out": "assets/voice13/varek/lose",
+   "v": 1
+  },
+  {
+   "id": "line2_varek_walkin",
+   "kind": "speech",
+   "voice": "voice2_varek",
+   "text": "You left it empty. I merely accepted the invitation.",
+   "out": "assets/voice13/varek/walkin",
+   "v": 1
+  },
+  {
+   "id": "line2_varek_eliminated",
+   "kind": "speech",
+   "voice": "voice2_varek",
+   "text": "My war is over. Remember the old soldier.",
+   "out": "assets/voice13/varek/eliminated",
+   "v": 1
+  },
+  {
+   "id": "line2_varek_victory",
+   "kind": "speech",
+   "voice": "voice2_varek",
+   "text": "The world is mine. It always was.",
+   "out": "assets/voice13/varek/victory",
+   "v": 1
+  },
+  {
+   "id": "line2_varek_retreat",
+   "kind": "speech",
+   "voice": "voice2_varek",
+   "text": "Fall back. Regroup. We return at dawn.",
+   "out": "assets/voice13/varek/retreat",
+   "v": 1
+  },
+  {
+   "id": "line2_varek_reserves",
+   "kind": "speech",
+   "voice": "voice2_varek",
+   "text": "Bring up the reserves. End this.",
+   "out": "assets/voice13/varek/reserves",
+   "v": 1
+  },
+  {
+   "id": "voice2_ysolde",
+   "kind": "voice",
+   "describe": "Aristocratic English woman in her forties, cool low alto, crisp precise diction, measured and imperious, natural speech",
+   "text": "Viceroy Ysolde. I do not raise my voice, Commander, and I do not repeat myself. Take the fort. Leave nothing standing. When it is done, you may tell me how easy it was.",
+   "out": "assets/voice13/ysolde/_sample",
+   "v": 1
+  },
+  {
+   "id": "line2_ysolde_greet",
+   "kind": "speech",
+   "voice": "voice2_ysolde",
+   "text": "Viceroy Ysolde. Every land at this table will fly my banner. Guard your doors.",
+   "out": "assets/voice13/ysolde/greet",
+   "v": 1
+  },
+  {
+   "id": "line2_ysolde_attack",
+   "kind": "speech",
+   "voice": "voice2_ysolde",
+   "text": "Take it. Leave nothing standing.",
+   "out": "assets/voice13/ysolde/attack",
+   "v": 1
+  },
+  {
+   "id": "line2_ysolde_win",
+   "kind": "speech",
+   "voice": "voice2_ysolde",
+   "text": "Predictable.",
+   "out": "assets/voice13/ysolde/win",
+   "v": 1
+  },
+  {
+   "id": "line2_ysolde_lose",
+   "kind": "speech",
+   "voice": "voice2_ysolde",
+   "text": "You will pay for that. Dearly.",
+   "out": "assets/voice13/ysolde/lose",
+   "v": 1
+  },
+  {
+   "id": "line2_ysolde_walkin",
+   "kind": "speech",
+   "voice": "voice2_ysolde",
+   "text": "An empty fort is an insult to its owner. I have corrected it.",
+   "out": "assets/voice13/ysolde/walkin",
+   "v": 1
+  },
+  {
+   "id": "line2_ysolde_eliminated",
+   "kind": "speech",
+   "voice": "voice2_ysolde",
+   "text": "This is not the end of my house.",
+   "out": "assets/voice13/ysolde/eliminated",
+   "v": 1
+  },
+  {
+   "id": "line2_ysolde_victory",
+   "kind": "speech",
+   "voice": "voice2_ysolde",
+   "text": "Kneel. The empire is mine.",
+   "out": "assets/voice13/ysolde/victory",
+   "v": 1
+  },
+  {
+   "id": "line2_ysolde_retreat",
+   "kind": "speech",
+   "voice": "voice2_ysolde",
+   "text": "Withdraw. For now.",
+   "out": "assets/voice13/ysolde/retreat",
+   "v": 1
+  },
+  {
+   "id": "line2_ysolde_reserves",
+   "kind": "speech",
+   "voice": "voice2_ysolde",
+   "text": "Send everything. I do not lose.",
+   "out": "assets/voice13/ysolde/reserves",
+   "v": 1
+  },
+  {
+   "id": "voice2_quill",
+   "kind": "voice",
+   "describe": "Middle-aged English merchant governor, jovial and sly, slightly nasal tenor, quick chatty delivery with a smile in the voice, natural speech",
+   "text": "Governor Quill, of the Company, at your service. Everything has its price, my friend, even a war. Especially a war. Now then, shall we discuss terms, or shall I simply send the lads?",
+   "out": "assets/voice13/quill/_sample",
+   "v": 1
+  },
+  {
+   "id": "line2_quill_greet",
+   "kind": "speech",
+   "voice": "voice2_quill",
+   "text": "Governor Quill, of the Company. Everything has its price, and I intend to buy the world.",
+   "out": "assets/voice13/quill/greet",
+   "v": 1
+  },
+  {
+   "id": "line2_quill_attack",
+   "kind": "speech",
+   "voice": "voice2_quill",
+   "text": "An investment opportunity, lads. Go and collect.",
+   "out": "assets/voice13/quill/attack",
+   "v": 1
+  },
+  {
+   "id": "line2_quill_win",
+   "kind": "speech",
+   "voice": "voice2_quill",
+   "text": "Profit!",
+   "out": "assets/voice13/quill/win",
+   "v": 1
+  },
+  {
+   "id": "line2_quill_lose",
+   "kind": "speech",
+   "voice": "voice2_quill",
+   "text": "Hm. That will cost me.",
+   "out": "assets/voice13/quill/lose",
+   "v": 1
+  },
+  {
+   "id": "line2_quill_walkin",
+   "kind": "speech",
+   "voice": "voice2_quill",
+   "text": "Unguarded goods. Finders keepers.",
+   "out": "assets/voice13/quill/walkin",
+   "v": 1
+  },
+  {
+   "id": "line2_quill_eliminated",
+   "kind": "speech",
+   "voice": "voice2_quill",
+   "text": "Bankrupt. Well, it was lovely doing business.",
+   "out": "assets/voice13/quill/eliminated",
+   "v": 1
+  },
+  {
+   "id": "line2_quill_victory",
+   "kind": "speech",
+   "voice": "voice2_quill",
+   "text": "Tally it up. The Company owns the lot.",
+   "out": "assets/voice13/quill/victory",
+   "v": 1
+  },
+  {
+   "id": "line2_quill_retreat",
+   "kind": "speech",
+   "voice": "voice2_quill",
+   "text": "Cut our losses, lads. Back to the ships.",
+   "out": "assets/voice13/quill/retreat",
+   "v": 1
+  },
+  {
+   "id": "line2_quill_reserves",
+   "kind": "speech",
+   "voice": "voice2_quill",
+   "text": "Double the investment! Send the reserves!",
+   "out": "assets/voice13/quill/reserves",
+   "v": 1
+  },
+  {
+   "id": "voice2_oren",
+   "kind": "voice",
+   "describe": "Young English cavalry officer in his early twenties, bright tenor, eager and cheerful, fast excited delivery, natural speech",
+   "text": "Captain Oren of the Hussars! Honestly, this is my very first war, but I have an excellent horse and I have read absolutely every book. Right then. Charge! No, wait. Yes. Charge!",
+   "out": "assets/voice13/oren/_sample",
+   "v": 1
+  },
+  {
+   "id": "line2_oren_greet",
+   "kind": "speech",
+   "voice": "voice2_oren",
+   "text": "Captain Oren of the Hussars! First war, but I have a very fast horse!",
+   "out": "assets/voice13/oren/greet",
+   "v": 1
+  },
+  {
+   "id": "line2_oren_attack",
+   "kind": "speech",
+   "voice": "voice2_oren",
+   "text": "Charge! For glory!",
+   "out": "assets/voice13/oren/attack",
+   "v": 1
+  },
+  {
+   "id": "line2_oren_win",
+   "kind": "speech",
+   "voice": "voice2_oren",
+   "text": "Ha! Did you see that?",
+   "out": "assets/voice13/oren/win",
+   "v": 1
+  },
+  {
+   "id": "line2_oren_lose",
+   "kind": "speech",
+   "voice": "voice2_oren",
+   "text": "Wait, that was not supposed to happen!",
+   "out": "assets/voice13/oren/lose",
+   "v": 1
+  },
+  {
+   "id": "line2_oren_walkin",
+   "kind": "speech",
+   "voice": "voice2_oren",
+   "text": "Nobody home? Do not mind if I do!",
+   "out": "assets/voice13/oren/walkin",
+   "v": 1
+  },
+  {
+   "id": "line2_oren_eliminated",
+   "kind": "speech",
+   "voice": "voice2_oren",
+   "text": "I will be back. With more horses.",
+   "out": "assets/voice13/oren/eliminated",
+   "v": 1
+  },
+  {
+   "id": "line2_oren_victory",
+   "kind": "speech",
+   "voice": "voice2_oren",
+   "text": "I won? I won! Somebody tell my mother!",
+   "out": "assets/voice13/oren/victory",
+   "v": 1
+  },
+  {
+   "id": "line2_oren_retreat",
+   "kind": "speech",
+   "voice": "voice2_oren",
+   "text": "Retreat! Tactical retreat! Very tactical!",
+   "out": "assets/voice13/oren/retreat",
+   "v": 1
+  },
+  {
+   "id": "line2_oren_reserves",
+   "kind": "speech",
+   "voice": "voice2_oren",
+   "text": "Everybody! Everybody charge!",
+   "out": "assets/voice13/oren/reserves",
+   "v": 1
+  },
+  {
+   "id": "voice2_hask",
+   "kind": "voice",
+   "describe": "Big Scottish sea captain in his fifties, deep booming bass, hearty and rough, chuckles as he talks, natural speech",
+   "text": "Commodore Hask, the Old Bear himself! I have sunk more ships than you have eaten suppers, laddie. Bring me your best, and bring me a drink while you are at it. Ha! We sail at dawn.",
+   "out": "assets/voice13/hask/_sample",
+   "v": 1
+  },
+  {
+   "id": "line2_hask_greet",
+   "kind": "speech",
+   "voice": "voice2_hask",
+   "text": "Commodore Hask, the Old Bear! Bring me your best, little general, and I will sink it!",
+   "out": "assets/voice13/hask/greet",
+   "v": 1
+  },
+  {
+   "id": "line2_hask_attack",
+   "kind": "speech",
+   "voice": "voice2_hask",
+   "text": "Haaa! Break them! Burn their boats!",
+   "out": "assets/voice13/hask/attack",
+   "v": 1
+  },
+  {
+   "id": "line2_hask_win",
+   "kind": "speech",
+   "voice": "voice2_hask",
+   "text": "Hah! Soft as butter!",
+   "out": "assets/voice13/hask/win",
+   "v": 1
+  },
+  {
+   "id": "line2_hask_lose",
+   "kind": "speech",
+   "voice": "voice2_hask",
+   "text": "Grr. Lucky blow.",
+   "out": "assets/voice13/hask/lose",
+   "v": 1
+  },
+  {
+   "id": "line2_hask_walkin",
+   "kind": "speech",
+   "voice": "voice2_hask",
+   "text": "Empty? Then it is mine!",
+   "out": "assets/voice13/hask/walkin",
+   "v": 1
+  },
+  {
+   "id": "line2_hask_eliminated",
+   "kind": "speech",
+   "voice": "voice2_hask",
+   "text": "Bah! Pour me a drink. I am done.",
+   "out": "assets/voice13/hask/eliminated",
+   "v": 1
+  },
+  {
+   "id": "line2_hask_victory",
+   "kind": "speech",
+   "voice": "voice2_hask",
+   "text": "The Bear rules land and sea! Ha ha ha!",
+   "out": "assets/voice13/hask/victory",
+   "v": 1
+  },
+  {
+   "id": "line2_hask_retreat",
+   "kind": "speech",
+   "voice": "voice2_hask",
+   "text": "Back to the ships! I will be back for you!",
+   "out": "assets/voice13/hask/retreat",
+   "v": 1
+  },
+  {
+   "id": "line2_hask_reserves",
+   "kind": "speech",
+   "voice": "voice2_hask",
+   "text": "More! Send more! The Bear is hungry!",
+   "out": "assets/voice13/hask/reserves",
+   "v": 1
+  },
+  {
+   "id": "voice2_imre",
+   "kind": "voice",
+   "describe": "Hungarian-accented woman naval officer in her thirties, low calm alto, dry wit, unhurried precise delivery, natural speech",
+   "text": "Admiral Imre. I read your plan before you finished writing it. It was a good plan. Mine is better. Proceed, Commander, and try not to look surprised when it all goes exactly as I said.",
+   "out": "assets/voice13/imre/_sample",
+   "v": 1
+  },
+  {
+   "id": "line2_imre_greet",
+   "kind": "speech",
+   "voice": "voice2_imre",
+   "text": "Admiral Imre. I have already read your plan.",
+   "out": "assets/voice13/imre/greet",
+   "v": 1
+  },
+  {
+   "id": "line2_imre_attack",
+   "kind": "speech",
+   "voice": "voice2_imre",
+   "text": "Exactly as planned. Proceed.",
+   "out": "assets/voice13/imre/attack",
+   "v": 1
+  },
+  {
+   "id": "line2_imre_win",
+   "kind": "speech",
+   "voice": "voice2_imre",
+   "text": "Calculated.",
+   "out": "assets/voice13/imre/win",
+   "v": 1
+  },
+  {
+   "id": "line2_imre_lose",
+   "kind": "speech",
+   "voice": "voice2_imre",
+   "text": "Interesting. I will adjust.",
+   "out": "assets/voice13/imre/lose",
+   "v": 1
+  },
+  {
+   "id": "line2_imre_walkin",
+   "kind": "speech",
+   "voice": "voice2_imre",
+   "text": "You moved. I did not. That was the whole trick.",
+   "out": "assets/voice13/imre/walkin",
+   "v": 1
+  },
+  {
+   "id": "line2_imre_eliminated",
+   "kind": "speech",
+   "voice": "voice2_imre",
+   "text": "Well played. I underestimated you.",
+   "out": "assets/voice13/imre/eliminated",
+   "v": 1
+  },
+  {
+   "id": "line2_imre_victory",
+   "kind": "speech",
+   "voice": "voice2_imre",
+   "text": "Checkmate.",
+   "out": "assets/voice13/imre/victory",
+   "v": 1
+  },
+  {
+   "id": "line2_imre_retreat",
+   "kind": "speech",
+   "voice": "voice2_imre",
+   "text": "The odds have turned. We withdraw.",
+   "out": "assets/voice13/imre/retreat",
+   "v": 1
+  },
+  {
+   "id": "line2_imre_reserves",
+   "kind": "speech",
+   "voice": "voice2_imre",
+   "text": "Commit the reserve. Now.",
+   "out": "assets/voice13/imre/reserves",
    "v": 1
   }
  ]

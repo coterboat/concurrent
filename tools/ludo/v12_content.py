@@ -64,6 +64,8 @@ LINES = {
         "cut_off": "We are cut off, Commander. There is no retreat. Fight or die.",
         "opening_bad": "A bloody opening. Fall back now and save the men, or press on and pray.",
         "opening_good": "A glorious opening! One more push and the land is ours.",
+        "maneuver": "The dust has settled, Commander. March the men up to the front before the next assault.",
+        "melee": "A melee, Commander! Every army piling in at once. Steady on every front!",
     },
     "varek": {
         "greet": "Grand Marshal Varek. I have buried a hundred generals. You will be a hundred and one.",

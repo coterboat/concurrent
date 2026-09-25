@@ -24,6 +24,8 @@ const EVENT_ROUND_ENDED := "RoundEnded"
 const EVENT_ENTRENCHED := "Entrenched"
 const EVENT_SET_CASHED := "SetCashed"
 const EVENT_CARDS_CAPTURED := "CardsCaptured"
+const EVENT_MELEE := "Melee" ## v1.3: several invaders storm one land at once
+const EVENT_MANEUVERED := "Maneuvered" ## v1.3: a move in the reinforcement phase
 
 const UNOCCUPIED := ""
 
@@ -57,6 +59,8 @@ class MapDef extends RefCounted:
 	var region_colors: Dictionary = {} ## region -> "#rrggbb"
 	var region_terrain: Dictionary = {} ## region -> battlefield key
 	var pools: Dictionary = {} ## player count (int) -> starting pool
+	var wild_cards: bool = true ## v1.3 new games: false (men, horses, cannon only); the session sets it
+	var maneuvers: bool = false ## v1.3 new games: true (a reinforcement phase after the battles)
 
 	func territory_ids() -> PackedStringArray:
 		var ids: Array = territories.keys()
@@ -348,6 +352,7 @@ class Sheet extends RefCounted:
 	var placements: Dictionary = {} ## String -> int
 	var packets: Array = [] ## Array of Packet
 	var calls: Dictionary = {} ## battle key -> Array of calls made live ("p" press, "r" reserves, "f" fall back)
+	var surges: Dictionary = {} ## v1.3: land being attacked -> land to surge into (the whole force that takes it)
 
 	func to_dict() -> Dictionary:
 		var place := {}
@@ -367,6 +372,13 @@ class Sheet extends RefCounted:
 			d["regroup"] = regroup.to_dict()
 		if cash_set.size() > 0:
 			d["cashSet"] = Array(cash_set)
+		if not surges.is_empty():
+			var sg := {}
+			var sk: Array = surges.keys()
+			sk.sort()
+			for k in sk:
+				sg[str(k)] = str(surges[k])
+			d["surges"] = sg
 		if not calls.is_empty():
 			var c := {}
 			var ck: Array = calls.keys()
@@ -394,6 +406,10 @@ class Sheet extends RefCounted:
 			for raw in pkts:
 				if typeof(raw) == TYPE_DICTIONARY:
 					s.packets.append(Packet.from_dict(raw))
+		var surges_raw: Variant = data.get("surges", {})
+		if typeof(surges_raw) == TYPE_DICTIONARY:
+			for k in surges_raw.keys():
+				s.surges[str(k)] = str(surges_raw[k])
 		var calls_raw: Variant = data.get("calls", {})
 		if typeof(calls_raw) == TYPE_DICTIONARY:
 			for k in calls_raw.keys():

@@ -228,7 +228,7 @@ func refresh() -> void:
 	var s = session
 	var ph: int = s.phase
 	var planning: bool = ph == Session.Phase.PLANNING or ph == Session.Phase.OPENING
-	var focus_pid: String = s.planner if planning else ""
+	var focus_pid: String = s.planner if planning or ph == Session.Phase.MANEUVER else ""
 	if focus_pid != "":
 		var seat: Dictionary = s.seat(focus_pid)
 		commander.setup(str(seat.get("portrait", "player")), focus_pid, s.name_of(focus_pid))
@@ -286,11 +286,29 @@ func refresh() -> void:
 				Audio.sfx("place"), Style.CREAM, 14)
 			ap.disabled = s.income_left() <= 0
 			_tally_row.add_child(ap)
-			if s.map.cards and Cards.best_set(s.hand()).size() == 3:
-				_tally_row.add_child(Style.chip("Cards ✦" if s.sheet().cash_set.is_empty() else "Cards ✓", func():
-					s.toggle_cash()
-					Audio.sfx("cash"), Style.GOLD, 14))
+			if s.map.cards:
+				## the hand opens on the table; a set glows when one is ready
+				var ready: bool = Cards.best_set(s.hand()).size() == 3
+				var label := "Cards (%d)" % s.hand().size()
+				if not s.sheet().cash_set.is_empty():
+					label = "Cards ✓ +%d" % s.set_value_now()
+				elif ready:
+					label = "Cards ✦ set!"
+				_tally_row.add_child(Style.chip(label, func(): gs.open_cards(), Style.GOLD if ready or not s.sheet().cash_set.is_empty() else Style.CREAM, 14))
 			_dial.set_label("SEAL", "orders")
+		Session.Phase.MANEUVER:
+			var men := 0
+			for m in s.my_moves():
+				men += int(m["n"])
+			var k: int = s.my_moves().size()
+			_tally_title.text = "REINFORCEMENT PHASE"
+			_tally.text = ("%d march%s · %d soldier%s" % [k, "" if k == 1 else "es", men, "" if men == 1 else "s"]) if k > 0 else "Every post holds"
+			_tally_sub.text = "Drag between your lands. One land per soldier."
+			_tally_row.add_child(Style.chip("Advisor's marches", func():
+				s.advise_moves()
+				Audio.sfx("maneuver", -4.0), Style.CREAM, 14))
+			_tally_row.add_child(Style.chip("Clear", func(): s.clear_moves(), Style.MUTED, 14))
+			_dial.set_label("MARCH", "done")
 		Session.Phase.CINEMA:
 			_tally_title.text = "BATTLE REPORT"
 			_tally.text = gs.cinema_progress()

@@ -62,6 +62,38 @@ static func apply(world: Types.World, event: Dictionary) -> void:
 					else:
 						ts.garrison = maxi(0, remnant)
 						ts.armies = 0
+		Types.EVENT_MELEE:
+			for f in event.get("fronts", []):
+				for r in f.get("reserves", []):
+					var os: Types.TerritoryState = world.get_territory(str(r.get("from", "")))
+					if os != null:
+						os.armies = int(r.get("left", os.armies))
+			if bool(event.get("pending", false)):
+				return
+			for f in event.get("fronts", []):
+				if bool(f.get("fellBack", false)):
+					var rt: Types.TerritoryState = world.get_territory(str(f.get("refuge", "")))
+					if rt != null:
+						rt.armies = int(f.get("refugeArmies", rt.armies))
+			var mt: Types.TerritoryState = world.get_territory(str(event.get("to", "")))
+			if mt == null:
+				return
+			var left: int = int(event.get("defenderLeft", 0))
+			if left > 0:
+				if left >= mt.garrison:
+					mt.armies = left - mt.garrison
+				else:
+					mt.garrison = left
+					mt.armies = 0
+			else:
+				world.set_hex(str(event.get("to", "")), Types.UNOCCUPIED, 0)
+		Types.EVENT_MANEUVERED:
+			var fa: Types.TerritoryState = world.get_territory(str(event.get("from", "")))
+			var ta: Types.TerritoryState = world.get_territory(str(event.get("to", "")))
+			if fa != null:
+				fa.armies = int(event.get("fromArmies", fa.armies))
+			if ta != null:
+				ta.armies = int(event.get("toArmies", ta.armies))
 		Types.EVENT_SPOILS:
 			var dest: String = str(event.get("to", ""))
 			var winner_id: String = str(event.get("winnerId", ""))
@@ -179,6 +211,14 @@ static func recap(events: Array, map = null) -> PackedStringArray:
 					lines.append("%s falls back from %s with %s." % [event.get("attackerId"), _hex(map, str(event.get("to", ""))), event.get("attackerLeft")])
 				else:
 					lines.append("%s holds %s." % [event.get("defenderId"), _hex(map, str(event.get("to", "")))])
+			Types.EVENT_MELEE:
+				var who: Array = []
+				for f in event.get("fronts", []):
+					who.append(str(f.get("attackerId", "")))
+				if int(event.get("defenderLeft", 0)) > 0:
+					lines.append("Melee at %s: %s holds against %s." % [_hex(map, str(event.get("to", ""))), event.get("defenderId"), " and ".join(who)])
+				else:
+					lines.append("Melee at %s: %s's defenders are overrun." % [_hex(map, str(event.get("to", ""))), event.get("defenderId")])
 			Types.EVENT_PLAYER_ELIMINATED:
 				lines.append("%s is out." % event.get("playerId"))
 			Types.EVENT_SCORE:

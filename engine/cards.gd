@@ -96,10 +96,11 @@ static func best_set(hand: PackedStringArray) -> PackedStringArray:
 	return PackedStringArray()
 
 
-static func draw(match_seed: int, round: int, player_id: String, territory_count: int) -> String:
+static func draw(match_seed: int, round: int, player_id: String, territory_count: int, wilds: bool = true) -> String:
+	## v1.3 decks are men, horses and cannon only (wilds = false); older saves keep wilds.
 	var rng: RefCounted = Rng.derive_stream(match_seed, round, "card|" + player_id)
 	var n: int = maxi(1, territory_count)
-	var roll: int = rng.rand_index(3 * n + 2)
+	var roll: int = rng.rand_index(3 * n + (2 if wilds else 0))
 	if roll >= 3 * n:
 		return Types.CARD_WILD
 	return str(TYPES[roll % 3])

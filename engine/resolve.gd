@@ -307,7 +307,9 @@ static func _vacate(w: Types.World, by_player: Dictionary, events: Array) -> Arr
 			t.from_ids = PackedStringArray([p.from_id])
 			t.to_id = p.to_id
 			t.strength = p.strength
-			t.surge_to = p.surge_to
+			## v1.3: a surge is ordered from the land being taken, so every army that
+			## converges on it pushes on together
+			t.surge_to = str(sheet.surges.get(p.to_id, p.surge_to))
 			transits.append(t)
 	return transits
 
@@ -426,6 +428,20 @@ static func _resolve_destinations(w: Types.World, map: Types.MapDef, transits: A
 	for dest in dests:
 		var pkts: Array = by_dest[dest]
 		pkts.sort_custom(func(a, b): return _order_key(match_seed, w.round, dest, a) < _order_key(match_seed, w.round, dest, b))
+		## v1.3: two or more commanders storming a held land fight it at once
+		if map.battle == Combat.MODE_VOLLEYS:
+			var held_now: Types.TerritoryState = w.get_territory(dest)
+			var invaders: Array = []
+			for t in pkts:
+				if t.strength >= 1 and t.owner != held_now.owner:
+					invaders.append(t)
+			if held_now.owner != Types.UNOCCUPIED and held_now.held() >= 1 and invaders.size() >= 2:
+				for t in pkts:
+					if t.strength >= 1 and t.owner == held_now.owner:
+						held_now.armies += t.strength
+				if _melee(w, map, dest, invaders, match_seed, ctx, events, surge_book):
+					return
+				continue
 		var arrived_now := false
 		for t in pkts:
 			if t.strength < 1:
@@ -461,6 +477,167 @@ static func _resolve_destinations(w: Types.World, map: Types.MapDef, transits: A
 				arrived_now = true
 			else:
 				_apply_defender_remnant(ts, fight.winner_remaining)
+
+
+static func _melee(w: Types.World, map: Types.MapDef, dest: String, invaders: Array, match_seed: int, ctx: Dictionary, events: Array, surge_book: Dictionary) -> bool:
+	## Every salvo, each invader fights its own volley against the defender, who splits
+	## his weight across the fronts in proportion to the invaders: score = 5 x die + share,
+	## share = defenders x invader / all invaders. Each volley's loser loses one, so the
+	## defender can lose a man on every front at once, or win on all of them.
+	## Battle calls come front by front after every exchange. When the defender is gone,
+	## the survivors fight for the spoils. Returns true if the round pauses for a call.
+	var ts: Types.TerritoryState = w.get_territory(dest)
+	var defender: String = ts.owner
+	var d0: int = ts.held()
+	var d: int = d0
+	var rng: RefCounted = Rng.derive_stream(match_seed, w.round, "melee|" + dest)
+	var fronts: Array = []
+	for t in invaders:
+		fronts.append({"t": t, "a": t.strength, "size": t.strength, "key": "invasion|%s|%s|%s" % [dest, t.owner, t.from_id],
+			"stance": _stance_of(ctx, t, dest), "ci": 0, "used": false, "fell": false, "reserves": [], "added": 0,
+			"calls": [], "refuge": "", "refuge_armies": 0})
+	var salvos: Array = []
+	var pending := false
+	while d > 0 and _fronts_alive(fronts) > 0:
+		var n := 0
+		while n < Combat.EXCHANGE and d > 0 and _fronts_alive(fronts) > 0:
+			var tot := 0
+			for f in fronts:
+				if _front_up(f):
+					tot += int(f["a"])
+			var salvo: Array = []
+			var loss := 0
+			for i in fronts.size():
+				var f: Dictionary = fronts[i]
+				if not _front_up(f):
+					continue
+				var share: float = float(d) * float(f["a"]) / float(tot)
+				var da: int = rng.roll_d6()
+				var db: int = rng.roll_d6()
+				var won: bool = float(Combat.VOLLEY_DIE * da + int(f["a"])) >= float(Combat.VOLLEY_DIE * db) + share
+				salvo.append({"i": i, "a": da, "b": db, "sa": int(f["a"]), "sd": snappedf(share, 0.1), "w": "a" if won else "b"})
+				if won:
+					loss += 1
+				else:
+					f["a"] = int(f["a"]) - 1
+			d = maxi(0, d - loss)
+			salvos.append(salvo)
+			n += 1
+		if d <= 0 or _fronts_alive(fronts) == 0:
+			break
+		## the calls, front by front
+		var tot2 := 0
+		for f in fronts:
+			if _front_up(f):
+				tot2 += int(f["a"])
+		for i in fronts.size():
+			var f: Dictionary = fronts[i]
+			if not _front_up(f):
+				continue
+			var t: Transit = f["t"]
+			var froms: PackedStringArray = _froms(t)
+			var reserves: int = 0 if bool(f["used"]) else reserves_available(w, t.owner, froms)
+			var refuge: String = refuge_for(w, map, t.owner, froms, dest)
+			var share_now: int = maxi(1, int(round(float(d) * float(f["a"]) / float(maxi(1, tot2)))))
+			var recorded: Array = (ctx["calls"].get(t.owner, {}) as Dictionary).get(f["key"], [])
+			var call := ""
+			if int(f["ci"]) < recorded.size():
+				call = str(recorded[int(f["ci"])])
+				f["ci"] = int(f["ci"]) + 1
+			elif (ctx["live"] as Dictionary).has(t.owner):
+				ctx["pending"] = {"key": f["key"], "attacker": t.owner, "defender": defender, "to": dest, "from": t.from_id,
+					"a": int(f["a"]), "d": share_now, "dTotal": d, "reserves": reserves, "reserveFrom": _reserve_sources(w, t.owner, froms),
+					"refuge": refuge, "stance": f["stance"], "call": (f["calls"] as Array).size(), "rolls": salvos.size(),
+					"melee": true, "front": i}
+				pending = true
+				break
+			else:
+				call = Combat.doctrine(str(f["stance"]), int(f["a"]), share_now, reserves, refuge != "")
+			if call == Combat.CALL_RESERVES and reserves <= 0:
+				call = Combat.CALL_PRESS
+			if call == Combat.CALL_FALL_BACK and refuge == "":
+				call = Combat.CALL_PRESS
+			if call == Combat.CALL_RESERVES:
+				f["used"] = true
+				var added := 0
+				for fr in froms:
+					var os: Types.TerritoryState = w.get_territory(fr)
+					if os == null or os.owner != t.owner:
+						continue
+					var k: int = Income.max_send(os)
+					if k <= 0:
+						continue
+					os.armies -= k
+					added += k
+					(f["reserves"] as Array).append({"from": fr, "n": k, "left": os.armies})
+				f["a"] = int(f["a"]) + added
+				f["added"] = int(f["added"]) + added
+				(f["calls"] as Array).append({"at": salvos.size(), "call": call, "n": added})
+			elif call == Combat.CALL_FALL_BACK:
+				f["fell"] = true
+				f["refuge"] = refuge
+				var rt: Types.TerritoryState = w.get_territory(refuge)
+				rt.armies += int(f["a"])
+				f["refuge_armies"] = rt.armies
+				(f["calls"] as Array).append({"at": salvos.size(), "call": call, "n": int(f["a"]), "to": refuge})
+		if pending:
+			break
+	var ev := {"kind": Types.EVENT_MELEE, "to": dest, "defenderId": defender, "defenderSize": d0, "defenderLeft": d, "salvos": salvos, "fronts": []}
+	for f in fronts:
+		var t2: Transit = f["t"]
+		var fd := {"attackerId": t2.owner, "from": t2.from_id, "fromIds": Array(_froms(t2)), "size": int(f["size"]), "left": int(f["a"])}
+		if int(f["added"]) > 0:
+			fd["reservesAdded"] = int(f["added"])
+			fd["reserves"] = f["reserves"]
+		if not (f["calls"] as Array).is_empty():
+			fd["calls"] = f["calls"]
+		if bool(f["fell"]):
+			fd["fellBack"] = true
+			fd["refuge"] = f["refuge"]
+			fd["refugeArmies"] = int(f["refuge_armies"])
+		(ev["fronts"] as Array).append(fd)
+	if pending:
+		ev["pending"] = true
+		events.append(ev)
+		return true
+	events.append(ev)
+	if d > 0:
+		_apply_defender_remnant(ts, d)
+		return false
+	## the defender is gone: whoever is left fights for the prize
+	var alive: Array = []
+	for f in fronts:
+		if _front_up(f):
+			alive.append(f)
+	var champ: Dictionary = alive[0]
+	for i in range(1, alive.size()):
+		var other: Dictionary = alive[i]
+		var ta: Transit = champ["t"]
+		var tb: Transit = other["t"]
+		var srng: RefCounted = Rng.derive_stream(match_seed, w.round, "spoils|melee|%s|%s|%s" % [dest, ta.owner, tb.owner])
+		var fight = Combat.spoils(int(champ["a"]), int(other["a"]), srng, map.battle)
+		events.append(Events.spoils_event(dest, ta.owner, tb.owner, fight))
+		if fight.attacker_won:
+			champ["a"] = fight.winner_remaining
+		else:
+			other["a"] = fight.winner_remaining
+			champ = other
+	var winner: Transit = champ["t"]
+	_take(w, events, dest, winner.owner, int(champ["a"]))
+	_remember_surge(surge_book, dest, winner)
+	return false
+
+
+static func _front_up(f: Dictionary) -> bool:
+	return int(f["a"]) > 0 and not bool(f["fell"])
+
+
+static func _fronts_alive(fronts: Array) -> int:
+	var n := 0
+	for f in fronts:
+		if _front_up(f):
+			n += 1
+	return n
 
 
 static func _remember_surge(surge_book: Dictionary, dest: String, t: Transit) -> void:
@@ -609,7 +786,7 @@ static func _upkeep(w: Types.World, map: Types.MapDef, events: Array, held: Dict
 			var ps: Types.PlayerState = w.players[pid]
 			if ps.cards.size() >= Cards.HAND_LIMIT or not _captured_any(w, held, str(pid)):
 				continue
-			var card: String = Cards.draw(match_seed, w.round, str(pid), map.territories.size())
+			var card: String = Cards.draw(match_seed, w.round, str(pid), map.territories.size(), map.wild_cards)
 			ps.cards.append(card)
 			events.append(Events.card_drawn(str(pid), card))
 
