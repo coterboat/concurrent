@@ -382,16 +382,41 @@ function generate(id) {
     return { a, b, ax: pa[0], ay: pa[1], bx: pb[0], by: pb[1], length: Math.round(Math.sqrt(bd)) };
   });
 
-  // region label anchors: centroid of the region's territory anchors
+  // region label spots: inside the region, clear of every token and name plate,
+  // away from the region's edge, with horizontal room for the name
   const regions = {};
-  for (const t of ids) {
-    const r = map.territories[t].region;
-    if (!r) continue;
-    (regions[r] ||= { x: 0, y: 0, n: 0 });
-    regions[r].x += anchors[t].x; regions[r].y += anchors[t].y; regions[r].n++;
-  }
-  for (const r of Object.keys(regions)) {
-    regions[r] = { x: Math.round(regions[r].x / regions[r].n), y: Math.round(regions[r].y / regions[r].n) };
+  const regionIds = [...new Set(regionOf.filter((r) => r))].sort();
+  const anchorList = ids.map((t) => [anchors[t].x, anchors[t].y + 18]);
+  for (const r of regionIds) {
+    const inR = new Uint8Array(W * H);
+    for (let k = 0; k < W * H; k++) if (owner[k] >= 0 && regionOf[owner[k]] === r) inR[k] = 1;
+    const outside = new Uint8Array(W * H);
+    for (let k = 0; k < W * H; k++) outside[k] = inR[k] ? 0 : 1;
+    const dEdge = edt(outside, W, H);
+    const name = (map.regionNames && map.regionNames[r]) || r;
+    const want = name.length * 14 + 60; // half-width in map px the label wants
+    let best = null, bestScore = -1;
+    for (let y = 8; y < H - 8; y += 6) {
+      for (let x = 8; x < W - 8; x += 6) {
+        const k = y * W + x;
+        if (!inR[k]) continue;
+        let dA = 1e9;
+        for (const [ax, ay] of anchorList) {
+          // tokens and their name plates are wider than tall
+          const dx = (x - ax) * 0.8, dy = (y - ay) * 1.4;
+          const d = Math.sqrt(dx * dx + dy * dy);
+          if (d < dA) dA = d;
+        }
+        let run = 0;
+        for (let s = 4; s <= want; s += 4) {
+          if (x - s < 0 || x + s >= W || !inR[k - s] || !inR[k + s]) break;
+          run = s;
+        }
+        const score = Math.min(dA, dEdge[k] * 2.2, run * 0.9);
+        if (score > bestScore) { bestScore = score; best = [x, y]; }
+      }
+    }
+    if (best) regions[r] = { x: best[0], y: best[1], room: Math.round(bestScore) };
   }
   Object.assign(regions, geo.regionLabels || {});
 

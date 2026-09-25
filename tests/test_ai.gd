@@ -37,6 +37,35 @@ func run(report: Callable) -> void:
 		report.call(bad == 0, "%s %s: every AI sheet legal, invariants hold" % [cfg[0], "/".join(cfg[1])])
 		report.call(finished == 2, "%s %s: games reach a winner" % [cfg[0], "/".join(cfg[1])])
 
+	## The cinema replays events onto the pre-round world; it must land on the engine's world.
+	var ViewEvents := load("res://game/view_events.gd")
+	var Resolve := load("res://engine/resolve.gd")
+	var MapLib := load("res://engine/map.gd")
+	var mismatches := 0
+	for mid in ["knife7", "known24", "world30"]:
+		var mapv: Types.MapDef = Types.MapDef.from_file("res://maps/%s.json" % mid)
+		var seatsv: Array = [{"id": "red", "name": "a"}, {"id": "blue", "name": "b"}]
+		if mid != "knife7":
+			seatsv.append({"id": "green", "name": "c"})
+		var wv: Types.World = Setup.deal(mapv, seatsv, 9)
+		var open := {}
+		for pid in MapLib.living_player_ids(wv):
+			open[pid] = Ai.opening_placements(wv, mapv, pid, Rng.derive_stream(9, 0, pid), Ai.profile_for("veteran"))
+		Setup.apply_opening(wv, mapv, open)
+		for r in 6:
+			var sh: Array = []
+			for pid in MapLib.living_player_ids(wv):
+				sh.append(Ai.plan(wv, mapv, pid, Rng.derive_stream(9, wv.round, pid), Ai.profile_for("hask")))
+			var res: Dictionary = Resolve.resolve_round(wv, mapv, sh, 9)
+			var view: Types.World = ViewEvents.apply_through(wv, res["events"], res["events"].size() - 1)
+			for t in res["world"].territories.keys():
+				var a: Types.TerritoryState = view.get_territory(t)
+				var b: Types.TerritoryState = res["world"].get_territory(t)
+				if a.owner != b.owner or a.armies != b.armies or a.garrison != b.garrison:
+					mismatches += 1
+			wv = res["world"]
+	report.call(mismatches == 0, "the battle replay lands on the engine's world (%d mismatches)" % mismatches)
+
 	## same seed, same war
 	var m1: Types.MapDef = Types.MapDef.from_file("res://maps/known24.json")
 	var m2: Types.MapDef = Types.MapDef.from_file("res://maps/known24.json")

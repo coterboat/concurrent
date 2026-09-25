@@ -20,6 +20,8 @@ static func summarize_events(events: Array) -> Dictionary:
 	var winner := ""
 	var early := false
 	var round_n := 0
+	var reserves := 0
+	var fallbacks := 0
 	for event in events:
 		var kind: String = str(event.get("kind", ""))
 		match kind:
@@ -36,6 +38,10 @@ static func summarize_events(events: Array) -> Dictionary:
 					walked += 1
 			Types.EVENT_INVASION:
 				invasions += 1
+				if int(event.get("reservesAdded", 0)) > 0:
+					reserves += 1
+				if bool(event.get("fellBack", false)):
+					fallbacks += 1
 				var a: int = int(event.get("attackerSize", 0))
 				var d: int = int(event.get("defenderSize", 0))
 				var won := bool(event.get("attackerWon", false))
@@ -65,6 +71,8 @@ static func summarize_events(events: Array) -> Dictionary:
 		"evenCaptures": even_cap,
 		"ratio32": r32,
 		"ratio32Captures": r32_cap,
+		"reserves": reserves,
+		"fallbacks": fallbacks,
 		"leader": leader,
 		"scores": scores,
 		"winner": winner,

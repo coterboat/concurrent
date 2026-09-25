@@ -127,12 +127,35 @@ def sniff(path):
 
 
 def record(entry):
-    with _ledger_lock:
+    ## two generator runs may share the ledger: lock across processes too
+    import fcntl
+    with _ledger_lock, open(LEDGER + ".lock", "w") as lk:
+        fcntl.flock(lk, fcntl.LOCK_EX)
         led = {}
         if os.path.exists(LEDGER):
             led = json.load(open(LEDGER))
         led[entry["id"]] = entry
-        json.dump(led, open(LEDGER, "w"), indent=1, sort_keys=True)
+        tmp = LEDGER + ".tmp"
+        json.dump(led, open(tmp, "w"), indent=1, sort_keys=True)
+        os.replace(tmp, LEDGER)
+
+
+MANIFEST_V = {}
+
+
+def ledger_url(aid, key="url", wait=2400):
+    """URL a finished asset was served from; waits for another lane to finish the
+    version this manifest asks for (a re-themed portrait must not edit its old self)."""
+    t0 = time.time()
+    need = MANIFEST_V.get(aid, 1)
+    while True:
+        with _ledger_lock:
+            led = json.load(open(LEDGER)) if os.path.exists(LEDGER) else {}
+        if aid in led and led[aid].get(key) and int(led[aid].get("v", 1)) >= need:
+            return led[aid][key]
+        if time.time() - t0 > wait:
+            raise RuntimeError("dependency %s never finished" % aid)
+        time.sleep(5)
 
 
 def existing(out_base):
@@ -141,22 +164,95 @@ def existing(out_base):
     if not os.path.isdir(d):
         return None
     for f in os.listdir(d):
-        if f.startswith(b + ".") and not f.endswith(".part") and not f.endswith(".import"):
+        if f.startswith(b + ".") and not f.endswith((".part", ".import", ".json")):
             return os.path.join(d, f)
     return None
+
+
+def ledger_v(aid):
+    with _ledger_lock:
+        led = json.load(open(LEDGER)) if os.path.exists(LEDGER) else {}
+    return int(led[aid].get("v", 1)) if aid in led else 0
+
+
+def local_image(rel):
+    """A local file as a base64 data URI (for inputs we prepared ourselves)."""
+    import base64
+    path = os.path.join(ROOT, rel)
+    mime = "image/png" if path.endswith(".png") else "image/webp"
+    return "data:%s;base64,%s" % (mime, base64.b64encode(open(path, "rb").read()).decode())
+
+
+def source(asset, key="from"):
+    if asset.get(key + "_file"):
+        return local_image(asset[key + "_file"])
+    return ledger_url(asset[key])
 
 
 def build(asset, style, force):
     aid = asset["id"]
     out_base = os.path.join(ROOT, asset["out"])
     have = existing(out_base)
-    if have and not force:
+    ver = asset.get("v", 1)
+    if have and not force and ledger_v(aid) >= ver:
         return
     kind = asset["kind"]
-    ver = asset.get("v", 1)
     rid = "concurrent-%s-v%s" % (aid, ver)
     t0 = time.time()
-    if kind == "image":
+    extra = {}
+    if kind == "edit":
+        src = source(asset)
+        params = {"image": src, "prompt": asset["prompt"], "n": 1, "augment_prompt": asset.get("augment", True)}
+        job = run_job("/assets/image/edit", params, rid)
+        url = result_urls(job["result"])[0]
+        if asset.get("cutout"):
+            cut = run_job("/assets/image/remove-background",
+                          {"image": url, "crop": True, "creative_edit": False}, rid + "-cut")
+            url = result_urls(cut["result"])[0]
+        endpoint = "/assets/image/edit"
+    elif kind == "animate":
+        src = source(asset)
+        params = {"initial_image": src, "motion_prompt": asset["prompt"], "model": asset.get("model", "forge"),
+                  "duration": asset.get("duration", 2), "frames": asset.get("frames", 16),
+                  "frame_size": asset.get("frame_size", 128), "loop": asset.get("loop", False),
+                  "image_type": asset.get("image_type", "sprite")}
+        if asset.get("final_same"):
+            params["final_image"] = src  ## the loop ends where it began: no reset jump
+        elif asset.get("final") or asset.get("final_file"):
+            params["final_image"] = source(asset, "final")  ## ends on a known pose
+        for k in ("crop", "margin_ratio_mode"):
+            if k in asset:
+                params[k] = asset[k]
+        if asset.get("with_background"):
+            params["spritesheet_with_background"] = True
+        job = run_job("/assets/sprite/animate", params, rid)
+        res = job["result"]
+        url = res.get("spritesheet_with_background_url") if asset.get("with_background") and res.get("spritesheet_with_background_url") else res["spritesheet_url"]
+        extra = {"cols": res.get("num_cols"), "rows": res.get("num_rows"), "frames": res.get("num_frames")}
+        endpoint = "/assets/sprite/animate"
+    elif kind == "voice":
+        params = {"voice_description": asset["describe"], "text": asset["text"], "type": "human",
+                  "augment_prompt": asset.get("augment", True)}
+        job = run_job("/audio/voice", params, rid)
+        url = result_urls(job["result"])[0]
+        endpoint = "/audio/voice"
+    elif kind == "speech":
+        sample = ledger_url(asset["voice"])
+        params = {"text": asset["text"], "sample": sample}
+        job = run_job("/audio/speech", params, rid)
+        url = result_urls(job["result"])[0]
+        endpoint = "/audio/speech"
+    elif kind == "styled":
+        params = {"style_image": ledger_url(asset["style_from"]), "prompt": asset["prompt"],
+                  "image_type": asset.get("type", "art"), "n": 1, "augment_prompt": asset.get("augment", True)}
+        job = run_job("/assets/image/style", params, rid)
+        url = result_urls(job["result"])[0]
+        if asset.get("cutout"):
+            cut = run_job("/assets/image/remove-background",
+                          {"image": url, "crop": True, "creative_edit": False}, rid + "-cut")
+            url = result_urls(cut["result"])[0]
+        endpoint = "/assets/image/style"
+    elif kind == "image":
         prompt = asset["prompt"]
         if asset.get("style", True):
             prompt = prompt + ". " + style["image"]
@@ -176,7 +272,7 @@ def build(asset, style, force):
                           {"image": url, "crop": True, "creative_edit": False}, rid + "-cut")
             url = result_urls(cut["result"])[0]
         endpoint = "/assets/image"
-    else:
+    elif kind in ("sfx", "music", "ambiance"):
         endpoint = {"sfx": "/audio/sound-effect", "music": "/audio/music", "ambiance": "/audio/ambiance"}[kind]
         params = {"description": asset["prompt"], "augment_prompt": asset.get("augment", True)}
         if "duration" in asset:
@@ -194,7 +290,10 @@ def build(asset, style, force):
         fixed = out_base + real
         os.replace(dest, fixed)
         dest = fixed
-    record({"id": aid, "endpoint": endpoint, "params": params, "job": job.get("id"),
+    if extra:
+        json.dump(extra, open(out_base + ".json", "w"))
+    params = {k: (v[:40] + "...(base64)" if isinstance(v, str) and v.startswith("data:") else v) for k, v in params.items()}
+    record({"id": aid, "v": ver, "endpoint": endpoint, "params": params, "job": job.get("id"),
             "credits": job.get("credits_charged"), "url": url, "file": os.path.relpath(dest, ROOT)})
     log("done %-22s %5.0fs  %s" % (aid, time.time() - t0, os.path.relpath(dest, ROOT)))
 
@@ -214,13 +313,16 @@ def main(argv):
     force = "--force" in argv
     wanted = [a for a in argv if not a.startswith("--")]
     man = json.load(open(MANIFEST))
+    for a in man["assets"]:
+        MANIFEST_V[a["id"]] = int(a.get("v", 1))
     style = man["style"]
     assets = man["assets"]
     if wanted:
         assets = [a for a in assets if a["id"] in wanted]
     lanes = {}
+    lane_of = {"ambiance": "sfx"}
     for a in assets:
-        lanes.setdefault(a["kind"] if a["kind"] != "ambiance" else "sfx", []).append(a)
+        lanes.setdefault(lane_of.get(a["kind"], a["kind"]), []).append(a)
     failures = []
     threads = [threading.Thread(target=worker, args=(q, style, force, failures)) for q in lanes.values()]
     log("lanes:", {k: len(v) for k, v in lanes.items()})

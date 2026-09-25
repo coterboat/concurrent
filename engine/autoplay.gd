@@ -62,10 +62,17 @@ static func play(map: Types.MapDef, seats: Array, match_seed: int, max_rounds: i
 		for s in sheets:
 			dicts.append((s as Types.Sheet).to_dict())
 		sheets_log.append(dicts)
+		var before: int = MapLib.sum_armies(world)
 		var result: Dictionary = Resolve.resolve_round(world, map, sheets, match_seed)
 		if not result["errors"].is_empty():
 			violations.append("resolve r%s: %s" % [world.round, " ".join(result["errors"])])
 			break
+		## P2 on every map and seat count: nothing appears or vanishes outside a fight.
+		var evs: Array = result["events"]
+		var expected: int = before + Bot._placed_added(evs) + Bot._entrenched_added(evs) - Bot._combat_deaths(evs)
+		var got: int = MapLib.sum_armies(result["world"])
+		if got != expected:
+			violations.append("r%s army leak: expected %s got %s" % [world.round, expected, got])
 		world = result["world"]
 		var err: String = MapLib.hex_invariant_error(world)
 		if err != "":

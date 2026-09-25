@@ -87,6 +87,7 @@ func start_tutorial() -> void:
 			{"id": "blue", "name": "Captain Oren", "kind": "ai", "ai": "oren", "portrait": "oren"},
 		],
 		"length": "standard",
+		"battle": "volleys",
 		"tutorial": true,
 		"timer": 0,
 	})

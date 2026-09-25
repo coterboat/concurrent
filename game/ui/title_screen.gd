@@ -41,7 +41,7 @@ func _ready() -> void:
 	rule.custom_minimum_size = Vector2(300, 5)
 	rule.size_flags_horizontal = Control.SIZE_SHRINK_BEGIN
 	col.add_child(rule)
-	var tag := Style.label("Everyone commits at once. Attackers leave home empty.\nWhoever strips a border gets walked.", 22, Style.PARCH, "italic")
+	var tag := Style.label("Every empire marches at once. The world is there for the taking.\nStrip a border bare, and someone walks right in.", 22, Style.PARCH, "italic")
 	col.add_child(tag)
 	var gap := Control.new()
 	gap.custom_minimum_size = Vector2(0, 22)

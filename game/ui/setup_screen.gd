@@ -16,6 +16,7 @@ var map_path := "res://maps/known24.json"
 var seats: Array = []
 var length := "standard"
 var timer := 0
+var battle := "volleys"
 
 var _map_cards := {}
 var _seat_box: VBoxContainer
@@ -92,6 +93,7 @@ func _ready() -> void:
 	rv.add_child(_option_row("Game length", ["Short", "Standard", "Long", "Conquest (no round limit)"], ["short", "standard", "long", "conquest"], length, func(val):
 		length = val
 		_refresh()))
+	rv.add_child(_option_row("Battles", ["Roll by roll (volleys)", "One decisive roll"], ["volleys", "decisive"], battle, func(val): battle = val))
 	rv.add_child(_option_row("Planning clock", ["Off", "90 seconds", "3 minutes"], [0, 90, 180], timer, func(val): timer = val))
 	_note = Style.label("", 17, Style.PARCH, "italic")
 	_note.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
@@ -115,14 +117,20 @@ func _load_last() -> void:
 		map_path = "res://maps/known24.json"
 	length = str(last.get("length", "standard"))
 	timer = int(last.get("timer", 0))
+	battle = str(last.get("battle", "volleys"))
 	seats = []
+	## v1.2 gave the commanders imperial titles; saved setups keep up
+	var retitled := ["Marshal Varek", "Lady Ysolde", "Commander Imre", "Old Bear Hask", "The Quartermaster"]
 	for s in last.get("seats", []):
-		seats.append((s as Dictionary).duplicate())
+		var seat: Dictionary = (s as Dictionary).duplicate()
+		if str(seat.get("kind", "")) == "ai" and retitled.has(str(seat.get("name", ""))):
+			seat["name"] = str(Ai.COMMANDERS.get(str(seat.get("ai", "")), {}).get("name", seat["name"]))
+		seats.append(seat)
 	if seats.is_empty():
 		seats = [
 			{"kind": "human", "name": str(last.get("name", "You")), "ai": ""},
 			{"kind": "ai", "name": "Captain Oren", "ai": "oren"},
-			{"kind": "ai", "name": "The Quartermaster", "ai": "quill"},
+			{"kind": "ai", "name": "Governor Quill", "ai": "quill"},
 		]
 
 
@@ -159,6 +167,7 @@ func _map_card(path: String) -> Control:
 		thumb.load_map(m)
 		thumb.world = Types.World.empty_from_map(m)
 		thumb.plain = true
+		thumb.show_region_labels = false ## names at thumbnail size are just noise
 		thumb.refresh())
 	var txt := VBoxContainer.new()
 	txt.mouse_filter = Control.MOUSE_FILTER_IGNORE
@@ -312,8 +321,8 @@ func _start() -> void:
 			"ai": s["ai"] if s["kind"] == "ai" else "",
 			"portrait": "player" if s["kind"] == "human" else str(s["ai"]),
 		})
-	Settings.set_value("last_setup", {"map": map_path, "seats": seats, "length": length, "timer": timer, "name": human_name if human_name != "" else "You"})
-	main.start_game({"map": map_path, "seats": cfg_seats, "length": length, "timer": timer, "tutorial": false})
+	Settings.set_value("last_setup", {"map": map_path, "seats": seats, "length": length, "timer": timer, "battle": battle, "name": human_name if human_name != "" else "You"})
+	main.start_game({"map": map_path, "seats": cfg_seats, "length": length, "timer": timer, "battle": battle, "tutorial": false})
 
 
 class _Swatch extends Control:

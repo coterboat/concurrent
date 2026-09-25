@@ -1,0 +1,230 @@
+## The advisor's brain. Reads the public board for the commander at the table and
+## says the one or two things worth saying. Also drafts a whole plan on request.
+## Sees only what the player sees; never peeks at sealed sheets.
+extends RefCounted
+
+const Types := preload("res://engine/types.gd")
+const MapLib := preload("res://engine/map.gd")
+const Income := preload("res://engine/income.gd")
+const Combat := preload("res://engine/combat.gd")
+const Cards := preload("res://engine/cards.gd")
+const Ai := preload("res://engine/ai.gd")
+const Rng := preload("res://engine/rng.gd")
+const Validate := preload("res://engine/validate.gd")
+const Session := preload("res://game/core/session.gd")
+
+## item: {key, text, mood: neutral|alarmed|pleased, voice: line key or "", focus: [ids], rank}
+
+
+static func advice(s: Node) -> Array:
+	var out: Array = []
+	if s.world == null or s.planner == "":
+		return out
+	var pid: String = s.planner
+	var w: Types.World = s.world
+	var map: Types.MapDef = s.map
+	if s.phase == Session.Phase.OPENING:
+		out.append(_item("deploy", "Place your starting armies: click a land, then click it again to add. Put strength where enemies touch you — and on lands that could complete a region.", "neutral", "deploy", [], 50))
+		return out
+	## 1. unplaced men
+	var left: int = s.income_left()
+	if left > 0:
+		out.append(_item("place", "%d fresh troops wait for orders. Click one of our lands to put them there — unplaced men go home." % left, "neutral", "reinforce", [], 40))
+	## 2. threats
+	var proj: Types.World = s.projected_world()
+	for t in MapLib.player_territory_ids(w, pid):
+		var th: Dictionary = _threat(w, map, pid, t)
+		if th.is_empty():
+			continue
+		var have: int = proj.get_territory(t).held()
+		if float(th["max"]) >= float(have) * 1.6 and int(th["max"]) >= have + 3:
+			var rank: int = 70 + mini(20, int(th["max"]) - have)
+			if _in_held_region(w, map, pid, t):
+				rank += 10
+			out.append(_item("threat_" + t, "%s could bring up to %d against %s. We will have %d there." % [s.name_of(th["owner"]), th["max"], s.hex_name(t), have], "alarmed", "", [t, th["from"]], rank))
+	## 3. vacate warnings from the sheet itself
+	for wtxt in s.warnings():
+		if wtxt.contains("walk right in"):
+			out.append(_item("vacate", wtxt, "alarmed", "vacate_warn", [], 85))
+	## 4. region completion
+	for r in map.region_bonus.keys():
+		var members := MapLib.region_members(map, str(r))
+		var missing: Array = []
+		for m in members:
+			if w.get_territory(m).owner != pid:
+				missing.append(m)
+		if missing.is_empty() or missing.size() > 2 or missing.size() == members.size():
+			continue
+		var reachable := true
+		for m in missing:
+			if not _touches(w, map, pid, m):
+				reachable = false
+		if reachable:
+			var names: Array = []
+			for m in missing:
+				names.append(s.hex_name(m))
+			out.append(_item("region_" + str(r), "Take %s and all of %s is ours: +%d troops every round." % [" and ".join(names), map.region_names.get(r, r), int(map.region_bonus[r])], "pleased", "", missing, 60 + int(map.region_bonus[r]) * 3))
+	## 5. soft targets next door
+	var best_soft := ""
+	var best_soft_n := 999
+	for t in MapLib.player_territory_ids(w, pid):
+		for n in MapLib.neighbors(map, t):
+			var ns: Types.TerritoryState = w.get_territory(n)
+			if ns.owner == pid:
+				continue
+			if ns.held() < best_soft_n and s.max_send(t) >= 2:
+				best_soft_n = ns.held()
+				best_soft = n
+	if best_soft != "" and best_soft_n <= 1:
+		var o: String = w.get_territory(best_soft).owner
+		var who: String = "Nobody holds" if o == Types.UNOCCUPIED else "%s left only %d in" % [s.name_of(o), best_soft_n]
+		out.append(_item("soft_" + best_soft, "%s %s. A small force takes it." % [who, s.hex_name(best_soft)], "pleased", "", [best_soft], 45))
+	## 6. cards
+	if map.cards and s.sheet().cash_set.is_empty() and Cards.best_set(s.hand()).size() == 3:
+		out.append(_item("cards", "We hold a set of cards. Trade it in for %d more troops this round." % s.set_value_now(), "pleased", "cards", [], 55))
+	## 7. the clock
+	if s.is_last_round() and not s.conquest():
+		out.append(_item("final", "Final round. Only land counts when this resolves — spend every soldier.", "alarmed", "final", [], 90))
+	out.sort_custom(func(a, b): return int(a["rank"]) > int(b["rank"]))
+	return out
+
+
+static func _item(key: String, text: String, mood: String, voice: String, focus: Array, rank: int) -> Dictionary:
+	return {"key": key, "text": text, "mood": mood, "voice": voice, "focus": focus, "rank": rank}
+
+
+static func _threat(w: Types.World, map: Types.MapDef, pid: String, t: String) -> Dictionary:
+	## The biggest single-owner punch that could land on t: everyone who can march
+	## from their bordering lands plus what they could place there.
+	var by_owner := {}
+	var from := {}
+	for n in MapLib.neighbors(map, t):
+		var ns: Types.TerritoryState = w.get_territory(n)
+		var o: String = ns.owner
+		if o == pid or o == Types.UNOCCUPIED or o == Income.NEUTRAL_ID:
+			continue
+		var punch: int = Income.max_send(ns) + mini(Income.cap_of(w, map, n), Income.income_of(w, map, o))
+		by_owner[o] = int(by_owner.get(o, 0)) + punch
+		if not from.has(o) or punch > int(from[o][1]):
+			from[o] = [n, punch]
+	var best := {}
+	for o in by_owner.keys():
+		if best.is_empty() or int(by_owner[o]) > int(best["max"]):
+			best = {"owner": o, "max": int(by_owner[o]), "from": from[o][0]}
+	return best
+
+
+static func _touches(w: Types.World, map: Types.MapDef, pid: String, t: String) -> bool:
+	for n in MapLib.neighbors(map, t):
+		if w.get_territory(n).owner == pid:
+			return true
+	return false
+
+
+static func _in_held_region(w: Types.World, map: Types.MapDef, pid: String, t: String) -> bool:
+	var r: String = map.get_territory(t).region
+	return r != "" and MapLib.holds_region(w, map, pid, r)
+
+
+# ---------------------------------------------------------------- the advisor's plan
+
+static func draft(s: Node) -> Types.Sheet:
+	## A full sheet from a careful commander's head, for the player to adopt or ignore.
+	var rng: RefCounted = Rng.derive_stream(s.match_seed, s.world.round, "advisor|" + s.planner)
+	var prof: Dictionary = Ai.profile_for("veteran")
+	prof["caution"] = 0.38
+	prof["noise"] = 0.0
+	return Ai.plan(s.world, s.map, s.planner, rng, prof)
+
+
+static func explain(s: Node, sheet: Types.Sheet) -> Array:
+	## Human sentences for each line of a drafted sheet.
+	var lines: Array = []
+	if sheet.cash_set.size() > 0:
+		lines.append(["coins", "Trade in a card set for %d troops." % s.set_value_now()])
+	if not sheet.placements.is_empty():
+		var parts: Array = []
+		var keys: Array = sheet.placements.keys()
+		keys.sort_custom(func(a, b): return int(sheet.placements[a]) > int(sheet.placements[b]))
+		for k in keys:
+			parts.append("%d on %s" % [int(sheet.placements[k]), s.hex_name(str(k))])
+		lines.append(["reinforce", "Reinforce: " + ", ".join(parts) + "."])
+	if sheet.regroup != null:
+		lines.append(["move", "Move %d from %s to %s, toward the front." % [sheet.regroup.strength, s.hex_name(sheet.regroup.from_id), s.hex_name(sheet.regroup.to_id)]])
+	var by_target := {}
+	for raw in sheet.packets:
+		var p: Types.Packet = raw
+		if not by_target.has(p.to_id):
+			by_target[p.to_id] = {"n": 0, "from": [], "surge": p.surge_to}
+		by_target[p.to_id]["n"] += p.strength
+		by_target[p.to_id]["from"].append(s.hex_name(p.from_id))
+	for to in by_target.keys():
+		var info: Dictionary = by_target[to]
+		var d: int = s.world.get_territory(to).held()
+		var word: String = Combat.odds_word(int(info["n"]), maxi(1, d), s.map.battle) if d > 0 else "certain"
+		var txt := "Attack %s with %d from %s — %s." % [s.hex_name(to), info["n"], " and ".join(info["from"]), word]
+		if str(info["surge"]) != "":
+			txt += " If it falls, surge on into %s." % s.hex_name(str(info["surge"]))
+		lines.append(["attack", txt])
+	if sheet.packets.is_empty():
+		lines.append(["shield", "Hold this round. Nothing out there is worth the risk."])
+	return lines
+
+
+static func adopt(s: Node, sheet: Types.Sheet) -> void:
+	var mine := Types.Sheet.new()
+	mine.player_id = s.planner
+	mine.placements = sheet.placements.duplicate()
+	mine.cash_set = sheet.cash_set.duplicate()
+	for raw in sheet.packets:
+		var p: Types.Packet = raw
+		var q := Types.Packet.new()
+		q.from_id = p.from_id
+		q.to_id = p.to_id
+		q.strength = p.strength
+		q.surge_to = p.surge_to
+		q.stance = p.stance if p.stance != "" else "judgment" ## the advisor's own doctrine
+		mine.packets.append(q)
+	if sheet.regroup != null and s.world.round > 1:
+		var r := Types.Regroup.new()
+		r.from_id = sheet.regroup.from_id
+		r.to_id = sheet.regroup.to_id
+		r.strength = sheet.regroup.strength
+		mine.regroup = r
+	s.drafts[s.planner] = mine
+	s.clamp_packets()
+	s.changed.emit()
+
+
+# ---------------------------------------------------------------- tutorial lessons
+
+static func lesson(s: Node, surge_pick: int) -> Dictionary:
+	## The scripted Isthmus lessons (tutorial) and the gentle first-game hints.
+	var ph: int = s.phase
+	if ph != Session.Phase.PLANNING and ph != Session.Phase.OPENING:
+		return {}
+	if surge_pick >= 0:
+		return _item("surgepick", "Pick where the survivors go next: any enemy or empty land touching the target. They only go if the first attack wins, and surges happen after every other battle.", "neutral", "", [], 200)
+	var volleys: bool = s.map.battle == Combat.MODE_VOLLEYS
+	var battle_rule := "Battles are fought volley by volley: each side rolls a die, times five, plus its armies. The loser of each volley loses a man, until one side is gone. Ties go to the attacker." if volleys else "Battles are one roll: armies plus one die. Higher total wins, ties go to the attacker, and the winner loses half the loser's size."
+	if bool(s.config.get("tutorial", false)):
+		var r: int = s.world.round
+		if ph == Session.Phase.OPENING:
+			return _item("t-open", "Welcome, Commander. This is the Isthmus: a north shore and a south shore joined only by The Gate. First, place your starting armies — click a land to select it, click again to add.", "neutral", "welcome", [], 150)
+		if r == 1:
+			if s.placed_total() < s.income_total():
+				return _item("t-r1a", "Every round brings reinforcements. Click our lands to place them — they can attack this very round. The ≤ badge on an enemy land is the most it could hold after they secretly reinforce.", "neutral", "reinforce", [], 150)
+			if s.sheet().packets.is_empty():
+				return _item("t-r1b", "Now attack: with our land selected, click an enemy or empty neighbor, or drag onto it. Every order happens at once — and armies you send LEAVE HOME.", "neutral", "attack_hint", [], 150)
+			return _item("t-r1c", battle_rule + " Happy? Press SEAL, then watch it unfold — you roll the dice in your own battles.", "pleased", "", [], 150)
+		if r == 2:
+			return _item("t-r2", "Lands we hold dig in: each round a held land gains a dug-in defender (the little shield). They never march, so a dug-in land can send every other soldier and still stay ours. From now on we may also make one move: drag onto a land of ours.", "neutral", "dug_in", [], 150)
+		if r == 3:
+			return _item("t-r3", "Surge: click the number on an attack arrow and press 'Surge onward'. If the attack wins, the survivors push on into the next land — after every other battle.", "neutral", "surge", [], 150)
+		if s.is_last_round():
+			return _item("t-last", "Final round! Score is lands plus region bonuses. Soldiers left standing are worth nothing now — spend them.", "alarmed", "final", [], 150)
+		if r == 4:
+			return _item("t-r4", "Look for a walk-in: the faded arrows show where everyone marched last round. A land left with one man falls to a small push.", "neutral", "", [], 150)
+	elif s.world.round == 1 and ph == Session.Phase.PLANNING and s.sheet().packets.is_empty():
+		return _item("r1", "Select one of our lands, then click an enemy neighbor to attack — or drag onto it. Or press 'Advisor's plan' and I will draft the whole sheet for you.", "neutral", "", [], 35)
+	return {}

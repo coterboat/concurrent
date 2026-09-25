@@ -60,7 +60,7 @@ static func clash_event(hex_a: String, hex_b: String, player_a: String, player_b
 
 
 static func invasion_event(from_id: String, to_id: String, attacker_id: String, defender_id: String, fight: RefCounted) -> Dictionary:
-	return {
+	return fight.extras({
 		"kind": Types.EVENT_INVASION,
 		"from": from_id,
 		"to": to_id,
@@ -75,7 +75,7 @@ static func invasion_event(from_id: String, to_id: String, attacker_id: String, 
 		"attackerWon": fight.attacker_won,
 		"winnerRemaining": fight.winner_remaining,
 		"rolls": fight.rolls,
-	}
+	})
 
 
 static func spoils_event(to_id: String, player_a: String, player_b: String, fight: RefCounted) -> Dictionary:

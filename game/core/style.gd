@@ -76,7 +76,9 @@ static func icon(name: String) -> Texture2D:
 
 
 static func portrait(name: String) -> Texture2D:
-	return tex("res://assets/portraits/%s.webp" % name)
+	## v1.2 portraits are cut-out PNGs; older ones were WebP.
+	var t: Texture2D = tex("res://assets/portraits/%s.png" % name)
+	return t if t != null else tex("res://assets/portraits/%s.webp" % name)
 
 
 static func card_tex(kind: String) -> Texture2D:

@@ -1,4 +1,17 @@
 {
+ "amb_battle": {
+  "credits": 2,
+  "endpoint": "/audio/ambiance",
+  "file": "assets/audio/music/ambience_battle.wav",
+  "id": "amb_battle",
+  "job": "d8c279c7-ec9b-418f-b9fd-e2141647612b",
+  "params": {
+   "augment_prompt": true,
+   "description": "distant battlefield: far-off musket fire, occasional cannon, wind, muffled shouting, no music",
+   "duration": 10
+  },
+  "url": "https://storage.googleapis.com/ludo-assets/api/68f97e86657c680226e7a504-df10cb6a03d907edc30e2b284e321e26.mp3"
+ },
  "amb_tent": {
   "credits": 2,
   "endpoint": "/audio/ambiance",
@@ -17,255 +30,861 @@
   "endpoint": "/assets/image",
   "file": "assets/art/defeat.webp",
   "id": "art_defeat",
-  "job": "6bef3548-0991-483c-a567-b554eda194a5",
+  "job": "d832be9e-35bc-4b4f-92a4-4a6b8b045635",
   "params": {
-   "art_style": "Hand-Painted",
+   "art_style": "Digital Painting",
    "aspect_ratio": "ar_16_9",
    "augment_prompt": true,
    "image_type": "art",
    "n": 1,
    "perspective": "Any perspective",
-   "prompt": "A torn fallen battle banner lying in the mud beside an abandoned wooden fort at dusk, cold blue light, crows on the palisade, somber and quiet. Hand-painted board game art, visible brush strokes, palette of deep navy, parchment cream, crimson red and antique gold, candlelit war-room mood, no text, no letters, no watermark"
+   "prompt": "A burning flagship listing in a storm-dark bay, a torn plain crimson ensign with a small golden crown floating among broken spars, the victorious enemy fleet sailing away on the horizon, cold grey dawn. Every flag is an invented plain banner, no real-world flags. Grand imperial oil painting in the tradition of 18th-century history painting and Age of Sail maritime art, rich glazes, dramatic golden light and deep shadow, palette of imperial crimson, royal navy blue, burnished gold, ivory and gunpowder grey, heroic and triumphant, no text, no letters, no watermark"
   },
-  "url": "https://storage.googleapis.com/ludo-assets/api/9b38b7d992c0a3f352d27158e86e4f67.webp"
+  "url": "https://storage.googleapis.com/ludo-assets/api/b7e7b0dbe17d6a8a6d18481faf96c8c1.webp",
+  "v": 3
  },
  "art_victory": {
   "credits": 0.5,
   "endpoint": "/assets/image",
   "file": "assets/art/victory.webp",
   "id": "art_victory",
-  "job": "17f179df-014a-4de3-b757-6f85b19ce741",
+  "job": "0695d8fd-8aec-4568-be53-b458ea4439e9",
   "params": {
-   "art_style": "Hand-Painted",
+   "art_style": "Digital Painting",
    "aspect_ratio": "ar_16_9",
    "augment_prompt": true,
    "image_type": "art",
    "n": 1,
    "perspective": "Any perspective",
-   "prompt": "A triumphant general's crimson and gold banner raised over the battlements of a hilltop castle at golden sunrise, small cheering soldiers below, heroic and warm. Hand-painted board game art, visible brush strokes, palette of deep navy, parchment cream, crimson red and antique gold, candlelit war-room mood, no text, no letters, no watermark"
+   "prompt": "An imperial crimson-and-gold standard raised over the ramparts of a captured star fort on a headland, a fleet of ships of the line below firing a thundering salute, cannon smoke rolling across the water, blazing golden sunset, triumphant. Grand imperial oil painting in the tradition of 18th-century history painting and Age of Sail maritime art, rich glazes, dramatic golden light and deep shadow, palette of imperial crimson, royal navy blue, burnished gold, ivory and gunpowder grey, heroic and triumphant, no text, no letters, no watermark"
   },
-  "url": "https://storage.googleapis.com/ludo-assets/api/6a3729f82617f62c2edda0d6826532b4.webp"
+  "url": "https://storage.googleapis.com/ludo-assets/api/c635925a0742dbad92e95a8fd7941734.webp",
+  "v": 2
  },
  "card_back": {
   "credits": 0.5,
   "endpoint": "/assets/image",
   "file": "assets/cards/back.webp",
   "id": "card_back",
-  "job": "a6107302-de82-43c1-bdcf-b2cc8549afc5",
+  "job": "5bde86b0-94f8-45ca-9376-46a1ea5cc11b",
   "params": {
-   "art_style": "Hand-Painted",
+   "art_style": "Digital Painting",
    "aspect_ratio": "ar_3_4",
    "augment_prompt": true,
    "image_type": "card-art",
    "n": 1,
    "perspective": "Any perspective",
-   "prompt": "Back of an ornate playing card: deep navy background with a symmetrical antique gold compass-rose pattern and crimson border. Hand-painted board game art, visible brush strokes, palette of deep navy, parchment cream, crimson red and antique gold, candlelit war-room mood, no text, no letters, no watermark"
+   "prompt": "Back of an ornate playing card: deep navy ground with a gilded compass rose over a crossed anchor and sabre, crimson and gold baroque border, symmetrical, no text. Grand imperial oil painting in the tradition of 18th-century history painting and Age of Sail maritime art, rich glazes, dramatic golden light and deep shadow, palette of imperial crimson, royal navy blue, burnished gold, ivory and gunpowder grey, heroic and triumphant, no text, no letters, no watermark"
   },
-  "url": "https://storage.googleapis.com/ludo-assets/api/b76b8a57301ad4ef303f2f94337e19b6.webp"
+  "url": "https://storage.googleapis.com/ludo-assets/api/ee7b1ec396cb0950ed6f536a081c2279.webp",
+  "v": 2
  },
  "card_moon": {
   "credits": 0.5,
   "endpoint": "/assets/image",
   "file": "assets/cards/moon.webp",
   "id": "card_moon",
-  "job": "7a99c21f-a79d-4a1e-9167-8370fdb30c12",
+  "job": "b51a4519-4be6-481e-b4d1-789ee6d74587",
   "params": {
-   "art_style": "Hand-Painted",
+   "art_style": "Digital Painting",
    "aspect_ratio": "ar_3_4",
    "augment_prompt": true,
    "image_type": "card-art",
    "n": 1,
    "perspective": "Any perspective",
-   "prompt": "Front face of an ornate campaign card: a silver crescent moon emblem in the center, cream parchment card with a thin crimson and gold border. Hand-painted board game art, visible brush strokes, palette of deep navy, parchment cream, crimson red and antique gold, candlelit war-room mood, no text, no letters, no watermark"
+   "prompt": "Front face of an ornate imperial campaign card: a dragoon on a rearing horse with sabre raised painted inside a gilded oval medallion at the center, ivory parchment ground, gilded baroque border with crimson corner flourishes, no text, no numbers. Grand imperial oil painting in the tradition of 18th-century history painting and Age of Sail maritime art, rich glazes, dramatic golden light and deep shadow, palette of imperial crimson, royal navy blue, burnished gold, ivory and gunpowder grey, heroic and triumphant, no text, no letters, no watermark"
   },
-  "url": "https://storage.googleapis.com/ludo-assets/api/2ac8fe7dbf7e4e117cd516d11a601a9f.webp"
+  "url": "https://storage.googleapis.com/ludo-assets/api/3197f2297dc50405de86a357b7538793.webp",
+  "v": 2
  },
  "card_star": {
   "credits": 0.5,
   "endpoint": "/assets/image",
   "file": "assets/cards/star.webp",
   "id": "card_star",
-  "job": "956e4a87-807b-4b10-b335-2c8ed415fbd8",
+  "job": "348226bd-f0cd-420a-bbe0-2847a22275ea",
   "params": {
-   "art_style": "Hand-Painted",
+   "art_style": "Digital Painting",
    "aspect_ratio": "ar_3_4",
    "augment_prompt": true,
    "image_type": "card-art",
    "n": 1,
    "perspective": "Any perspective",
-   "prompt": "Front face of an ornate campaign card: a crimson eight-pointed star emblem in the center, cream parchment card with a thin crimson and gold border. Hand-painted board game art, visible brush strokes, palette of deep navy, parchment cream, crimson red and antique gold, candlelit war-room mood, no text, no letters, no watermark"
+   "prompt": "Front face of an ornate imperial campaign card: a bronze field cannon on a wooden carriage with a smoking fuse painted inside a gilded oval medallion at the center, ivory parchment ground, gilded baroque border with crimson corner flourishes, no text, no numbers. Grand imperial oil painting in the tradition of 18th-century history painting and Age of Sail maritime art, rich glazes, dramatic golden light and deep shadow, palette of imperial crimson, royal navy blue, burnished gold, ivory and gunpowder grey, heroic and triumphant, no text, no letters, no watermark"
   },
-  "url": "https://storage.googleapis.com/ludo-assets/api/2e2361514f6e6b9aaebd16cac741e8c9.webp"
+  "url": "https://storage.googleapis.com/ludo-assets/api/4cb50da6dc6e27d4c5dc401323f404b9.webp",
+  "v": 3
  },
  "card_sun": {
   "credits": 0.5,
   "endpoint": "/assets/image",
   "file": "assets/cards/sun.webp",
   "id": "card_sun",
-  "job": "cfcd5cbd-a5f8-4640-9d08-d0e55c1bad48",
+  "job": "11b01791-8010-42de-8f3e-f19061007c09",
   "params": {
-   "art_style": "Hand-Painted",
+   "art_style": "Digital Painting",
    "aspect_ratio": "ar_3_4",
    "augment_prompt": true,
    "image_type": "card-art",
    "n": 1,
    "perspective": "Any perspective",
-   "prompt": "Front face of an ornate campaign card: a radiant golden sun emblem in the center, cream parchment card with a thin crimson and gold border. Hand-painted board game art, visible brush strokes, palette of deep navy, parchment cream, crimson red and antique gold, candlelit war-room mood, no text, no letters, no watermark"
+   "prompt": "Front face of an ornate imperial campaign card: a heroic line-infantry musketeer with fixed bayonet painted inside a gilded oval medallion at the center, ivory parchment ground, gilded baroque border with crimson corner flourishes, no text, no numbers. Grand imperial oil painting in the tradition of 18th-century history painting and Age of Sail maritime art, rich glazes, dramatic golden light and deep shadow, palette of imperial crimson, royal navy blue, burnished gold, ivory and gunpowder grey, heroic and triumphant, no text, no letters, no watermark"
   },
-  "url": "https://storage.googleapis.com/ludo-assets/api/cf6ef96a3a149e0506be7772bf515dce.webp"
+  "url": "https://storage.googleapis.com/ludo-assets/api/612ecb73982816b5209321c3cd51db55.webp",
+  "v": 2
  },
  "card_wild": {
   "credits": 0.5,
   "endpoint": "/assets/image",
   "file": "assets/cards/wild.webp",
   "id": "card_wild",
-  "job": "9b66f760-e5be-40c7-ad4f-cbc8364ef875",
+  "job": "c17d50b6-9aab-451e-96e5-7466b2e5e89a",
   "params": {
-   "art_style": "Hand-Painted",
+   "art_style": "Digital Painting",
    "aspect_ratio": "ar_3_4",
    "augment_prompt": true,
    "image_type": "card-art",
    "n": 1,
    "perspective": "Any perspective",
-   "prompt": "Front face of an ornate campaign card: a golden sun, silver moon and crimson star arranged together in a circle as one emblem, cream parchment card with a thin crimson and gold border. Hand-painted board game art, visible brush strokes, palette of deep navy, parchment cream, crimson red and antique gold, candlelit war-room mood, no text, no letters, no watermark"
+   "prompt": "Front face of an ornate imperial campaign card: a golden crown above a crossed musket, sabre and cannon ramrod painted inside a gilded oval medallion at the center, ivory parchment ground, gilded baroque border with crimson corner flourishes, no text, no numbers. Grand imperial oil painting in the tradition of 18th-century history painting and Age of Sail maritime art, rich glazes, dramatic golden light and deep shadow, palette of imperial crimson, royal navy blue, burnished gold, ivory and gunpowder grey, heroic and triumphant, no text, no letters, no watermark"
   },
-  "url": "https://storage.googleapis.com/ludo-assets/api/3a5b0e8f5c1e12c80ebf942175fbad15.webp"
+  "url": "https://storage.googleapis.com/ludo-assets/api/48e09e5ca946f46727859fba4fe4f607.webp",
+  "v": 2
+ },
+ "chart_cartouche": {
+  "credits": 0.5,
+  "endpoint": "/assets/image",
+  "file": "assets/art/chart_cartouche.png",
+  "id": "chart_cartouche",
+  "job": "a7b61e01-e450-421f-8d93-9914d6957cb3",
+  "params": {
+   "art_style": "Digital Painting",
+   "aspect_ratio": "ar_1_1",
+   "augment_prompt": true,
+   "image_type": "ui_asset",
+   "n": 1,
+   "perspective": "Any perspective",
+   "prompt": "An empty ornate baroque cartouche frame for a map title, gilded scrollwork with a crown, laurel and two crossed cannons, blank center, isolated on plain white background. Grand imperial oil painting in the tradition of 18th-century history painting and Age of Sail maritime art, rich glazes, dramatic golden light and deep shadow, palette of imperial crimson, royal navy blue, burnished gold, ivory and gunpowder grey, heroic and triumphant, no text, no letters, no watermark"
+  },
+  "url": "https://storage.googleapis.com/ludo-assets/api/8743c514f95be14c5fa8cd6be6d9378c.png",
+  "v": 1
+ },
+ "chart_rose": {
+  "credits": 0.5,
+  "endpoint": "/assets/image",
+  "file": "assets/art/chart_rose.png",
+  "id": "chart_rose",
+  "job": "d2eee39e-632f-40c5-bd36-3e8b81a71e9b",
+  "params": {
+   "art_style": "Digital Painting",
+   "aspect_ratio": "ar_1_1",
+   "augment_prompt": true,
+   "image_type": "ui_asset",
+   "n": 1,
+   "perspective": "Any perspective",
+   "prompt": "An ornate antique map compass rose with sixteen gilded star points, a fleur-de-lis at north, crimson and navy inks on transparent, front view, isolated on plain white background. Grand imperial oil painting in the tradition of 18th-century history painting and Age of Sail maritime art, rich glazes, dramatic golden light and deep shadow, palette of imperial crimson, royal navy blue, burnished gold, ivory and gunpowder grey, heroic and triumphant, no text, no letters, no watermark"
+  },
+  "url": "https://storage.googleapis.com/ludo-assets/api/e7964942660353a4577a0a9904a1e17f.png",
+  "v": 1
+ },
+ "chart_ship": {
+  "credits": 0.5,
+  "endpoint": "/assets/image",
+  "file": "assets/art/chart_ship.png",
+  "id": "chart_ship",
+  "job": "9d4dffdd-0d21-4175-b702-2da1666749d4",
+  "params": {
+   "art_style": "Digital Painting",
+   "aspect_ratio": "ar_1_1",
+   "augment_prompt": true,
+   "image_type": "ui_asset",
+   "n": 1,
+   "perspective": "Any perspective",
+   "prompt": "A small ship of the line under full white sails flying a plain crimson pennant, side view, painted like an ornament on an antique sea chart, isolated on plain white background. Grand imperial oil painting in the tradition of 18th-century history painting and Age of Sail maritime art, rich glazes, dramatic golden light and deep shadow, palette of imperial crimson, royal navy blue, burnished gold, ivory and gunpowder grey, heroic and triumphant, no text, no letters, no watermark"
+  },
+  "url": "https://storage.googleapis.com/ludo-assets/api/17ae58ca7553e2836f976ff1e9137efe.png",
+  "v": 1
+ },
+ "face_advisor_alarmed": {
+  "credits": 0.5,
+  "endpoint": "/assets/image/edit",
+  "file": "assets/portraits/advisor_alarmed.png",
+  "id": "face_advisor_alarmed",
+  "job": "f1a13393-8281-4d8d-af4b-338e8d063822",
+  "params": {
+   "augment_prompt": true,
+   "image": "https://storage.googleapis.com/ludo-assets/api/9696d6a65b23ddb1bc5c9d6efbcea934.png",
+   "n": 1,
+   "prompt": "Same person, same framing, same outfit and painting style, plain white background, now alarmed and urgent, eyebrows raised, shouting a warning"
+  },
+  "url": "https://storage.googleapis.com/ludo-assets/api/4ca52efd10124ba598d0c62dee1af954.png",
+  "v": 2
+ },
+ "face_advisor_pleased": {
+  "credits": 0.5,
+  "endpoint": "/assets/image/edit",
+  "file": "assets/portraits/advisor_pleased.png",
+  "id": "face_advisor_pleased",
+  "job": "4a29e496-2b00-4918-a49c-53ea88be56a4",
+  "params": {
+   "augment_prompt": true,
+   "image": "https://storage.googleapis.com/ludo-assets/api/9696d6a65b23ddb1bc5c9d6efbcea934.png",
+   "n": 1,
+   "prompt": "Same person, same framing, same outfit and painting style, plain white background, now beaming with pride, raising a glass of port in a toast"
+  },
+  "url": "https://storage.googleapis.com/ludo-assets/api/915e8a69afccbd2d0c1a53b75e910d79.png",
+  "v": 2
+ },
+ "face_hask_angry": {
+  "credits": 0.5,
+  "endpoint": "/assets/image/edit",
+  "file": "assets/portraits/hask_angry.png",
+  "id": "face_hask_angry",
+  "job": "c039f350-0437-4e6b-a8bc-9279ca7dc550",
+  "params": {
+   "augment_prompt": true,
+   "image": "https://storage.googleapis.com/ludo-assets/api/5a9e2ac645109e5b3de4697aa086e967.png",
+   "n": 1,
+   "prompt": "Same person, same framing, same outfit and painting style, plain white background, now furious and roaring a battle cry, brow furrowed, teeth bared"
+  },
+  "url": "https://storage.googleapis.com/ludo-assets/api/e7e4c1af24b1c10aa172fa1eb641d27b.png",
+  "v": 2
+ },
+ "face_hask_defeated": {
+  "credits": 0.5,
+  "endpoint": "/assets/image/edit",
+  "file": "assets/portraits/hask_defeated.png",
+  "id": "face_hask_defeated",
+  "job": "0473bb7f-7b38-44b3-b5c2-3cc2633311b0",
+  "params": {
+   "augment_prompt": true,
+   "image": "https://storage.googleapis.com/ludo-assets/api/5a9e2ac645109e5b3de4697aa086e967.png",
+   "n": 1,
+   "prompt": "Same person, same framing, same outfit and painting style, plain white background, now defeated and exhausted, head bowed, soot on the face and a small cut on the cheek, eyes downcast"
+  },
+  "url": "https://storage.googleapis.com/ludo-assets/api/ea35d517260e78669346e627391546c6.png",
+  "v": 2
+ },
+ "face_hask_triumphant": {
+  "credits": 0.5,
+  "endpoint": "/assets/image/edit",
+  "file": "assets/portraits/hask_triumphant.png",
+  "id": "face_hask_triumphant",
+  "job": "6bc50494-1593-401b-8c93-6cb9b6af4f8b",
+  "params": {
+   "augment_prompt": true,
+   "image": "https://storage.googleapis.com/ludo-assets/api/5a9e2ac645109e5b3de4697aa086e967.png",
+   "n": 1,
+   "prompt": "Same person, same framing, same outfit and painting style, plain white background, now laughing triumphantly with chin raised, eyes blazing with victory"
+  },
+  "url": "https://storage.googleapis.com/ludo-assets/api/4e43dd326a193153a035b7f6174ab261.png",
+  "v": 2
+ },
+ "face_imre_angry": {
+  "credits": 0.5,
+  "endpoint": "/assets/image/edit",
+  "file": "assets/portraits/imre_angry.png",
+  "id": "face_imre_angry",
+  "job": "bbaee6a0-22b4-40a6-9dc2-4a539911edbc",
+  "params": {
+   "augment_prompt": true,
+   "image": "https://storage.googleapis.com/ludo-assets/api/6d6043e1d2e2f40f65a2e9398bce821c.png",
+   "n": 1,
+   "prompt": "Same person, same framing, same outfit and painting style, plain white background, now furious and roaring a battle cry, brow furrowed, teeth bared"
+  },
+  "url": "https://storage.googleapis.com/ludo-assets/api/7adef8c86515837fc86718f87c1673e0.png",
+  "v": 2
+ },
+ "face_imre_defeated": {
+  "credits": 0.5,
+  "endpoint": "/assets/image/edit",
+  "file": "assets/portraits/imre_defeated.png",
+  "id": "face_imre_defeated",
+  "job": "dcd686b4-274a-4c67-bf78-d04d21248337",
+  "params": {
+   "augment_prompt": true,
+   "image": "https://storage.googleapis.com/ludo-assets/api/6d6043e1d2e2f40f65a2e9398bce821c.png",
+   "n": 1,
+   "prompt": "Same person, same framing, same outfit and painting style, plain white background, now defeated and exhausted, head bowed, soot on the face and a small cut on the cheek, eyes downcast"
+  },
+  "url": "https://storage.googleapis.com/ludo-assets/api/d12c03cf5708875e298be29102adaa43.png",
+  "v": 2
+ },
+ "face_imre_triumphant": {
+  "credits": 0.5,
+  "endpoint": "/assets/image/edit",
+  "file": "assets/portraits/imre_triumphant.png",
+  "id": "face_imre_triumphant",
+  "job": "88acce1a-cdf9-47f6-aad7-603fd06f6d43",
+  "params": {
+   "augment_prompt": true,
+   "image": "https://storage.googleapis.com/ludo-assets/api/6d6043e1d2e2f40f65a2e9398bce821c.png",
+   "n": 1,
+   "prompt": "Same person, same framing, same outfit and painting style, plain white background, now laughing triumphantly with chin raised, eyes blazing with victory"
+  },
+  "url": "https://storage.googleapis.com/ludo-assets/api/4628fb204fa324a912617d6dc31e5ea1.png",
+  "v": 2
+ },
+ "face_oren_angry": {
+  "credits": 0.5,
+  "endpoint": "/assets/image/edit",
+  "file": "assets/portraits/oren_angry.png",
+  "id": "face_oren_angry",
+  "job": "0b7bfe78-bdc4-4f65-9f32-05ad9e7f7c24",
+  "params": {
+   "augment_prompt": true,
+   "image": "https://storage.googleapis.com/ludo-assets/api/dc35cf0e13a627960495eab7c30d4d2b.png",
+   "n": 1,
+   "prompt": "Same person, same framing, same outfit and painting style, plain white background, now furious and roaring a battle cry, brow furrowed, teeth bared"
+  },
+  "url": "https://storage.googleapis.com/ludo-assets/api/2393f7b1784ec85cdb6b02b9710e7a5f.png",
+  "v": 2
+ },
+ "face_oren_defeated": {
+  "credits": 0.5,
+  "endpoint": "/assets/image/edit",
+  "file": "assets/portraits/oren_defeated.png",
+  "id": "face_oren_defeated",
+  "job": "9614deae-2855-4edf-98f2-b9926304cffd",
+  "params": {
+   "augment_prompt": true,
+   "image": "https://storage.googleapis.com/ludo-assets/api/dc35cf0e13a627960495eab7c30d4d2b.png",
+   "n": 1,
+   "prompt": "Same person, same framing, same outfit and painting style, plain white background, now defeated and exhausted, head bowed, soot on the face and a small cut on the cheek, eyes downcast"
+  },
+  "url": "https://storage.googleapis.com/ludo-assets/api/5edb3a5bb69d5f8ee81b732d75cf4891.png",
+  "v": 2
+ },
+ "face_oren_triumphant": {
+  "credits": 0.5,
+  "endpoint": "/assets/image/edit",
+  "file": "assets/portraits/oren_triumphant.png",
+  "id": "face_oren_triumphant",
+  "job": "c0ba4e28-20c2-4ecd-a891-7a4b74d3ecb3",
+  "params": {
+   "augment_prompt": true,
+   "image": "https://storage.googleapis.com/ludo-assets/api/dc35cf0e13a627960495eab7c30d4d2b.png",
+   "n": 1,
+   "prompt": "Same person, same framing, same outfit and painting style, plain white background, now laughing triumphantly with chin raised, eyes blazing with victory"
+  },
+  "url": "https://storage.googleapis.com/ludo-assets/api/23b405362590a0c4c736a9febd26893f.png",
+  "v": 2
+ },
+ "face_quill_angry": {
+  "credits": 0.5,
+  "endpoint": "/assets/image/edit",
+  "file": "assets/portraits/quill_angry.png",
+  "id": "face_quill_angry",
+  "job": "b0644f10-9d12-4fe1-98f4-e412eda145cc",
+  "params": {
+   "augment_prompt": true,
+   "image": "https://storage.googleapis.com/ludo-assets/api/86237be00325d35de0d7b99113dcb847.png",
+   "n": 1,
+   "prompt": "Same person, same framing, same outfit and painting style, plain white background, now furious and roaring a battle cry, brow furrowed, teeth bared"
+  },
+  "url": "https://storage.googleapis.com/ludo-assets/api/c54e3aaedbd5f509b538966cf557b999.png",
+  "v": 2
+ },
+ "face_quill_defeated": {
+  "credits": 0.5,
+  "endpoint": "/assets/image/edit",
+  "file": "assets/portraits/quill_defeated.png",
+  "id": "face_quill_defeated",
+  "job": "20ee04bf-54e6-4beb-b7c0-664bc36fff70",
+  "params": {
+   "augment_prompt": true,
+   "image": "https://storage.googleapis.com/ludo-assets/api/86237be00325d35de0d7b99113dcb847.png",
+   "n": 1,
+   "prompt": "Same person, same framing, same outfit and painting style, plain white background, now defeated and exhausted, head bowed, soot on the face and a small cut on the cheek, eyes downcast"
+  },
+  "url": "https://storage.googleapis.com/ludo-assets/api/4dca681f4a07f4a42f6f53204444fddb.png",
+  "v": 2
+ },
+ "face_quill_triumphant": {
+  "credits": 0.5,
+  "endpoint": "/assets/image/edit",
+  "file": "assets/portraits/quill_triumphant.png",
+  "id": "face_quill_triumphant",
+  "job": "14f28fcf-53ad-4070-8cbd-6bc4b674a1d4",
+  "params": {
+   "augment_prompt": true,
+   "image": "https://storage.googleapis.com/ludo-assets/api/86237be00325d35de0d7b99113dcb847.png",
+   "n": 1,
+   "prompt": "Same person, same framing, same outfit and painting style, plain white background, now laughing triumphantly with chin raised, eyes blazing with victory"
+  },
+  "url": "https://storage.googleapis.com/ludo-assets/api/0013f25518c9d3b428cb85e0fd0b23d4.png",
+  "v": 2
+ },
+ "face_varek_angry": {
+  "credits": 0.5,
+  "endpoint": "/assets/image/edit",
+  "file": "assets/portraits/varek_angry.png",
+  "id": "face_varek_angry",
+  "job": "34a98196-05bf-431b-8529-985254849a73",
+  "params": {
+   "augment_prompt": true,
+   "image": "https://storage.googleapis.com/ludo-assets/api/a9027d4ef178453a99c5ff77c44a7693.png",
+   "n": 1,
+   "prompt": "Same person, same framing, same outfit and painting style, plain white background, now furious and roaring a battle cry, brow furrowed, teeth bared"
+  },
+  "url": "https://storage.googleapis.com/ludo-assets/api/e106b9ebe70495a6d431d4a3bb112afe.png",
+  "v": 2
+ },
+ "face_varek_defeated": {
+  "credits": 0.5,
+  "endpoint": "/assets/image/edit",
+  "file": "assets/portraits/varek_defeated.png",
+  "id": "face_varek_defeated",
+  "job": "36505a4b-a387-445d-b1cd-58e167070e16",
+  "params": {
+   "augment_prompt": true,
+   "image": "https://storage.googleapis.com/ludo-assets/api/a9027d4ef178453a99c5ff77c44a7693.png",
+   "n": 1,
+   "prompt": "Same person, same framing, same outfit and painting style, plain white background, now defeated and exhausted, head bowed, soot on the face and a small cut on the cheek, eyes downcast"
+  },
+  "url": "https://storage.googleapis.com/ludo-assets/api/f249dd0bf26469ea303101ec3ea3c283.png",
+  "v": 2
+ },
+ "face_varek_triumphant": {
+  "credits": 0.5,
+  "endpoint": "/assets/image/edit",
+  "file": "assets/portraits/varek_triumphant.png",
+  "id": "face_varek_triumphant",
+  "job": "e09f0712-02c9-49e8-bec4-f36ad37cced0",
+  "params": {
+   "augment_prompt": true,
+   "image": "https://storage.googleapis.com/ludo-assets/api/a9027d4ef178453a99c5ff77c44a7693.png",
+   "n": 1,
+   "prompt": "Same person, same framing, same outfit and painting style, plain white background, now laughing triumphantly with chin raised, eyes blazing with victory"
+  },
+  "url": "https://storage.googleapis.com/ludo-assets/api/695d7c8cfc0ae4a3b32ecb6d5895d059.png",
+  "v": 2
+ },
+ "face_ysolde_angry": {
+  "credits": 0.5,
+  "endpoint": "/assets/image/edit",
+  "file": "assets/portraits/ysolde_angry.png",
+  "id": "face_ysolde_angry",
+  "job": "26326c22-cc01-4962-a76c-4cd1de29d59e",
+  "params": {
+   "augment_prompt": true,
+   "image": "https://storage.googleapis.com/ludo-assets/api/d686fe27624ab4b5438028545edbbb6d.png",
+   "n": 1,
+   "prompt": "Same person, same framing, same outfit and painting style, plain white background, now furious and roaring a battle cry, brow furrowed, teeth bared"
+  },
+  "url": "https://storage.googleapis.com/ludo-assets/api/60bbc1085efff21f336d41aadceec0fb.png",
+  "v": 2
+ },
+ "face_ysolde_defeated": {
+  "credits": 0.5,
+  "endpoint": "/assets/image/edit",
+  "file": "assets/portraits/ysolde_defeated.png",
+  "id": "face_ysolde_defeated",
+  "job": "fc5ee3d7-2fa0-4b9c-b1ef-88effcbac6fc",
+  "params": {
+   "augment_prompt": true,
+   "image": "https://storage.googleapis.com/ludo-assets/api/d686fe27624ab4b5438028545edbbb6d.png",
+   "n": 1,
+   "prompt": "Same person, same framing, same outfit and painting style, plain white background, now defeated and exhausted, head bowed, soot on the face and a small cut on the cheek, eyes downcast"
+  },
+  "url": "https://storage.googleapis.com/ludo-assets/api/f19a091224f44cdd45638093a7dc5821.png",
+  "v": 2
+ },
+ "face_ysolde_triumphant": {
+  "credits": 0.5,
+  "endpoint": "/assets/image/edit",
+  "file": "assets/portraits/ysolde_triumphant.png",
+  "id": "face_ysolde_triumphant",
+  "job": "b3505736-c161-4c98-be4f-93aed44bf608",
+  "params": {
+   "augment_prompt": true,
+   "image": "https://storage.googleapis.com/ludo-assets/api/d686fe27624ab4b5438028545edbbb6d.png",
+   "n": 1,
+   "prompt": "Same person, same framing, same outfit and painting style, plain white background, now laughing triumphantly with chin raised, eyes blazing with victory"
+  },
+  "url": "https://storage.googleapis.com/ludo-assets/api/91a9b7bd1997ed14983d83c496b212f9.png",
+  "v": 2
+ },
+ "field_ash": {
+  "credits": 0.5,
+  "endpoint": "/assets/image",
+  "file": "assets/battle/field_ash.webp",
+  "id": "field_ash",
+  "job": "88b223dc-94ea-4373-b91e-8d63f686a56d",
+  "params": {
+   "art_style": "Digital Painting",
+   "aspect_ratio": "ar_16_9",
+   "augment_prompt": true,
+   "image_type": "fixed_background",
+   "n": 1,
+   "perspective": "High Angle",
+   "prompt": "Grey volcanic plains with cracked earth, a smoking volcano and a burned-out outpost. Painterly battlefield backdrop seen from a high angle, like a war-game table, no people, no soldiers, no text, soft even light, open ground in the middle for two armies. Grand imperial oil painting in the tradition of 18th-century history painting and Age of Sail maritime art, rich glazes, dramatic golden light and deep shadow, palette of imperial crimson, royal navy blue, burnished gold, ivory and gunpowder grey, heroic and triumphant, no text, no letters, no watermark"
+  },
+  "url": "https://storage.googleapis.com/ludo-assets/api/862a39aa4f4f42b90855665c196188c5.webp",
+  "v": 2
+ },
+ "field_coast": {
+  "credits": 0.5,
+  "endpoint": "/assets/image",
+  "file": "assets/battle/field_coast.webp",
+  "id": "field_coast",
+  "job": "c8a36638-0019-403a-a6fd-f2aa3369ab2a",
+  "params": {
+   "art_style": "Digital Painting",
+   "aspect_ratio": "ar_16_9",
+   "augment_prompt": true,
+   "image_type": "fixed_background",
+   "n": 1,
+   "perspective": "High Angle",
+   "prompt": "A sandy landing beach with longboats pulled up on the sand and a ship of the line anchored offshore. Painterly battlefield backdrop seen from a high angle, like a war-game table, no people, no soldiers, no text, soft even light, open ground in the middle for two armies. Grand imperial oil painting in the tradition of 18th-century history painting and Age of Sail maritime art, rich glazes, dramatic golden light and deep shadow, palette of imperial crimson, royal navy blue, burnished gold, ivory and gunpowder grey, heroic and triumphant, no text, no letters, no watermark"
+  },
+  "url": "https://storage.googleapis.com/ludo-assets/api/4dcaa5639a5b6c8b8f8ca00169173093.webp",
+  "v": 2
+ },
+ "field_desert": {
+  "credits": 0.5,
+  "endpoint": "/assets/image",
+  "file": "assets/battle/field_desert.webp",
+  "id": "field_desert",
+  "job": "19a00cd4-4f2a-4782-a004-eb8cb8341ce9",
+  "params": {
+   "art_style": "Digital Painting",
+   "aspect_ratio": "ar_16_9",
+   "augment_prompt": true,
+   "image_type": "fixed_background",
+   "n": 1,
+   "perspective": "High Angle",
+   "prompt": "Golden sand dunes and a dry riverbed below a sandstone fortress on a ridge. Painterly battlefield backdrop seen from a high angle, like a war-game table, no people, no soldiers, no text, soft even light, open ground in the middle for two armies. Grand imperial oil painting in the tradition of 18th-century history painting and Age of Sail maritime art, rich glazes, dramatic golden light and deep shadow, palette of imperial crimson, royal navy blue, burnished gold, ivory and gunpowder grey, heroic and triumphant, no text, no letters, no watermark"
+  },
+  "url": "https://storage.googleapis.com/ludo-assets/api/c9fb4085d01056cf2920f179e228cb39.webp",
+  "v": 2
+ },
+ "field_forest": {
+  "credits": 0.5,
+  "endpoint": "/assets/image",
+  "file": "assets/battle/field_forest.webp",
+  "id": "field_forest",
+  "job": "96b81135-0a6d-4360-9eb2-d51a37bf9ce3",
+  "params": {
+   "art_style": "Digital Painting",
+   "aspect_ratio": "ar_16_9",
+   "augment_prompt": true,
+   "image_type": "fixed_background",
+   "n": 1,
+   "perspective": "High Angle",
+   "prompt": "A clearing in a dense old forest with a log road and a half-built timber stockade. Painterly battlefield backdrop seen from a high angle, like a war-game table, no people, no soldiers, no text, soft even light, open ground in the middle for two armies. Grand imperial oil painting in the tradition of 18th-century history painting and Age of Sail maritime art, rich glazes, dramatic golden light and deep shadow, palette of imperial crimson, royal navy blue, burnished gold, ivory and gunpowder grey, heroic and triumphant, no text, no letters, no watermark"
+  },
+  "url": "https://storage.googleapis.com/ludo-assets/api/c79811c02471ad6c41c358aa6d9fda61.webp",
+  "v": 2
+ },
+ "field_grass": {
+  "credits": 0.5,
+  "endpoint": "/assets/image",
+  "file": "assets/battle/field_grass.webp",
+  "id": "field_grass",
+  "job": "2d4d5c70-4937-4d34-83e8-c5cb88206aa8",
+  "params": {
+   "art_style": "Digital Painting",
+   "aspect_ratio": "ar_16_9",
+   "augment_prompt": true,
+   "image_type": "fixed_background",
+   "n": 1,
+   "perspective": "High Angle",
+   "prompt": "Rolling green farmland with hedgerows, a dirt road, a stone bridge and a windmill on a hill. Painterly battlefield backdrop seen from a high angle, like a war-game table, no people, no soldiers, no text, soft even light, open ground in the middle for two armies. Grand imperial oil painting in the tradition of 18th-century history painting and Age of Sail maritime art, rich glazes, dramatic golden light and deep shadow, palette of imperial crimson, royal navy blue, burnished gold, ivory and gunpowder grey, heroic and triumphant, no text, no letters, no watermark"
+  },
+  "url": "https://storage.googleapis.com/ludo-assets/api/efc283b540cc536fe1ff21274de4f1f4.webp",
+  "v": 2
+ },
+ "field_moor": {
+  "credits": 0.5,
+  "endpoint": "/assets/image",
+  "file": "assets/battle/field_moor.webp",
+  "id": "field_moor",
+  "job": "fc27df29-885b-4950-b88b-4f4ff2fe3a40",
+  "params": {
+   "art_style": "Digital Painting",
+   "aspect_ratio": "ar_16_9",
+   "augment_prompt": true,
+   "image_type": "fixed_background",
+   "n": 1,
+   "perspective": "High Angle",
+   "prompt": "Misty heather moorland with standing stones and an earthwork redoubt. Painterly battlefield backdrop seen from a high angle, like a war-game table, no people, no soldiers, no text, soft even light, open ground in the middle for two armies. Grand imperial oil painting in the tradition of 18th-century history painting and Age of Sail maritime art, rich glazes, dramatic golden light and deep shadow, palette of imperial crimson, royal navy blue, burnished gold, ivory and gunpowder grey, heroic and triumphant, no text, no letters, no watermark"
+  },
+  "url": "https://storage.googleapis.com/ludo-assets/api/560a42655d746e7d4af8938153fa02e2.webp",
+  "v": 2
+ },
+ "field_mountain": {
+  "credits": 0.5,
+  "endpoint": "/assets/image",
+  "file": "assets/battle/field_mountain.webp",
+  "id": "field_mountain",
+  "job": "fdd9fa79-0277-48c0-bfd0-ee3227b1de49",
+  "params": {
+   "art_style": "Digital Painting",
+   "aspect_ratio": "ar_16_9",
+   "augment_prompt": true,
+   "image_type": "fixed_background",
+   "n": 1,
+   "perspective": "High Angle",
+   "prompt": "A rocky mountain pass with scree slopes and a small stone watch-fort on a crag. Painterly battlefield backdrop seen from a high angle, like a war-game table, no people, no soldiers, no text, soft even light, open ground in the middle for two armies. Grand imperial oil painting in the tradition of 18th-century history painting and Age of Sail maritime art, rich glazes, dramatic golden light and deep shadow, palette of imperial crimson, royal navy blue, burnished gold, ivory and gunpowder grey, heroic and triumphant, no text, no letters, no watermark"
+  },
+  "url": "https://storage.googleapis.com/ludo-assets/api/32d8537b83f56bd01947b53a3bd7777b.webp",
+  "v": 2
+ },
+ "field_snow": {
+  "credits": 0.5,
+  "endpoint": "/assets/image",
+  "file": "assets/battle/field_snow.webp",
+  "id": "field_snow",
+  "job": "a700947f-2c1e-4091-a352-00cffc354917",
+  "params": {
+   "art_style": "Digital Painting",
+   "aspect_ratio": "ar_16_9",
+   "augment_prompt": true,
+   "image_type": "fixed_background",
+   "n": 1,
+   "perspective": "High Angle",
+   "prompt": "A frozen tundra plain with snow-laden pines and a timber trading fort in the distance. Painterly battlefield backdrop seen from a high angle, like a war-game table, no people, no soldiers, no text, soft even light, open ground in the middle for two armies. Grand imperial oil painting in the tradition of 18th-century history painting and Age of Sail maritime art, rich glazes, dramatic golden light and deep shadow, palette of imperial crimson, royal navy blue, burnished gold, ivory and gunpowder grey, heroic and triumphant, no text, no letters, no watermark"
+  },
+  "url": "https://storage.googleapis.com/ludo-assets/api/eadad882a988fb617b8c5794c0b29efe.webp",
+  "v": 2
+ },
+ "flag_wave_anim": {
+  "credits": 4,
+  "endpoint": "/assets/sprite/animate",
+  "file": "assets/raw/battle/flag_wave.webp",
+  "id": "flag_wave_anim",
+  "job": "4715645a-96aa-47b7-8baa-3259666cf211",
+  "params": {
+   "crop": false,
+   "duration": 2,
+   "final_image": "data:image/png;base64,iVBORw0KGgoAAAANSU...(base64)",
+   "frame_size": -9,
+   "frames": 16,
+   "image_type": "sprite",
+   "initial_image": "data:image/png;base64,iVBORw0KGgoAAAANSU...(base64)",
+   "loop": false,
+   "model": "forge",
+   "motion_prompt": "the flag waves in the wind while the bearer stands still"
+  },
+  "url": "https://storage.googleapis.com/ludo-assets/api/10aa07fdbaeff95a85e492dd7caa2cb0.webp",
+  "v": 3
  },
  "howto_cards": {
   "credits": 0.5,
   "endpoint": "/assets/image",
   "file": "assets/art/howto_cards.webp",
   "id": "howto_cards",
-  "job": "e2f04302-f145-4640-a9ac-7d34842882c7",
+  "job": "531e5082-e2e6-4f93-acf6-6399d111b3b6",
   "params": {
-   "art_style": "Hand-Painted",
-   "aspect_ratio": "ar_4_3",
+   "art_style": "Digital Painting",
+   "aspect_ratio": "ar_16_9",
    "augment_prompt": true,
    "image_type": "art",
    "n": 1,
    "perspective": "Any perspective",
-   "prompt": "Three ornate campaign cards fanned out on a wooden war table, one showing a golden sun emblem, one a silver crescent moon, one a crimson star, coins and a small stack of army tokens beside them. Hand-painted board game art, visible brush strokes, palette of deep navy, parchment cream, crimson red and antique gold, candlelit war-room mood, no text, no letters, no watermark"
+   "prompt": "Three ornate campaign cards fanned on a war table, painted with a musketeer, a charging dragoon and a bronze cannon, gilded edges, candlelight. Grand imperial oil painting in the tradition of 18th-century history painting and Age of Sail maritime art, rich glazes, dramatic golden light and deep shadow, palette of imperial crimson, royal navy blue, burnished gold, ivory and gunpowder grey, heroic and triumphant, no text, no letters, no watermark"
   },
-  "url": "https://storage.googleapis.com/ludo-assets/api/4dcf254f8fcc165c0f14541365b356c3.webp"
+  "url": "https://storage.googleapis.com/ludo-assets/api/47d9fd05b7b78aafadb86892967ce7a2.webp",
+  "v": 2
  },
  "howto_clash": {
   "credits": 0.5,
   "endpoint": "/assets/image",
   "file": "assets/art/howto_clash.webp",
   "id": "howto_clash",
-  "job": "7a1e01a5-fa6c-4eef-952b-8e2ff3973d16",
+  "job": "775a5a31-1d62-41b3-8907-1fbffbf097f8",
   "params": {
-   "art_style": "Hand-Painted",
-   "aspect_ratio": "ar_4_3",
+   "art_style": "Digital Painting",
+   "aspect_ratio": "ar_16_9",
    "augment_prompt": true,
    "image_type": "art",
    "n": 1,
    "perspective": "Any perspective",
-   "prompt": "Two small armies, one with red banners and one with blue banners, colliding head-on in the middle of a wooden bridge over a river, dust and spears, seen from above at an angle. Hand-painted board game art, visible brush strokes, palette of deep navy, parchment cream, crimson red and antique gold, candlelit war-room mood, no text, no letters, no watermark"
+   "prompt": "Two lines of musketeers, one in crimson coats and one in navy blue coats, colliding head-on on a narrow stone bridge amid thick musket smoke, battle flags on both sides. Grand imperial oil painting in the tradition of 18th-century history painting and Age of Sail maritime art, rich glazes, dramatic golden light and deep shadow, palette of imperial crimson, royal navy blue, burnished gold, ivory and gunpowder grey, heroic and triumphant, no text, no letters, no watermark"
   },
-  "url": "https://storage.googleapis.com/ludo-assets/api/90ce5c2fb876bdb97996bef8faa068ff.webp"
+  "url": "https://storage.googleapis.com/ludo-assets/api/1413e0b0506b94f4dae1b03dacc7ed06.webp",
+  "v": 2
  },
  "howto_dugin": {
   "credits": 0.5,
   "endpoint": "/assets/image",
   "file": "assets/art/howto_dugin.webp",
   "id": "howto_dugin",
-  "job": "59fa25c1-d8ac-4b35-b727-442c78de5918",
+  "job": "e1b8dec2-9e90-4596-8c31-bc820a1ecc28",
   "params": {
-   "art_style": "Hand-Painted",
-   "aspect_ratio": "ar_4_3",
+   "art_style": "Digital Painting",
+   "aspect_ratio": "ar_16_9",
    "augment_prompt": true,
    "image_type": "art",
    "n": 1,
    "perspective": "Any perspective",
-   "prompt": "Soldiers digging earthworks, trenches and a timber palisade around a small hilltop fort, shovels and sandbags, determined defenders. Hand-painted board game art, visible brush strokes, palette of deep navy, parchment cream, crimson red and antique gold, candlelit war-room mood, no text, no letters, no watermark"
+   "prompt": "Sappers in shirtsleeves digging earthwork redoubts lined with wicker gabions around cannon on a hilltop fort, afternoon light, determined. Grand imperial oil painting in the tradition of 18th-century history painting and Age of Sail maritime art, rich glazes, dramatic golden light and deep shadow, palette of imperial crimson, royal navy blue, burnished gold, ivory and gunpowder grey, heroic and triumphant, no text, no letters, no watermark"
   },
-  "url": "https://storage.googleapis.com/ludo-assets/api/83bb55e8a108d1cfea960a421beba322.webp"
+  "url": "https://storage.googleapis.com/ludo-assets/api/546023e939b206e86c4528ec8467c07d.webp",
+  "v": 2
  },
  "howto_march": {
   "credits": 0.5,
   "endpoint": "/assets/image",
   "file": "assets/art/howto_march.webp",
   "id": "howto_march",
-  "job": "51c0067b-73e2-4777-836c-79420c1a0707",
+  "job": "18577344-f357-494e-9261-d649a47fa60a",
   "params": {
-   "art_style": "Hand-Painted",
-   "aspect_ratio": "ar_4_3",
+   "art_style": "Digital Painting",
+   "aspect_ratio": "ar_16_9",
    "augment_prompt": true,
    "image_type": "art",
    "n": 1,
    "perspective": "Any perspective",
-   "prompt": "A long column of small toy-soldier style infantry with red banners marching out through the gate of a stone keep, leaving the keep almost empty behind them, seen from above. Hand-painted board game art, visible brush strokes, palette of deep navy, parchment cream, crimson red and antique gold, candlelit war-room mood, no text, no letters, no watermark"
+   "prompt": "A long column of red-coated line infantry with tall shakos and fixed bayonets marching out of the gate of a star fort under a crimson imperial standard, drummers and fifers at the head, morning light. Grand imperial oil painting in the tradition of 18th-century history painting and Age of Sail maritime art, rich glazes, dramatic golden light and deep shadow, palette of imperial crimson, royal navy blue, burnished gold, ivory and gunpowder grey, heroic and triumphant, no text, no letters, no watermark"
   },
-  "url": "https://storage.googleapis.com/ludo-assets/api/df8096be018c3345612eb2b155ccb2fb.webp"
+  "url": "https://storage.googleapis.com/ludo-assets/api/a8160604839aa523b0a1b5408f17c1fc.webp",
+  "v": 2
  },
  "howto_sealed": {
   "credits": 0.5,
   "endpoint": "/assets/image",
   "file": "assets/art/howto_sealed.webp",
   "id": "howto_sealed",
-  "job": "49ede8bb-1278-4821-be10-aaafcb7b3c0b",
+  "job": "da7afe87-0a6e-4faf-82ae-c29e68bbd043",
   "params": {
-   "art_style": "Hand-Painted",
-   "aspect_ratio": "ar_4_3",
+   "art_style": "Digital Painting",
+   "aspect_ratio": "ar_16_9",
    "augment_prompt": true,
    "image_type": "art",
    "n": 1,
    "perspective": "Any perspective",
-   "prompt": "Close-up of a quill writing secret battle orders on a parchment sheet beside a red wax seal stamp and a guttering candle on a dark wooden desk. Hand-painted board game art, visible brush strokes, palette of deep navy, parchment cream, crimson red and antique gold, candlelit war-room mood, no text, no letters, no watermark"
+   "prompt": "Close-up of a gloved hand pressing a signet ring into red wax to seal campaign orders on parchment, beside a brass compass and a campaign map, candlelight. Grand imperial oil painting in the tradition of 18th-century history painting and Age of Sail maritime art, rich glazes, dramatic golden light and deep shadow, palette of imperial crimson, royal navy blue, burnished gold, ivory and gunpowder grey, heroic and triumphant, no text, no letters, no watermark"
   },
-  "url": "https://storage.googleapis.com/ludo-assets/api/3310a4c868db3f347dd798c95676b304.webp"
+  "url": "https://storage.googleapis.com/ludo-assets/api/315d8d7c8598c25ef2405258de9e2795.webp",
+  "v": 2
  },
  "howto_surge": {
   "credits": 0.5,
   "endpoint": "/assets/image",
   "file": "assets/art/howto_surge.webp",
   "id": "howto_surge",
-  "job": "5a0e92c0-4a73-47ac-9aac-9034c874ed78",
+  "job": "cbd9d481-6236-49ca-8bfa-d8399819a2e7",
   "params": {
-   "art_style": "Hand-Painted",
-   "aspect_ratio": "ar_4_3",
+   "art_style": "Digital Painting",
+   "aspect_ratio": "ar_16_9",
    "augment_prompt": true,
    "image_type": "art",
    "n": 1,
    "perspective": "Any perspective",
-   "prompt": "Cavalry charging through a breached wall and pouring onward toward a second town on the horizon, momentum and dust, seen from above at an angle. Hand-painted board game art, visible brush strokes, palette of deep navy, parchment cream, crimson red and antique gold, candlelit war-room mood, no text, no letters, no watermark"
+   "prompt": "Hussars charging through a breach in a fortress wall and galloping on toward a second town on the horizon, sabres raised, dust and smoke. Grand imperial oil painting in the tradition of 18th-century history painting and Age of Sail maritime art, rich glazes, dramatic golden light and deep shadow, palette of imperial crimson, royal navy blue, burnished gold, ivory and gunpowder grey, heroic and triumphant, no text, no letters, no watermark"
   },
-  "url": "https://storage.googleapis.com/ludo-assets/api/4dc2ec3fc41a20e74828b240d570c51a.webp"
+  "url": "https://storage.googleapis.com/ludo-assets/api/5f6122fa73627f807556cf0bee9a95fa.webp",
+  "v": 2
  },
  "howto_walkin": {
   "credits": 0.5,
   "endpoint": "/assets/image",
   "file": "assets/art/howto_walkin.webp",
   "id": "howto_walkin",
-  "job": "5da7b104-8333-46de-86e9-6a74c3496a41",
+  "job": "5541cce0-d468-4dc0-9a65-dcc258d75bda",
   "params": {
-   "art_style": "Hand-Painted",
-   "aspect_ratio": "ar_4_3",
+   "art_style": "Digital Painting",
+   "aspect_ratio": "ar_16_9",
    "augment_prompt": true,
    "image_type": "art",
    "n": 1,
    "perspective": "Any perspective",
-   "prompt": "A sly squad of soldiers with green banners strolling through the open gate of an abandoned, undefended fortress while its garrison marches away in the distance. Hand-painted board game art, visible brush strokes, palette of deep navy, parchment cream, crimson red and antique gold, candlelit war-room mood, no text, no letters, no watermark"
+   "prompt": "A swaggering squad of green-coated soldiers marching unopposed through the open gate of an abandoned frontier fort and planting their green banner, the previous owner's flag lying in the dust. Grand imperial oil painting in the tradition of 18th-century history painting and Age of Sail maritime art, rich glazes, dramatic golden light and deep shadow, palette of imperial crimson, royal navy blue, burnished gold, ivory and gunpowder grey, heroic and triumphant, no text, no letters, no watermark"
   },
-  "url": "https://storage.googleapis.com/ludo-assets/api/3577c90eaf52d219eb7396fef6750446.webp"
+  "url": "https://storage.googleapis.com/ludo-assets/api/79cf89433141dd0be292ab8db7a7bf38.webp",
+  "v": 2
+ },
+ "hud_button": {
+  "credits": 0.5,
+  "endpoint": "/assets/image",
+  "file": "assets/hud/hud_button.png",
+  "id": "hud_button",
+  "job": "e37984a3-fd7e-4f0f-9717-0951547bca42",
+  "params": {
+   "art_style": "Digital Painting",
+   "aspect_ratio": "ar_1_1",
+   "augment_prompt": true,
+   "image_type": "ui_asset",
+   "n": 1,
+   "perspective": "Any perspective",
+   "prompt": "Large round embossed button like a crimson wax seal set in a gilded baroque rim with laurel, blank smooth face with no symbol or text, front view, isolated on plain white background. Grand imperial oil painting in the tradition of 18th-century history painting and Age of Sail maritime art, rich glazes, dramatic golden light and deep shadow, palette of imperial crimson, royal navy blue, burnished gold, ivory and gunpowder grey, heroic and triumphant, no text, no letters, no watermark"
+  },
+  "url": "https://storage.googleapis.com/ludo-assets/api/a03dd52a429cc71869f871b587a8ba46.png",
+  "v": 2
+ },
+ "hud_coin": {
+  "credits": 0.5,
+  "endpoint": "/assets/image",
+  "file": "assets/hud/hud_coin.png",
+  "id": "hud_coin",
+  "job": "2c80f87e-534a-4b2f-943c-8fe4c74bda47",
+  "params": {
+   "art_style": "Digital Painting",
+   "aspect_ratio": "ar_1_1",
+   "augment_prompt": true,
+   "image_type": "ui_asset",
+   "n": 1,
+   "perspective": "Any perspective",
+   "prompt": "Small round gold sovereign coin button with a raised milled rim and blank smooth center, no symbol, front view, isolated on plain white background. Grand imperial oil painting in the tradition of 18th-century history painting and Age of Sail maritime art, rich glazes, dramatic golden light and deep shadow, palette of imperial crimson, royal navy blue, burnished gold, ivory and gunpowder grey, heroic and triumphant, no text, no letters, no watermark"
+  },
+  "url": "https://storage.googleapis.com/ludo-assets/api/82ef33af53bf0636d2b7b2b0c009d05e.png",
+  "v": 2
+ },
+ "hud_ribbon": {
+  "credits": 0.5,
+  "endpoint": "/assets/image",
+  "file": "assets/hud/hud_ribbon.png",
+  "id": "hud_ribbon",
+  "job": "99e8f72d-e6ba-49be-89fc-10469d709c2c",
+  "params": {
+   "art_style": "Digital Painting",
+   "aspect_ratio": "ar_1_1",
+   "augment_prompt": true,
+   "image_type": "ui_asset",
+   "n": 1,
+   "perspective": "Any perspective",
+   "prompt": "Horizontal crimson silk banner with forked swallowtail ends, gold fringe and gold stitched edges, blank, front view, isolated on plain white background. Grand imperial oil painting in the tradition of 18th-century history painting and Age of Sail maritime art, rich glazes, dramatic golden light and deep shadow, palette of imperial crimson, royal navy blue, burnished gold, ivory and gunpowder grey, heroic and triumphant, no text, no letters, no watermark"
+  },
+  "url": "https://storage.googleapis.com/ludo-assets/api/1005b1a53539c02d41a08a004fca2dda.png",
+  "v": 2
+ },
+ "hud_ring": {
+  "credits": 0.5,
+  "endpoint": "/assets/image",
+  "file": "assets/hud/hud_ring.png",
+  "id": "hud_ring",
+  "job": "c6627f0f-3a9e-42c0-877d-cb6247626104",
+  "params": {
+   "art_style": "Digital Painting",
+   "aspect_ratio": "ar_1_1",
+   "augment_prompt": true,
+   "image_type": "ui_asset",
+   "n": 1,
+   "perspective": "Any perspective",
+   "prompt": "Ornate circular gilded frame: a golden laurel wreath ring with a small crown at the top and rivets, perfectly round, empty see-through center, front view, isolated on plain white background. Grand imperial oil painting in the tradition of 18th-century history painting and Age of Sail maritime art, rich glazes, dramatic golden light and deep shadow, palette of imperial crimson, royal navy blue, burnished gold, ivory and gunpowder grey, heroic and triumphant, no text, no letters, no watermark"
+  },
+  "url": "https://storage.googleapis.com/ludo-assets/api/e55d167c1097be0631e1184b2e4eac54.png",
+  "v": 2
  },
  "icon_app": {
   "credits": 0.5,
   "endpoint": "/assets/image",
   "file": "assets/icons/app.png",
   "id": "icon_app",
-  "job": "a86333fc-87d4-4fbe-b80d-6b00614eacc3",
+  "job": "b98a71a7-a952-4ca5-a2eb-145c29ff1c00",
   "params": {
-   "art_style": "Hand-Painted",
+   "art_style": "Digital Painting",
    "aspect_ratio": "ar_1_1",
    "augment_prompt": true,
    "image_type": "icon",
    "n": 1,
    "perspective": "Any perspective",
-   "prompt": "Emblem of two crimson arrows and one blue arrow converging on a small stone keep inside a round gold medallion, bold dark outline, isolated on plain white background. Hand-painted board game art, visible brush strokes, palette of deep navy, parchment cream, crimson red and antique gold, candlelit war-room mood, no text, no letters, no watermark"
+   "prompt": "Imperial crest emblem: a crowned crimson shield with three golden arrows converging on a small star fort, laurel wreath around it, bold dark outline, isolated on plain white background. Grand imperial oil painting in the tradition of 18th-century history painting and Age of Sail maritime art, rich glazes, dramatic golden light and deep shadow, palette of imperial crimson, royal navy blue, burnished gold, ivory and gunpowder grey, heroic and triumphant, no text, no letters, no watermark"
   },
-  "url": "https://storage.googleapis.com/ludo-assets/api/4a3a1ae34b95d4f732a27506a4814de1.png"
+  "url": "https://storage.googleapis.com/ludo-assets/api/8eabf0512c0d931a8ca63ccadc440e6a.png",
+  "v": 3
  },
  "icon_attack": {
   "credits": 0.5,
@@ -505,220 +1124,1658 @@
   },
   "url": "https://storage.googleapis.com/ludo-assets/api/ba3e2e083ff88d1dd03b1f2114f33e46.png"
  },
+ "line_advisor_attack_hint": {
+  "credits": 1,
+  "endpoint": "/audio/speech",
+  "file": "assets/voice/advisor/attack_hint.mp3",
+  "id": "line_advisor_attack_hint",
+  "job": "cbdf8b46-01b6-4d69-bf83-53ed069005b0",
+  "params": {
+   "sample": "https://storage.googleapis.com/ludo-assets/api/68f97e86657c680226e7a504-f315f52bb2200802cd805e5d61d284aa.mp3",
+   "text": "Select one of our lands, then click the enemy you mean to crush."
+  },
+  "url": "https://storage.googleapis.com/ludo-assets/api/68f97e86657c680226e7a504-3b4fe7b9f08e945807dba34c1e3fc3ef.mp3",
+  "v": 2
+ },
+ "line_advisor_bad_roll": {
+  "credits": 1,
+  "endpoint": "/audio/speech",
+  "file": "assets/voice/advisor/bad_roll.mp3",
+  "id": "line_advisor_bad_roll",
+  "job": "b53dd019-718a-4ec0-9784-5f36511bb1f0",
+  "params": {
+   "sample": "https://storage.googleapis.com/ludo-assets/api/68f97e86657c680226e7a504-f315f52bb2200802cd805e5d61d284aa.mp3",
+   "text": "Cursed luck!"
+  },
+  "url": "https://storage.googleapis.com/ludo-assets/api/68f97e86657c680226e7a504-82b50a48a4b804c54d17409fac304416.mp3",
+  "v": 2
+ },
+ "line_advisor_behind": {
+  "credits": 1,
+  "endpoint": "/audio/speech",
+  "file": "assets/voice/advisor/behind.mp3",
+  "id": "line_advisor_behind",
+  "job": "acf297b3-9d19-4685-b1b1-b60ffbae8db5",
+  "params": {
+   "sample": "https://storage.googleapis.com/ludo-assets/api/68f97e86657c680226e7a504-f315f52bb2200802cd805e5d61d284aa.mp3",
+   "text": "We are falling behind. Fortune favours the bold, Commander. Attack!"
+  },
+  "url": "https://storage.googleapis.com/ludo-assets/api/68f97e86657c680226e7a504-b3c559c7692230c33e0055236bc33397.mp3",
+  "v": 2
+ },
+ "line_advisor_capture": {
+  "credits": 1,
+  "endpoint": "/audio/speech",
+  "file": "assets/voice/advisor/capture.mp3",
+  "id": "line_advisor_capture",
+  "job": "71a48d8b-c033-4ce9-a652-f8a6b749b0e0",
+  "params": {
+   "sample": "https://storage.googleapis.com/ludo-assets/api/68f97e86657c680226e7a504-f315f52bb2200802cd805e5d61d284aa.mp3",
+   "text": "Another land for the empire!"
+  },
+  "url": "https://storage.googleapis.com/ludo-assets/api/68f97e86657c680226e7a504-d887608241aecff338e9826533f5679f.mp3",
+  "v": 2
+ },
+ "line_advisor_cards": {
+  "credits": 1,
+  "endpoint": "/audio/speech",
+  "file": "assets/voice/advisor/cards.mp3",
+  "id": "line_advisor_cards",
+  "job": "4937663f-85bf-4317-bc68-6f9160dee4e5",
+  "params": {
+   "sample": "https://storage.googleapis.com/ludo-assets/api/68f97e86657c680226e7a504-f315f52bb2200802cd805e5d61d284aa.mp3",
+   "text": "We hold a matching set of cards. Cash them in and call up the regiments."
+  },
+  "url": "https://storage.googleapis.com/ludo-assets/api/68f97e86657c680226e7a504-3ce524d3988857df4a89aa353c7e751e.mp3",
+  "v": 2
+ },
+ "line_advisor_cut_off": {
+  "credits": 1,
+  "endpoint": "/audio/speech",
+  "file": "assets/voice/advisor/cut_off.mp3",
+  "id": "line_advisor_cut_off",
+  "job": "c78d115a-6906-4493-addf-c1b6819c7fa0",
+  "params": {
+   "sample": "https://storage.googleapis.com/ludo-assets/api/68f97e86657c680226e7a504-f315f52bb2200802cd805e5d61d284aa.mp3",
+   "text": "We are cut off, Commander. There is no retreat. Fight or die."
+  },
+  "url": "https://storage.googleapis.com/ludo-assets/api/68f97e86657c680226e7a504-b9aba0a89e4618bd94868feeacdda261.mp3",
+  "v": 1
+ },
+ "line_advisor_defeat": {
+  "credits": 1,
+  "endpoint": "/audio/speech",
+  "file": "assets/voice/advisor/defeat.mp3",
+  "id": "line_advisor_defeat",
+  "job": "04fdc1ba-3576-4d94-bd92-68dc00331e75",
+  "params": {
+   "sample": "https://storage.googleapis.com/ludo-assets/api/68f97e86657c680226e7a504-f315f52bb2200802cd805e5d61d284aa.mp3",
+   "text": "We are beaten, Commander. Even empires fall. But what a war it was."
+  },
+  "url": "https://storage.googleapis.com/ludo-assets/api/68f97e86657c680226e7a504-cc54dc30537a91e7729fd1ad650960ea.mp3",
+  "v": 2
+ },
+ "line_advisor_deploy": {
+  "credits": 1,
+  "endpoint": "/audio/speech",
+  "file": "assets/voice/advisor/deploy.mp3",
+  "id": "line_advisor_deploy",
+  "job": "670cece0-1ae2-47e2-92d2-646797ce29dd",
+  "params": {
+   "sample": "https://storage.googleapis.com/ludo-assets/api/68f97e86657c680226e7a504-f315f52bb2200802cd805e5d61d284aa.mp3",
+   "text": "Plant our flag and pour in the troops. Spread too thin and the vultures will pick us apart."
+  },
+  "url": "https://storage.googleapis.com/ludo-assets/api/68f97e86657c680226e7a504-f57e37b4428b935335e83c6361a78e91.mp3",
+  "v": 2
+ },
+ "line_advisor_dug_in": {
+  "credits": 1,
+  "endpoint": "/audio/speech",
+  "file": "assets/voice/advisor/dug_in.mp3",
+  "id": "line_advisor_dug_in",
+  "job": "d961945f-e574-4952-9342-29248df93f8f",
+  "params": {
+   "sample": "https://storage.googleapis.com/ludo-assets/api/68f97e86657c680226e7a504-f315f52bb2200802cd805e5d61d284aa.mp3",
+   "text": "Lands we hold dig in. Dug-in troops never march, so they keep a land safe while the rest go conquering."
+  },
+  "url": "https://storage.googleapis.com/ludo-assets/api/68f97e86657c680226e7a504-0929166964a3479ec97b6d704729bfcb.mp3",
+  "v": 2
+ },
+ "line_advisor_enemy_out": {
+  "credits": 1,
+  "endpoint": "/audio/speech",
+  "file": "assets/voice/advisor/enemy_out.mp3",
+  "id": "line_advisor_enemy_out",
+  "job": "7990c192-7b57-4209-8750-73878a52c496",
+  "params": {
+   "sample": "https://storage.googleapis.com/ludo-assets/api/68f97e86657c680226e7a504-f315f52bb2200802cd805e5d61d284aa.mp3",
+   "text": "One less rival for the throne. Their lands are ripe for the taking."
+  },
+  "url": "https://storage.googleapis.com/ludo-assets/api/68f97e86657c680226e7a504-e7281aae3bbcd05a0358b4104769ae37.mp3",
+  "v": 2
+ },
+ "line_advisor_final": {
+  "credits": 1,
+  "endpoint": "/audio/speech",
+  "file": "assets/voice/advisor/final.mp3",
+  "id": "line_advisor_final",
+  "job": "346821ed-ef9c-4c8a-8e01-753a35515b06",
+  "params": {
+   "sample": "https://storage.googleapis.com/ludo-assets/api/68f97e86657c680226e7a504-f315f52bb2200802cd805e5d61d284aa.mp3",
+   "text": "Final round, Commander! Only land counts now. Throw in everything. Leave nothing in the barracks."
+  },
+  "url": "https://storage.googleapis.com/ludo-assets/api/68f97e86657c680226e7a504-cde9f80f37eed0a9d780be513f298f10.mp3",
+  "v": 2
+ },
+ "line_advisor_good_roll": {
+  "credits": 1,
+  "endpoint": "/audio/speech",
+  "file": "assets/voice/advisor/good_roll.mp3",
+  "id": "line_advisor_good_roll",
+  "job": "bb869490-decd-4786-a98d-917dd364943a",
+  "params": {
+   "sample": "https://storage.googleapis.com/ludo-assets/api/68f97e86657c680226e7a504-f315f52bb2200802cd805e5d61d284aa.mp3",
+   "text": "The dice love us today!"
+  },
+  "url": "https://storage.googleapis.com/ludo-assets/api/68f97e86657c680226e7a504-34b2bef171c8405c3d2c11313356546d.mp3",
+  "v": 2
+ },
+ "line_advisor_hold": {
+  "credits": 1,
+  "endpoint": "/audio/speech",
+  "file": "assets/voice/advisor/hold.mp3",
+  "id": "line_advisor_hold",
+  "job": "21a6f785-1110-40be-8e9c-d47921b05871",
+  "params": {
+   "sample": "https://storage.googleapis.com/ludo-assets/api/68f97e86657c680226e7a504-f315f52bb2200802cd805e5d61d284aa.mp3",
+   "text": "Our garrison held. Let them break their teeth on our walls."
+  },
+  "url": "https://storage.googleapis.com/ludo-assets/api/68f97e86657c680226e7a504-f5d1b86e88d580da5833fd5a2cb7e9e0.mp3",
+  "v": 2
+ },
+ "line_advisor_leader": {
+  "credits": 1,
+  "endpoint": "/audio/speech",
+  "file": "assets/voice/advisor/leader.mp3",
+  "id": "line_advisor_leader",
+  "job": "bbd6866d-1aca-4703-b83e-de360fbabea2",
+  "params": {
+   "sample": "https://storage.googleapis.com/ludo-assets/api/68f97e86657c680226e7a504-f315f52bb2200802cd805e5d61d284aa.mp3",
+   "text": "We lead the war. Every crown at this table wants our head. Let them come."
+  },
+  "url": "https://storage.googleapis.com/ludo-assets/api/68f97e86657c680226e7a504-84c6c1df114ec03107c6a186b214ddc4.mp3",
+  "v": 2
+ },
+ "line_advisor_lost_land": {
+  "credits": 1,
+  "endpoint": "/audio/speech",
+  "file": "assets/voice/advisor/lost_land.mp3",
+  "id": "line_advisor_lost_land",
+  "job": "a98d88e6-1f45-4fb5-b425-1257dd0883e2",
+  "params": {
+   "sample": "https://storage.googleapis.com/ludo-assets/api/68f97e86657c680226e7a504-f315f52bb2200802cd805e5d61d284aa.mp3",
+   "text": "We have lost ground there, Commander. We will take it back with interest."
+  },
+  "url": "https://storage.googleapis.com/ludo-assets/api/68f97e86657c680226e7a504-fb43c96620392014c4c6d0bd38ac0449.mp3",
+  "v": 2
+ },
+ "line_advisor_opening_bad": {
+  "credits": 1,
+  "endpoint": "/audio/speech",
+  "file": "assets/voice/advisor/opening_bad.mp3",
+  "id": "line_advisor_opening_bad",
+  "job": "ec13dde9-1690-4e98-b4c7-8c8a2fd04adc",
+  "params": {
+   "sample": "https://storage.googleapis.com/ludo-assets/api/68f97e86657c680226e7a504-f315f52bb2200802cd805e5d61d284aa.mp3",
+   "text": "A bloody opening. Fall back now and save the men, or press on and pray."
+  },
+  "url": "https://storage.googleapis.com/ludo-assets/api/68f97e86657c680226e7a504-17cfe6f2a17b233d21be8f7567a39a34.mp3",
+  "v": 1
+ },
+ "line_advisor_opening_good": {
+  "credits": 1,
+  "endpoint": "/audio/speech",
+  "file": "assets/voice/advisor/opening_good.mp3",
+  "id": "line_advisor_opening_good",
+  "job": "4303d0ee-d018-4bdf-96eb-037aae0a0c36",
+  "params": {
+   "sample": "https://storage.googleapis.com/ludo-assets/api/68f97e86657c680226e7a504-f315f52bb2200802cd805e5d61d284aa.mp3",
+   "text": "A glorious opening! One more push and the land is ours."
+  },
+  "url": "https://storage.googleapis.com/ludo-assets/api/68f97e86657c680226e7a504-f8309f614af5553e94300563e16db6fc.mp3",
+  "v": 1
+ },
+ "line_advisor_plan": {
+  "credits": 1,
+  "endpoint": "/audio/speech",
+  "file": "assets/voice/advisor/plan.mp3",
+  "id": "line_advisor_plan",
+  "job": "537c6881-41ca-49a9-9102-63f454e5e69f",
+  "params": {
+   "sample": "https://storage.googleapis.com/ludo-assets/api/68f97e86657c680226e7a504-f315f52bb2200802cd805e5d61d284aa.mp3",
+   "text": "Here is what I would do, Commander."
+  },
+  "url": "https://storage.googleapis.com/ludo-assets/api/68f97e86657c680226e7a504-11e06b963acde10b6087d00431604f62.mp3"
+ },
+ "line_advisor_press": {
+  "credits": 1,
+  "endpoint": "/audio/speech",
+  "file": "assets/voice/advisor/press.mp3",
+  "id": "line_advisor_press",
+  "job": "9ea0bb20-d610-46b9-b6fb-9ebddf941eb8",
+  "params": {
+   "sample": "https://storage.googleapis.com/ludo-assets/api/68f97e86657c680226e7a504-f315f52bb2200802cd805e5d61d284aa.mp3",
+   "text": "They are breaking! Press the attack!"
+  },
+  "url": "https://storage.googleapis.com/ludo-assets/api/68f97e86657c680226e7a504-6da70af798dc18897e21dfa3b3c125da.mp3",
+  "v": 1
+ },
+ "line_advisor_region": {
+  "credits": 1,
+  "endpoint": "/audio/speech",
+  "file": "assets/voice/advisor/region.mp3",
+  "id": "line_advisor_region",
+  "job": "5815317e-1932-484e-8352-7b229f81d352",
+  "params": {
+   "sample": "https://storage.googleapis.com/ludo-assets/api/68f97e86657c680226e7a504-f315f52bb2200802cd805e5d61d284aa.mp3",
+   "text": "The whole region flies our colours. Its riches will swell our ranks every round."
+  },
+  "url": "https://storage.googleapis.com/ludo-assets/api/68f97e86657c680226e7a504-1830231c6bb58994e98b2e03fc6f6a59.mp3",
+  "v": 2
+ },
+ "line_advisor_reinforce": {
+  "credits": 1,
+  "endpoint": "/audio/speech",
+  "file": "assets/voice/advisor/reinforce.mp3",
+  "id": "line_advisor_reinforce",
+  "job": "4229180d-a49f-427c-b3d7-c3c751613f4d",
+  "params": {
+   "sample": "https://storage.googleapis.com/ludo-assets/api/68f97e86657c680226e7a504-f315f52bb2200802cd805e5d61d284aa.mp3",
+   "text": "Fresh regiments off the boats, Commander. Send them where the fighting is."
+  },
+  "url": "https://storage.googleapis.com/ludo-assets/api/68f97e86657c680226e7a504-d041021f307f1e5eb2818b2e65c5ef8e.mp3",
+  "v": 2
+ },
+ "line_advisor_reserves": {
+  "credits": 1,
+  "endpoint": "/audio/speech",
+  "file": "assets/voice/advisor/reserves.mp3",
+  "id": "line_advisor_reserves",
+  "job": "1142389a-95b3-4cef-8d5b-e688f801da27",
+  "params": {
+   "sample": "https://storage.googleapis.com/ludo-assets/api/68f97e86657c680226e7a504-f315f52bb2200802cd805e5d61d284aa.mp3",
+   "text": "Send in the reserves! Every last man!"
+  },
+  "url": "https://storage.googleapis.com/ludo-assets/api/68f97e86657c680226e7a504-a4525725d2ae74a9ce17e520ed7d2c33.mp3",
+  "v": 1
+ },
+ "line_advisor_retreat": {
+  "credits": 1,
+  "endpoint": "/audio/speech",
+  "file": "assets/voice/advisor/retreat.mp3",
+  "id": "line_advisor_retreat",
+  "job": "d6209acf-35da-4a21-867a-4d94c0cd0b9f",
+  "params": {
+   "sample": "https://storage.googleapis.com/ludo-assets/api/68f97e86657c680226e7a504-f315f52bb2200802cd805e5d61d284aa.mp3",
+   "text": "Sound the retreat! Save the men for another day."
+  },
+  "url": "https://storage.googleapis.com/ludo-assets/api/68f97e86657c680226e7a504-88ee51d881743f2c10246deb0596de87.mp3",
+  "v": 1
+ },
+ "line_advisor_reveal": {
+  "credits": 1,
+  "endpoint": "/audio/speech",
+  "file": "assets/voice/advisor/reveal.mp3",
+  "id": "line_advisor_reveal",
+  "job": "b73405bb-34cf-4db7-8514-ce70125b4aef",
+  "params": {
+   "sample": "https://storage.googleapis.com/ludo-assets/api/68f97e86657c680226e7a504-f315f52bb2200802cd805e5d61d284aa.mp3",
+   "text": "There it is. Every army on the map, marching at once. Glorious."
+  },
+  "url": "https://storage.googleapis.com/ludo-assets/api/68f97e86657c680226e7a504-e116e1e0f132c13685a48b92970b48ed.mp3",
+  "v": 2
+ },
+ "line_advisor_roll": {
+  "credits": 1,
+  "endpoint": "/audio/speech",
+  "file": "assets/voice/advisor/roll.mp3",
+  "id": "line_advisor_roll",
+  "job": "db93c949-5bb9-4e7b-a09b-2d7fb82ce975",
+  "params": {
+   "sample": "https://storage.googleapis.com/ludo-assets/api/68f97e86657c680226e7a504-f315f52bb2200802cd805e5d61d284aa.mp3",
+   "text": "Roll the dice, Commander."
+  },
+  "url": "https://storage.googleapis.com/ludo-assets/api/68f97e86657c680226e7a504-da27ec4e16b98649afe2adb79e956d12.mp3"
+ },
+ "line_advisor_sealed": {
+  "credits": 1,
+  "endpoint": "/audio/speech",
+  "file": "assets/voice/advisor/sealed.mp3",
+  "id": "line_advisor_sealed",
+  "job": "b512c80d-ac1d-4c75-ba3f-be2adabb0b1b",
+  "params": {
+   "sample": "https://storage.googleapis.com/ludo-assets/api/68f97e86657c680226e7a504-f315f52bb2200802cd805e5d61d284aa.mp3",
+   "text": "Orders sealed. Now we see who flinches."
+  },
+  "url": "https://storage.googleapis.com/ludo-assets/api/68f97e86657c680226e7a504-19ae65d33f560e51a0c9f6dd5f1daa0c.mp3",
+  "v": 2
+ },
+ "line_advisor_surge": {
+  "credits": 1,
+  "endpoint": "/audio/speech",
+  "file": "assets/voice/advisor/surge.mp3",
+  "id": "line_advisor_surge",
+  "job": "e3c8401d-cad3-4b62-b1f1-56e2f67fb535",
+  "params": {
+   "sample": "https://storage.googleapis.com/ludo-assets/api/68f97e86657c680226e7a504-f315f52bb2200802cd805e5d61d284aa.mp3",
+   "text": "A clean breakthrough! With men to spare, we can surge on to the next land."
+  },
+  "url": "https://storage.googleapis.com/ludo-assets/api/68f97e86657c680226e7a504-bf7d92aa8db5f616cdfe90029231fdba.mp3",
+  "v": 2
+ },
+ "line_advisor_unplaced": {
+  "credits": 1,
+  "endpoint": "/audio/speech",
+  "file": "assets/voice/advisor/unplaced.mp3",
+  "id": "line_advisor_unplaced",
+  "job": "6bb6c015-d3bb-45df-9712-a505a0f4ebb2",
+  "params": {
+   "sample": "https://storage.googleapis.com/ludo-assets/api/68f97e86657c680226e7a504-f315f52bb2200802cd805e5d61d284aa.mp3",
+   "text": "We have regiments idling on the docks. Unplaced men go home, and I will not have it."
+  },
+  "url": "https://storage.googleapis.com/ludo-assets/api/68f97e86657c680226e7a504-a3d26348e001cf69acdda043ff40eaaa.mp3",
+  "v": 2
+ },
+ "line_advisor_vacate_warn": {
+  "credits": 1,
+  "endpoint": "/audio/speech",
+  "file": "assets/voice/advisor/vacate_warn.mp3",
+  "id": "line_advisor_vacate_warn",
+  "job": "fc81f2dd-595e-468a-91bb-811dda66128b",
+  "params": {
+   "sample": "https://storage.googleapis.com/ludo-assets/api/68f97e86657c680226e7a504-f315f52bb2200802cd805e5d61d284aa.mp3",
+   "text": "Careful. March them all out and that land stands empty. Any jackal next door could stroll right in."
+  },
+  "url": "https://storage.googleapis.com/ludo-assets/api/68f97e86657c680226e7a504-e46712434a63cc32bd1913479d94f9b2.mp3",
+  "v": 2
+ },
+ "line_advisor_victory": {
+  "credits": 1,
+  "endpoint": "/audio/speech",
+  "file": "assets/voice/advisor/victory.mp3",
+  "id": "line_advisor_victory",
+  "job": "a2802636-16b1-4f55-befc-ea1c82ced749",
+  "params": {
+   "sample": "https://storage.googleapis.com/ludo-assets/api/68f97e86657c680226e7a504-f315f52bb2200802cd805e5d61d284aa.mp3",
+   "text": "Victory! The world bows to you, Commander. Magnificent. Utterly magnificent."
+  },
+  "url": "https://storage.googleapis.com/ludo-assets/api/68f97e86657c680226e7a504-894c13b0e41688342f808e76a99dc3e4.mp3",
+  "v": 2
+ },
+ "line_advisor_walkin_them": {
+  "credits": 1,
+  "endpoint": "/audio/speech",
+  "file": "assets/voice/advisor/walkin_them.mp3",
+  "id": "line_advisor_walkin_them",
+  "job": "853f7651-f60c-4a6b-8640-d583473fdf55",
+  "params": {
+   "sample": "https://storage.googleapis.com/ludo-assets/api/68f97e86657c680226e7a504-f315f52bb2200802cd805e5d61d284aa.mp3",
+   "text": "Blast! They walked straight into a land we left empty."
+  },
+  "url": "https://storage.googleapis.com/ludo-assets/api/68f97e86657c680226e7a504-fb202aa3378897c2389b651b0dbf0bf8.mp3",
+  "v": 2
+ },
+ "line_advisor_walkin_us": {
+  "credits": 1,
+  "endpoint": "/audio/speech",
+  "file": "assets/voice/advisor/walkin_us.mp3",
+  "id": "line_advisor_walkin_us",
+  "job": "188d82a3-ce41-4b22-a1c9-2a43d1aa84b0",
+  "params": {
+   "sample": "https://storage.googleapis.com/ludo-assets/api/68f97e86657c680226e7a504-f315f52bb2200802cd805e5d61d284aa.mp3",
+   "text": "A walk-in! They left the gates wide open and we marched straight through. Plant the flag!"
+  },
+  "url": "https://storage.googleapis.com/ludo-assets/api/68f97e86657c680226e7a504-a13fa509da7037b04b7949c276010264.mp3",
+  "v": 2
+ },
+ "line_advisor_welcome": {
+  "credits": 1,
+  "endpoint": "/audio/speech",
+  "file": "assets/voice/advisor/welcome.mp3",
+  "id": "line_advisor_welcome",
+  "job": "5126517d-ab9f-494e-8230-50c2e9d79009",
+  "params": {
+   "sample": "https://storage.googleapis.com/ludo-assets/api/68f97e86657c680226e7a504-f315f52bb2200802cd805e5d61d284aa.mp3",
+   "text": "Welcome to the war table, Commander. The world is wide, the maps are blank, and every inch of it is ours for the taking."
+  },
+  "url": "https://storage.googleapis.com/ludo-assets/api/68f97e86657c680226e7a504-6076559cc6f08d9a6dd911eff4119838.mp3",
+  "v": 2
+ },
+ "line_hask_attack": {
+  "credits": 1,
+  "endpoint": "/audio/speech",
+  "file": "assets/voice/hask/attack.mp3",
+  "id": "line_hask_attack",
+  "job": "fac467c8-112e-4e71-8f23-27e8b2dd8b49",
+  "params": {
+   "sample": "https://storage.googleapis.com/ludo-assets/api/68f97e86657c680226e7a504-c4f989d71a4802ac73133afdebc51231.mp3",
+   "text": "Haaa! Break them! Burn their boats!"
+  },
+  "url": "https://storage.googleapis.com/ludo-assets/api/68f97e86657c680226e7a504-6f795c58b68dc0dfd4a7db0ffa9ef32d.mp3",
+  "v": 2
+ },
+ "line_hask_eliminated": {
+  "credits": 1,
+  "endpoint": "/audio/speech",
+  "file": "assets/voice/hask/eliminated.mp3",
+  "id": "line_hask_eliminated",
+  "job": "3b5bf8bb-c706-44e4-bb6b-1ee626c2e327",
+  "params": {
+   "sample": "https://storage.googleapis.com/ludo-assets/api/68f97e86657c680226e7a504-c4f989d71a4802ac73133afdebc51231.mp3",
+   "text": "Bah! Pour me a drink. I am done."
+  },
+  "url": "https://storage.googleapis.com/ludo-assets/api/68f97e86657c680226e7a504-561360352674e711e479514a3993d075.mp3"
+ },
+ "line_hask_greet": {
+  "credits": 1,
+  "endpoint": "/audio/speech",
+  "file": "assets/voice/hask/greet.mp3",
+  "id": "line_hask_greet",
+  "job": "b387b402-b8d3-477b-9761-e0faeb88e9b7",
+  "params": {
+   "sample": "https://storage.googleapis.com/ludo-assets/api/68f97e86657c680226e7a504-c4f989d71a4802ac73133afdebc51231.mp3",
+   "text": "Commodore Hask, the Old Bear! Bring me your best, little general, and I will sink it!"
+  },
+  "url": "https://storage.googleapis.com/ludo-assets/api/68f97e86657c680226e7a504-e3a6c1587185737a98bb78ca606e5326.mp3",
+  "v": 2
+ },
+ "line_hask_lose": {
+  "credits": 1,
+  "endpoint": "/audio/speech",
+  "file": "assets/voice/hask/lose.mp3",
+  "id": "line_hask_lose",
+  "job": "48fcf516-4abb-4de1-9e9a-0b8958c1c40e",
+  "params": {
+   "sample": "https://storage.googleapis.com/ludo-assets/api/68f97e86657c680226e7a504-c4f989d71a4802ac73133afdebc51231.mp3",
+   "text": "Grr. Lucky blow."
+  },
+  "url": "https://storage.googleapis.com/ludo-assets/api/68f97e86657c680226e7a504-9fe0187852df103c6f7c26365ddbc218.mp3"
+ },
+ "line_hask_reserves": {
+  "credits": 1,
+  "endpoint": "/audio/speech",
+  "file": "assets/voice/hask/reserves.mp3",
+  "id": "line_hask_reserves",
+  "job": "a53e019b-c83f-406f-a99f-3de0e90aee8d",
+  "params": {
+   "sample": "https://storage.googleapis.com/ludo-assets/api/68f97e86657c680226e7a504-c4f989d71a4802ac73133afdebc51231.mp3",
+   "text": "More! Send more! The Bear is hungry!"
+  },
+  "url": "https://storage.googleapis.com/ludo-assets/api/68f97e86657c680226e7a504-5b8ec9e0c1e7a1727369f9cb7ae5b75f.mp3",
+  "v": 1
+ },
+ "line_hask_retreat": {
+  "credits": 1,
+  "endpoint": "/audio/speech",
+  "file": "assets/voice/hask/retreat.mp3",
+  "id": "line_hask_retreat",
+  "job": "a1013b79-5cd6-4bee-bbde-b73bad931ecc",
+  "params": {
+   "sample": "https://storage.googleapis.com/ludo-assets/api/68f97e86657c680226e7a504-c4f989d71a4802ac73133afdebc51231.mp3",
+   "text": "Back to the ships! I will be back for you!"
+  },
+  "url": "https://storage.googleapis.com/ludo-assets/api/68f97e86657c680226e7a504-ee36a37f973df58b2d5c0fd7d23160a8.mp3",
+  "v": 1
+ },
+ "line_hask_victory": {
+  "credits": 1,
+  "endpoint": "/audio/speech",
+  "file": "assets/voice/hask/victory.mp3",
+  "id": "line_hask_victory",
+  "job": "f7c14400-788a-4109-a41b-1d248afffab8",
+  "params": {
+   "sample": "https://storage.googleapis.com/ludo-assets/api/68f97e86657c680226e7a504-c4f989d71a4802ac73133afdebc51231.mp3",
+   "text": "The Bear rules land and sea! Ha ha ha!"
+  },
+  "url": "https://storage.googleapis.com/ludo-assets/api/68f97e86657c680226e7a504-b45d3d7de4e85c2a90fe0371e7eac7f2.mp3",
+  "v": 2
+ },
+ "line_hask_walkin": {
+  "credits": 1,
+  "endpoint": "/audio/speech",
+  "file": "assets/voice/hask/walkin.mp3",
+  "id": "line_hask_walkin",
+  "job": "157436ad-7c1b-4871-9e6f-519156eec7d3",
+  "params": {
+   "sample": "https://storage.googleapis.com/ludo-assets/api/68f97e86657c680226e7a504-c4f989d71a4802ac73133afdebc51231.mp3",
+   "text": "Empty? Then it is mine!"
+  },
+  "url": "https://storage.googleapis.com/ludo-assets/api/68f97e86657c680226e7a504-5fd679943b74a0fe994d3933bc3baa2e.mp3"
+ },
+ "line_hask_win": {
+  "credits": 1,
+  "endpoint": "/audio/speech",
+  "file": "assets/voice/hask/win.mp3",
+  "id": "line_hask_win",
+  "job": "51a3fd42-f776-4e33-94f6-c2cd530b6170",
+  "params": {
+   "sample": "https://storage.googleapis.com/ludo-assets/api/68f97e86657c680226e7a504-c4f989d71a4802ac73133afdebc51231.mp3",
+   "text": "Hah! Soft as butter!"
+  },
+  "url": "https://storage.googleapis.com/ludo-assets/api/68f97e86657c680226e7a504-2944cd8408924d5087bb71bf3192a170.mp3"
+ },
+ "line_imre_attack": {
+  "credits": 1,
+  "endpoint": "/audio/speech",
+  "file": "assets/voice/imre/attack.mp3",
+  "id": "line_imre_attack",
+  "job": "ad8eab12-791a-483e-ab68-79a459cb4b32",
+  "params": {
+   "sample": "https://storage.googleapis.com/ludo-assets/api/68f97e86657c680226e7a504-ae12d313a3605e63b93415eea6e6af81.mp3",
+   "text": "Exactly as planned. Proceed."
+  },
+  "url": "https://storage.googleapis.com/ludo-assets/api/68f97e86657c680226e7a504-1bb4e92f7042f6323a742816ef88cc58.mp3"
+ },
+ "line_imre_eliminated": {
+  "credits": 1,
+  "endpoint": "/audio/speech",
+  "file": "assets/voice/imre/eliminated.mp3",
+  "id": "line_imre_eliminated",
+  "job": "e03d232f-6f91-4cc0-9207-d1b06af7e80b",
+  "params": {
+   "sample": "https://storage.googleapis.com/ludo-assets/api/68f97e86657c680226e7a504-ae12d313a3605e63b93415eea6e6af81.mp3",
+   "text": "Well played. I underestimated you."
+  },
+  "url": "https://storage.googleapis.com/ludo-assets/api/68f97e86657c680226e7a504-9255ea94ac3b3b24ec40030fc1fe2244.mp3"
+ },
+ "line_imre_greet": {
+  "credits": 1,
+  "endpoint": "/audio/speech",
+  "file": "assets/voice/imre/greet.mp3",
+  "id": "line_imre_greet",
+  "job": "cd1fca62-c429-4802-9596-88c818e1cb3e",
+  "params": {
+   "sample": "https://storage.googleapis.com/ludo-assets/api/68f97e86657c680226e7a504-ae12d313a3605e63b93415eea6e6af81.mp3",
+   "text": "Admiral Imre. I have already read your plan."
+  },
+  "url": "https://storage.googleapis.com/ludo-assets/api/68f97e86657c680226e7a504-70e4ae6dbd519aaebbf5831487454d14.mp3",
+  "v": 2
+ },
+ "line_imre_lose": {
+  "credits": 1,
+  "endpoint": "/audio/speech",
+  "file": "assets/voice/imre/lose.mp3",
+  "id": "line_imre_lose",
+  "job": "e19811ad-1421-42ff-9b5b-4383e1f879ec",
+  "params": {
+   "sample": "https://storage.googleapis.com/ludo-assets/api/68f97e86657c680226e7a504-ae12d313a3605e63b93415eea6e6af81.mp3",
+   "text": "Interesting. I will adjust."
+  },
+  "url": "https://storage.googleapis.com/ludo-assets/api/68f97e86657c680226e7a504-63242eeed0b21ff3c0d2ea269f0fcaa5.mp3"
+ },
+ "line_imre_reserves": {
+  "credits": 1,
+  "endpoint": "/audio/speech",
+  "file": "assets/voice/imre/reserves.mp3",
+  "id": "line_imre_reserves",
+  "job": "8c4f91c6-c899-42aa-8531-477513131ebd",
+  "params": {
+   "sample": "https://storage.googleapis.com/ludo-assets/api/68f97e86657c680226e7a504-ae12d313a3605e63b93415eea6e6af81.mp3",
+   "text": "Commit the reserve. Now."
+  },
+  "url": "https://storage.googleapis.com/ludo-assets/api/68f97e86657c680226e7a504-8790cc3e822b7f67e3d45dc1c0d11f03.mp3",
+  "v": 1
+ },
+ "line_imre_retreat": {
+  "credits": 1,
+  "endpoint": "/audio/speech",
+  "file": "assets/voice/imre/retreat.mp3",
+  "id": "line_imre_retreat",
+  "job": "19d90943-a966-447d-ac53-b71a4a0e95aa",
+  "params": {
+   "sample": "https://storage.googleapis.com/ludo-assets/api/68f97e86657c680226e7a504-ae12d313a3605e63b93415eea6e6af81.mp3",
+   "text": "The odds have turned. We withdraw."
+  },
+  "url": "https://storage.googleapis.com/ludo-assets/api/68f97e86657c680226e7a504-0ee2d8d9e8f6e04b755f454ddd91e28c.mp3",
+  "v": 1
+ },
+ "line_imre_victory": {
+  "credits": 1,
+  "endpoint": "/audio/speech",
+  "file": "assets/voice/imre/victory.mp3",
+  "id": "line_imre_victory",
+  "job": "a0024957-0726-4b7f-bc19-dcbf8e43cac6",
+  "params": {
+   "sample": "https://storage.googleapis.com/ludo-assets/api/68f97e86657c680226e7a504-ae12d313a3605e63b93415eea6e6af81.mp3",
+   "text": "Checkmate."
+  },
+  "url": "https://storage.googleapis.com/ludo-assets/api/68f97e86657c680226e7a504-76f5d61812f20ecc9f9e52916ffd5ca7.mp3"
+ },
+ "line_imre_walkin": {
+  "credits": 1,
+  "endpoint": "/audio/speech",
+  "file": "assets/voice/imre/walkin.mp3",
+  "id": "line_imre_walkin",
+  "job": "86d0d1d4-ffc3-4430-9974-11ef2fda8a06",
+  "params": {
+   "sample": "https://storage.googleapis.com/ludo-assets/api/68f97e86657c680226e7a504-ae12d313a3605e63b93415eea6e6af81.mp3",
+   "text": "You moved. I did not. That was the whole trick."
+  },
+  "url": "https://storage.googleapis.com/ludo-assets/api/68f97e86657c680226e7a504-0f1f58f3bd290c0bc362065712ea556f.mp3"
+ },
+ "line_imre_win": {
+  "credits": 1,
+  "endpoint": "/audio/speech",
+  "file": "assets/voice/imre/win.mp3",
+  "id": "line_imre_win",
+  "job": "4d2f6517-7aae-4b85-952a-f2bc311f97e5",
+  "params": {
+   "sample": "https://storage.googleapis.com/ludo-assets/api/68f97e86657c680226e7a504-ae12d313a3605e63b93415eea6e6af81.mp3",
+   "text": "Calculated."
+  },
+  "url": "https://storage.googleapis.com/ludo-assets/api/68f97e86657c680226e7a504-cadd80f2a48de1322458e1c3cdbe6128.mp3"
+ },
+ "line_oren_attack": {
+  "credits": 1,
+  "endpoint": "/audio/speech",
+  "file": "assets/voice/oren/attack.mp3",
+  "id": "line_oren_attack",
+  "job": "dc456014-7a99-425a-a7e5-54a8c17be393",
+  "params": {
+   "sample": "https://storage.googleapis.com/ludo-assets/api/68f97e86657c680226e7a504-db4e09a19f0c23caf31835d1330420f8.mp3",
+   "text": "Charge! For glory!"
+  },
+  "url": "https://storage.googleapis.com/ludo-assets/api/68f97e86657c680226e7a504-99efc332e097f18f9bd01beb0f1b27f8.mp3"
+ },
+ "line_oren_eliminated": {
+  "credits": 1,
+  "endpoint": "/audio/speech",
+  "file": "assets/voice/oren/eliminated.mp3",
+  "id": "line_oren_eliminated",
+  "job": "42ddd41c-594f-4c27-887b-1082598773ca",
+  "params": {
+   "sample": "https://storage.googleapis.com/ludo-assets/api/68f97e86657c680226e7a504-db4e09a19f0c23caf31835d1330420f8.mp3",
+   "text": "I will be back. With more horses."
+  },
+  "url": "https://storage.googleapis.com/ludo-assets/api/68f97e86657c680226e7a504-94c8d37bccc6dd0e198f9df48bd683ae.mp3"
+ },
+ "line_oren_greet": {
+  "credits": 1,
+  "endpoint": "/audio/speech",
+  "file": "assets/voice/oren/greet.mp3",
+  "id": "line_oren_greet",
+  "job": "72110160-1389-4486-88e1-b79b3e03a9d3",
+  "params": {
+   "sample": "https://storage.googleapis.com/ludo-assets/api/68f97e86657c680226e7a504-db4e09a19f0c23caf31835d1330420f8.mp3",
+   "text": "Captain Oren of the Hussars! First war, but I have a very fast horse!"
+  },
+  "url": "https://storage.googleapis.com/ludo-assets/api/68f97e86657c680226e7a504-6d25ecd1c6cc0bce2d3d7c76abd226ed.mp3",
+  "v": 2
+ },
+ "line_oren_lose": {
+  "credits": 1,
+  "endpoint": "/audio/speech",
+  "file": "assets/voice/oren/lose.mp3",
+  "id": "line_oren_lose",
+  "job": "d42a618b-81a4-4ad5-a81f-5aba22848f19",
+  "params": {
+   "sample": "https://storage.googleapis.com/ludo-assets/api/68f97e86657c680226e7a504-db4e09a19f0c23caf31835d1330420f8.mp3",
+   "text": "Wait, that was not supposed to happen!"
+  },
+  "url": "https://storage.googleapis.com/ludo-assets/api/68f97e86657c680226e7a504-8ec05d6dc1cb975c6647b9fe0e48094a.mp3"
+ },
+ "line_oren_reserves": {
+  "credits": 1,
+  "endpoint": "/audio/speech",
+  "file": "assets/voice/oren/reserves.mp3",
+  "id": "line_oren_reserves",
+  "job": "451f5c2a-35ae-4b7e-bb09-98aa493db789",
+  "params": {
+   "sample": "https://storage.googleapis.com/ludo-assets/api/68f97e86657c680226e7a504-db4e09a19f0c23caf31835d1330420f8.mp3",
+   "text": "Everybody! Everybody charge!"
+  },
+  "url": "https://storage.googleapis.com/ludo-assets/api/68f97e86657c680226e7a504-4119880eeb18db905eda7ec283af97ce.mp3",
+  "v": 1
+ },
+ "line_oren_retreat": {
+  "credits": 1,
+  "endpoint": "/audio/speech",
+  "file": "assets/voice/oren/retreat.mp3",
+  "id": "line_oren_retreat",
+  "job": "49f89c21-5146-41a8-afcc-848bf6080f64",
+  "params": {
+   "sample": "https://storage.googleapis.com/ludo-assets/api/68f97e86657c680226e7a504-db4e09a19f0c23caf31835d1330420f8.mp3",
+   "text": "Retreat! Tactical retreat! Very tactical!"
+  },
+  "url": "https://storage.googleapis.com/ludo-assets/api/68f97e86657c680226e7a504-82977ac1d7c61fe6bbab68c513aa4a35.mp3",
+  "v": 1
+ },
+ "line_oren_victory": {
+  "credits": 1,
+  "endpoint": "/audio/speech",
+  "file": "assets/voice/oren/victory.mp3",
+  "id": "line_oren_victory",
+  "job": "aa83d1c6-8d5f-4ecb-8036-e81ee9948bb3",
+  "params": {
+   "sample": "https://storage.googleapis.com/ludo-assets/api/68f97e86657c680226e7a504-db4e09a19f0c23caf31835d1330420f8.mp3",
+   "text": "I won? I won! Somebody tell my mother!"
+  },
+  "url": "https://storage.googleapis.com/ludo-assets/api/68f97e86657c680226e7a504-f586e34e264c0679eecd0f6b176dffdd.mp3"
+ },
+ "line_oren_walkin": {
+  "credits": 1,
+  "endpoint": "/audio/speech",
+  "file": "assets/voice/oren/walkin.mp3",
+  "id": "line_oren_walkin",
+  "job": "23871f85-eba6-4f6e-b276-838f366c9c33",
+  "params": {
+   "sample": "https://storage.googleapis.com/ludo-assets/api/68f97e86657c680226e7a504-db4e09a19f0c23caf31835d1330420f8.mp3",
+   "text": "Nobody home? Do not mind if I do!"
+  },
+  "url": "https://storage.googleapis.com/ludo-assets/api/68f97e86657c680226e7a504-e7b338d1860ce4d412d4af19c7606199.mp3"
+ },
+ "line_oren_win": {
+  "credits": 1,
+  "endpoint": "/audio/speech",
+  "file": "assets/voice/oren/win.mp3",
+  "id": "line_oren_win",
+  "job": "36def1be-80af-4315-955f-82fcef6d4ebb",
+  "params": {
+   "sample": "https://storage.googleapis.com/ludo-assets/api/68f97e86657c680226e7a504-db4e09a19f0c23caf31835d1330420f8.mp3",
+   "text": "Ha! Did you see that?"
+  },
+  "url": "https://storage.googleapis.com/ludo-assets/api/68f97e86657c680226e7a504-0b9b2b8a9e97d65918924bed45910843.mp3"
+ },
+ "line_quill_attack": {
+  "credits": 1,
+  "endpoint": "/audio/speech",
+  "file": "assets/voice/quill/attack.mp3",
+  "id": "line_quill_attack",
+  "job": "62c9dd82-3f96-4a77-9aae-92210999bee7",
+  "params": {
+   "sample": "https://storage.googleapis.com/ludo-assets/api/68f97e86657c680226e7a504-43e937972be4c547ac952f529a38b909.mp3",
+   "text": "An investment opportunity, lads. Go and collect."
+  },
+  "url": "https://storage.googleapis.com/ludo-assets/api/68f97e86657c680226e7a504-e32d67e60746dfd7e5ef9f6972e55847.mp3"
+ },
+ "line_quill_eliminated": {
+  "credits": 1,
+  "endpoint": "/audio/speech",
+  "file": "assets/voice/quill/eliminated.mp3",
+  "id": "line_quill_eliminated",
+  "job": "683e2b04-c959-414e-b118-29b1be41d6fd",
+  "params": {
+   "sample": "https://storage.googleapis.com/ludo-assets/api/68f97e86657c680226e7a504-43e937972be4c547ac952f529a38b909.mp3",
+   "text": "Bankrupt. Well, it was lovely doing business."
+  },
+  "url": "https://storage.googleapis.com/ludo-assets/api/68f97e86657c680226e7a504-b2a2992d2f8a4f2c81876ef874fee583.mp3"
+ },
+ "line_quill_greet": {
+  "credits": 1,
+  "endpoint": "/audio/speech",
+  "file": "assets/voice/quill/greet.mp3",
+  "id": "line_quill_greet",
+  "job": "db07e7b8-69f3-4bef-bc17-bd244c2c849d",
+  "params": {
+   "sample": "https://storage.googleapis.com/ludo-assets/api/68f97e86657c680226e7a504-43e937972be4c547ac952f529a38b909.mp3",
+   "text": "Governor Quill, of the Company. Everything has its price, and I intend to buy the world."
+  },
+  "url": "https://storage.googleapis.com/ludo-assets/api/68f97e86657c680226e7a504-d5e7f22b9c1a72a1f9215062d9ea3204.mp3",
+  "v": 2
+ },
+ "line_quill_lose": {
+  "credits": 1,
+  "endpoint": "/audio/speech",
+  "file": "assets/voice/quill/lose.mp3",
+  "id": "line_quill_lose",
+  "job": "b277410f-dd38-4db0-8544-2098bfd55edb",
+  "params": {
+   "sample": "https://storage.googleapis.com/ludo-assets/api/68f97e86657c680226e7a504-43e937972be4c547ac952f529a38b909.mp3",
+   "text": "Hm. That will cost me."
+  },
+  "url": "https://storage.googleapis.com/ludo-assets/api/68f97e86657c680226e7a504-765446acb0d6efdc87c8163c929cf780.mp3"
+ },
+ "line_quill_reserves": {
+  "credits": 1,
+  "endpoint": "/audio/speech",
+  "file": "assets/voice/quill/reserves.mp3",
+  "id": "line_quill_reserves",
+  "job": "ec9730b0-1c3a-42d8-a513-4fc9d58de37f",
+  "params": {
+   "sample": "https://storage.googleapis.com/ludo-assets/api/68f97e86657c680226e7a504-43e937972be4c547ac952f529a38b909.mp3",
+   "text": "Double the investment! Send the reserves!"
+  },
+  "url": "https://storage.googleapis.com/ludo-assets/api/68f97e86657c680226e7a504-367a7cb3a22ca9f479e0224a85cf8b13.mp3",
+  "v": 1
+ },
+ "line_quill_retreat": {
+  "credits": 1,
+  "endpoint": "/audio/speech",
+  "file": "assets/voice/quill/retreat.mp3",
+  "id": "line_quill_retreat",
+  "job": "f88ed1ae-cac6-42e1-9f36-77604ced928f",
+  "params": {
+   "sample": "https://storage.googleapis.com/ludo-assets/api/68f97e86657c680226e7a504-43e937972be4c547ac952f529a38b909.mp3",
+   "text": "Cut our losses, lads. Back to the ships."
+  },
+  "url": "https://storage.googleapis.com/ludo-assets/api/68f97e86657c680226e7a504-f0867eb0d306406045a03ddef019146f.mp3",
+  "v": 1
+ },
+ "line_quill_victory": {
+  "credits": 1,
+  "endpoint": "/audio/speech",
+  "file": "assets/voice/quill/victory.mp3",
+  "id": "line_quill_victory",
+  "job": "5cbb88e4-94e8-455c-b1d4-8c1131a298de",
+  "params": {
+   "sample": "https://storage.googleapis.com/ludo-assets/api/68f97e86657c680226e7a504-43e937972be4c547ac952f529a38b909.mp3",
+   "text": "Tally it up. The Company owns the lot."
+  },
+  "url": "https://storage.googleapis.com/ludo-assets/api/68f97e86657c680226e7a504-80765f20ed99bcf1f0f85c1d336a89cd.mp3",
+  "v": 2
+ },
+ "line_quill_walkin": {
+  "credits": 1,
+  "endpoint": "/audio/speech",
+  "file": "assets/voice/quill/walkin.mp3",
+  "id": "line_quill_walkin",
+  "job": "ccf4a08e-6a50-4ce5-9660-7bfceb472ab9",
+  "params": {
+   "sample": "https://storage.googleapis.com/ludo-assets/api/68f97e86657c680226e7a504-43e937972be4c547ac952f529a38b909.mp3",
+   "text": "Unguarded goods. Finders keepers."
+  },
+  "url": "https://storage.googleapis.com/ludo-assets/api/68f97e86657c680226e7a504-e14137602270eae9fcd40fb2306242a2.mp3"
+ },
+ "line_quill_win": {
+  "credits": 1,
+  "endpoint": "/audio/speech",
+  "file": "assets/voice/quill/win.mp3",
+  "id": "line_quill_win",
+  "job": "070b9e86-21da-4663-9ada-b4da778bb765",
+  "params": {
+   "sample": "https://storage.googleapis.com/ludo-assets/api/68f97e86657c680226e7a504-43e937972be4c547ac952f529a38b909.mp3",
+   "text": "Profit!"
+  },
+  "url": "https://storage.googleapis.com/ludo-assets/api/68f97e86657c680226e7a504-728d38f9cdc07de24084203c24cec5be.mp3"
+ },
+ "line_varek_attack": {
+  "credits": 1,
+  "endpoint": "/audio/speech",
+  "file": "assets/voice/varek/attack.mp3",
+  "id": "line_varek_attack",
+  "job": "fd85af6f-4358-4437-924a-44ccf61b595d",
+  "params": {
+   "sample": "https://storage.googleapis.com/ludo-assets/api/68f97e86657c680226e7a504-f17c3752dc64d90d973721ba99f9d1d3.mp3",
+   "text": "Advance. Fix bayonets. No quarter."
+  },
+  "url": "https://storage.googleapis.com/ludo-assets/api/68f97e86657c680226e7a504-b29f5b9f4e2903aaeabccd123d0295cc.mp3",
+  "v": 2
+ },
+ "line_varek_eliminated": {
+  "credits": 1,
+  "endpoint": "/audio/speech",
+  "file": "assets/voice/varek/eliminated.mp3",
+  "id": "line_varek_eliminated",
+  "job": "af4ec132-b0dc-4024-a1bb-edf5d22b4f03",
+  "params": {
+   "sample": "https://storage.googleapis.com/ludo-assets/api/68f97e86657c680226e7a504-f17c3752dc64d90d973721ba99f9d1d3.mp3",
+   "text": "My war is over. Remember the old soldier."
+  },
+  "url": "https://storage.googleapis.com/ludo-assets/api/68f97e86657c680226e7a504-0419ba12e1ce6a0b0c9636060c32a8bb.mp3"
+ },
+ "line_varek_greet": {
+  "credits": 1,
+  "endpoint": "/audio/speech",
+  "file": "assets/voice/varek/greet.mp3",
+  "id": "line_varek_greet",
+  "job": "45647d3e-da0c-4d87-8013-5b2c35d080d0",
+  "params": {
+   "sample": "https://storage.googleapis.com/ludo-assets/api/68f97e86657c680226e7a504-f17c3752dc64d90d973721ba99f9d1d3.mp3",
+   "text": "Grand Marshal Varek. I have buried a hundred generals. You will be a hundred and one."
+  },
+  "url": "https://storage.googleapis.com/ludo-assets/api/68f97e86657c680226e7a504-24ac2ec441c40633a239415e4b51ba4f.mp3",
+  "v": 2
+ },
+ "line_varek_lose": {
+  "credits": 1,
+  "endpoint": "/audio/speech",
+  "file": "assets/voice/varek/lose.mp3",
+  "id": "line_varek_lose",
+  "job": "48067290-8848-4a61-a1f1-7468c9582a51",
+  "params": {
+   "sample": "https://storage.googleapis.com/ludo-assets/api/68f97e86657c680226e7a504-f17c3752dc64d90d973721ba99f9d1d3.mp3",
+   "text": "A setback. They will pay for it in blood."
+  },
+  "url": "https://storage.googleapis.com/ludo-assets/api/68f97e86657c680226e7a504-14a50caf04b5ef414afe34c04973a117.mp3",
+  "v": 2
+ },
+ "line_varek_reserves": {
+  "credits": 1,
+  "endpoint": "/audio/speech",
+  "file": "assets/voice/varek/reserves.mp3",
+  "id": "line_varek_reserves",
+  "job": "0cd23801-5632-4ef0-86fa-f30338313234",
+  "params": {
+   "sample": "https://storage.googleapis.com/ludo-assets/api/68f97e86657c680226e7a504-f17c3752dc64d90d973721ba99f9d1d3.mp3",
+   "text": "Bring up the reserves. End this."
+  },
+  "url": "https://storage.googleapis.com/ludo-assets/api/68f97e86657c680226e7a504-e5878d920249979090041e2c4090df5f.mp3",
+  "v": 1
+ },
+ "line_varek_retreat": {
+  "credits": 1,
+  "endpoint": "/audio/speech",
+  "file": "assets/voice/varek/retreat.mp3",
+  "id": "line_varek_retreat",
+  "job": "76804ab6-808a-400a-9114-c6f594bb9beb",
+  "params": {
+   "sample": "https://storage.googleapis.com/ludo-assets/api/68f97e86657c680226e7a504-f17c3752dc64d90d973721ba99f9d1d3.mp3",
+   "text": "Fall back. Regroup. We return at dawn."
+  },
+  "url": "https://storage.googleapis.com/ludo-assets/api/68f97e86657c680226e7a504-9e6972505b5851f1dc07669f42699165.mp3",
+  "v": 1
+ },
+ "line_varek_victory": {
+  "credits": 1,
+  "endpoint": "/audio/speech",
+  "file": "assets/voice/varek/victory.mp3",
+  "id": "line_varek_victory",
+  "job": "41dcf3fa-2071-421e-b533-c2cc2d4e8675",
+  "params": {
+   "sample": "https://storage.googleapis.com/ludo-assets/api/68f97e86657c680226e7a504-f17c3752dc64d90d973721ba99f9d1d3.mp3",
+   "text": "The world is mine. It always was."
+  },
+  "url": "https://storage.googleapis.com/ludo-assets/api/68f97e86657c680226e7a504-cc8eb8b5c2833e5a6934747dc4f5136a.mp3",
+  "v": 2
+ },
+ "line_varek_walkin": {
+  "credits": 1,
+  "endpoint": "/audio/speech",
+  "file": "assets/voice/varek/walkin.mp3",
+  "id": "line_varek_walkin",
+  "job": "3572a1c3-03c8-4252-a57f-f58577fc3595",
+  "params": {
+   "sample": "https://storage.googleapis.com/ludo-assets/api/68f97e86657c680226e7a504-f17c3752dc64d90d973721ba99f9d1d3.mp3",
+   "text": "You left it empty. I merely accepted the invitation."
+  },
+  "url": "https://storage.googleapis.com/ludo-assets/api/68f97e86657c680226e7a504-947f59da85295d75d0ba1843e5b8ba0f.mp3"
+ },
+ "line_varek_win": {
+  "credits": 1,
+  "endpoint": "/audio/speech",
+  "file": "assets/voice/varek/win.mp3",
+  "id": "line_varek_win",
+  "job": "db6dffb2-8b3b-4bb2-ba9f-0e06ca2e7b24",
+  "params": {
+   "sample": "https://storage.googleapis.com/ludo-assets/api/68f97e86657c680226e7a504-f17c3752dc64d90d973721ba99f9d1d3.mp3",
+   "text": "As expected."
+  },
+  "url": "https://storage.googleapis.com/ludo-assets/api/68f97e86657c680226e7a504-e297774be48e82b4154d13d4f11d39cf.mp3"
+ },
+ "line_ysolde_attack": {
+  "credits": 1,
+  "endpoint": "/audio/speech",
+  "file": "assets/voice/ysolde/attack.mp3",
+  "id": "line_ysolde_attack",
+  "job": "96a56690-13f0-4f26-9b2b-171b386ae4fe",
+  "params": {
+   "sample": "https://storage.googleapis.com/ludo-assets/api/68f97e86657c680226e7a504-0d966f71b210cd377688e18fd559049d.mp3",
+   "text": "Take it. Leave nothing standing."
+  },
+  "url": "https://storage.googleapis.com/ludo-assets/api/68f97e86657c680226e7a504-2e1b20468e6642f57bdd2e92d8cc0301.mp3"
+ },
+ "line_ysolde_eliminated": {
+  "credits": 1,
+  "endpoint": "/audio/speech",
+  "file": "assets/voice/ysolde/eliminated.mp3",
+  "id": "line_ysolde_eliminated",
+  "job": "afa4211b-3496-45f1-a8b1-4053e563c41e",
+  "params": {
+   "sample": "https://storage.googleapis.com/ludo-assets/api/68f97e86657c680226e7a504-0d966f71b210cd377688e18fd559049d.mp3",
+   "text": "This is not the end of my house."
+  },
+  "url": "https://storage.googleapis.com/ludo-assets/api/68f97e86657c680226e7a504-8f0b2de8b29c51a752d0668254813429.mp3"
+ },
+ "line_ysolde_greet": {
+  "credits": 1,
+  "endpoint": "/audio/speech",
+  "file": "assets/voice/ysolde/greet.mp3",
+  "id": "line_ysolde_greet",
+  "job": "c88374a6-6b0e-4014-a43c-1db0ea63b8bd",
+  "params": {
+   "sample": "https://storage.googleapis.com/ludo-assets/api/68f97e86657c680226e7a504-0d966f71b210cd377688e18fd559049d.mp3",
+   "text": "Viceroy Ysolde. Every land at this table will fly my banner. Guard your doors."
+  },
+  "url": "https://storage.googleapis.com/ludo-assets/api/68f97e86657c680226e7a504-fe7932363ba858c8056afd0df2f29f9a.mp3",
+  "v": 2
+ },
+ "line_ysolde_lose": {
+  "credits": 1,
+  "endpoint": "/audio/speech",
+  "file": "assets/voice/ysolde/lose.mp3",
+  "id": "line_ysolde_lose",
+  "job": "cbc66496-7d8e-4b46-bf31-1323b3c41c41",
+  "params": {
+   "sample": "https://storage.googleapis.com/ludo-assets/api/68f97e86657c680226e7a504-0d966f71b210cd377688e18fd559049d.mp3",
+   "text": "You will pay for that. Dearly."
+  },
+  "url": "https://storage.googleapis.com/ludo-assets/api/68f97e86657c680226e7a504-d2f34baef03f707672c68889fb58897d.mp3",
+  "v": 2
+ },
+ "line_ysolde_reserves": {
+  "credits": 1,
+  "endpoint": "/audio/speech",
+  "file": "assets/voice/ysolde/reserves.mp3",
+  "id": "line_ysolde_reserves",
+  "job": "7d101951-d31d-46c5-a8d6-abb99e347449",
+  "params": {
+   "sample": "https://storage.googleapis.com/ludo-assets/api/68f97e86657c680226e7a504-0d966f71b210cd377688e18fd559049d.mp3",
+   "text": "Send everything. I do not lose."
+  },
+  "url": "https://storage.googleapis.com/ludo-assets/api/68f97e86657c680226e7a504-4a52815b2e266a5930685f3572f60e87.mp3",
+  "v": 1
+ },
+ "line_ysolde_retreat": {
+  "credits": 1,
+  "endpoint": "/audio/speech",
+  "file": "assets/voice/ysolde/retreat.mp3",
+  "id": "line_ysolde_retreat",
+  "job": "da368544-2b1e-4d58-a6e6-c7c27580420f",
+  "params": {
+   "sample": "https://storage.googleapis.com/ludo-assets/api/68f97e86657c680226e7a504-0d966f71b210cd377688e18fd559049d.mp3",
+   "text": "Withdraw. For now."
+  },
+  "url": "https://storage.googleapis.com/ludo-assets/api/68f97e86657c680226e7a504-5a764a09b068c53a2ce2ecef7d623f8a.mp3",
+  "v": 1
+ },
+ "line_ysolde_victory": {
+  "credits": 1,
+  "endpoint": "/audio/speech",
+  "file": "assets/voice/ysolde/victory.mp3",
+  "id": "line_ysolde_victory",
+  "job": "1904777e-4202-4301-b946-039a2bc5682a",
+  "params": {
+   "sample": "https://storage.googleapis.com/ludo-assets/api/68f97e86657c680226e7a504-0d966f71b210cd377688e18fd559049d.mp3",
+   "text": "Kneel. The empire is mine."
+  },
+  "url": "https://storage.googleapis.com/ludo-assets/api/68f97e86657c680226e7a504-523f288cc841b1c8b16087b9077ca817.mp3",
+  "v": 2
+ },
+ "line_ysolde_walkin": {
+  "credits": 1,
+  "endpoint": "/audio/speech",
+  "file": "assets/voice/ysolde/walkin.mp3",
+  "id": "line_ysolde_walkin",
+  "job": "ef835f71-760b-44c0-9836-d3887f12b89b",
+  "params": {
+   "sample": "https://storage.googleapis.com/ludo-assets/api/68f97e86657c680226e7a504-0d966f71b210cd377688e18fd559049d.mp3",
+   "text": "An empty fort is an insult to its owner. I have corrected it."
+  },
+  "url": "https://storage.googleapis.com/ludo-assets/api/68f97e86657c680226e7a504-1b31bca04dfcfffdafa0fff6e89288ff.mp3",
+  "v": 2
+ },
+ "line_ysolde_win": {
+  "credits": 1,
+  "endpoint": "/audio/speech",
+  "file": "assets/voice/ysolde/win.mp3",
+  "id": "line_ysolde_win",
+  "job": "51feff4b-ec29-4224-8c1f-6092a6118b26",
+  "params": {
+   "sample": "https://storage.googleapis.com/ludo-assets/api/68f97e86657c680226e7a504-0d966f71b210cd377688e18fd559049d.mp3",
+   "text": "Predictable."
+  },
+  "url": "https://storage.googleapis.com/ludo-assets/api/68f97e86657c680226e7a504-35c035676e1d6f7f2023124895f4eede.mp3"
+ },
+ "loop_advisor_idle": {
+  "credits": 4,
+  "endpoint": "/assets/sprite/animate",
+  "file": "assets/raw/loops/advisor_idle.webp",
+  "id": "loop_advisor_idle",
+  "job": "f2c4cd4c-e073-4516-a3fc-38d8f788700c",
+  "params": {
+   "crop": false,
+   "duration": 2,
+   "final_image": "https://storage.googleapis.com/ludo-assets/api/9696d6a65b23ddb1bc5c9d6efbcea934.png",
+   "frame_size": -9,
+   "frames": 16,
+   "image_type": "portrait",
+   "initial_image": "https://storage.googleapis.com/ludo-assets/api/9696d6a65b23ddb1bc5c9d6efbcea934.png",
+   "loop": false,
+   "model": "forge",
+   "motion_prompt": "breathes slowly and blinks, subtle idle motion, head nearly still"
+  },
+  "url": "https://storage.googleapis.com/ludo-assets/api/89f0878b95215f68ecdd15b58ee822d6.webp",
+  "v": 1
+ },
+ "loop_advisor_talk": {
+  "credits": 4,
+  "endpoint": "/assets/sprite/animate",
+  "file": "assets/raw/loops/advisor_talk.webp",
+  "id": "loop_advisor_talk",
+  "job": "74a8cb3f-c105-4dd4-afc7-a33014e830a6",
+  "params": {
+   "crop": false,
+   "duration": 2,
+   "final_image": "https://storage.googleapis.com/ludo-assets/api/9696d6a65b23ddb1bc5c9d6efbcea934.png",
+   "frame_size": -9,
+   "frames": 16,
+   "image_type": "portrait",
+   "initial_image": "https://storage.googleapis.com/ludo-assets/api/9696d6a65b23ddb1bc5c9d6efbcea934.png",
+   "loop": false,
+   "model": "forge",
+   "motion_prompt": "speaks with feeling, mouth moving as if talking, small natural head movements"
+  },
+  "url": "https://storage.googleapis.com/ludo-assets/api/2342f0e27d264067e9db4a1204d12aae.webp",
+  "v": 1
+ },
+ "loop_hask_idle": {
+  "credits": 4,
+  "endpoint": "/assets/sprite/animate",
+  "file": "assets/raw/loops/hask_idle.webp",
+  "id": "loop_hask_idle",
+  "job": "ae61ba16-fa6a-49d8-8a47-02647c7410a4",
+  "params": {
+   "crop": false,
+   "duration": 2,
+   "final_image": "https://storage.googleapis.com/ludo-assets/api/5a9e2ac645109e5b3de4697aa086e967.png",
+   "frame_size": -9,
+   "frames": 16,
+   "image_type": "portrait",
+   "initial_image": "https://storage.googleapis.com/ludo-assets/api/5a9e2ac645109e5b3de4697aa086e967.png",
+   "loop": false,
+   "model": "forge",
+   "motion_prompt": "breathes slowly and blinks, subtle idle motion, head nearly still"
+  },
+  "url": "https://storage.googleapis.com/ludo-assets/api/a72d383a52e4b80394499db10349ba82.webp",
+  "v": 1
+ },
+ "loop_hask_talk": {
+  "credits": 4,
+  "endpoint": "/assets/sprite/animate",
+  "file": "assets/raw/loops/hask_talk.webp",
+  "id": "loop_hask_talk",
+  "job": "d5e308ef-0f3c-4645-a41b-adfd5dd72ef6",
+  "params": {
+   "crop": false,
+   "duration": 2,
+   "final_image": "https://storage.googleapis.com/ludo-assets/api/5a9e2ac645109e5b3de4697aa086e967.png",
+   "frame_size": -9,
+   "frames": 16,
+   "image_type": "portrait",
+   "initial_image": "https://storage.googleapis.com/ludo-assets/api/5a9e2ac645109e5b3de4697aa086e967.png",
+   "loop": false,
+   "model": "forge",
+   "motion_prompt": "speaks with feeling, mouth moving as if talking, small natural head movements"
+  },
+  "url": "https://storage.googleapis.com/ludo-assets/api/37bbfa3325af7f242793f5691fb29b5d.webp",
+  "v": 1
+ },
+ "loop_imre_idle": {
+  "credits": 4,
+  "endpoint": "/assets/sprite/animate",
+  "file": "assets/raw/loops/imre_idle.webp",
+  "id": "loop_imre_idle",
+  "job": "df0aae8a-182b-43d8-a3f3-d100e92d1805",
+  "params": {
+   "crop": false,
+   "duration": 2,
+   "final_image": "https://storage.googleapis.com/ludo-assets/api/6d6043e1d2e2f40f65a2e9398bce821c.png",
+   "frame_size": -9,
+   "frames": 16,
+   "image_type": "portrait",
+   "initial_image": "https://storage.googleapis.com/ludo-assets/api/6d6043e1d2e2f40f65a2e9398bce821c.png",
+   "loop": false,
+   "model": "forge",
+   "motion_prompt": "breathes slowly and blinks, subtle idle motion, head nearly still"
+  },
+  "url": "https://storage.googleapis.com/ludo-assets/api/9f0e31b36c31ca2a31119ef70d992d90.webp",
+  "v": 1
+ },
+ "loop_imre_talk": {
+  "credits": 4,
+  "endpoint": "/assets/sprite/animate",
+  "file": "assets/raw/loops/imre_talk.webp",
+  "id": "loop_imre_talk",
+  "job": "4a641c38-b887-434c-afd4-3eb6f0519a70",
+  "params": {
+   "crop": false,
+   "duration": 2,
+   "final_image": "https://storage.googleapis.com/ludo-assets/api/6d6043e1d2e2f40f65a2e9398bce821c.png",
+   "frame_size": -9,
+   "frames": 16,
+   "image_type": "portrait",
+   "initial_image": "https://storage.googleapis.com/ludo-assets/api/6d6043e1d2e2f40f65a2e9398bce821c.png",
+   "loop": false,
+   "model": "forge",
+   "motion_prompt": "speaks with feeling, mouth moving as if talking, small natural head movements"
+  },
+  "url": "https://storage.googleapis.com/ludo-assets/api/85fa6c429b39d15156528548a23d3331.webp",
+  "v": 1
+ },
+ "loop_oren_idle": {
+  "credits": 4,
+  "endpoint": "/assets/sprite/animate",
+  "file": "assets/raw/loops/oren_idle.webp",
+  "id": "loop_oren_idle",
+  "job": "9065ece2-7344-4365-8c40-0fac38cd9a15",
+  "params": {
+   "crop": false,
+   "duration": 2,
+   "final_image": "https://storage.googleapis.com/ludo-assets/api/dc35cf0e13a627960495eab7c30d4d2b.png",
+   "frame_size": -9,
+   "frames": 16,
+   "image_type": "portrait",
+   "initial_image": "https://storage.googleapis.com/ludo-assets/api/dc35cf0e13a627960495eab7c30d4d2b.png",
+   "loop": false,
+   "model": "forge",
+   "motion_prompt": "breathes slowly and blinks, subtle idle motion, head nearly still"
+  },
+  "url": "https://storage.googleapis.com/ludo-assets/api/300c44b8800d135c1a12dbf9d9fdd8a4.webp",
+  "v": 1
+ },
+ "loop_oren_talk": {
+  "credits": 4,
+  "endpoint": "/assets/sprite/animate",
+  "file": "assets/raw/loops/oren_talk.webp",
+  "id": "loop_oren_talk",
+  "job": "24ae3c69-be79-4d04-8d04-f47f010b09b0",
+  "params": {
+   "crop": false,
+   "duration": 2,
+   "final_image": "https://storage.googleapis.com/ludo-assets/api/dc35cf0e13a627960495eab7c30d4d2b.png",
+   "frame_size": -9,
+   "frames": 16,
+   "image_type": "portrait",
+   "initial_image": "https://storage.googleapis.com/ludo-assets/api/dc35cf0e13a627960495eab7c30d4d2b.png",
+   "loop": false,
+   "model": "forge",
+   "motion_prompt": "speaks with feeling, mouth moving as if talking, small natural head movements"
+  },
+  "url": "https://storage.googleapis.com/ludo-assets/api/c0859eed5407555731ee057a78519b99.webp",
+  "v": 1
+ },
+ "loop_quill_idle": {
+  "credits": 4,
+  "endpoint": "/assets/sprite/animate",
+  "file": "assets/raw/loops/quill_idle.webp",
+  "id": "loop_quill_idle",
+  "job": "a0e6d43f-27c4-490c-8eb5-b6d91d299f9e",
+  "params": {
+   "crop": false,
+   "duration": 2,
+   "final_image": "https://storage.googleapis.com/ludo-assets/api/86237be00325d35de0d7b99113dcb847.png",
+   "frame_size": -9,
+   "frames": 16,
+   "image_type": "portrait",
+   "initial_image": "https://storage.googleapis.com/ludo-assets/api/86237be00325d35de0d7b99113dcb847.png",
+   "loop": false,
+   "model": "forge",
+   "motion_prompt": "breathes slowly and blinks, subtle idle motion, head nearly still"
+  },
+  "url": "https://storage.googleapis.com/ludo-assets/api/4f1d8a69d450df764c50825fc1d0ed51.webp",
+  "v": 1
+ },
+ "loop_quill_talk": {
+  "credits": 4,
+  "endpoint": "/assets/sprite/animate",
+  "file": "assets/raw/loops/quill_talk.webp",
+  "id": "loop_quill_talk",
+  "job": "c1d10b31-15a7-49b1-9189-e61b396d0cc5",
+  "params": {
+   "crop": false,
+   "duration": 2,
+   "final_image": "https://storage.googleapis.com/ludo-assets/api/86237be00325d35de0d7b99113dcb847.png",
+   "frame_size": -9,
+   "frames": 16,
+   "image_type": "portrait",
+   "initial_image": "https://storage.googleapis.com/ludo-assets/api/86237be00325d35de0d7b99113dcb847.png",
+   "loop": false,
+   "model": "forge",
+   "motion_prompt": "speaks with feeling, mouth moving as if talking, small natural head movements"
+  },
+  "url": "https://storage.googleapis.com/ludo-assets/api/74c970fb1dc2e8c574b9f7e3e692a66e.webp",
+  "v": 1
+ },
+ "loop_varek_idle": {
+  "credits": 4,
+  "endpoint": "/assets/sprite/animate",
+  "file": "assets/raw/loops/varek_idle.webp",
+  "id": "loop_varek_idle",
+  "job": "585d84ff-cff5-42a3-ab21-7cf357deb5f9",
+  "params": {
+   "crop": false,
+   "duration": 2,
+   "final_image": "https://storage.googleapis.com/ludo-assets/api/a9027d4ef178453a99c5ff77c44a7693.png",
+   "frame_size": -9,
+   "frames": 16,
+   "image_type": "portrait",
+   "initial_image": "https://storage.googleapis.com/ludo-assets/api/a9027d4ef178453a99c5ff77c44a7693.png",
+   "loop": false,
+   "model": "forge",
+   "motion_prompt": "breathes slowly and blinks, subtle idle motion, head nearly still"
+  },
+  "url": "https://storage.googleapis.com/ludo-assets/api/b177859a20af011ae6ffcad755cfba1a.webp",
+  "v": 1
+ },
+ "loop_varek_talk": {
+  "credits": 4,
+  "endpoint": "/assets/sprite/animate",
+  "file": "assets/raw/loops/varek_talk.webp",
+  "id": "loop_varek_talk",
+  "job": "9adea5f0-da85-4480-988c-bff68032220f",
+  "params": {
+   "crop": false,
+   "duration": 2,
+   "final_image": "https://storage.googleapis.com/ludo-assets/api/a9027d4ef178453a99c5ff77c44a7693.png",
+   "frame_size": -9,
+   "frames": 16,
+   "image_type": "portrait",
+   "initial_image": "https://storage.googleapis.com/ludo-assets/api/a9027d4ef178453a99c5ff77c44a7693.png",
+   "loop": false,
+   "model": "forge",
+   "motion_prompt": "speaks with feeling, mouth moving as if talking, small natural head movements"
+  },
+  "url": "https://storage.googleapis.com/ludo-assets/api/38cfe90528915454b7ecbdcb1f1bf580.webp",
+  "v": 1
+ },
+ "loop_ysolde_idle": {
+  "credits": 4,
+  "endpoint": "/assets/sprite/animate",
+  "file": "assets/raw/loops/ysolde_idle.webp",
+  "id": "loop_ysolde_idle",
+  "job": "e3a476d4-a044-473b-8a59-8238764f176d",
+  "params": {
+   "crop": false,
+   "duration": 2,
+   "final_image": "https://storage.googleapis.com/ludo-assets/api/d686fe27624ab4b5438028545edbbb6d.png",
+   "frame_size": -9,
+   "frames": 16,
+   "image_type": "portrait",
+   "initial_image": "https://storage.googleapis.com/ludo-assets/api/d686fe27624ab4b5438028545edbbb6d.png",
+   "loop": false,
+   "model": "forge",
+   "motion_prompt": "breathes slowly and blinks, subtle idle motion, head nearly still"
+  },
+  "url": "https://storage.googleapis.com/ludo-assets/api/94575fbf25dfd7479b8c91e5a0e09311.webp",
+  "v": 1
+ },
+ "loop_ysolde_talk": {
+  "credits": 4,
+  "endpoint": "/assets/sprite/animate",
+  "file": "assets/raw/loops/ysolde_talk.webp",
+  "id": "loop_ysolde_talk",
+  "job": "59e68cab-d6be-476d-a8ae-8c5f857461d2",
+  "params": {
+   "crop": false,
+   "duration": 2,
+   "final_image": "https://storage.googleapis.com/ludo-assets/api/d686fe27624ab4b5438028545edbbb6d.png",
+   "frame_size": -9,
+   "frames": 16,
+   "image_type": "portrait",
+   "initial_image": "https://storage.googleapis.com/ludo-assets/api/d686fe27624ab4b5438028545edbbb6d.png",
+   "loop": false,
+   "model": "forge",
+   "motion_prompt": "speaks with feeling, mouth moving as if talking, small natural head movements"
+  },
+  "url": "https://storage.googleapis.com/ludo-assets/api/2651ed0f21aeddb41124e8963599bcc9.webp",
+  "v": 1
+ },
  "music_battle": {
   "credits": 3,
   "endpoint": "/audio/music",
   "file": "assets/audio/music/battle.mp3",
   "id": "music_battle",
-  "job": "a4fe8178-247a-4891-b76f-76bd3ec871dd",
+  "job": "c939a4b6-c598-4f41-823b-9795a9e92ba8",
   "params": {
    "augment_prompt": true,
-   "description": "Driving war drums and low brass ostinato for a battle resolution sequence in a board game, epic but controlled, instrumental, loopable",
+   "description": "Full-throttle battle march: pounding war drums, rolling snares, blaring brass, fife and drum corps, cannon-like timpani hits, relentless and aggressive, a battle of conquest, loopable, instrumental",
+   "duration": 120
+  },
+  "url": "https://storage.googleapis.com/ludo-assets/api/68f97e86657c680226e7a504-5292489fd4fbdb94ea50e25cee2f4b8c.mp3",
+  "v": 2
+ },
+ "music_charge": {
+  "credits": 3,
+  "endpoint": "/audio/music",
+  "file": "assets/audio/music/charge.mp3",
+  "id": "music_charge",
+  "job": "acd57435-3a51-4640-bc4f-0a61ec62ac04",
+  "params": {
+   "augment_prompt": true,
+   "description": "Heroic cavalry charge music: galloping strings ostinato, bugle calls, crashing cymbals, brass heroics, breathless and victorious, loopable, instrumental",
    "duration": 90
   },
-  "url": "https://storage.googleapis.com/ludo-assets/api/68f97e86657c680226e7a504-0a4f291949798cbc4c85f7ebe94e128d.mp3"
+  "url": "https://storage.googleapis.com/ludo-assets/api/68f97e86657c680226e7a504-22890ffccde70ba2c79ea49c650524fa.mp3",
+  "v": 1
  },
  "music_defeat": {
   "credits": 3,
   "endpoint": "/audio/music",
   "file": "assets/audio/music/defeat.mp3",
   "id": "music_defeat",
-  "job": "0e278562-9d4e-4491-a704-494086b636c2",
+  "job": "d140334b-63c4-4930-9f12-8dcf8a4800ee",
   "params": {
    "augment_prompt": true,
-   "description": "Short somber orchestral cue for a lost war: solo horn and low strings, instrumental",
-   "duration": 20
+   "description": "Funeral march for a fallen empire: muffled drums, a solo bugle, low strings, dignified and grim",
+   "duration": 30
   },
-  "url": "https://storage.googleapis.com/ludo-assets/api/68f97e86657c680226e7a504-9cfc2cf4b5cf1fca86b6539deb1a3cdc.mp3"
+  "url": "https://storage.googleapis.com/ludo-assets/api/68f97e86657c680226e7a504-5720778385b345a5740ee4101811241f.mp3",
+  "v": 2
  },
  "music_menu": {
   "credits": 3,
   "endpoint": "/audio/music",
   "file": "assets/audio/music/menu.mp3",
   "id": "music_menu",
-  "job": "2db3c049-c8e2-4c05-8682-ea6d45d12c3b",
+  "job": "10945e7a-3520-4818-9135-1455a7b0d33b",
   "params": {
    "augment_prompt": true,
-   "description": "Majestic slow orchestral main theme for a historical grand strategy board game: noble strings, warm low brass, soft snare rolls, contemplative and grand, instrumental, loopable",
+   "description": "Grand imperial anthem for a conquest strategy game: thundering timpani, full brass fanfare, marching snare drums, soaring strings and a proud wordless choir, triumphant and bombastic, the empire on the march, instrumental",
    "duration": 120
   },
-  "url": "https://storage.googleapis.com/ludo-assets/api/68f97e86657c680226e7a504-3332049b69cc78dfd82b88f1544f4946.mp3"
+  "url": "https://storage.googleapis.com/ludo-assets/api/68f97e86657c680226e7a504-fcf28c838edb140ecffaf4b36c9b5315.mp3",
+  "v": 2
  },
  "music_plan": {
   "credits": 3,
   "endpoint": "/audio/music",
   "file": "assets/audio/music/plan.mp3",
   "id": "music_plan",
-  "job": "bde55579-5456-4c1e-a6a8-9c9641d163f9",
+  "job": "bd649afe-a262-493e-ab4b-0e8f82837ae1",
   "params": {
    "augment_prompt": true,
-   "description": "Calm, quietly tense strategy planning music: soft pizzicato strings, low cello pulse, light harpsichord, understated so a player can think, instrumental background loop",
+   "description": "War council music for planning an invasion: steady military snare cadence, low brass and cellos building quiet menace, fifes in the distance, confident and driving, loopable, instrumental",
    "duration": 150
   },
-  "url": "https://storage.googleapis.com/ludo-assets/api/68f97e86657c680226e7a504-edd3545e696ba043adf802fabc706c65.mp3"
+  "url": "https://storage.googleapis.com/ludo-assets/api/68f97e86657c680226e7a504-b49948ed3becced239a6164bff48b0c6.mp3",
+  "v": 2
  },
  "music_victory": {
   "credits": 3,
   "endpoint": "/audio/music",
   "file": "assets/audio/music/victory.mp3",
   "id": "music_victory",
-  "job": "ffe06c0d-9608-40c9-acf3-4a454b9f3ece",
+  "job": "98f2d2f2-c87f-42f8-a97e-22031a7c2ea7",
   "params": {
    "augment_prompt": true,
-   "description": "Short triumphant orchestral victory fanfare with brass and timpani, instrumental",
-   "duration": 20
+   "description": "Triumphal imperial victory anthem: blazing brass fanfare, pealing bells, a choir singing a wordless hymn of conquest, timpani, glorious",
+   "duration": 40
   },
-  "url": "https://storage.googleapis.com/ludo-assets/api/68f97e86657c680226e7a504-3976413a8c3c32471ff80c96b1bfbc40.mp3"
+  "url": "https://storage.googleapis.com/ludo-assets/api/68f97e86657c680226e7a504-efde428fabc35fbbc77435d301ff1c2c.mp3",
+  "v": 2
  },
  "portrait_advisor": {
   "credits": 0.5,
   "endpoint": "/assets/image",
-  "file": "assets/portraits/advisor.webp",
+  "file": "assets/portraits/advisor.png",
   "id": "portrait_advisor",
-  "job": "c448f8a4-d1b9-404a-a8bf-7c4d2f64a577",
+  "job": "133a3eef-82cd-4c8e-8413-0aed93af749a",
   "params": {
-   "art_style": "Hand-Painted",
+   "art_style": "Digital Painting",
    "aspect_ratio": "ar_1_1",
    "augment_prompt": true,
    "image_type": "portrait",
    "n": 1,
    "perspective": "Any perspective",
-   "prompt": "Bust portrait of a friendly elderly military advisor with white beard, reading glasses and a pointer stick, warm helpful expression, dark background. Hand-painted board game art, visible brush strokes, palette of deep navy, parchment cream, crimson red and antique gold, candlelit war-room mood, no text, no letters, no watermark"
+   "prompt": "Bust portrait of an elderly imperial chief of staff with white mutton-chop whiskers and a monocle, scarlet general's coat with gold aiguillettes and a sash of orders, a proud, shrewd, grandfatherly smile. Head and shoulders centered with space around them, isolated on a plain white background. Grand imperial oil painting in the tradition of 18th-century history painting and Age of Sail maritime art, rich glazes, dramatic golden light and deep shadow, palette of imperial crimson, royal navy blue, burnished gold, ivory and gunpowder grey, heroic and triumphant, no text, no letters, no watermark"
   },
-  "url": "https://storage.googleapis.com/ludo-assets/api/42c22325da3376c48127350cd96d2bdc.webp"
+  "url": "https://storage.googleapis.com/ludo-assets/api/9696d6a65b23ddb1bc5c9d6efbcea934.png",
+  "v": 2
  },
  "portrait_hask": {
   "credits": 0.5,
-  "endpoint": "/assets/image",
-  "file": "assets/portraits/hask.webp",
+  "endpoint": "/assets/image/style",
+  "file": "assets/portraits/hask.png",
   "id": "portrait_hask",
-  "job": "8a5929f2-b8ac-4861-acd4-f234166c9c9a",
+  "job": "4ef978d8-c217-4442-b687-d0cd525f89f2",
   "params": {
-   "art_style": "Hand-Painted",
-   "aspect_ratio": "ar_1_1",
    "augment_prompt": true,
    "image_type": "portrait",
    "n": 1,
-   "perspective": "Any perspective",
-   "prompt": "Bust portrait of a huge bearded northern warlord in a bear-fur cloak with a battered iron helmet, fierce but amused expression, dark background. Hand-painted board game art, visible brush strokes, palette of deep navy, parchment cream, crimson red and antique gold, candlelit war-room mood, no text, no letters, no watermark"
+   "prompt": "Bust portrait of a huge black-bearded privateer commodore in a bear-fur mantle over a battered naval coat, tricorne hat, a cutlass hilt and a brace of pistols across his chest, fierce laughing eyes. Head and shoulders centered with space around them, isolated on a plain white background",
+   "style_image": "https://storage.googleapis.com/ludo-assets/api/9696d6a65b23ddb1bc5c9d6efbcea934.png"
   },
-  "url": "https://storage.googleapis.com/ludo-assets/api/611df60cc2be6c657d015edadb0964e9.webp"
+  "url": "https://storage.googleapis.com/ludo-assets/api/5a9e2ac645109e5b3de4697aa086e967.png",
+  "v": 2
  },
  "portrait_imre": {
   "credits": 0.5,
-  "endpoint": "/assets/image",
-  "file": "assets/portraits/imre.webp",
+  "endpoint": "/assets/image/style",
+  "file": "assets/portraits/imre.png",
   "id": "portrait_imre",
-  "job": "60dd1941-290c-4e18-a1f5-b5d1a9a477c3",
+  "job": "16fc415a-aaea-4aa9-8dad-fdb06420919b",
   "params": {
-   "art_style": "Hand-Painted",
-   "aspect_ratio": "ar_1_1",
    "augment_prompt": true,
    "image_type": "portrait",
    "n": 1,
-   "perspective": "Any perspective",
-   "prompt": "Bust portrait of a calm, sharp-eyed woman tactician with short dark hair and a rolled map in hand, plain navy uniform, faint knowing smile, dark background. Hand-painted board game art, visible brush strokes, palette of deep navy, parchment cream, crimson red and antique gold, candlelit war-room mood, no text, no letters, no watermark"
+   "prompt": "Bust portrait of a calm sharp-eyed woman admiral with short dark hair, navy frock coat with gold buttons and epaulettes, a brass spyglass tucked under her arm, a faint knowing smile. Head and shoulders centered with space around them, isolated on a plain white background",
+   "style_image": "https://storage.googleapis.com/ludo-assets/api/9696d6a65b23ddb1bc5c9d6efbcea934.png"
   },
-  "url": "https://storage.googleapis.com/ludo-assets/api/c72648ddddfef126dc162a9693210caf.webp"
+  "url": "https://storage.googleapis.com/ludo-assets/api/6d6043e1d2e2f40f65a2e9398bce821c.png",
+  "v": 2
  },
  "portrait_oren": {
   "credits": 0.5,
-  "endpoint": "/assets/image",
-  "file": "assets/portraits/oren.webp",
+  "endpoint": "/assets/image/style",
+  "file": "assets/portraits/oren.png",
   "id": "portrait_oren",
-  "job": "473f2268-d06e-4487-bc61-12d7ef1e537c",
+  "job": "4a229393-5d36-46d7-994f-2a87c6fc626a",
   "params": {
-   "art_style": "Hand-Painted",
-   "aspect_ratio": "ar_1_1",
    "augment_prompt": true,
    "image_type": "portrait",
    "n": 1,
-   "perspective": "Any perspective",
-   "prompt": "Bust portrait of a young, reckless cavalry captain with windswept hair, plumed helmet under his arm, eager grin, green and gold uniform, dark background. Hand-painted board game art, visible brush strokes, palette of deep navy, parchment cream, crimson red and antique gold, candlelit war-room mood, no text, no letters, no watermark"
+   "prompt": "Bust portrait of a dashing young hussar captain with windswept blond hair, braided sky-blue dolman jacket with a fur-trimmed pelisse slung over one shoulder, sabre hilt at his shoulder, reckless grin. Head and shoulders centered with space around them, isolated on a plain white background",
+   "style_image": "https://storage.googleapis.com/ludo-assets/api/9696d6a65b23ddb1bc5c9d6efbcea934.png"
   },
-  "url": "https://storage.googleapis.com/ludo-assets/api/033510c8891e777e1524566bc8b8c601.webp"
+  "url": "https://storage.googleapis.com/ludo-assets/api/dc35cf0e13a627960495eab7c30d4d2b.png",
+  "v": 2
  },
  "portrait_player": {
   "credits": 0.5,
-  "endpoint": "/assets/image",
+  "endpoint": "/assets/image/style",
   "file": "assets/portraits/player.webp",
   "id": "portrait_player",
-  "job": "ad6661a0-eb22-4d39-a31d-c6457ac8f9b7",
+  "job": "b1021f16-ed81-4cdd-8600-b048166c0d41",
   "params": {
-   "art_style": "Hand-Painted",
-   "aspect_ratio": "ar_1_1",
    "augment_prompt": true,
    "image_type": "portrait",
    "n": 1,
-   "perspective": "Any perspective",
-   "prompt": "Silhouette bust of an anonymous commander in a tricorn hat and greatcoat, backlit by candlelight, face in shadow, dark background. Hand-painted board game art, visible brush strokes, palette of deep navy, parchment cream, crimson red and antique gold, candlelit war-room mood, no text, no letters, no watermark"
+   "prompt": "Silhouette bust of an anonymous imperial commander in a bicorne hat and greatcoat with epaulettes, backlit by a blazing sunset over a harbor full of warships, face in shadow",
+   "style_image": "https://storage.googleapis.com/ludo-assets/api/9696d6a65b23ddb1bc5c9d6efbcea934.png"
   },
-  "url": "https://storage.googleapis.com/ludo-assets/api/3097db649e308650019a7511f6299236.webp"
+  "url": "https://storage.googleapis.com/ludo-assets/api/1ae13476343861f07cd8668c24b93e68.webp",
+  "v": 2
  },
  "portrait_quill": {
   "credits": 0.5,
-  "endpoint": "/assets/image",
-  "file": "assets/portraits/quill.webp",
+  "endpoint": "/assets/image/style",
+  "file": "assets/portraits/quill.png",
   "id": "portrait_quill",
-  "job": "3a61da2d-2680-4f3d-8e36-9ff5664883eb",
+  "job": "c58ef9c1-0ad4-4cd9-a1c2-7d33fb79eb1f",
   "params": {
-   "art_style": "Hand-Painted",
-   "aspect_ratio": "ar_1_1",
    "augment_prompt": true,
    "image_type": "portrait",
    "n": 1,
-   "perspective": "Any perspective",
-   "prompt": "Bust portrait of a portly, cunning quartermaster with round spectacles, ledger under his arm and a sly smile, brown officer coat, dark background. Hand-painted board game art, visible brush strokes, palette of deep navy, parchment cream, crimson red and antique gold, candlelit war-room mood, no text, no letters, no watermark"
+   "prompt": "Bust portrait of a portly cunning trading-company governor in a powdered wig, green brocade waistcoat and a gold chain of office, round spectacles, a flintlock pistol tucked in his sash, a sly greedy grin. Head and shoulders centered with space around them, isolated on a plain white background",
+   "style_image": "https://storage.googleapis.com/ludo-assets/api/9696d6a65b23ddb1bc5c9d6efbcea934.png"
   },
-  "url": "https://storage.googleapis.com/ludo-assets/api/bbf76b7a5a8598c8a411c54e82b1a78c.webp"
+  "url": "https://storage.googleapis.com/ludo-assets/api/86237be00325d35de0d7b99113dcb847.png",
+  "v": 2
  },
  "portrait_varek": {
   "credits": 0.5,
-  "endpoint": "/assets/image",
-  "file": "assets/portraits/varek.webp",
+  "endpoint": "/assets/image/style",
+  "file": "assets/portraits/varek.png",
   "id": "portrait_varek",
-  "job": "fa8f61b2-60b9-46da-8282-8eae1bc08530",
+  "job": "bca36854-4f06-4f63-9ff5-8b4e4b822571",
   "params": {
-   "art_style": "Hand-Painted",
-   "aspect_ratio": "ar_1_1",
    "augment_prompt": true,
    "image_type": "portrait",
    "n": 1,
-   "perspective": "Any perspective",
-   "prompt": "Bust portrait of a grizzled old field marshal with an eyepatch, grey mustache, navy greatcoat with gold epaulettes, stern confident expression, dark background. Hand-painted board game art, visible brush strokes, palette of deep navy, parchment cream, crimson red and antique gold, candlelit war-room mood, no text, no letters, no watermark"
+   "prompt": "Bust portrait of a grizzled old imperial field marshal with an eyepatch, iron-grey mustache and a duelling scar, navy greatcoat heavy with gold epaulettes and medals, black bicorne hat with gold trim, stern and merciless. Head and shoulders centered with space around them, isolated on a plain white background",
+   "style_image": "https://storage.googleapis.com/ludo-assets/api/9696d6a65b23ddb1bc5c9d6efbcea934.png"
   },
-  "url": "https://storage.googleapis.com/ludo-assets/api/7c3c97c79a1e134d7c7eec6ac7f7a9f0.webp"
+  "url": "https://storage.googleapis.com/ludo-assets/api/a9027d4ef178453a99c5ff77c44a7693.png",
+  "v": 2
  },
  "portrait_ysolde": {
   "credits": 0.5,
-  "endpoint": "/assets/image",
-  "file": "assets/portraits/ysolde.webp",
+  "endpoint": "/assets/image/style",
+  "file": "assets/portraits/ysolde.png",
   "id": "portrait_ysolde",
-  "job": "944037d2-7555-49d3-a8b7-d0abfeb506a5",
+  "job": "2fa30253-8fc0-4712-92c0-3fd50d8fdfff",
   "params": {
-   "art_style": "Hand-Painted",
-   "aspect_ratio": "ar_1_1",
    "augment_prompt": true,
    "image_type": "portrait",
    "n": 1,
-   "perspective": "Any perspective",
-   "prompt": "Bust portrait of a stern noblewoman general in her forties with a silver circlet and crimson cloak over steel armor, calculating gaze, dark background. Hand-painted board game art, visible brush strokes, palette of deep navy, parchment cream, crimson red and antique gold, candlelit war-room mood, no text, no letters, no watermark"
+   "prompt": "Bust portrait of a stern noblewoman viceroy-general in her forties with dark hair pinned up, crimson governor's uniform coat with heavy gold braid, black tricorne hat with a white ostrich plume, cold and imperious. Head and shoulders centered with space around them, isolated on a plain white background",
+   "style_image": "https://storage.googleapis.com/ludo-assets/api/9696d6a65b23ddb1bc5c9d6efbcea934.png"
   },
-  "url": "https://storage.googleapis.com/ludo-assets/api/3b2165efdf393fb9fe86f0170402f0d6.webp"
+  "url": "https://storage.googleapis.com/ludo-assets/api/d686fe27624ab4b5438028545edbbb6d.png",
+  "v": 2
+ },
+ "sfx_banner": {
+  "credits": 2,
+  "endpoint": "/audio/sound-effect",
+  "file": "assets/audio/sfx/banner.mp3",
+  "id": "sfx_banner",
+  "job": "63b44e82-7952-4f1b-80fb-6bd3058a342b",
+  "params": {
+   "augment_prompt": true,
+   "description": "heavy cloth battle flag snapping in the wind, short",
+   "duration": 2,
+   "loop": false
+  },
+  "url": "https://storage.googleapis.com/ludo-assets/api/68f97e86657c680226e7a504-9acbfa8fee8f9fdd71e5edbb1c0fa4a3.mp3"
+ },
+ "sfx_cannon": {
+  "credits": 2,
+  "endpoint": "/audio/sound-effect",
+  "file": "assets/audio/sfx/cannon.mp3",
+  "id": "sfx_cannon",
+  "job": "70bb83f8-f51f-46f1-93c0-27b6bf1e3422",
+  "params": {
+   "augment_prompt": true,
+   "description": "a single field cannon firing, deep boom with rumble",
+   "duration": 2,
+   "loop": false
+  },
+  "url": "https://storage.googleapis.com/ludo-assets/api/68f97e86657c680226e7a504-b561c332badc14764ca29df34d24ef7b.mp3"
  },
  "sfx_capture": {
   "credits": 2,
   "endpoint": "/audio/sound-effect",
   "file": "assets/audio/sfx/capture.mp3",
   "id": "sfx_capture",
-  "job": "39534863-6bed-4b2f-8d71-566481119f36",
+  "job": "af0ab124-1f65-481e-b9b4-5a0627f23732",
   "params": {
    "augment_prompt": true,
-   "description": "short triumphant brass fanfare sting announcing a captured town, bright, two seconds",
-   "duration": 2.0,
+   "description": "short triumphant brass fanfare with a snare flourish and a distant cheer, a town has fallen, two seconds",
+   "duration": 2,
    "loop": false
   },
-  "url": "https://storage.googleapis.com/ludo-assets/api/68f97e86657c680226e7a504-353b0c37935cd0cee95a7c12894a61da.mp3"
+  "url": "https://storage.googleapis.com/ludo-assets/api/68f97e86657c680226e7a504-e7981e73a5deb3d8870fe1ca8058acf6.mp3",
+  "v": 2
  },
  "sfx_card": {
   "credits": 2,
@@ -747,6 +2804,34 @@
    "loop": false
   },
   "url": "https://storage.googleapis.com/ludo-assets/api/68f97e86657c680226e7a504-54c4d8c65d7fbb05906971f9f8e40115.mp3"
+ },
+ "sfx_charge": {
+  "credits": 2,
+  "endpoint": "/audio/sound-effect",
+  "file": "assets/audio/sfx/charge.mp3",
+  "id": "sfx_charge",
+  "job": "0b5a3bb4-d0a1-45e8-b641-50597277a37f",
+  "params": {
+   "augment_prompt": true,
+   "description": "bugle sounding a short cavalry charge call",
+   "duration": 2,
+   "loop": false
+  },
+  "url": "https://storage.googleapis.com/ludo-assets/api/68f97e86657c680226e7a504-fb338cf2c088071bd05d7412e5a27e37.mp3"
+ },
+ "sfx_cheer": {
+  "credits": 2,
+  "endpoint": "/audio/sound-effect",
+  "file": "assets/audio/sfx/cheer.mp3",
+  "id": "sfx_cheer",
+  "job": "5750efc1-2a6d-4d5b-beee-85ddeb07fa0d",
+  "params": {
+   "augment_prompt": true,
+   "description": "a company of soldiers cheering in victory, short",
+   "duration": 2,
+   "loop": false
+  },
+  "url": "https://storage.googleapis.com/ludo-assets/api/68f97e86657c680226e7a504-088ccb84a7b25cb551667b2e5f1da77f.mp3"
  },
  "sfx_clash": {
   "credits": 2,
@@ -790,19 +2875,34 @@
   },
   "url": "https://storage.googleapis.com/ludo-assets/api/68f97e86657c680226e7a504-a829df13ba07fad4b8f55a14bc12e614.mp3"
  },
+ "sfx_drumroll": {
+  "credits": 2,
+  "endpoint": "/audio/sound-effect",
+  "file": "assets/audio/sfx/drumroll.mp3",
+  "id": "sfx_drumroll",
+  "job": "1b85d3f8-2a1e-44d5-ac1d-121adcd2cc0a",
+  "params": {
+   "augment_prompt": true,
+   "description": "short military snare drum roll building tension then stop",
+   "duration": 2,
+   "loop": false
+  },
+  "url": "https://storage.googleapis.com/ludo-assets/api/68f97e86657c680226e7a504-3925836cd171b4cd3e1a8acca113b70b.mp3"
+ },
  "sfx_eliminated": {
   "credits": 2,
   "endpoint": "/audio/sound-effect",
   "file": "assets/audio/sfx/eliminated.mp3",
   "id": "sfx_eliminated",
-  "job": "6e68ddb1-9911-44d9-8d73-7d8247a23875",
+  "job": "c9cdabb4-ba5a-4632-92b9-3fbf2b268f15",
   "params": {
    "augment_prompt": true,
-   "description": "slow deep funeral drum hits with a mournful low horn, a faction is destroyed",
-   "duration": 3.0,
+   "description": "a thundering cannon salute and a slow grand drum roll, an empire has fallen, short",
+   "duration": 2,
    "loop": false
   },
-  "url": "https://storage.googleapis.com/ludo-assets/api/68f97e86657c680226e7a504-b6ae0f7fcc80fc71cc49b227f6799af0.mp3"
+  "url": "https://storage.googleapis.com/ludo-assets/api/68f97e86657c680226e7a504-084282d7886a84b7308acc01741e191f.mp3",
+  "v": 2
  },
  "sfx_error": {
   "credits": 2,
@@ -818,6 +2918,20 @@
   },
   "url": "https://storage.googleapis.com/ludo-assets/api/68f97e86657c680226e7a504-e3d660338c91d0c1ab505a6af88f8060.mp3"
  },
+ "sfx_hit": {
+  "credits": 2,
+  "endpoint": "/audio/sound-effect",
+  "file": "assets/audio/sfx/hit.mp3",
+  "id": "sfx_hit",
+  "job": "824045f6-8cda-45aa-be20-44e43adc832d",
+  "params": {
+   "augment_prompt": true,
+   "description": "soldier grunts as he falls, muffled, short, not gory",
+   "duration": 2,
+   "loop": false
+  },
+  "url": "https://storage.googleapis.com/ludo-assets/api/68f97e86657c680226e7a504-0d531a923333259187c6111f387e08b8.mp3"
+ },
  "sfx_hold": {
   "credits": 2,
   "endpoint": "/audio/sound-effect",
@@ -831,6 +2945,36 @@
    "loop": false
   },
   "url": "https://storage.googleapis.com/ludo-assets/api/68f97e86657c680226e7a504-a3c84f1a3211660376c4d19ea7ac93be.mp3"
+ },
+ "sfx_hoofs": {
+  "credits": 2,
+  "endpoint": "/audio/sound-effect",
+  "file": "assets/audio/sfx/hoofs.mp3",
+  "id": "sfx_hoofs",
+  "job": "ce010b7a-49a0-4d82-bbb6-048f25dd6b1b",
+  "params": {
+   "augment_prompt": true,
+   "description": "a squadron of cavalry galloping past on hard ground, short",
+   "duration": 3,
+   "loop": false
+  },
+  "url": "https://storage.googleapis.com/ludo-assets/api/68f97e86657c680226e7a504-2d2053865b4b452b230a3f58bf4ef408.mp3",
+  "v": 1
+ },
+ "sfx_hurrah": {
+  "credits": 2,
+  "endpoint": "/audio/sound-effect",
+  "file": "assets/audio/sfx/hurrah.mp3",
+  "id": "sfx_hurrah",
+  "job": "173e17af-ead3-49ed-b916-7e487edf0842",
+  "params": {
+   "augment_prompt": true,
+   "description": "a whole regiment roaring hurrah as they charge, short",
+   "duration": 2,
+   "loop": false
+  },
+  "url": "https://storage.googleapis.com/ludo-assets/api/68f97e86657c680226e7a504-b2c985105bd0743aa731a5cd6abe1cfd.mp3",
+  "v": 1
  },
  "sfx_march": {
   "credits": 2,
@@ -902,19 +3046,50 @@
   },
   "url": "https://storage.googleapis.com/ludo-assets/api/68f97e86657c680226e7a504-a5b46a7c5f97cec7084caa5ca7c1b7ed.mp3"
  },
+ "sfx_reserves": {
+  "credits": 2,
+  "endpoint": "/audio/sound-effect",
+  "file": "assets/audio/sfx/reserves.mp3",
+  "id": "sfx_reserves",
+  "job": "3c34a95b-c3c0-4f7c-bad2-ca99de8ed5b7",
+  "params": {
+   "augment_prompt": true,
+   "description": "war drums beating fast and a column of boots rushing forward with a roar, short",
+   "duration": 3,
+   "loop": false
+  },
+  "url": "https://storage.googleapis.com/ludo-assets/api/68f97e86657c680226e7a504-574071a25ee6161f9269050060295bfe.mp3",
+  "v": 1
+ },
+ "sfx_retreat": {
+  "credits": 2,
+  "endpoint": "/audio/sound-effect",
+  "file": "assets/audio/sfx/retreat.mp3",
+  "id": "sfx_retreat",
+  "job": "efb24a4e-8b87-4d44-8784-b12ff8e31448",
+  "params": {
+   "augment_prompt": true,
+   "description": "a bugle sounding the retreat call, urgent, short",
+   "duration": 2,
+   "loop": false
+  },
+  "url": "https://storage.googleapis.com/ludo-assets/api/68f97e86657c680226e7a504-a986fcdac62ea3dba3b43eab672fbe72.mp3",
+  "v": 1
+ },
  "sfx_reveal": {
   "credits": 2,
   "endpoint": "/audio/sound-effect",
   "file": "assets/audio/sfx/reveal.mp3",
   "id": "sfx_reveal",
-  "job": "27e4c173-f7a1-42be-81fe-5baa5df34b8a",
+  "job": "3b7f3fb4-431d-4c0b-a9c0-bfbd734d631f",
   "params": {
    "augment_prompt": true,
-   "description": "parchment scroll unrolled quickly followed by a short distant war horn call",
-   "duration": 2.5,
+   "description": "parchment unrolled quickly then a bugle calls the advance with drums",
+   "duration": 2,
    "loop": false
   },
-  "url": "https://storage.googleapis.com/ludo-assets/api/68f97e86657c680226e7a504-da19d45db7531a2d558ca7eb9c7cc403.mp3"
+  "url": "https://storage.googleapis.com/ludo-assets/api/68f97e86657c680226e7a504-7cc2d42f3878b32c7a36757d904bbe63.mp3",
+  "v": 2
  },
  "sfx_round": {
   "credits": 2,
@@ -935,14 +3110,15 @@
   "endpoint": "/audio/sound-effect",
   "file": "assets/audio/sfx/seal.mp3",
   "id": "sfx_seal",
-  "job": "1079b765-9623-4cea-9315-edb3353d2757",
+  "job": "a8680a6b-8717-45d2-b7dc-afeabbdad912",
   "params": {
    "augment_prompt": true,
-   "description": "wax seal stamp pressed firmly onto parchment followed by a single deep war drum hit",
-   "duration": 1.5,
+   "description": "wax seal stamp pressed onto parchment followed by a war drum hit and a distant cannon boom",
+   "duration": 2,
    "loop": false
   },
-  "url": "https://storage.googleapis.com/ludo-assets/api/68f97e86657c680226e7a504-edd6cf10a0190a2e6307d2ff5d78fab9.mp3"
+  "url": "https://storage.googleapis.com/ludo-assets/api/68f97e86657c680226e7a504-8e730e0c0fb85d593fe48f71dab13c6c.mp3",
+  "v": 2
  },
  "sfx_surge": {
   "credits": 2,
@@ -986,36 +3162,207 @@
   },
   "url": "https://storage.googleapis.com/ludo-assets/api/68f97e86657c680226e7a504-bc8cdc9b00a3a79ec897246451e82f56.mp3"
  },
+ "sfx_volley": {
+  "credits": 2,
+  "endpoint": "/audio/sound-effect",
+  "file": "assets/audio/sfx/volley.mp3",
+  "id": "sfx_volley",
+  "job": "cc9977bd-dab2-4add-8c91-c5e240c9aa14",
+  "params": {
+   "augment_prompt": true,
+   "description": "a line of muskets firing a single volley together, sharp crack and echo",
+   "duration": 2,
+   "loop": false
+  },
+  "url": "https://storage.googleapis.com/ludo-assets/api/68f97e86657c680226e7a504-45bed6fd55425aaaf6c3ba29c7823013.mp3"
+ },
  "sfx_walkin": {
   "credits": 2,
   "endpoint": "/audio/sound-effect",
   "file": "assets/audio/sfx/walkin.mp3",
   "id": "sfx_walkin",
-  "job": "883f6449-30bd-46e0-a4a2-74989afd812c",
+  "job": "22c6ac8e-eeeb-4a79-83b9-e7e3b17e9deb",
   "params": {
    "augment_prompt": true,
-   "description": "ominous low brass and timpani sting, sneaky and dramatic, a nasty surprise",
-   "duration": 2.5,
+   "description": "cocky swaggering low brass sting with a snare hit, sly and triumphant, short",
+   "duration": 2,
    "loop": false
   },
-  "url": "https://storage.googleapis.com/ludo-assets/api/68f97e86657c680226e7a504-02080477a69d3105103ce64de662a8ed.mp3"
+  "url": "https://storage.googleapis.com/ludo-assets/api/68f97e86657c680226e7a504-909b0b7a43a3ffe27485e296856756ab.mp3",
+  "v": 2
+ },
+ "soldier_fall_anim": {
+  "credits": 4,
+  "endpoint": "/assets/sprite/animate",
+  "file": "assets/raw/battle/soldier_fall.webp",
+  "id": "soldier_fall_anim",
+  "job": "242ee2fa-ea37-4fee-83c7-18004dd86bcf",
+  "params": {
+   "crop": false,
+   "duration": 2,
+   "frame_size": -9,
+   "frames": 16,
+   "image_type": "sprite",
+   "initial_image": "data:image/png;base64,iVBORw0KGgoAAAANSU...(base64)",
+   "loop": false,
+   "model": "forge",
+   "motion_prompt": "is hit by a musket ball and falls backward to the ground, then lies still"
+  },
+  "url": "https://storage.googleapis.com/ludo-assets/api/65f63b8351620148673361461fd96b2f.webp",
+  "v": 3
+ },
+ "soldier_fallen": {
+  "credits": 0.5,
+  "endpoint": "/assets/image/edit",
+  "file": "assets/battle/soldier_fallen.png",
+  "id": "soldier_fallen",
+  "job": "50dd45c0-a392-49e4-9cde-bd42448db23b",
+  "params": {
+   "augment_prompt": true,
+   "image": "https://storage.googleapis.com/ludo-assets/api/2039eb657813c77f3ac50f7873594d5d.png",
+   "n": 1,
+   "prompt": "The same toy soldier now fallen flat on the ground on his back, musket dropped beside him, same colors, same side view"
+  },
+  "url": "https://storage.googleapis.com/ludo-assets/api/cb691188f4bff5ae18749abbefae4561.png"
+ },
+ "soldier_fire_anim": {
+  "credits": 4,
+  "endpoint": "/assets/sprite/animate",
+  "file": "assets/raw/battle/soldier_fire.webp",
+  "id": "soldier_fire_anim",
+  "job": "71fe1828-f6b6-4525-8ccc-421f61e701df",
+  "params": {
+   "crop": false,
+   "duration": 2,
+   "final_image": "data:image/png;base64,iVBORw0KGgoAAAANSU...(base64)",
+   "frame_size": -9,
+   "frames": 16,
+   "image_type": "sprite",
+   "initial_image": "data:image/png;base64,iVBORw0KGgoAAAANSU...(base64)",
+   "loop": false,
+   "model": "forge",
+   "motion_prompt": "levels the musket straight ahead to the right at shoulder height and fires, a puff of smoke bursts from the muzzle on the right, then shoulders the musket again exactly as at the start"
+  },
+  "url": "https://storage.googleapis.com/ludo-assets/api/688e2f149ca9a9f9019e7820a5b50010.webp",
+  "v": 4
+ },
+ "soldier_flag": {
+  "credits": 0.5,
+  "endpoint": "/assets/image",
+  "file": "assets/raw/battle/soldier_flag.png",
+  "id": "soldier_flag",
+  "job": "f54e5a85-72f0-4558-b199-138257c32a84",
+  "params": {
+   "art_style": "Hand-Painted",
+   "aspect_ratio": "ar_3_4",
+   "augment_prompt": true,
+   "image_type": "sprite",
+   "n": 1,
+   "perspective": "Side-Scroll",
+   "prompt": "A single toy soldier flag bearer of imperial line infantry holding a tall pole with a large plain white flag, tall shako, full body standing, side view facing right, the whole figure painted pure white and very light grey with no other colors, glossy painted tin-soldier miniature look, isolated on a plain white background"
+  },
+  "url": "https://storage.googleapis.com/ludo-assets/api/8522eaf5725962f9cd873d1928ad5126.png",
+  "v": 2
+ },
+ "soldier_idle_anim": {
+  "credits": 4,
+  "endpoint": "/assets/sprite/animate",
+  "file": "assets/raw/battle/soldier_idle.webp",
+  "id": "soldier_idle_anim",
+  "job": "a24463c7-a3b0-4d0c-a3f4-a558e5af954b",
+  "params": {
+   "crop": false,
+   "duration": 2,
+   "final_image": "data:image/png;base64,iVBORw0KGgoAAAANSU...(base64)",
+   "frame_size": -9,
+   "frames": 16,
+   "image_type": "sprite",
+   "initial_image": "data:image/png;base64,iVBORw0KGgoAAAANSU...(base64)",
+   "loop": false,
+   "model": "forge",
+   "motion_prompt": "stands at ease breathing, shifting weight slightly, musket at the shoulder"
+  },
+  "url": "https://storage.googleapis.com/ludo-assets/api/be78e394398b4a22d154f1bbe25ee8ad.webp",
+  "v": 3
+ },
+ "soldier_march_anim": {
+  "credits": 4,
+  "endpoint": "/assets/sprite/animate",
+  "file": "assets/raw/battle/soldier_march.webp",
+  "id": "soldier_march_anim",
+  "job": "7944948b-20e1-4cef-80f7-6e64b4643360",
+  "params": {
+   "crop": false,
+   "duration": 2,
+   "final_image": "data:image/png;base64,iVBORw0KGgoAAAANSU...(base64)",
+   "frame_size": -9,
+   "frames": 16,
+   "image_type": "sprite",
+   "initial_image": "data:image/png;base64,iVBORw0KGgoAAAANSU...(base64)",
+   "loop": false,
+   "model": "forge",
+   "motion_prompt": "marches forward in place, a steady walk cycle, musket at the shoulder"
+  },
+  "url": "https://storage.googleapis.com/ludo-assets/api/5fc1caf44a3c0fd6d85fb3e931d0d3d1.webp",
+  "v": 3
+ },
+ "soldier_stand": {
+  "credits": 0.5,
+  "endpoint": "/assets/image",
+  "file": "assets/raw/battle/soldier_stand.png",
+  "id": "soldier_stand",
+  "job": "0b77f12b-7a46-44c3-a8c9-b1cc857452fd",
+  "params": {
+   "art_style": "Hand-Painted",
+   "aspect_ratio": "ar_3_4",
+   "augment_prompt": true,
+   "image_type": "sprite",
+   "n": 1,
+   "perspective": "Side-Scroll",
+   "prompt": "A single toy soldier of imperial line infantry, tall shako, crossbelts and tailcoat, musket held upright at the shoulder, full body standing, side view facing right, the whole figure painted pure white and very light grey with no other colors, glossy painted tin-soldier miniature look, isolated on a plain white background"
+  },
+  "url": "https://storage.googleapis.com/ludo-assets/api/adde67ab62cc3403ce8070d3d80d088e.png",
+  "v": 2
  },
  "splash_title": {
   "credits": 0.5,
   "endpoint": "/assets/image",
   "file": "assets/art/splash_title.webp",
   "id": "splash_title",
-  "job": "5569d767-f491-4975-9c69-ab9cb2d2b655",
+  "job": "21e92a9e-2e20-4334-82a8-7abb2fdaf4f2",
   "params": {
-   "art_style": "Hand-Painted",
+   "art_style": "Digital Painting",
    "aspect_ratio": "ar_16_9",
    "augment_prompt": true,
-   "image_type": "splash",
+   "image_type": "art",
    "n": 1,
    "perspective": "Any perspective",
-   "prompt": "A candlelit war-room table seen from a high angle: a large hand-drawn campaign map of an imaginary continent with painted coastlines, small colored wooden army blocks in red, blue, green and gold placed on the territories, sealed order envelopes with red wax seals, a brass compass and a quill, dramatic warm light falling on the center, dark vignette edges. Hand-painted board game art, visible brush strokes, palette of deep navy, parchment cream, crimson red and antique gold, candlelit war-room mood, no text, no letters, no watermark"
+   "prompt": "The grand map room of an empire at the height of its power: a vast painted chart of unknown continents spread across a mahogany table, brass dividers and a spyglass, toy regiments in crimson and navy massed along the coastlines, a gilded globe, captured battle flags on the walls, tall windows open onto a harbor crowded with ships of the line under full sail at golden hour. Grand imperial oil painting in the tradition of 18th-century history painting and Age of Sail maritime art, rich glazes, dramatic golden light and deep shadow, palette of imperial crimson, royal navy blue, burnished gold, ivory and gunpowder grey, heroic and triumphant, no text, no letters, no watermark"
   },
-  "url": "https://storage.googleapis.com/ludo-assets/api/de6bd3bfead56483234d2a3a445ef269.webp"
+  "url": "https://storage.googleapis.com/ludo-assets/api/9aaa1cd33df9f310f48184bfbdb2776c.webp",
+  "v": 2
+ },
+ "test_hask_idle": {
+  "credits": 4,
+  "endpoint": "/assets/sprite/animate",
+  "file": "../../../../../private/tmp/claude-501/-Users-coterboat-Documents-GitHub-concurrent/bc4320bd-c0d0-4365-8ab7-0ad9afd8a9c9/scratchpad/test_hask_idle.webp",
+  "id": "test_hask_idle",
+  "job": "0f26f885-8e95-4a21-ae64-8b3275443de0",
+  "params": {
+   "crop": false,
+   "duration": 2,
+   "final_image": "https://storage.googleapis.com/ludo-assets/api/611df60cc2be6c657d015edadb0964e9.webp",
+   "frame_size": -9,
+   "frames": 16,
+   "image_type": "portrait",
+   "initial_image": "https://storage.googleapis.com/ludo-assets/api/611df60cc2be6c657d015edadb0964e9.webp",
+   "loop": false,
+   "model": "forge",
+   "motion_prompt": "breathes slowly and blinks, subtle idle motion",
+   "spritesheet_with_background": true
+  },
+  "url": "https://storage.googleapis.com/ludo-assets/api/3d8112dd6ba3b52ef4734303b017da9f.webp",
+  "v": 1
  },
  "tex_land": {
   "credits": 0.5,
@@ -1084,5 +3431,103 @@
    "prompt": "Seamless tileable dark walnut wood tabletop texture, rich grain, subtle scratches, even lighting, flat, top-down"
   },
   "url": "https://storage.googleapis.com/ludo-assets/api/bc047a5948f9aaff66a91ce3a9eb4025.webp"
+ },
+ "voice_advisor": {
+  "credits": 1,
+  "endpoint": "/audio/voice",
+  "file": "assets/voice/advisor/_sample.mp3",
+  "id": "voice_advisor",
+  "job": "bfd08e4c-c7d9-43f7-b600-d46b58f676ca",
+  "params": {
+   "augment_prompt": true,
+   "text": "Welcome to the war table, Commander. Every general writes orders in secret, and every army marches at once.",
+   "type": "human",
+   "voice_description": "Elderly British military advisor, warm and wise, slightly gravelly, calm measured delivery, reassuring"
+  },
+  "url": "https://storage.googleapis.com/ludo-assets/api/68f97e86657c680226e7a504-f315f52bb2200802cd805e5d61d284aa.mp3"
+ },
+ "voice_hask": {
+  "credits": 1,
+  "endpoint": "/audio/voice",
+  "file": "assets/voice/hask/_sample.mp3",
+  "id": "voice_hask",
+  "job": "59c0cb95-a62f-4efe-992f-bb36080107dd",
+  "params": {
+   "augment_prompt": true,
+   "text": "Old Bear Hask! Bring me your best, little general!",
+   "type": "human",
+   "voice_description": "Huge bearded northern warlord, booming deep voice, rough accent, laughs easily"
+  },
+  "url": "https://storage.googleapis.com/ludo-assets/api/68f97e86657c680226e7a504-c4f989d71a4802ac73133afdebc51231.mp3"
+ },
+ "voice_imre": {
+  "credits": 1,
+  "endpoint": "/audio/voice",
+  "file": "assets/voice/imre/_sample.mp3",
+  "id": "voice_imre",
+  "job": "44d06dd0-5e5b-4b62-a0df-92e0a154e30d",
+  "params": {
+   "augment_prompt": true,
+   "text": "Commander Imre. I have already read your plan.",
+   "type": "human",
+   "voice_description": "Calm sharp-witted woman tactician, low even voice, dry and understated"
+  },
+  "url": "https://storage.googleapis.com/ludo-assets/api/68f97e86657c680226e7a504-ae12d313a3605e63b93415eea6e6af81.mp3"
+ },
+ "voice_oren": {
+  "credits": 1,
+  "endpoint": "/audio/voice",
+  "file": "assets/voice/oren/_sample.mp3",
+  "id": "voice_oren",
+  "job": "a30b8451-fd8d-4531-b610-43605ded20bc",
+  "params": {
+   "augment_prompt": true,
+   "text": "Captain Oren! First war, but I am a fast learner!",
+   "type": "human",
+   "voice_description": "Young eager cavalry captain in his twenties, bright, boyish and overconfident"
+  },
+  "url": "https://storage.googleapis.com/ludo-assets/api/68f97e86657c680226e7a504-db4e09a19f0c23caf31835d1330420f8.mp3"
+ },
+ "voice_quill": {
+  "credits": 1,
+  "endpoint": "/audio/voice",
+  "file": "assets/voice/quill/_sample.mp3",
+  "id": "voice_quill",
+  "job": "6484591c-9105-4598-9372-0a3fdb120e13",
+  "params": {
+   "augment_prompt": true,
+   "text": "The Quartermaster, at your service. Everything has its price.",
+   "type": "human",
+   "voice_description": "Portly sly quartermaster, nasal and amused, quick merchant patter"
+  },
+  "url": "https://storage.googleapis.com/ludo-assets/api/68f97e86657c680226e7a504-43e937972be4c547ac952f529a38b909.mp3"
+ },
+ "voice_varek": {
+  "credits": 1,
+  "endpoint": "/audio/voice",
+  "file": "assets/voice/varek/_sample.mp3",
+  "id": "voice_varek",
+  "job": "a1292994-1251-4c65-9773-87cb183bbcfd",
+  "params": {
+   "augment_prompt": true,
+   "text": "Marshal Varek. I have buried better generals than you. Let us begin.",
+   "type": "human",
+   "voice_description": "Old grizzled field marshal, very deep gravelly voice, slow, stoic and commanding"
+  },
+  "url": "https://storage.googleapis.com/ludo-assets/api/68f97e86657c680226e7a504-f17c3752dc64d90d973721ba99f9d1d3.mp3"
+ },
+ "voice_ysolde": {
+  "credits": 1,
+  "endpoint": "/audio/voice",
+  "file": "assets/voice/ysolde/_sample.mp3",
+  "id": "voice_ysolde",
+  "job": "bc9046ef-792a-4bea-bf1f-4ef0f0eef332",
+  "params": {
+   "augment_prompt": true,
+   "text": "Lady Ysolde. I suggest you guard your doors.",
+   "type": "human",
+   "voice_description": "Stern aristocratic woman general in her forties, cold, crisp, precise and commanding"
+  },
+  "url": "https://storage.googleapis.com/ludo-assets/api/68f97e86657c680226e7a504-0d966f71b210cd377688e18fd559049d.mp3"
  }
 }

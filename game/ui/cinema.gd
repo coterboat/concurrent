@@ -36,6 +36,14 @@ var _progress: Label
 var _rolling := 0.0
 var _roll_final := Vector2i.ZERO
 var _active := false
+var theater: Control ## the battlefield scene, if the game screen provides one
+var theater_hook: Callable ## beat -> bool: open the battlefield for this fight?
+var beat_hook: Callable ## beat -> void: reactions (walk-ins, eliminations…)
+var bottom_margin := 20.0
+var _waiting := false
+var _theater_off := false
+var _theater_cb: Callable
+var _group_first := -1 ## beat index of the first fight on the battlefield now
 
 
 func _ready() -> void:
@@ -64,7 +72,7 @@ func _ready() -> void:
 	_card = PanelContainer.new()
 	_card.add_theme_stylebox_override("panel", Style.panel_box(16))
 	_card.set_anchors_preset(PRESET_CENTER_BOTTOM)
-	_card.offset_bottom = -78
+	_card.offset_bottom = -78 - bottom_margin
 	_card.grow_horizontal = Control.GROW_DIRECTION_BOTH
 	_card.grow_vertical = Control.GROW_DIRECTION_BEGIN
 	_card.mouse_filter = Control.MOUSE_FILTER_IGNORE
@@ -107,16 +115,21 @@ func _ready() -> void:
 	_controls.add_child(Style.chip("Skip to results ▶▶", func(): skip(), Style.PARCH, 17))
 	_progress = Style.label("", 16, Style.MUTED)
 	_controls.add_child(_progress)
+	_controls.visible = bottom_margin < 40.0
 	visible = false
 
 
 func play(p_session: Node, p_board: Control) -> void:
 	session = p_session
 	board = p_board
+	if not session.extended.is_connected(_on_extended):
+		session.extended.connect(_on_extended)
 	_events = session.events
 	_pre = session.pre_world
 	_packets = []
 	_resolved = {}
+	_waiting = false
+	_theater_off = false
 	beats = _build_beats()
 	index = -1
 	paused = false
@@ -140,15 +153,47 @@ func advance() -> void:
 	if not _active:
 		return
 	index += 1
+	if index >= beats.size() and not session.pending.is_empty():
+		## a paused battle nobody is watching: the officers call it
+		session.release_live()
 	if index >= beats.size():
 		_finish()
 		return
 	_show(beats[index])
 
 
+func _on_extended() -> void:
+	## The round resolved further (a battle call was made): same prefix, more log.
+	if not _active:
+		return
+	_events = session.events
+	_packets = []
+	beats = _build_beats()
+	if _waiting and theater != null and _group_first >= 0:
+		theater.extend(_group_at(_group_first))
+
+
+func _group_at(first: int) -> Array:
+	## Every fight at the same land in a row goes to the battlefield together.
+	var group: Array = [beats[first]]
+	var land: String = str(beats[first].get("resolves", ""))
+	var j: int = first + 1
+	while land != "" and j < beats.size() and bool(beats[j].get("fight", false)) and str(beats[j].get("resolves", "")) == land:
+		group.append(beats[j])
+		j += 1
+	return group
+
+
 func skip() -> void:
 	if not _active:
 		return
+	if not session.pending.is_empty():
+		session.release_live()
+	if _waiting and theater != null:
+		if _theater_cb.is_valid() and theater.finished.is_connected(_theater_cb):
+			theater.finished.disconnect(_theater_cb)
+		theater.abort()
+		_waiting = false
 	board.world = ViewEvents.apply_through(_pre, _events, _events.size() - 1)
 	board.orders = []
 	board.battle = {}
@@ -167,13 +212,23 @@ func _finish() -> void:
 	finished.emit()
 
 
+func toggle_pause() -> void:
+	_toggle_pause()
+
+
+func progress_text() -> String:
+	if index < 0 or beats.is_empty():
+		return ""
+	return "%d of %d" % [mini(index + 1, beats.size()), beats.size()]
+
+
 func _toggle_pause() -> void:
 	paused = not paused
 	_pause_btn.text = "▶ Play" if paused else "❚❚ Pause"
 
 
 func _unhandled_input(event: InputEvent) -> void:
-	if not _active:
+	if not _active or _waiting:
 		return
 	if event is InputEventKey and event.pressed and not event.echo:
 		if event.keycode == KEY_SPACE or event.keycode == KEY_ENTER or event.keycode == KEY_RIGHT:
@@ -187,7 +242,7 @@ func _unhandled_input(event: InputEvent) -> void:
 
 
 func _process(delta: float) -> void:
-	if not _active:
+	if not _active or _waiting:
 		return
 	if _rolling > 0.0:
 		_rolling -= delta
@@ -285,9 +340,11 @@ func _build_beats() -> Array:
 		var kind: String = str(e["kind"])
 		match kind:
 			Types.EVENT_CLASH:
-				out.append(_fight_beat(i, "Border clash", _hex(str(e["hexA"])) + " ⇄ " + _hex(str(e["hexB"])),
+				var cb := _fight_beat(i, "Border clash", _hex(str(e["hexA"])) + " ⇄ " + _hex(str(e["hexB"])),
 					str(e["playerA"]), int(e["sizeA"]), int(e["dieA"]), str(e["playerB"]), int(e["sizeB"]), int(e["dieB"]),
-					str(e["winnerId"]) == str(e["playerA"]), int(e["winnerRemaining"]), "Both armies meet in the field.", [str(e["hexA"]), str(e["hexB"])], ""))
+					str(e["winnerId"]) == str(e["playerA"]), int(e["winnerRemaining"]), "Both armies meet in the field.", [str(e["hexA"]), str(e["hexB"])], "")
+				cb["event"] = e
+				out.append(cb)
 			Types.EVENT_INVASION:
 				var to: String = str(e["to"])
 				var upto := i
@@ -298,6 +355,7 @@ func _build_beats() -> Array:
 					bool(e["attackerWon"]), int(e["winnerRemaining"]), "", [str(e["from"]), to], to)
 				b["invasion"] = true
 				b["attacker_ties"] = true
+				b["event"] = e
 				out.append(b)
 				i = upto
 			Types.EVENT_SPOILS:
@@ -305,22 +363,24 @@ func _build_beats() -> Array:
 				var upto2 := i
 				if i + 1 < n and str(evs[i + 1]["kind"]) == Types.EVENT_OCCUPIED:
 					upto2 = i + 1
-				out.append(_fight_beat(upto2, "Fight for %s" % _hex(to2), "",
+				var sb := _fight_beat(upto2, "Fight for %s" % _hex(to2), "",
 					str(e["playerA"]), int(e["sizeA"]), int(e["dieA"]), str(e["playerB"]), int(e["sizeB"]), int(e["dieB"]),
-					str(e["winnerId"]) == str(e["playerA"]), int(e["winnerRemaining"]), "Two invaders, one prize.", [to2], to2))
+					str(e["winnerId"]) == str(e["playerA"]), int(e["winnerRemaining"]), "Two invaders, one prize.", [to2], to2)
+				sb["event"] = e
+				out.append(sb)
 				i = upto2
 			Types.EVENT_OCCUPIED:
 				var hex: String = str(e["terrId"])
 				var who: String = str(e["playerId"])
 				if vacated.has(hex) and vacated[hex] != who:
-					out.append({"upto": i, "caption": "Walk-in!", "sub": "%s strolls into %s — %s left it bare." % [_name(who), _hex(hex), _name(vacated[hex])], "sound": "walkin", "delay": 2.0, "focus": [hex], "flash": hex, "flash_text": "WALK-IN", "resolves": hex})
+					out.append({"upto": i, "caption": "Walk-in!", "sub": "%s strolls into %s — %s left it bare." % [_name(who), _hex(hex), _name(vacated[hex])], "sound": "walkin", "delay": 2.0, "focus": [hex], "flash": hex, "flash_text": "WALK-IN", "resolves": hex, "walkin": who, "victim": vacated[hex]})
 				else:
 					out.append({"upto": i, "caption": "%s takes %s" % [_name(who), _hex(hex)], "sub": "Nobody was home.", "sound": "capture", "delay": 1.1, "focus": [hex], "flash": hex, "flash_text": "+1", "resolves": hex})
 			Types.EVENT_SURGE:
 				_packets.append({"from": str(e["from"]), "to": str(e["to"]), "strength": int(e["strength"]), "owner": str(e["playerId"]), "kind": "attack"})
-				out.append({"upto": i, "caption": "%s surges on!" % _name(str(e["playerId"])), "sub": "%d push on from %s into %s." % [int(e["strength"]), _hex(str(e["from"])), _hex(str(e["to"]))], "sound": "surge", "delay": 1.4, "focus": [str(e["from"]), str(e["to"])]})
+				out.append({"upto": i, "caption": "%s surges on!" % _name(str(e["playerId"])), "sub": "%d push on from %s into %s." % [int(e["strength"]), _hex(str(e["from"])), _hex(str(e["to"]))], "sound": "surge", "sound2": "hoofs", "delay": 1.4, "focus": [str(e["from"]), str(e["to"])]})
 			Types.EVENT_PLAYER_ELIMINATED:
-				out.append({"upto": i, "caption": "%s is wiped out" % _name(str(e["playerId"])), "sub": "Their banners fall.", "sound": "eliminated", "delay": 2.4})
+				out.append({"upto": i, "caption": "%s is wiped out" % _name(str(e["playerId"])), "sub": "Their banners fall.", "sound": "eliminated", "delay": 2.4, "eliminated": str(e["playerId"])})
 			Types.EVENT_CARDS_CAPTURED:
 				out.append({"upto": i, "caption": "Spoils of war", "sub": "%s seizes %s's %d card%s." % [_name(str(e["to"])), _name(str(e["from"])), (e["cards"] as Array).size(), "" if (e["cards"] as Array).size() == 1 else "s"], "sound": "card", "delay": 1.4})
 			Types.EVENT_ENTRENCHED:
@@ -349,6 +409,16 @@ func _fight_beat(upto: int, title: String, subtitle: String, a: String, a_size: 
 
 
 func _show(b: Dictionary) -> void:
+	if bool(b.get("fight", false)) and not _theater_off and theater != null and theater_hook.is_valid() and bool(theater_hook.call(b)):
+		_open_theater(b)
+		return
+	if bool(b.get("fight", false)) and bool((b.get("event", {}) as Dictionary).get("pending", false)):
+		## paused for a call nobody will make here: officers decide, then show it
+		session.release_live()
+		if index < beats.size():
+			b = beats[index]
+	if beat_hook.is_valid():
+		beat_hook.call(b)
 	var delay_base: float = Settings.battle_delay()
 	_caption.text = str(b.get("caption", ""))
 	_sub.text = str(b.get("sub", ""))
@@ -384,6 +454,43 @@ func _show(b: Dictionary) -> void:
 		for e in _events:
 			if str(e["kind"]) == Types.EVENT_ENTRENCHED:
 				board.pulse_token(str(e["terrId"]), 0.7)
+
+
+func _open_theater(first: Dictionary) -> void:
+	_group_first = index
+	var group: Array = _group_at(index)
+	var human := false
+	for g in group:
+		if session.is_human(str(g["a"])) or session.is_human(str(g["b"])):
+			human = true
+	## the map shows the moment before the first fight
+	board.world = ViewEvents.apply_through(_pre, _events, int(first["upto"]) - (1 if str(_events[int(first["upto"])]["kind"]) == Types.EVENT_OCCUPIED else 0) - 1)
+	board.refresh()
+	_waiting = true
+	_banner.visible = false
+	_card.visible = false
+	_theater_cb = func(skip_rest: bool):
+		if skip_rest and not session.pending.is_empty():
+			session.release_live() ## the officers call whatever is left
+		_waiting = false
+		_banner.visible = true
+		var grp: Array = _group_at(_group_first)
+		var last_index: int = _group_first + grp.size() - 1
+		_group_first = -1
+		index = last_index
+		var lb: Dictionary = beats[last_index]
+		for g in grp:
+			if str(g.get("resolves", "")) != "":
+				_resolved[str(g["resolves"])] = true
+		for o in board.orders:
+			o["alpha"] = 0.28 if _resolved.has(str(o["to"])) else 1.0
+		board.world = ViewEvents.apply_through(_pre, _events, int(lb["upto"]))
+		board.refresh()
+		if skip_rest:
+			_theater_off = true
+		_wait = 0.4
+	theater.finished.connect(_theater_cb, CONNECT_ONE_SHOT)
+	theater.play(session, group, human)
 
 
 func _apply(b: Dictionary) -> void:
@@ -426,15 +533,22 @@ func _reveal_result() -> void:
 	var winner: String = str(b["a"]) if a_won else str(b["b"])
 	var loser: String = str(b["b"]) if a_won else str(b["a"])
 	var inv: bool = bool(b.get("invasion", false))
+	var ev: Dictionary = b.get("event", {})
 	var txt := ""
-	if inv:
+	if int(ev.get("reservesAdded", 0)) > 0:
+		txt = "Reserves +%d!  " % int(ev["reservesAdded"])
+		Audio.sfx("reserves", -4.0)
+	if inv and bool(ev.get("fellBack", false)):
+		txt += "%s falls back to %s — %d saved" % [_name(str(b["a"])), _hex(str(ev.get("refuge", ""))), int(ev.get("attackerLeft", 0))]
+		Audio.sfx("retreat")
+	elif inv:
 		if a_won:
-			txt = "%s takes %s with %d left" % [_name(winner), _hex(str(b["resolves"])), int(b["left"])]
+			txt += "%s takes %s with %d left" % [_name(winner), _hex(str(b["resolves"])), int(b["left"])]
 			if ta == tb:
 				txt += "  (ties go to the attacker)"
 			Audio.sfx("capture")
 		else:
-			txt = "%s holds! %d remain" % [_name(winner), int(b["left"])]
+			txt += "%s holds! %d remain" % [_name(winner), int(b["left"])]
 			Audio.sfx("hold")
 	else:
 		txt = "%s wins with %d left — %s is destroyed" % [_name(winner), int(b["left"]), _name(loser)]

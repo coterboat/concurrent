@@ -1,152 +1,2086 @@
 {
-  "style": {
-    "art_style": "Hand-Painted",
-    "image": "Hand-painted board game art, visible brush strokes, palette of deep navy, parchment cream, crimson red and antique gold, candlelit war-room mood, no text, no letters, no watermark"
+ "style": {
+  "art_style": "Digital Painting",
+  "image": "Grand imperial oil painting in the tradition of 18th-century history painting and Age of Sail maritime art, rich glazes, dramatic golden light and deep shadow, palette of imperial crimson, royal navy blue, burnished gold, ivory and gunpowder grey, heroic and triumphant, no text, no letters, no watermark"
+ },
+ "assets": [
+  {
+   "id": "tex_parchment",
+   "kind": "image",
+   "type": "texture",
+   "aspect": "ar_1_1",
+   "out": "assets/tex/parchment",
+   "style": false,
+   "prompt": "Seamless tileable texture of aged parchment paper, soft fibers and faint stains, light warm cream, even lighting, flat, top-down, no objects"
   },
-  "assets": [
-    {"id": "splash_title", "kind": "image", "type": "splash", "aspect": "ar_16_9", "out": "assets/art/splash_title",
-     "prompt": "A candlelit war-room table seen from a high angle: a large hand-drawn campaign map of an imaginary continent with painted coastlines, small colored wooden army blocks in red, blue, green and gold placed on the territories, sealed order envelopes with red wax seals, a brass compass and a quill, dramatic warm light falling on the center, dark vignette edges"},
-    {"id": "art_victory", "kind": "image", "type": "art", "aspect": "ar_16_9", "out": "assets/art/victory",
-     "prompt": "A triumphant general's crimson and gold banner raised over the battlements of a hilltop castle at golden sunrise, small cheering soldiers below, heroic and warm"},
-    {"id": "art_defeat", "kind": "image", "type": "art", "aspect": "ar_16_9", "out": "assets/art/defeat",
-     "prompt": "A torn fallen battle banner lying in the mud beside an abandoned wooden fort at dusk, cold blue light, crows on the palisade, somber and quiet"},
-    {"id": "howto_sealed", "kind": "image", "type": "art", "aspect": "ar_4_3", "out": "assets/art/howto_sealed",
-     "prompt": "Close-up of a quill writing secret battle orders on a parchment sheet beside a red wax seal stamp and a guttering candle on a dark wooden desk"},
-    {"id": "howto_march", "kind": "image", "type": "art", "aspect": "ar_4_3", "out": "assets/art/howto_march",
-     "prompt": "A long column of small toy-soldier style infantry with red banners marching out through the gate of a stone keep, leaving the keep almost empty behind them, seen from above"},
-    {"id": "howto_clash", "kind": "image", "type": "art", "aspect": "ar_4_3", "out": "assets/art/howto_clash",
-     "prompt": "Two small armies, one with red banners and one with blue banners, colliding head-on in the middle of a wooden bridge over a river, dust and spears, seen from above at an angle"},
-    {"id": "howto_walkin", "kind": "image", "type": "art", "aspect": "ar_4_3", "out": "assets/art/howto_walkin",
-     "prompt": "A sly squad of soldiers with green banners strolling through the open gate of an abandoned, undefended fortress while its garrison marches away in the distance"},
-    {"id": "howto_dugin", "kind": "image", "type": "art", "aspect": "ar_4_3", "out": "assets/art/howto_dugin",
-     "prompt": "Soldiers digging earthworks, trenches and a timber palisade around a small hilltop fort, shovels and sandbags, determined defenders"},
-    {"id": "howto_cards", "kind": "image", "type": "art", "aspect": "ar_4_3", "out": "assets/art/howto_cards",
-     "prompt": "Three ornate campaign cards fanned out on a wooden war table, one showing a golden sun emblem, one a silver crescent moon, one a crimson star, coins and a small stack of army tokens beside them"},
-    {"id": "howto_surge", "kind": "image", "type": "art", "aspect": "ar_4_3", "out": "assets/art/howto_surge",
-     "prompt": "Cavalry charging through a breached wall and pouring onward toward a second town on the horizon, momentum and dust, seen from above at an angle"},
-
-    {"id": "tex_parchment", "kind": "image", "type": "texture", "aspect": "ar_1_1", "out": "assets/tex/parchment", "style": false,
-     "prompt": "Seamless tileable texture of aged parchment paper, soft fibers and faint stains, light warm cream, even lighting, flat, top-down, no objects"},
-    {"id": "tex_sea", "kind": "image", "type": "texture", "aspect": "ar_1_1", "out": "assets/tex/sea", "style": false,
-     "prompt": "Seamless tileable hand-painted ocean water texture seen from directly above, deep navy blue with subtle lighter brush-stroke ripples, even lighting, flat, no objects, no foam"},
-    {"id": "tex_land", "kind": "image", "type": "texture", "aspect": "ar_1_1", "out": "assets/tex/land", "style": false,
-     "prompt": "Seamless tileable hand-painted top-down terrain texture of rolling grassland, small hills and scattered tiny trees, muted desaturated earthy colors, painterly brush strokes, even lighting, flat"},
-    {"id": "tex_wood", "kind": "image", "type": "texture", "aspect": "ar_1_1", "out": "assets/tex/wood", "style": false,
-     "prompt": "Seamless tileable dark walnut wood tabletop texture, rich grain, subtle scratches, even lighting, flat, top-down"},
-
-    {"id": "card_sun", "kind": "image", "type": "card-art", "aspect": "ar_3_4", "out": "assets/cards/sun",
-     "prompt": "Front face of an ornate campaign card: a radiant golden sun emblem in the center, cream parchment card with a thin crimson and gold border"},
-    {"id": "card_moon", "kind": "image", "type": "card-art", "aspect": "ar_3_4", "out": "assets/cards/moon",
-     "prompt": "Front face of an ornate campaign card: a silver crescent moon emblem in the center, cream parchment card with a thin crimson and gold border"},
-    {"id": "card_star", "kind": "image", "type": "card-art", "aspect": "ar_3_4", "out": "assets/cards/star",
-     "prompt": "Front face of an ornate campaign card: a crimson eight-pointed star emblem in the center, cream parchment card with a thin crimson and gold border"},
-    {"id": "card_wild", "kind": "image", "type": "card-art", "aspect": "ar_3_4", "out": "assets/cards/wild",
-     "prompt": "Front face of an ornate campaign card: a golden sun, silver moon and crimson star arranged together in a circle as one emblem, cream parchment card with a thin crimson and gold border"},
-    {"id": "card_back", "kind": "image", "type": "card-art", "aspect": "ar_3_4", "out": "assets/cards/back",
-     "prompt": "Back of an ornate playing card: deep navy background with a symmetrical antique gold compass-rose pattern and crimson border"},
-
-    {"id": "portrait_varek", "kind": "image", "type": "portrait", "aspect": "ar_1_1", "out": "assets/portraits/varek",
-     "prompt": "Bust portrait of a grizzled old field marshal with an eyepatch, grey mustache, navy greatcoat with gold epaulettes, stern confident expression, dark background"},
-    {"id": "portrait_ysolde", "kind": "image", "type": "portrait", "aspect": "ar_1_1", "out": "assets/portraits/ysolde",
-     "prompt": "Bust portrait of a stern noblewoman general in her forties with a silver circlet and crimson cloak over steel armor, calculating gaze, dark background"},
-    {"id": "portrait_quill", "kind": "image", "type": "portrait", "aspect": "ar_1_1", "out": "assets/portraits/quill",
-     "prompt": "Bust portrait of a portly, cunning quartermaster with round spectacles, ledger under his arm and a sly smile, brown officer coat, dark background"},
-    {"id": "portrait_oren", "kind": "image", "type": "portrait", "aspect": "ar_1_1", "out": "assets/portraits/oren",
-     "prompt": "Bust portrait of a young, reckless cavalry captain with windswept hair, plumed helmet under his arm, eager grin, green and gold uniform, dark background"},
-    {"id": "portrait_hask", "kind": "image", "type": "portrait", "aspect": "ar_1_1", "out": "assets/portraits/hask",
-     "prompt": "Bust portrait of a huge bearded northern warlord in a bear-fur cloak with a battered iron helmet, fierce but amused expression, dark background"},
-    {"id": "portrait_imre", "kind": "image", "type": "portrait", "aspect": "ar_1_1", "out": "assets/portraits/imre",
-     "prompt": "Bust portrait of a calm, sharp-eyed woman tactician with short dark hair and a rolled map in hand, plain navy uniform, faint knowing smile, dark background"},
-    {"id": "portrait_advisor", "kind": "image", "type": "portrait", "aspect": "ar_1_1", "out": "assets/portraits/advisor",
-     "prompt": "Bust portrait of a friendly elderly military advisor with white beard, reading glasses and a pointer stick, warm helpful expression, dark background"},
-    {"id": "portrait_player", "kind": "image", "type": "portrait", "aspect": "ar_1_1", "out": "assets/portraits/player",
-     "prompt": "Silhouette bust of an anonymous commander in a tricorn hat and greatcoat, backlit by candlelight, face in shadow, dark background"},
-
-    {"id": "icon_attack", "kind": "image", "type": "icon", "cutout": true, "out": "assets/icons/attack",
-     "prompt": "Crossed swords emblem, bold dark outline, isolated on plain white background"},
-    {"id": "icon_move", "kind": "image", "type": "icon", "cutout": true, "out": "assets/icons/move",
-     "prompt": "Marching boot with a curved arrow emblem, bold dark outline, isolated on plain white background"},
-    {"id": "icon_reinforce", "kind": "image", "type": "icon", "cutout": true, "out": "assets/icons/reinforce",
-     "prompt": "Small stack of wooden army blocks with a golden plus sign emblem, bold dark outline, isolated on plain white background"},
-    {"id": "icon_shield", "kind": "image", "type": "icon", "cutout": true, "out": "assets/icons/shield",
-     "prompt": "Sturdy kite shield with a spade crossed behind it, dug-in defense emblem, bold dark outline, isolated on plain white background"},
-    {"id": "icon_crown", "kind": "image", "type": "icon", "cutout": true, "out": "assets/icons/crown",
-     "prompt": "Golden laurel crown emblem, bold dark outline, isolated on plain white background"},
-    {"id": "icon_skull", "kind": "image", "type": "icon", "cutout": true, "out": "assets/icons/skull",
-     "prompt": "Broken banner pole with a torn flag, defeat emblem, bold dark outline, isolated on plain white background"},
-    {"id": "icon_seal", "kind": "image", "type": "icon", "cutout": true, "out": "assets/icons/seal",
-     "prompt": "Red wax seal stamped with a star, sealed orders emblem, bold dark outline, isolated on plain white background"},
-    {"id": "icon_hourglass", "kind": "image", "type": "icon", "cutout": true, "out": "assets/icons/hourglass",
-     "prompt": "Brass hourglass with sand running, bold dark outline, isolated on plain white background"},
-    {"id": "icon_gear", "kind": "image", "type": "icon", "cutout": true, "out": "assets/icons/gear",
-     "prompt": "Brass cogwheel settings emblem, bold dark outline, isolated on plain white background"},
-    {"id": "icon_book", "kind": "image", "type": "icon", "cutout": true, "out": "assets/icons/book",
-     "prompt": "Old leather rulebook with a ribbon bookmark, bold dark outline, isolated on plain white background"},
-    {"id": "icon_coins", "kind": "image", "type": "icon", "cutout": true, "out": "assets/icons/coins",
-     "prompt": "Small pile of gold coins, income emblem, bold dark outline, isolated on plain white background"},
-    {"id": "icon_horn", "kind": "image", "type": "icon", "cutout": true, "out": "assets/icons/horn",
-     "prompt": "Curved war horn with a small crimson banner, charge onward emblem, bold dark outline, isolated on plain white background"},
-    {"id": "icon_flag", "kind": "image", "type": "icon", "cutout": true, "out": "assets/icons/flag",
-     "prompt": "Small crimson territory flag planted in a mound of earth, bold dark outline, isolated on plain white background"},
-    {"id": "icon_scroll", "kind": "image", "type": "icon", "cutout": true, "out": "assets/icons/scroll",
-     "prompt": "Rolled parchment scroll tied with a red ribbon, orders emblem, bold dark outline, isolated on plain white background"},
-    {"id": "icon_app", "kind": "image", "type": "icon", "cutout": true, "out": "assets/icons/app",
-     "prompt": "Emblem of two crimson arrows and one blue arrow converging on a small stone keep inside a round gold medallion, bold dark outline, isolated on plain white background"},
-
-    {"id": "sfx_click", "kind": "sfx", "duration": 0.5, "out": "assets/audio/sfx/click",
-     "prompt": "single soft wooden click of a game piece tapped on a wooden board, dry, very short"},
-    {"id": "sfx_place", "kind": "sfx", "duration": 0.6, "out": "assets/audio/sfx/place",
-     "prompt": "small wooden army block placed firmly onto a wooden game board, single knock, short"},
-    {"id": "sfx_unplace", "kind": "sfx", "duration": 0.5, "out": "assets/audio/sfx/unplace",
-     "prompt": "small wooden game piece lifted off a board and slid away, light scrape, short"},
-    {"id": "sfx_order_attack", "kind": "sfx", "duration": 1.2, "out": "assets/audio/sfx/order_attack",
-     "prompt": "metal sword drawn quickly from a leather scabbard, crisp, short"},
-    {"id": "sfx_order_move", "kind": "sfx", "duration": 1.2, "out": "assets/audio/sfx/order_move",
-     "prompt": "a few soldiers' boots marching in step on dirt, short"},
-    {"id": "sfx_seal", "kind": "sfx", "duration": 1.5, "out": "assets/audio/sfx/seal",
-     "prompt": "wax seal stamp pressed firmly onto parchment followed by a single deep war drum hit"},
-    {"id": "sfx_reveal", "kind": "sfx", "duration": 2.5, "out": "assets/audio/sfx/reveal",
-     "prompt": "parchment scroll unrolled quickly followed by a short distant war horn call"},
-    {"id": "sfx_march", "kind": "sfx", "duration": 2.5, "out": "assets/audio/sfx/march",
-     "prompt": "an army company marching quickly on a dirt road, boots and jingling armor, passing by"},
-    {"id": "sfx_dice", "kind": "sfx", "duration": 1.2, "out": "assets/audio/sfx/dice",
-     "prompt": "two wooden dice shaken in a hand and rolled onto a wooden table, rattling and settling"},
-    {"id": "sfx_clash", "kind": "sfx", "duration": 2.0, "out": "assets/audio/sfx/clash",
-     "prompt": "short medieval battle clash: swords and shields colliding, a few shouts, quick"},
-    {"id": "sfx_capture", "kind": "sfx", "duration": 2.0, "out": "assets/audio/sfx/capture",
-     "prompt": "short triumphant brass fanfare sting announcing a captured town, bright, two seconds"},
-    {"id": "sfx_hold", "kind": "sfx", "duration": 1.5, "out": "assets/audio/sfx/hold",
-     "prompt": "heavy wooden shield blocking a blow with a solid thud, then a short low defiant horn"},
-    {"id": "sfx_walkin", "kind": "sfx", "duration": 2.5, "out": "assets/audio/sfx/walkin",
-     "prompt": "ominous low brass and timpani sting, sneaky and dramatic, a nasty surprise"},
-    {"id": "sfx_eliminated", "kind": "sfx", "duration": 3.0, "out": "assets/audio/sfx/eliminated",
-     "prompt": "slow deep funeral drum hits with a mournful low horn, a faction is destroyed"},
-    {"id": "sfx_card", "kind": "sfx", "duration": 0.8, "out": "assets/audio/sfx/card",
-     "prompt": "single playing card flipped and dealt onto a table, crisp paper snap"},
-    {"id": "sfx_cash", "kind": "sfx", "duration": 1.5, "out": "assets/audio/sfx/cash",
-     "prompt": "handful of gold coins poured onto a wooden table with a bright chime"},
-    {"id": "sfx_round", "kind": "sfx", "duration": 3.0, "out": "assets/audio/sfx/round",
-     "prompt": "single large bronze bell toll ringing out and fading, marking the end of a round"},
-    {"id": "sfx_surge", "kind": "sfx", "duration": 2.0, "out": "assets/audio/sfx/surge",
-     "prompt": "cavalry charge: galloping horses and a rising battle cry, short"},
-    {"id": "sfx_error", "kind": "sfx", "duration": 0.5, "out": "assets/audio/sfx/error",
-     "prompt": "soft dull wooden thunk, gentle negative feedback, very short"},
-    {"id": "sfx_pass", "kind": "sfx", "duration": 1.2, "out": "assets/audio/sfx/pass",
-     "prompt": "a sheet of parchment turned over and slid across a table, short"},
-    {"id": "sfx_tick", "kind": "sfx", "duration": 0.5, "out": "assets/audio/sfx/tick",
-     "prompt": "single mechanical clock tick, crisp, very short"},
-    {"id": "amb_tent", "kind": "ambiance", "duration": 10, "out": "assets/audio/music/ambience_tent",
-     "prompt": "inside a canvas war tent at night: gentle crackling campfire, soft wind against the canvas, very faint distant camp sounds"},
-
-    {"id": "music_menu", "kind": "music", "duration": 120, "out": "assets/audio/music/menu",
-     "prompt": "Majestic slow orchestral main theme for a historical grand strategy board game: noble strings, warm low brass, soft snare rolls, contemplative and grand, instrumental, loopable"},
-    {"id": "music_plan", "kind": "music", "duration": 150, "out": "assets/audio/music/plan",
-     "prompt": "Calm, quietly tense strategy planning music: soft pizzicato strings, low cello pulse, light harpsichord, understated so a player can think, instrumental background loop"},
-    {"id": "music_battle", "kind": "music", "duration": 90, "out": "assets/audio/music/battle",
-     "prompt": "Driving war drums and low brass ostinato for a battle resolution sequence in a board game, epic but controlled, instrumental, loopable"},
-    {"id": "music_victory", "kind": "music", "duration": 20, "out": "assets/audio/music/victory",
-     "prompt": "Short triumphant orchestral victory fanfare with brass and timpani, instrumental"},
-    {"id": "music_defeat", "kind": "music", "duration": 20, "out": "assets/audio/music/defeat",
-     "prompt": "Short somber orchestral cue for a lost war: solo horn and low strings, instrumental"}
-  ]
+  {
+   "id": "tex_sea",
+   "kind": "image",
+   "type": "texture",
+   "aspect": "ar_1_1",
+   "out": "assets/tex/sea",
+   "style": false,
+   "prompt": "Seamless tileable hand-painted ocean water texture seen from directly above, deep navy blue with subtle lighter brush-stroke ripples, even lighting, flat, no objects, no foam"
+  },
+  {
+   "id": "tex_land",
+   "kind": "image",
+   "type": "texture",
+   "aspect": "ar_1_1",
+   "out": "assets/tex/land",
+   "style": false,
+   "prompt": "Seamless tileable hand-painted top-down terrain texture of rolling grassland, small hills and scattered tiny trees, muted desaturated earthy colors, painterly brush strokes, even lighting, flat"
+  },
+  {
+   "id": "tex_wood",
+   "kind": "image",
+   "type": "texture",
+   "aspect": "ar_1_1",
+   "out": "assets/tex/wood",
+   "style": false,
+   "prompt": "Seamless tileable dark walnut wood tabletop texture, rich grain, subtle scratches, even lighting, flat, top-down"
+  },
+  {
+   "id": "icon_attack",
+   "kind": "image",
+   "type": "icon",
+   "cutout": true,
+   "out": "assets/icons/attack",
+   "prompt": "Crossed swords emblem, bold dark outline, isolated on plain white background"
+  },
+  {
+   "id": "icon_move",
+   "kind": "image",
+   "type": "icon",
+   "cutout": true,
+   "out": "assets/icons/move",
+   "prompt": "Marching boot with a curved arrow emblem, bold dark outline, isolated on plain white background"
+  },
+  {
+   "id": "icon_reinforce",
+   "kind": "image",
+   "type": "icon",
+   "cutout": true,
+   "out": "assets/icons/reinforce",
+   "prompt": "Small stack of wooden army blocks with a golden plus sign emblem, bold dark outline, isolated on plain white background"
+  },
+  {
+   "id": "icon_shield",
+   "kind": "image",
+   "type": "icon",
+   "cutout": true,
+   "out": "assets/icons/shield",
+   "prompt": "Sturdy kite shield with a spade crossed behind it, dug-in defense emblem, bold dark outline, isolated on plain white background"
+  },
+  {
+   "id": "icon_crown",
+   "kind": "image",
+   "type": "icon",
+   "cutout": true,
+   "out": "assets/icons/crown",
+   "prompt": "Golden laurel crown emblem, bold dark outline, isolated on plain white background"
+  },
+  {
+   "id": "icon_skull",
+   "kind": "image",
+   "type": "icon",
+   "cutout": true,
+   "out": "assets/icons/skull",
+   "prompt": "Broken banner pole with a torn flag, defeat emblem, bold dark outline, isolated on plain white background"
+  },
+  {
+   "id": "icon_seal",
+   "kind": "image",
+   "type": "icon",
+   "cutout": true,
+   "out": "assets/icons/seal",
+   "prompt": "Red wax seal stamped with a star, sealed orders emblem, bold dark outline, isolated on plain white background"
+  },
+  {
+   "id": "icon_hourglass",
+   "kind": "image",
+   "type": "icon",
+   "cutout": true,
+   "out": "assets/icons/hourglass",
+   "prompt": "Brass hourglass with sand running, bold dark outline, isolated on plain white background"
+  },
+  {
+   "id": "icon_gear",
+   "kind": "image",
+   "type": "icon",
+   "cutout": true,
+   "out": "assets/icons/gear",
+   "prompt": "Brass cogwheel settings emblem, bold dark outline, isolated on plain white background"
+  },
+  {
+   "id": "icon_book",
+   "kind": "image",
+   "type": "icon",
+   "cutout": true,
+   "out": "assets/icons/book",
+   "prompt": "Old leather rulebook with a ribbon bookmark, bold dark outline, isolated on plain white background"
+  },
+  {
+   "id": "icon_coins",
+   "kind": "image",
+   "type": "icon",
+   "cutout": true,
+   "out": "assets/icons/coins",
+   "prompt": "Small pile of gold coins, income emblem, bold dark outline, isolated on plain white background"
+  },
+  {
+   "id": "icon_horn",
+   "kind": "image",
+   "type": "icon",
+   "cutout": true,
+   "out": "assets/icons/horn",
+   "prompt": "Curved war horn with a small crimson banner, charge onward emblem, bold dark outline, isolated on plain white background"
+  },
+  {
+   "id": "icon_flag",
+   "kind": "image",
+   "type": "icon",
+   "cutout": true,
+   "out": "assets/icons/flag",
+   "prompt": "Small crimson territory flag planted in a mound of earth, bold dark outline, isolated on plain white background"
+  },
+  {
+   "id": "icon_scroll",
+   "kind": "image",
+   "type": "icon",
+   "cutout": true,
+   "out": "assets/icons/scroll",
+   "prompt": "Rolled parchment scroll tied with a red ribbon, orders emblem, bold dark outline, isolated on plain white background"
+  },
+  {
+   "id": "sfx_click",
+   "kind": "sfx",
+   "duration": 0.5,
+   "out": "assets/audio/sfx/click",
+   "prompt": "single soft wooden click of a game piece tapped on a wooden board, dry, very short"
+  },
+  {
+   "id": "sfx_place",
+   "kind": "sfx",
+   "duration": 0.6,
+   "out": "assets/audio/sfx/place",
+   "prompt": "small wooden army block placed firmly onto a wooden game board, single knock, short"
+  },
+  {
+   "id": "sfx_unplace",
+   "kind": "sfx",
+   "duration": 0.5,
+   "out": "assets/audio/sfx/unplace",
+   "prompt": "small wooden game piece lifted off a board and slid away, light scrape, short"
+  },
+  {
+   "id": "sfx_order_attack",
+   "kind": "sfx",
+   "duration": 1.2,
+   "out": "assets/audio/sfx/order_attack",
+   "prompt": "metal sword drawn quickly from a leather scabbard, crisp, short"
+  },
+  {
+   "id": "sfx_order_move",
+   "kind": "sfx",
+   "duration": 1.2,
+   "out": "assets/audio/sfx/order_move",
+   "prompt": "a few soldiers' boots marching in step on dirt, short"
+  },
+  {
+   "id": "sfx_march",
+   "kind": "sfx",
+   "duration": 2.5,
+   "out": "assets/audio/sfx/march",
+   "prompt": "an army company marching quickly on a dirt road, boots and jingling armor, passing by"
+  },
+  {
+   "id": "sfx_dice",
+   "kind": "sfx",
+   "duration": 1.2,
+   "out": "assets/audio/sfx/dice",
+   "prompt": "two wooden dice shaken in a hand and rolled onto a wooden table, rattling and settling"
+  },
+  {
+   "id": "sfx_clash",
+   "kind": "sfx",
+   "duration": 2.0,
+   "out": "assets/audio/sfx/clash",
+   "prompt": "short medieval battle clash: swords and shields colliding, a few shouts, quick"
+  },
+  {
+   "id": "sfx_hold",
+   "kind": "sfx",
+   "duration": 1.5,
+   "out": "assets/audio/sfx/hold",
+   "prompt": "heavy wooden shield blocking a blow with a solid thud, then a short low defiant horn"
+  },
+  {
+   "id": "sfx_card",
+   "kind": "sfx",
+   "duration": 0.8,
+   "out": "assets/audio/sfx/card",
+   "prompt": "single playing card flipped and dealt onto a table, crisp paper snap"
+  },
+  {
+   "id": "sfx_cash",
+   "kind": "sfx",
+   "duration": 1.5,
+   "out": "assets/audio/sfx/cash",
+   "prompt": "handful of gold coins poured onto a wooden table with a bright chime"
+  },
+  {
+   "id": "sfx_round",
+   "kind": "sfx",
+   "duration": 3.0,
+   "out": "assets/audio/sfx/round",
+   "prompt": "single large bronze bell toll ringing out and fading, marking the end of a round"
+  },
+  {
+   "id": "sfx_surge",
+   "kind": "sfx",
+   "duration": 2.0,
+   "out": "assets/audio/sfx/surge",
+   "prompt": "cavalry charge: galloping horses and a rising battle cry, short"
+  },
+  {
+   "id": "sfx_error",
+   "kind": "sfx",
+   "duration": 0.5,
+   "out": "assets/audio/sfx/error",
+   "prompt": "soft dull wooden thunk, gentle negative feedback, very short"
+  },
+  {
+   "id": "sfx_pass",
+   "kind": "sfx",
+   "duration": 1.2,
+   "out": "assets/audio/sfx/pass",
+   "prompt": "a sheet of parchment turned over and slid across a table, short"
+  },
+  {
+   "id": "sfx_tick",
+   "kind": "sfx",
+   "duration": 0.5,
+   "out": "assets/audio/sfx/tick",
+   "prompt": "single mechanical clock tick, crisp, very short"
+  },
+  {
+   "id": "amb_tent",
+   "kind": "ambiance",
+   "duration": 10,
+   "out": "assets/audio/music/ambience_tent",
+   "prompt": "inside a canvas war tent at night: gentle crackling campfire, soft wind against the canvas, very faint distant camp sounds"
+  },
+  {
+   "id": "soldier_fallen",
+   "kind": "edit",
+   "from": "soldier_stand",
+   "cutout": true,
+   "out": "assets/battle/soldier_fallen",
+   "prompt": "The same toy soldier now fallen flat on the ground on his back, musket dropped beside him, same colors, same side view"
+  },
+  {
+   "id": "sfx_volley",
+   "kind": "sfx",
+   "duration": 2,
+   "out": "assets/audio/sfx/volley",
+   "prompt": "a line of muskets firing a single volley together, sharp crack and echo"
+  },
+  {
+   "id": "sfx_cannon",
+   "kind": "sfx",
+   "duration": 2,
+   "out": "assets/audio/sfx/cannon",
+   "prompt": "a single field cannon firing, deep boom with rumble"
+  },
+  {
+   "id": "sfx_cheer",
+   "kind": "sfx",
+   "duration": 2,
+   "out": "assets/audio/sfx/cheer",
+   "prompt": "a company of soldiers cheering in victory, short"
+  },
+  {
+   "id": "sfx_charge",
+   "kind": "sfx",
+   "duration": 2,
+   "out": "assets/audio/sfx/charge",
+   "prompt": "bugle sounding a short cavalry charge call"
+  },
+  {
+   "id": "sfx_drumroll",
+   "kind": "sfx",
+   "duration": 2,
+   "out": "assets/audio/sfx/drumroll",
+   "prompt": "short military snare drum roll building tension then stop"
+  },
+  {
+   "id": "sfx_hit",
+   "kind": "sfx",
+   "duration": 2,
+   "out": "assets/audio/sfx/hit",
+   "prompt": "soldier grunts as he falls, muffled, short, not gory"
+  },
+  {
+   "id": "sfx_banner",
+   "kind": "sfx",
+   "duration": 2,
+   "out": "assets/audio/sfx/banner",
+   "prompt": "heavy cloth battle flag snapping in the wind, short"
+  },
+  {
+   "id": "amb_battle",
+   "kind": "ambiance",
+   "duration": 10,
+   "out": "assets/audio/music/ambience_battle",
+   "prompt": "distant battlefield: far-off musket fire, occasional cannon, wind, muffled shouting, no music"
+  },
+  {
+   "id": "soldier_idle_anim",
+   "kind": "animate",
+   "from_file": "assets/raw/battle/soldier_stand_pad.png",
+   "prompt": "stands at ease breathing, shifting weight slightly, musket at the shoulder",
+   "image_type": "sprite",
+   "model": "forge",
+   "duration": 2,
+   "frames": 16,
+   "frame_size": -9,
+   "loop": false,
+   "crop": false,
+   "out": "assets/raw/battle/soldier_idle",
+   "v": 3,
+   "final_same": true
+  },
+  {
+   "id": "soldier_fire_anim",
+   "kind": "animate",
+   "from_file": "assets/raw/battle/soldier_stand_pad.png",
+   "prompt": "levels the musket straight ahead to the right at shoulder height and fires, a puff of smoke bursts from the muzzle on the right, then shoulders the musket again exactly as at the start",
+   "image_type": "sprite",
+   "model": "forge",
+   "duration": 2,
+   "frames": 16,
+   "frame_size": -9,
+   "loop": false,
+   "crop": false,
+   "out": "assets/raw/battle/soldier_fire",
+   "v": 4,
+   "final_same": true
+  },
+  {
+   "id": "soldier_march_anim",
+   "kind": "animate",
+   "from_file": "assets/raw/battle/soldier_stand_pad.png",
+   "prompt": "marches forward in place, a steady walk cycle, musket at the shoulder",
+   "image_type": "sprite",
+   "model": "forge",
+   "duration": 2,
+   "frames": 16,
+   "frame_size": -9,
+   "loop": false,
+   "crop": false,
+   "out": "assets/raw/battle/soldier_march",
+   "v": 3,
+   "final_same": true
+  },
+  {
+   "id": "soldier_fall_anim",
+   "kind": "animate",
+   "from_file": "assets/raw/battle/soldier_stand_pad.png",
+   "prompt": "is hit by a musket ball and falls backward to the ground, then lies still",
+   "image_type": "sprite",
+   "model": "forge",
+   "duration": 2,
+   "frames": 16,
+   "frame_size": -9,
+   "loop": false,
+   "crop": false,
+   "out": "assets/raw/battle/soldier_fall",
+   "v": 3
+  },
+  {
+   "id": "flag_wave_anim",
+   "kind": "animate",
+   "from_file": "assets/raw/battle/soldier_flag_pad.png",
+   "prompt": "the flag waves in the wind while the bearer stands still",
+   "image_type": "sprite",
+   "model": "forge",
+   "duration": 2,
+   "frames": 16,
+   "frame_size": -9,
+   "loop": false,
+   "crop": false,
+   "out": "assets/raw/battle/flag_wave",
+   "v": 3,
+   "final_same": true
+  },
+  {
+   "id": "portrait_advisor",
+   "kind": "image",
+   "type": "portrait",
+   "cutout": true,
+   "aspect": "ar_1_1",
+   "prompt": "Bust portrait of an elderly imperial chief of staff with white mutton-chop whiskers and a monocle, scarlet general's coat with gold aiguillettes and a sash of orders, a proud, shrewd, grandfatherly smile. Head and shoulders centered with space around them, isolated on a plain white background",
+   "out": "assets/portraits/advisor",
+   "v": 2
+  },
+  {
+   "id": "portrait_varek",
+   "kind": "styled",
+   "type": "portrait",
+   "style_from": "portrait_advisor",
+   "cutout": true,
+   "prompt": "Bust portrait of a grizzled old imperial field marshal with an eyepatch, iron-grey mustache and a duelling scar, navy greatcoat heavy with gold epaulettes and medals, black bicorne hat with gold trim, stern and merciless. Head and shoulders centered with space around them, isolated on a plain white background",
+   "out": "assets/portraits/varek",
+   "v": 2
+  },
+  {
+   "id": "portrait_ysolde",
+   "kind": "styled",
+   "type": "portrait",
+   "style_from": "portrait_advisor",
+   "cutout": true,
+   "prompt": "Bust portrait of a stern noblewoman viceroy-general in her forties with dark hair pinned up, crimson governor's uniform coat with heavy gold braid, black tricorne hat with a white ostrich plume, cold and imperious. Head and shoulders centered with space around them, isolated on a plain white background",
+   "out": "assets/portraits/ysolde",
+   "v": 2
+  },
+  {
+   "id": "portrait_quill",
+   "kind": "styled",
+   "type": "portrait",
+   "style_from": "portrait_advisor",
+   "cutout": true,
+   "prompt": "Bust portrait of a portly cunning trading-company governor in a powdered wig, green brocade waistcoat and a gold chain of office, round spectacles, a flintlock pistol tucked in his sash, a sly greedy grin. Head and shoulders centered with space around them, isolated on a plain white background",
+   "out": "assets/portraits/quill",
+   "v": 2
+  },
+  {
+   "id": "portrait_oren",
+   "kind": "styled",
+   "type": "portrait",
+   "style_from": "portrait_advisor",
+   "cutout": true,
+   "prompt": "Bust portrait of a dashing young hussar captain with windswept blond hair, braided sky-blue dolman jacket with a fur-trimmed pelisse slung over one shoulder, sabre hilt at his shoulder, reckless grin. Head and shoulders centered with space around them, isolated on a plain white background",
+   "out": "assets/portraits/oren",
+   "v": 2
+  },
+  {
+   "id": "portrait_hask",
+   "kind": "styled",
+   "type": "portrait",
+   "style_from": "portrait_advisor",
+   "cutout": true,
+   "prompt": "Bust portrait of a huge black-bearded privateer commodore in a bear-fur mantle over a battered naval coat, tricorne hat, a cutlass hilt and a brace of pistols across his chest, fierce laughing eyes. Head and shoulders centered with space around them, isolated on a plain white background",
+   "out": "assets/portraits/hask",
+   "v": 2
+  },
+  {
+   "id": "portrait_imre",
+   "kind": "styled",
+   "type": "portrait",
+   "style_from": "portrait_advisor",
+   "cutout": true,
+   "prompt": "Bust portrait of a calm sharp-eyed woman admiral with short dark hair, navy frock coat with gold buttons and epaulettes, a brass spyglass tucked under her arm, a faint knowing smile. Head and shoulders centered with space around them, isolated on a plain white background",
+   "out": "assets/portraits/imre",
+   "v": 2
+  },
+  {
+   "id": "portrait_player",
+   "kind": "styled",
+   "type": "portrait",
+   "style_from": "portrait_advisor",
+   "prompt": "Silhouette bust of an anonymous imperial commander in a bicorne hat and greatcoat with epaulettes, backlit by a blazing sunset over a harbor full of warships, face in shadow",
+   "out": "assets/portraits/player",
+   "v": 2
+  },
+  {
+   "id": "face_advisor_alarmed",
+   "kind": "edit",
+   "from": "portrait_advisor",
+   "cutout": true,
+   "prompt": "Same person, same framing, same outfit and painting style, plain white background, now alarmed and urgent, eyebrows raised, shouting a warning",
+   "out": "assets/portraits/advisor_alarmed",
+   "v": 2
+  },
+  {
+   "id": "face_advisor_pleased",
+   "kind": "edit",
+   "from": "portrait_advisor",
+   "cutout": true,
+   "prompt": "Same person, same framing, same outfit and painting style, plain white background, now beaming with pride, raising a glass of port in a toast",
+   "out": "assets/portraits/advisor_pleased",
+   "v": 2
+  },
+  {
+   "id": "loop_advisor_idle",
+   "kind": "animate",
+   "from": "portrait_advisor",
+   "prompt": "breathes slowly and blinks, subtle idle motion, head nearly still",
+   "image_type": "portrait",
+   "final_same": true,
+   "model": "forge",
+   "duration": 2,
+   "frames": 16,
+   "frame_size": -9,
+   "loop": false,
+   "crop": false,
+   "out": "assets/raw/loops/advisor_idle",
+   "v": 1
+  },
+  {
+   "id": "loop_advisor_talk",
+   "kind": "animate",
+   "from": "portrait_advisor",
+   "prompt": "speaks with feeling, mouth moving as if talking, small natural head movements",
+   "image_type": "portrait",
+   "final_same": true,
+   "model": "forge",
+   "duration": 2,
+   "frames": 16,
+   "frame_size": -9,
+   "loop": false,
+   "crop": false,
+   "out": "assets/raw/loops/advisor_talk",
+   "v": 1
+  },
+  {
+   "id": "face_varek_triumphant",
+   "kind": "edit",
+   "from": "portrait_varek",
+   "cutout": true,
+   "prompt": "Same person, same framing, same outfit and painting style, plain white background, now laughing triumphantly with chin raised, eyes blazing with victory",
+   "out": "assets/portraits/varek_triumphant",
+   "v": 2
+  },
+  {
+   "id": "face_varek_angry",
+   "kind": "edit",
+   "from": "portrait_varek",
+   "cutout": true,
+   "prompt": "Same person, same framing, same outfit and painting style, plain white background, now furious and roaring a battle cry, brow furrowed, teeth bared",
+   "out": "assets/portraits/varek_angry",
+   "v": 2
+  },
+  {
+   "id": "face_varek_defeated",
+   "kind": "edit",
+   "from": "portrait_varek",
+   "cutout": true,
+   "prompt": "Same person, same framing, same outfit and painting style, plain white background, now defeated and exhausted, head bowed, soot on the face and a small cut on the cheek, eyes downcast",
+   "out": "assets/portraits/varek_defeated",
+   "v": 2
+  },
+  {
+   "id": "loop_varek_idle",
+   "kind": "animate",
+   "from": "portrait_varek",
+   "prompt": "breathes slowly and blinks, subtle idle motion, head nearly still",
+   "image_type": "portrait",
+   "final_same": true,
+   "model": "forge",
+   "duration": 2,
+   "frames": 16,
+   "frame_size": -9,
+   "loop": false,
+   "crop": false,
+   "out": "assets/raw/loops/varek_idle",
+   "v": 1
+  },
+  {
+   "id": "loop_varek_talk",
+   "kind": "animate",
+   "from": "portrait_varek",
+   "prompt": "speaks with feeling, mouth moving as if talking, small natural head movements",
+   "image_type": "portrait",
+   "final_same": true,
+   "model": "forge",
+   "duration": 2,
+   "frames": 16,
+   "frame_size": -9,
+   "loop": false,
+   "crop": false,
+   "out": "assets/raw/loops/varek_talk",
+   "v": 1
+  },
+  {
+   "id": "face_ysolde_triumphant",
+   "kind": "edit",
+   "from": "portrait_ysolde",
+   "cutout": true,
+   "prompt": "Same person, same framing, same outfit and painting style, plain white background, now laughing triumphantly with chin raised, eyes blazing with victory",
+   "out": "assets/portraits/ysolde_triumphant",
+   "v": 2
+  },
+  {
+   "id": "face_ysolde_angry",
+   "kind": "edit",
+   "from": "portrait_ysolde",
+   "cutout": true,
+   "prompt": "Same person, same framing, same outfit and painting style, plain white background, now furious and roaring a battle cry, brow furrowed, teeth bared",
+   "out": "assets/portraits/ysolde_angry",
+   "v": 2
+  },
+  {
+   "id": "face_ysolde_defeated",
+   "kind": "edit",
+   "from": "portrait_ysolde",
+   "cutout": true,
+   "prompt": "Same person, same framing, same outfit and painting style, plain white background, now defeated and exhausted, head bowed, soot on the face and a small cut on the cheek, eyes downcast",
+   "out": "assets/portraits/ysolde_defeated",
+   "v": 2
+  },
+  {
+   "id": "loop_ysolde_idle",
+   "kind": "animate",
+   "from": "portrait_ysolde",
+   "prompt": "breathes slowly and blinks, subtle idle motion, head nearly still",
+   "image_type": "portrait",
+   "final_same": true,
+   "model": "forge",
+   "duration": 2,
+   "frames": 16,
+   "frame_size": -9,
+   "loop": false,
+   "crop": false,
+   "out": "assets/raw/loops/ysolde_idle",
+   "v": 1
+  },
+  {
+   "id": "loop_ysolde_talk",
+   "kind": "animate",
+   "from": "portrait_ysolde",
+   "prompt": "speaks with feeling, mouth moving as if talking, small natural head movements",
+   "image_type": "portrait",
+   "final_same": true,
+   "model": "forge",
+   "duration": 2,
+   "frames": 16,
+   "frame_size": -9,
+   "loop": false,
+   "crop": false,
+   "out": "assets/raw/loops/ysolde_talk",
+   "v": 1
+  },
+  {
+   "id": "face_quill_triumphant",
+   "kind": "edit",
+   "from": "portrait_quill",
+   "cutout": true,
+   "prompt": "Same person, same framing, same outfit and painting style, plain white background, now laughing triumphantly with chin raised, eyes blazing with victory",
+   "out": "assets/portraits/quill_triumphant",
+   "v": 2
+  },
+  {
+   "id": "face_quill_angry",
+   "kind": "edit",
+   "from": "portrait_quill",
+   "cutout": true,
+   "prompt": "Same person, same framing, same outfit and painting style, plain white background, now furious and roaring a battle cry, brow furrowed, teeth bared",
+   "out": "assets/portraits/quill_angry",
+   "v": 2
+  },
+  {
+   "id": "face_quill_defeated",
+   "kind": "edit",
+   "from": "portrait_quill",
+   "cutout": true,
+   "prompt": "Same person, same framing, same outfit and painting style, plain white background, now defeated and exhausted, head bowed, soot on the face and a small cut on the cheek, eyes downcast",
+   "out": "assets/portraits/quill_defeated",
+   "v": 2
+  },
+  {
+   "id": "loop_quill_idle",
+   "kind": "animate",
+   "from": "portrait_quill",
+   "prompt": "breathes slowly and blinks, subtle idle motion, head nearly still",
+   "image_type": "portrait",
+   "final_same": true,
+   "model": "forge",
+   "duration": 2,
+   "frames": 16,
+   "frame_size": -9,
+   "loop": false,
+   "crop": false,
+   "out": "assets/raw/loops/quill_idle",
+   "v": 1
+  },
+  {
+   "id": "loop_quill_talk",
+   "kind": "animate",
+   "from": "portrait_quill",
+   "prompt": "speaks with feeling, mouth moving as if talking, small natural head movements",
+   "image_type": "portrait",
+   "final_same": true,
+   "model": "forge",
+   "duration": 2,
+   "frames": 16,
+   "frame_size": -9,
+   "loop": false,
+   "crop": false,
+   "out": "assets/raw/loops/quill_talk",
+   "v": 1
+  },
+  {
+   "id": "face_oren_triumphant",
+   "kind": "edit",
+   "from": "portrait_oren",
+   "cutout": true,
+   "prompt": "Same person, same framing, same outfit and painting style, plain white background, now laughing triumphantly with chin raised, eyes blazing with victory",
+   "out": "assets/portraits/oren_triumphant",
+   "v": 2
+  },
+  {
+   "id": "face_oren_angry",
+   "kind": "edit",
+   "from": "portrait_oren",
+   "cutout": true,
+   "prompt": "Same person, same framing, same outfit and painting style, plain white background, now furious and roaring a battle cry, brow furrowed, teeth bared",
+   "out": "assets/portraits/oren_angry",
+   "v": 2
+  },
+  {
+   "id": "face_oren_defeated",
+   "kind": "edit",
+   "from": "portrait_oren",
+   "cutout": true,
+   "prompt": "Same person, same framing, same outfit and painting style, plain white background, now defeated and exhausted, head bowed, soot on the face and a small cut on the cheek, eyes downcast",
+   "out": "assets/portraits/oren_defeated",
+   "v": 2
+  },
+  {
+   "id": "loop_oren_idle",
+   "kind": "animate",
+   "from": "portrait_oren",
+   "prompt": "breathes slowly and blinks, subtle idle motion, head nearly still",
+   "image_type": "portrait",
+   "final_same": true,
+   "model": "forge",
+   "duration": 2,
+   "frames": 16,
+   "frame_size": -9,
+   "loop": false,
+   "crop": false,
+   "out": "assets/raw/loops/oren_idle",
+   "v": 1
+  },
+  {
+   "id": "loop_oren_talk",
+   "kind": "animate",
+   "from": "portrait_oren",
+   "prompt": "speaks with feeling, mouth moving as if talking, small natural head movements",
+   "image_type": "portrait",
+   "final_same": true,
+   "model": "forge",
+   "duration": 2,
+   "frames": 16,
+   "frame_size": -9,
+   "loop": false,
+   "crop": false,
+   "out": "assets/raw/loops/oren_talk",
+   "v": 1
+  },
+  {
+   "id": "face_hask_triumphant",
+   "kind": "edit",
+   "from": "portrait_hask",
+   "cutout": true,
+   "prompt": "Same person, same framing, same outfit and painting style, plain white background, now laughing triumphantly with chin raised, eyes blazing with victory",
+   "out": "assets/portraits/hask_triumphant",
+   "v": 2
+  },
+  {
+   "id": "face_hask_angry",
+   "kind": "edit",
+   "from": "portrait_hask",
+   "cutout": true,
+   "prompt": "Same person, same framing, same outfit and painting style, plain white background, now furious and roaring a battle cry, brow furrowed, teeth bared",
+   "out": "assets/portraits/hask_angry",
+   "v": 2
+  },
+  {
+   "id": "face_hask_defeated",
+   "kind": "edit",
+   "from": "portrait_hask",
+   "cutout": true,
+   "prompt": "Same person, same framing, same outfit and painting style, plain white background, now defeated and exhausted, head bowed, soot on the face and a small cut on the cheek, eyes downcast",
+   "out": "assets/portraits/hask_defeated",
+   "v": 2
+  },
+  {
+   "id": "loop_hask_idle",
+   "kind": "animate",
+   "from": "portrait_hask",
+   "prompt": "breathes slowly and blinks, subtle idle motion, head nearly still",
+   "image_type": "portrait",
+   "final_same": true,
+   "model": "forge",
+   "duration": 2,
+   "frames": 16,
+   "frame_size": -9,
+   "loop": false,
+   "crop": false,
+   "out": "assets/raw/loops/hask_idle",
+   "v": 1
+  },
+  {
+   "id": "loop_hask_talk",
+   "kind": "animate",
+   "from": "portrait_hask",
+   "prompt": "speaks with feeling, mouth moving as if talking, small natural head movements",
+   "image_type": "portrait",
+   "final_same": true,
+   "model": "forge",
+   "duration": 2,
+   "frames": 16,
+   "frame_size": -9,
+   "loop": false,
+   "crop": false,
+   "out": "assets/raw/loops/hask_talk",
+   "v": 1
+  },
+  {
+   "id": "face_imre_triumphant",
+   "kind": "edit",
+   "from": "portrait_imre",
+   "cutout": true,
+   "prompt": "Same person, same framing, same outfit and painting style, plain white background, now laughing triumphantly with chin raised, eyes blazing with victory",
+   "out": "assets/portraits/imre_triumphant",
+   "v": 2
+  },
+  {
+   "id": "face_imre_angry",
+   "kind": "edit",
+   "from": "portrait_imre",
+   "cutout": true,
+   "prompt": "Same person, same framing, same outfit and painting style, plain white background, now furious and roaring a battle cry, brow furrowed, teeth bared",
+   "out": "assets/portraits/imre_angry",
+   "v": 2
+  },
+  {
+   "id": "face_imre_defeated",
+   "kind": "edit",
+   "from": "portrait_imre",
+   "cutout": true,
+   "prompt": "Same person, same framing, same outfit and painting style, plain white background, now defeated and exhausted, head bowed, soot on the face and a small cut on the cheek, eyes downcast",
+   "out": "assets/portraits/imre_defeated",
+   "v": 2
+  },
+  {
+   "id": "loop_imre_idle",
+   "kind": "animate",
+   "from": "portrait_imre",
+   "prompt": "breathes slowly and blinks, subtle idle motion, head nearly still",
+   "image_type": "portrait",
+   "final_same": true,
+   "model": "forge",
+   "duration": 2,
+   "frames": 16,
+   "frame_size": -9,
+   "loop": false,
+   "crop": false,
+   "out": "assets/raw/loops/imre_idle",
+   "v": 1
+  },
+  {
+   "id": "loop_imre_talk",
+   "kind": "animate",
+   "from": "portrait_imre",
+   "prompt": "speaks with feeling, mouth moving as if talking, small natural head movements",
+   "image_type": "portrait",
+   "final_same": true,
+   "model": "forge",
+   "duration": 2,
+   "frames": 16,
+   "frame_size": -9,
+   "loop": false,
+   "crop": false,
+   "out": "assets/raw/loops/imre_talk",
+   "v": 1
+  },
+  {
+   "id": "splash_title",
+   "kind": "image",
+   "type": "art",
+   "aspect": "ar_16_9",
+   "prompt": "The grand map room of an empire at the height of its power: a vast painted chart of unknown continents spread across a mahogany table, brass dividers and a spyglass, toy regiments in crimson and navy massed along the coastlines, a gilded globe, captured battle flags on the walls, tall windows open onto a harbor crowded with ships of the line under full sail at golden hour",
+   "out": "assets/art/splash_title",
+   "v": 2
+  },
+  {
+   "id": "art_victory",
+   "kind": "image",
+   "type": "art",
+   "aspect": "ar_16_9",
+   "prompt": "An imperial crimson-and-gold standard raised over the ramparts of a captured star fort on a headland, a fleet of ships of the line below firing a thundering salute, cannon smoke rolling across the water, blazing golden sunset, triumphant",
+   "out": "assets/art/victory",
+   "v": 2
+  },
+  {
+   "id": "art_defeat",
+   "kind": "image",
+   "type": "art",
+   "aspect": "ar_16_9",
+   "prompt": "A burning flagship listing in a storm-dark bay, a torn plain crimson ensign with a small golden crown floating among broken spars, the victorious enemy fleet sailing away on the horizon, cold grey dawn. Every flag is an invented plain banner, no real-world flags",
+   "out": "assets/art/defeat",
+   "v": 3
+  },
+  {
+   "id": "howto_sealed",
+   "kind": "image",
+   "type": "art",
+   "aspect": "ar_16_9",
+   "prompt": "Close-up of a gloved hand pressing a signet ring into red wax to seal campaign orders on parchment, beside a brass compass and a campaign map, candlelight",
+   "out": "assets/art/howto_sealed",
+   "v": 2
+  },
+  {
+   "id": "howto_march",
+   "kind": "image",
+   "type": "art",
+   "aspect": "ar_16_9",
+   "prompt": "A long column of red-coated line infantry with tall shakos and fixed bayonets marching out of the gate of a star fort under a crimson imperial standard, drummers and fifers at the head, morning light",
+   "out": "assets/art/howto_march",
+   "v": 2
+  },
+  {
+   "id": "howto_clash",
+   "kind": "image",
+   "type": "art",
+   "aspect": "ar_16_9",
+   "prompt": "Two lines of musketeers, one in crimson coats and one in navy blue coats, colliding head-on on a narrow stone bridge amid thick musket smoke, battle flags on both sides",
+   "out": "assets/art/howto_clash",
+   "v": 2
+  },
+  {
+   "id": "howto_walkin",
+   "kind": "image",
+   "type": "art",
+   "aspect": "ar_16_9",
+   "prompt": "A swaggering squad of green-coated soldiers marching unopposed through the open gate of an abandoned frontier fort and planting their green banner, the previous owner's flag lying in the dust",
+   "out": "assets/art/howto_walkin",
+   "v": 2
+  },
+  {
+   "id": "howto_dugin",
+   "kind": "image",
+   "type": "art",
+   "aspect": "ar_16_9",
+   "prompt": "Sappers in shirtsleeves digging earthwork redoubts lined with wicker gabions around cannon on a hilltop fort, afternoon light, determined",
+   "out": "assets/art/howto_dugin",
+   "v": 2
+  },
+  {
+   "id": "howto_cards",
+   "kind": "image",
+   "type": "art",
+   "aspect": "ar_16_9",
+   "prompt": "Three ornate campaign cards fanned on a war table, painted with a musketeer, a charging dragoon and a bronze cannon, gilded edges, candlelight",
+   "out": "assets/art/howto_cards",
+   "v": 2
+  },
+  {
+   "id": "howto_surge",
+   "kind": "image",
+   "type": "art",
+   "aspect": "ar_16_9",
+   "prompt": "Hussars charging through a breach in a fortress wall and galloping on toward a second town on the horizon, sabres raised, dust and smoke",
+   "out": "assets/art/howto_surge",
+   "v": 2
+  },
+  {
+   "id": "card_sun",
+   "kind": "image",
+   "type": "card-art",
+   "aspect": "ar_3_4",
+   "out": "assets/cards/sun",
+   "prompt": "Front face of an ornate imperial campaign card: a heroic line-infantry musketeer with fixed bayonet painted inside a gilded oval medallion at the center, ivory parchment ground, gilded baroque border with crimson corner flourishes, no text, no numbers",
+   "v": 2
+  },
+  {
+   "id": "card_moon",
+   "kind": "image",
+   "type": "card-art",
+   "aspect": "ar_3_4",
+   "out": "assets/cards/moon",
+   "prompt": "Front face of an ornate imperial campaign card: a dragoon on a rearing horse with sabre raised painted inside a gilded oval medallion at the center, ivory parchment ground, gilded baroque border with crimson corner flourishes, no text, no numbers",
+   "v": 2
+  },
+  {
+   "id": "card_star",
+   "kind": "image",
+   "type": "card-art",
+   "aspect": "ar_3_4",
+   "out": "assets/cards/star",
+   "prompt": "Front face of an ornate imperial campaign card: a bronze field cannon on a wooden carriage with a smoking fuse painted inside a gilded oval medallion at the center, ivory parchment ground, gilded baroque border with crimson corner flourishes, no text, no numbers",
+   "v": 3
+  },
+  {
+   "id": "card_wild",
+   "kind": "image",
+   "type": "card-art",
+   "aspect": "ar_3_4",
+   "out": "assets/cards/wild",
+   "prompt": "Front face of an ornate imperial campaign card: a golden crown above a crossed musket, sabre and cannon ramrod painted inside a gilded oval medallion at the center, ivory parchment ground, gilded baroque border with crimson corner flourishes, no text, no numbers",
+   "v": 2
+  },
+  {
+   "id": "card_back",
+   "kind": "image",
+   "type": "card-art",
+   "aspect": "ar_3_4",
+   "out": "assets/cards/back",
+   "prompt": "Back of an ornate playing card: deep navy ground with a gilded compass rose over a crossed anchor and sabre, crimson and gold baroque border, symmetrical, no text",
+   "v": 2
+  },
+  {
+   "id": "field_grass",
+   "kind": "image",
+   "type": "fixed_background",
+   "aspect": "ar_16_9",
+   "perspective": "High Angle",
+   "out": "assets/battle/field_grass",
+   "prompt": "Rolling green farmland with hedgerows, a dirt road, a stone bridge and a windmill on a hill. Painterly battlefield backdrop seen from a high angle, like a war-game table, no people, no soldiers, no text, soft even light, open ground in the middle for two armies",
+   "v": 2
+  },
+  {
+   "id": "field_forest",
+   "kind": "image",
+   "type": "fixed_background",
+   "aspect": "ar_16_9",
+   "perspective": "High Angle",
+   "out": "assets/battle/field_forest",
+   "prompt": "A clearing in a dense old forest with a log road and a half-built timber stockade. Painterly battlefield backdrop seen from a high angle, like a war-game table, no people, no soldiers, no text, soft even light, open ground in the middle for two armies",
+   "v": 2
+  },
+  {
+   "id": "field_mountain",
+   "kind": "image",
+   "type": "fixed_background",
+   "aspect": "ar_16_9",
+   "perspective": "High Angle",
+   "out": "assets/battle/field_mountain",
+   "prompt": "A rocky mountain pass with scree slopes and a small stone watch-fort on a crag. Painterly battlefield backdrop seen from a high angle, like a war-game table, no people, no soldiers, no text, soft even light, open ground in the middle for two armies",
+   "v": 2
+  },
+  {
+   "id": "field_desert",
+   "kind": "image",
+   "type": "fixed_background",
+   "aspect": "ar_16_9",
+   "perspective": "High Angle",
+   "out": "assets/battle/field_desert",
+   "prompt": "Golden sand dunes and a dry riverbed below a sandstone fortress on a ridge. Painterly battlefield backdrop seen from a high angle, like a war-game table, no people, no soldiers, no text, soft even light, open ground in the middle for two armies",
+   "v": 2
+  },
+  {
+   "id": "field_snow",
+   "kind": "image",
+   "type": "fixed_background",
+   "aspect": "ar_16_9",
+   "perspective": "High Angle",
+   "out": "assets/battle/field_snow",
+   "prompt": "A frozen tundra plain with snow-laden pines and a timber trading fort in the distance. Painterly battlefield backdrop seen from a high angle, like a war-game table, no people, no soldiers, no text, soft even light, open ground in the middle for two armies",
+   "v": 2
+  },
+  {
+   "id": "field_coast",
+   "kind": "image",
+   "type": "fixed_background",
+   "aspect": "ar_16_9",
+   "perspective": "High Angle",
+   "out": "assets/battle/field_coast",
+   "prompt": "A sandy landing beach with longboats pulled up on the sand and a ship of the line anchored offshore. Painterly battlefield backdrop seen from a high angle, like a war-game table, no people, no soldiers, no text, soft even light, open ground in the middle for two armies",
+   "v": 2
+  },
+  {
+   "id": "field_ash",
+   "kind": "image",
+   "type": "fixed_background",
+   "aspect": "ar_16_9",
+   "perspective": "High Angle",
+   "out": "assets/battle/field_ash",
+   "prompt": "Grey volcanic plains with cracked earth, a smoking volcano and a burned-out outpost. Painterly battlefield backdrop seen from a high angle, like a war-game table, no people, no soldiers, no text, soft even light, open ground in the middle for two armies",
+   "v": 2
+  },
+  {
+   "id": "field_moor",
+   "kind": "image",
+   "type": "fixed_background",
+   "aspect": "ar_16_9",
+   "perspective": "High Angle",
+   "out": "assets/battle/field_moor",
+   "prompt": "Misty heather moorland with standing stones and an earthwork redoubt. Painterly battlefield backdrop seen from a high angle, like a war-game table, no people, no soldiers, no text, soft even light, open ground in the middle for two armies",
+   "v": 2
+  },
+  {
+   "id": "soldier_stand",
+   "kind": "image",
+   "type": "sprite",
+   "cutout": true,
+   "style": false,
+   "art_style": "Hand-Painted",
+   "perspective": "Side-Scroll",
+   "aspect": "ar_3_4",
+   "out": "assets/raw/battle/soldier_stand",
+   "prompt": "A single toy soldier of imperial line infantry, tall shako, crossbelts and tailcoat, musket held upright at the shoulder, full body standing, side view facing right, the whole figure painted pure white and very light grey with no other colors, glossy painted tin-soldier miniature look, isolated on a plain white background",
+   "v": 2
+  },
+  {
+   "id": "soldier_flag",
+   "kind": "image",
+   "type": "sprite",
+   "cutout": true,
+   "style": false,
+   "art_style": "Hand-Painted",
+   "perspective": "Side-Scroll",
+   "aspect": "ar_3_4",
+   "out": "assets/raw/battle/soldier_flag",
+   "prompt": "A single toy soldier flag bearer of imperial line infantry holding a tall pole with a large plain white flag, tall shako, full body standing, side view facing right, the whole figure painted pure white and very light grey with no other colors, glossy painted tin-soldier miniature look, isolated on a plain white background",
+   "v": 2
+  },
+  {
+   "id": "hud_ring",
+   "kind": "image",
+   "type": "ui_asset",
+   "cutout": true,
+   "out": "assets/hud/hud_ring",
+   "prompt": "Ornate circular gilded frame: a golden laurel wreath ring with a small crown at the top and rivets, perfectly round, empty see-through center, front view, isolated on plain white background",
+   "v": 2
+  },
+  {
+   "id": "hud_button",
+   "kind": "image",
+   "type": "ui_asset",
+   "cutout": true,
+   "out": "assets/hud/hud_button",
+   "prompt": "Large round embossed button like a crimson wax seal set in a gilded baroque rim with laurel, blank smooth face with no symbol or text, front view, isolated on plain white background",
+   "v": 2
+  },
+  {
+   "id": "hud_coin",
+   "kind": "image",
+   "type": "ui_asset",
+   "cutout": true,
+   "out": "assets/hud/hud_coin",
+   "prompt": "Small round gold sovereign coin button with a raised milled rim and blank smooth center, no symbol, front view, isolated on plain white background",
+   "v": 2
+  },
+  {
+   "id": "hud_ribbon",
+   "kind": "image",
+   "type": "ui_asset",
+   "cutout": true,
+   "out": "assets/hud/hud_ribbon",
+   "prompt": "Horizontal crimson silk banner with forked swallowtail ends, gold fringe and gold stitched edges, blank, front view, isolated on plain white background",
+   "v": 2
+  },
+  {
+   "id": "chart_rose",
+   "kind": "image",
+   "type": "ui_asset",
+   "cutout": true,
+   "out": "assets/art/chart_rose",
+   "prompt": "An ornate antique map compass rose with sixteen gilded star points, a fleur-de-lis at north, crimson and navy inks on transparent, front view, isolated on plain white background",
+   "v": 1
+  },
+  {
+   "id": "chart_ship",
+   "kind": "image",
+   "type": "ui_asset",
+   "cutout": true,
+   "out": "assets/art/chart_ship",
+   "prompt": "A small ship of the line under full white sails flying a plain crimson pennant, side view, painted like an ornament on an antique sea chart, isolated on plain white background",
+   "v": 1
+  },
+  {
+   "id": "chart_cartouche",
+   "kind": "image",
+   "type": "ui_asset",
+   "cutout": true,
+   "out": "assets/art/chart_cartouche",
+   "prompt": "An empty ornate baroque cartouche frame for a map title, gilded scrollwork with a crown, laurel and two crossed cannons, blank center, isolated on plain white background",
+   "v": 1
+  },
+  {
+   "id": "icon_app",
+   "kind": "image",
+   "type": "icon",
+   "cutout": true,
+   "out": "assets/icons/app",
+   "prompt": "Imperial crest emblem: a crowned crimson shield with three golden arrows converging on a small star fort, laurel wreath around it, bold dark outline, isolated on plain white background",
+   "v": 3
+  },
+  {
+   "id": "music_menu",
+   "kind": "music",
+   "duration": 120,
+   "out": "assets/audio/music/menu",
+   "prompt": "Grand imperial anthem for a conquest strategy game: thundering timpani, full brass fanfare, marching snare drums, soaring strings and a proud wordless choir, triumphant and bombastic, the empire on the march, instrumental",
+   "v": 2
+  },
+  {
+   "id": "music_plan",
+   "kind": "music",
+   "duration": 150,
+   "out": "assets/audio/music/plan",
+   "prompt": "War council music for planning an invasion: steady military snare cadence, low brass and cellos building quiet menace, fifes in the distance, confident and driving, loopable, instrumental",
+   "v": 2
+  },
+  {
+   "id": "music_battle",
+   "kind": "music",
+   "duration": 120,
+   "out": "assets/audio/music/battle",
+   "prompt": "Full-throttle battle march: pounding war drums, rolling snares, blaring brass, fife and drum corps, cannon-like timpani hits, relentless and aggressive, a battle of conquest, loopable, instrumental",
+   "v": 2
+  },
+  {
+   "id": "music_charge",
+   "kind": "music",
+   "duration": 90,
+   "out": "assets/audio/music/charge",
+   "prompt": "Heroic cavalry charge music: galloping strings ostinato, bugle calls, crashing cymbals, brass heroics, breathless and victorious, loopable, instrumental",
+   "v": 1
+  },
+  {
+   "id": "music_victory",
+   "kind": "music",
+   "duration": 40,
+   "out": "assets/audio/music/victory",
+   "prompt": "Triumphal imperial victory anthem: blazing brass fanfare, pealing bells, a choir singing a wordless hymn of conquest, timpani, glorious",
+   "v": 2
+  },
+  {
+   "id": "music_defeat",
+   "kind": "music",
+   "duration": 30,
+   "out": "assets/audio/music/defeat",
+   "prompt": "Funeral march for a fallen empire: muffled drums, a solo bugle, low strings, dignified and grim",
+   "v": 2
+  },
+  {
+   "id": "sfx_capture",
+   "kind": "sfx",
+   "duration": 2,
+   "out": "assets/audio/sfx/capture",
+   "prompt": "short triumphant brass fanfare with a snare flourish and a distant cheer, a town has fallen, two seconds",
+   "v": 2
+  },
+  {
+   "id": "sfx_walkin",
+   "kind": "sfx",
+   "duration": 2,
+   "out": "assets/audio/sfx/walkin",
+   "prompt": "cocky swaggering low brass sting with a snare hit, sly and triumphant, short",
+   "v": 2
+  },
+  {
+   "id": "sfx_eliminated",
+   "kind": "sfx",
+   "duration": 2,
+   "out": "assets/audio/sfx/eliminated",
+   "prompt": "a thundering cannon salute and a slow grand drum roll, an empire has fallen, short",
+   "v": 2
+  },
+  {
+   "id": "sfx_seal",
+   "kind": "sfx",
+   "duration": 2,
+   "out": "assets/audio/sfx/seal",
+   "prompt": "wax seal stamp pressed onto parchment followed by a war drum hit and a distant cannon boom",
+   "v": 2
+  },
+  {
+   "id": "sfx_reveal",
+   "kind": "sfx",
+   "duration": 2,
+   "out": "assets/audio/sfx/reveal",
+   "prompt": "parchment unrolled quickly then a bugle calls the advance with drums",
+   "v": 2
+  },
+  {
+   "id": "sfx_retreat",
+   "kind": "sfx",
+   "duration": 2,
+   "out": "assets/audio/sfx/retreat",
+   "prompt": "a bugle sounding the retreat call, urgent, short",
+   "v": 1
+  },
+  {
+   "id": "sfx_reserves",
+   "kind": "sfx",
+   "duration": 3,
+   "out": "assets/audio/sfx/reserves",
+   "prompt": "war drums beating fast and a column of boots rushing forward with a roar, short",
+   "v": 1
+  },
+  {
+   "id": "sfx_hurrah",
+   "kind": "sfx",
+   "duration": 2,
+   "out": "assets/audio/sfx/hurrah",
+   "prompt": "a whole regiment roaring hurrah as they charge, short",
+   "v": 1
+  },
+  {
+   "id": "sfx_hoofs",
+   "kind": "sfx",
+   "duration": 3,
+   "out": "assets/audio/sfx/hoofs",
+   "prompt": "a squadron of cavalry galloping past on hard ground, short",
+   "v": 1
+  },
+  {
+   "id": "voice_advisor",
+   "kind": "voice",
+   "describe": "Elderly British military advisor, warm and wise, slightly gravelly, calm measured delivery, reassuring",
+   "text": "Welcome to the war table, Commander. Every general writes orders in secret, and every army marches at once.",
+   "out": "assets/voice/advisor/_sample",
+   "v": 1
+  },
+  {
+   "id": "voice_varek",
+   "kind": "voice",
+   "describe": "Old grizzled field marshal, very deep gravelly voice, slow, stoic and commanding",
+   "text": "Marshal Varek. I have buried better generals than you. Let us begin.",
+   "out": "assets/voice/varek/_sample",
+   "v": 1
+  },
+  {
+   "id": "voice_ysolde",
+   "kind": "voice",
+   "describe": "Stern aristocratic woman general in her forties, cold, crisp, precise and commanding",
+   "text": "Lady Ysolde. I suggest you guard your doors.",
+   "out": "assets/voice/ysolde/_sample",
+   "v": 1
+  },
+  {
+   "id": "voice_quill",
+   "kind": "voice",
+   "describe": "Portly sly quartermaster, nasal and amused, quick merchant patter",
+   "text": "The Quartermaster, at your service. Everything has its price.",
+   "out": "assets/voice/quill/_sample",
+   "v": 1
+  },
+  {
+   "id": "voice_oren",
+   "kind": "voice",
+   "describe": "Young eager cavalry captain in his twenties, bright, boyish and overconfident",
+   "text": "Captain Oren! First war, but I am a fast learner!",
+   "out": "assets/voice/oren/_sample",
+   "v": 1
+  },
+  {
+   "id": "voice_hask",
+   "kind": "voice",
+   "describe": "Huge bearded northern warlord, booming deep voice, rough accent, laughs easily",
+   "text": "Old Bear Hask! Bring me your best, little general!",
+   "out": "assets/voice/hask/_sample",
+   "v": 1
+  },
+  {
+   "id": "voice_imre",
+   "kind": "voice",
+   "describe": "Calm sharp-witted woman tactician, low even voice, dry and understated",
+   "text": "Commander Imre. I have already read your plan.",
+   "out": "assets/voice/imre/_sample",
+   "v": 1
+  },
+  {
+   "id": "line_advisor_welcome",
+   "kind": "speech",
+   "voice": "voice_advisor",
+   "text": "Welcome to the war table, Commander. The world is wide, the maps are blank, and every inch of it is ours for the taking.",
+   "out": "assets/voice/advisor/welcome",
+   "v": 2
+  },
+  {
+   "id": "line_advisor_deploy",
+   "kind": "speech",
+   "voice": "voice_advisor",
+   "text": "Plant our flag and pour in the troops. Spread too thin and the vultures will pick us apart.",
+   "out": "assets/voice/advisor/deploy",
+   "v": 2
+  },
+  {
+   "id": "line_advisor_reinforce",
+   "kind": "speech",
+   "voice": "voice_advisor",
+   "text": "Fresh regiments off the boats, Commander. Send them where the fighting is.",
+   "out": "assets/voice/advisor/reinforce",
+   "v": 2
+  },
+  {
+   "id": "line_advisor_attack_hint",
+   "kind": "speech",
+   "voice": "voice_advisor",
+   "text": "Select one of our lands, then click the enemy you mean to crush.",
+   "out": "assets/voice/advisor/attack_hint",
+   "v": 2
+  },
+  {
+   "id": "line_advisor_vacate_warn",
+   "kind": "speech",
+   "voice": "voice_advisor",
+   "text": "Careful. March them all out and that land stands empty. Any jackal next door could stroll right in.",
+   "out": "assets/voice/advisor/vacate_warn",
+   "v": 2
+  },
+  {
+   "id": "line_advisor_unplaced",
+   "kind": "speech",
+   "voice": "voice_advisor",
+   "text": "We have regiments idling on the docks. Unplaced men go home, and I will not have it.",
+   "out": "assets/voice/advisor/unplaced",
+   "v": 2
+  },
+  {
+   "id": "line_advisor_sealed",
+   "kind": "speech",
+   "voice": "voice_advisor",
+   "text": "Orders sealed. Now we see who flinches.",
+   "out": "assets/voice/advisor/sealed",
+   "v": 2
+  },
+  {
+   "id": "line_advisor_reveal",
+   "kind": "speech",
+   "voice": "voice_advisor",
+   "text": "There it is. Every army on the map, marching at once. Glorious.",
+   "out": "assets/voice/advisor/reveal",
+   "v": 2
+  },
+  {
+   "id": "line_advisor_walkin_us",
+   "kind": "speech",
+   "voice": "voice_advisor",
+   "text": "A walk-in! They left the gates wide open and we marched straight through. Plant the flag!",
+   "out": "assets/voice/advisor/walkin_us",
+   "v": 2
+  },
+  {
+   "id": "line_advisor_walkin_them",
+   "kind": "speech",
+   "voice": "voice_advisor",
+   "text": "Blast! They walked straight into a land we left empty.",
+   "out": "assets/voice/advisor/walkin_them",
+   "v": 2
+  },
+  {
+   "id": "line_advisor_capture",
+   "kind": "speech",
+   "voice": "voice_advisor",
+   "text": "Another land for the empire!",
+   "out": "assets/voice/advisor/capture",
+   "v": 2
+  },
+  {
+   "id": "line_advisor_hold",
+   "kind": "speech",
+   "voice": "voice_advisor",
+   "text": "Our garrison held. Let them break their teeth on our walls.",
+   "out": "assets/voice/advisor/hold",
+   "v": 2
+  },
+  {
+   "id": "line_advisor_lost_land",
+   "kind": "speech",
+   "voice": "voice_advisor",
+   "text": "We have lost ground there, Commander. We will take it back with interest.",
+   "out": "assets/voice/advisor/lost_land",
+   "v": 2
+  },
+  {
+   "id": "line_advisor_region",
+   "kind": "speech",
+   "voice": "voice_advisor",
+   "text": "The whole region flies our colours. Its riches will swell our ranks every round.",
+   "out": "assets/voice/advisor/region",
+   "v": 2
+  },
+  {
+   "id": "line_advisor_cards",
+   "kind": "speech",
+   "voice": "voice_advisor",
+   "text": "We hold a matching set of cards. Cash them in and call up the regiments.",
+   "out": "assets/voice/advisor/cards",
+   "v": 2
+  },
+  {
+   "id": "line_advisor_final",
+   "kind": "speech",
+   "voice": "voice_advisor",
+   "text": "Final round, Commander! Only land counts now. Throw in everything. Leave nothing in the barracks.",
+   "out": "assets/voice/advisor/final",
+   "v": 2
+  },
+  {
+   "id": "line_advisor_leader",
+   "kind": "speech",
+   "voice": "voice_advisor",
+   "text": "We lead the war. Every crown at this table wants our head. Let them come.",
+   "out": "assets/voice/advisor/leader",
+   "v": 2
+  },
+  {
+   "id": "line_advisor_behind",
+   "kind": "speech",
+   "voice": "voice_advisor",
+   "text": "We are falling behind. Fortune favours the bold, Commander. Attack!",
+   "out": "assets/voice/advisor/behind",
+   "v": 2
+  },
+  {
+   "id": "line_advisor_enemy_out",
+   "kind": "speech",
+   "voice": "voice_advisor",
+   "text": "One less rival for the throne. Their lands are ripe for the taking.",
+   "out": "assets/voice/advisor/enemy_out",
+   "v": 2
+  },
+  {
+   "id": "line_advisor_defeat",
+   "kind": "speech",
+   "voice": "voice_advisor",
+   "text": "We are beaten, Commander. Even empires fall. But what a war it was.",
+   "out": "assets/voice/advisor/defeat",
+   "v": 2
+  },
+  {
+   "id": "line_advisor_victory",
+   "kind": "speech",
+   "voice": "voice_advisor",
+   "text": "Victory! The world bows to you, Commander. Magnificent. Utterly magnificent.",
+   "out": "assets/voice/advisor/victory",
+   "v": 2
+  },
+  {
+   "id": "line_advisor_dug_in",
+   "kind": "speech",
+   "voice": "voice_advisor",
+   "text": "Lands we hold dig in. Dug-in troops never march, so they keep a land safe while the rest go conquering.",
+   "out": "assets/voice/advisor/dug_in",
+   "v": 2
+  },
+  {
+   "id": "line_advisor_surge",
+   "kind": "speech",
+   "voice": "voice_advisor",
+   "text": "A clean breakthrough! With men to spare, we can surge on to the next land.",
+   "out": "assets/voice/advisor/surge",
+   "v": 2
+  },
+  {
+   "id": "line_advisor_roll",
+   "kind": "speech",
+   "voice": "voice_advisor",
+   "text": "Roll the dice, Commander.",
+   "out": "assets/voice/advisor/roll",
+   "v": 1
+  },
+  {
+   "id": "line_advisor_good_roll",
+   "kind": "speech",
+   "voice": "voice_advisor",
+   "text": "The dice love us today!",
+   "out": "assets/voice/advisor/good_roll",
+   "v": 2
+  },
+  {
+   "id": "line_advisor_bad_roll",
+   "kind": "speech",
+   "voice": "voice_advisor",
+   "text": "Cursed luck!",
+   "out": "assets/voice/advisor/bad_roll",
+   "v": 2
+  },
+  {
+   "id": "line_advisor_plan",
+   "kind": "speech",
+   "voice": "voice_advisor",
+   "text": "Here is what I would do, Commander.",
+   "out": "assets/voice/advisor/plan",
+   "v": 1
+  },
+  {
+   "id": "line_advisor_press",
+   "kind": "speech",
+   "voice": "voice_advisor",
+   "text": "They are breaking! Press the attack!",
+   "out": "assets/voice/advisor/press",
+   "v": 1
+  },
+  {
+   "id": "line_advisor_retreat",
+   "kind": "speech",
+   "voice": "voice_advisor",
+   "text": "Sound the retreat! Save the men for another day.",
+   "out": "assets/voice/advisor/retreat",
+   "v": 1
+  },
+  {
+   "id": "line_advisor_reserves",
+   "kind": "speech",
+   "voice": "voice_advisor",
+   "text": "Send in the reserves! Every last man!",
+   "out": "assets/voice/advisor/reserves",
+   "v": 1
+  },
+  {
+   "id": "line_advisor_cut_off",
+   "kind": "speech",
+   "voice": "voice_advisor",
+   "text": "We are cut off, Commander. There is no retreat. Fight or die.",
+   "out": "assets/voice/advisor/cut_off",
+   "v": 1
+  },
+  {
+   "id": "line_advisor_opening_bad",
+   "kind": "speech",
+   "voice": "voice_advisor",
+   "text": "A bloody opening. Fall back now and save the men, or press on and pray.",
+   "out": "assets/voice/advisor/opening_bad",
+   "v": 1
+  },
+  {
+   "id": "line_advisor_opening_good",
+   "kind": "speech",
+   "voice": "voice_advisor",
+   "text": "A glorious opening! One more push and the land is ours.",
+   "out": "assets/voice/advisor/opening_good",
+   "v": 1
+  },
+  {
+   "id": "line_varek_greet",
+   "kind": "speech",
+   "voice": "voice_varek",
+   "text": "Grand Marshal Varek. I have buried a hundred generals. You will be a hundred and one.",
+   "out": "assets/voice/varek/greet",
+   "v": 2
+  },
+  {
+   "id": "line_varek_attack",
+   "kind": "speech",
+   "voice": "voice_varek",
+   "text": "Advance. Fix bayonets. No quarter.",
+   "out": "assets/voice/varek/attack",
+   "v": 2
+  },
+  {
+   "id": "line_varek_win",
+   "kind": "speech",
+   "voice": "voice_varek",
+   "text": "As expected.",
+   "out": "assets/voice/varek/win",
+   "v": 1
+  },
+  {
+   "id": "line_varek_lose",
+   "kind": "speech",
+   "voice": "voice_varek",
+   "text": "A setback. They will pay for it in blood.",
+   "out": "assets/voice/varek/lose",
+   "v": 2
+  },
+  {
+   "id": "line_varek_walkin",
+   "kind": "speech",
+   "voice": "voice_varek",
+   "text": "You left it empty. I merely accepted the invitation.",
+   "out": "assets/voice/varek/walkin",
+   "v": 1
+  },
+  {
+   "id": "line_varek_eliminated",
+   "kind": "speech",
+   "voice": "voice_varek",
+   "text": "My war is over. Remember the old soldier.",
+   "out": "assets/voice/varek/eliminated",
+   "v": 1
+  },
+  {
+   "id": "line_varek_victory",
+   "kind": "speech",
+   "voice": "voice_varek",
+   "text": "The world is mine. It always was.",
+   "out": "assets/voice/varek/victory",
+   "v": 2
+  },
+  {
+   "id": "line_varek_retreat",
+   "kind": "speech",
+   "voice": "voice_varek",
+   "text": "Fall back. Regroup. We return at dawn.",
+   "out": "assets/voice/varek/retreat",
+   "v": 1
+  },
+  {
+   "id": "line_varek_reserves",
+   "kind": "speech",
+   "voice": "voice_varek",
+   "text": "Bring up the reserves. End this.",
+   "out": "assets/voice/varek/reserves",
+   "v": 1
+  },
+  {
+   "id": "line_ysolde_greet",
+   "kind": "speech",
+   "voice": "voice_ysolde",
+   "text": "Viceroy Ysolde. Every land at this table will fly my banner. Guard your doors.",
+   "out": "assets/voice/ysolde/greet",
+   "v": 2
+  },
+  {
+   "id": "line_ysolde_attack",
+   "kind": "speech",
+   "voice": "voice_ysolde",
+   "text": "Take it. Leave nothing standing.",
+   "out": "assets/voice/ysolde/attack",
+   "v": 1
+  },
+  {
+   "id": "line_ysolde_win",
+   "kind": "speech",
+   "voice": "voice_ysolde",
+   "text": "Predictable.",
+   "out": "assets/voice/ysolde/win",
+   "v": 1
+  },
+  {
+   "id": "line_ysolde_lose",
+   "kind": "speech",
+   "voice": "voice_ysolde",
+   "text": "You will pay for that. Dearly.",
+   "out": "assets/voice/ysolde/lose",
+   "v": 2
+  },
+  {
+   "id": "line_ysolde_walkin",
+   "kind": "speech",
+   "voice": "voice_ysolde",
+   "text": "An empty fort is an insult to its owner. I have corrected it.",
+   "out": "assets/voice/ysolde/walkin",
+   "v": 2
+  },
+  {
+   "id": "line_ysolde_eliminated",
+   "kind": "speech",
+   "voice": "voice_ysolde",
+   "text": "This is not the end of my house.",
+   "out": "assets/voice/ysolde/eliminated",
+   "v": 1
+  },
+  {
+   "id": "line_ysolde_victory",
+   "kind": "speech",
+   "voice": "voice_ysolde",
+   "text": "Kneel. The empire is mine.",
+   "out": "assets/voice/ysolde/victory",
+   "v": 2
+  },
+  {
+   "id": "line_ysolde_retreat",
+   "kind": "speech",
+   "voice": "voice_ysolde",
+   "text": "Withdraw. For now.",
+   "out": "assets/voice/ysolde/retreat",
+   "v": 1
+  },
+  {
+   "id": "line_ysolde_reserves",
+   "kind": "speech",
+   "voice": "voice_ysolde",
+   "text": "Send everything. I do not lose.",
+   "out": "assets/voice/ysolde/reserves",
+   "v": 1
+  },
+  {
+   "id": "line_quill_greet",
+   "kind": "speech",
+   "voice": "voice_quill",
+   "text": "Governor Quill, of the Company. Everything has its price, and I intend to buy the world.",
+   "out": "assets/voice/quill/greet",
+   "v": 2
+  },
+  {
+   "id": "line_quill_attack",
+   "kind": "speech",
+   "voice": "voice_quill",
+   "text": "An investment opportunity, lads. Go and collect.",
+   "out": "assets/voice/quill/attack",
+   "v": 1
+  },
+  {
+   "id": "line_quill_win",
+   "kind": "speech",
+   "voice": "voice_quill",
+   "text": "Profit!",
+   "out": "assets/voice/quill/win",
+   "v": 1
+  },
+  {
+   "id": "line_quill_lose",
+   "kind": "speech",
+   "voice": "voice_quill",
+   "text": "Hm. That will cost me.",
+   "out": "assets/voice/quill/lose",
+   "v": 1
+  },
+  {
+   "id": "line_quill_walkin",
+   "kind": "speech",
+   "voice": "voice_quill",
+   "text": "Unguarded goods. Finders keepers.",
+   "out": "assets/voice/quill/walkin",
+   "v": 1
+  },
+  {
+   "id": "line_quill_eliminated",
+   "kind": "speech",
+   "voice": "voice_quill",
+   "text": "Bankrupt. Well, it was lovely doing business.",
+   "out": "assets/voice/quill/eliminated",
+   "v": 1
+  },
+  {
+   "id": "line_quill_victory",
+   "kind": "speech",
+   "voice": "voice_quill",
+   "text": "Tally it up. The Company owns the lot.",
+   "out": "assets/voice/quill/victory",
+   "v": 2
+  },
+  {
+   "id": "line_quill_retreat",
+   "kind": "speech",
+   "voice": "voice_quill",
+   "text": "Cut our losses, lads. Back to the ships.",
+   "out": "assets/voice/quill/retreat",
+   "v": 1
+  },
+  {
+   "id": "line_quill_reserves",
+   "kind": "speech",
+   "voice": "voice_quill",
+   "text": "Double the investment! Send the reserves!",
+   "out": "assets/voice/quill/reserves",
+   "v": 1
+  },
+  {
+   "id": "line_oren_greet",
+   "kind": "speech",
+   "voice": "voice_oren",
+   "text": "Captain Oren of the Hussars! First war, but I have a very fast horse!",
+   "out": "assets/voice/oren/greet",
+   "v": 2
+  },
+  {
+   "id": "line_oren_attack",
+   "kind": "speech",
+   "voice": "voice_oren",
+   "text": "Charge! For glory!",
+   "out": "assets/voice/oren/attack",
+   "v": 1
+  },
+  {
+   "id": "line_oren_win",
+   "kind": "speech",
+   "voice": "voice_oren",
+   "text": "Ha! Did you see that?",
+   "out": "assets/voice/oren/win",
+   "v": 1
+  },
+  {
+   "id": "line_oren_lose",
+   "kind": "speech",
+   "voice": "voice_oren",
+   "text": "Wait, that was not supposed to happen!",
+   "out": "assets/voice/oren/lose",
+   "v": 1
+  },
+  {
+   "id": "line_oren_walkin",
+   "kind": "speech",
+   "voice": "voice_oren",
+   "text": "Nobody home? Do not mind if I do!",
+   "out": "assets/voice/oren/walkin",
+   "v": 1
+  },
+  {
+   "id": "line_oren_eliminated",
+   "kind": "speech",
+   "voice": "voice_oren",
+   "text": "I will be back. With more horses.",
+   "out": "assets/voice/oren/eliminated",
+   "v": 1
+  },
+  {
+   "id": "line_oren_victory",
+   "kind": "speech",
+   "voice": "voice_oren",
+   "text": "I won? I won! Somebody tell my mother!",
+   "out": "assets/voice/oren/victory",
+   "v": 1
+  },
+  {
+   "id": "line_oren_retreat",
+   "kind": "speech",
+   "voice": "voice_oren",
+   "text": "Retreat! Tactical retreat! Very tactical!",
+   "out": "assets/voice/oren/retreat",
+   "v": 1
+  },
+  {
+   "id": "line_oren_reserves",
+   "kind": "speech",
+   "voice": "voice_oren",
+   "text": "Everybody! Everybody charge!",
+   "out": "assets/voice/oren/reserves",
+   "v": 1
+  },
+  {
+   "id": "line_hask_greet",
+   "kind": "speech",
+   "voice": "voice_hask",
+   "text": "Commodore Hask, the Old Bear! Bring me your best, little general, and I will sink it!",
+   "out": "assets/voice/hask/greet",
+   "v": 2
+  },
+  {
+   "id": "line_hask_attack",
+   "kind": "speech",
+   "voice": "voice_hask",
+   "text": "Haaa! Break them! Burn their boats!",
+   "out": "assets/voice/hask/attack",
+   "v": 2
+  },
+  {
+   "id": "line_hask_win",
+   "kind": "speech",
+   "voice": "voice_hask",
+   "text": "Hah! Soft as butter!",
+   "out": "assets/voice/hask/win",
+   "v": 1
+  },
+  {
+   "id": "line_hask_lose",
+   "kind": "speech",
+   "voice": "voice_hask",
+   "text": "Grr. Lucky blow.",
+   "out": "assets/voice/hask/lose",
+   "v": 1
+  },
+  {
+   "id": "line_hask_walkin",
+   "kind": "speech",
+   "voice": "voice_hask",
+   "text": "Empty? Then it is mine!",
+   "out": "assets/voice/hask/walkin",
+   "v": 1
+  },
+  {
+   "id": "line_hask_eliminated",
+   "kind": "speech",
+   "voice": "voice_hask",
+   "text": "Bah! Pour me a drink. I am done.",
+   "out": "assets/voice/hask/eliminated",
+   "v": 1
+  },
+  {
+   "id": "line_hask_victory",
+   "kind": "speech",
+   "voice": "voice_hask",
+   "text": "The Bear rules land and sea! Ha ha ha!",
+   "out": "assets/voice/hask/victory",
+   "v": 2
+  },
+  {
+   "id": "line_hask_retreat",
+   "kind": "speech",
+   "voice": "voice_hask",
+   "text": "Back to the ships! I will be back for you!",
+   "out": "assets/voice/hask/retreat",
+   "v": 1
+  },
+  {
+   "id": "line_hask_reserves",
+   "kind": "speech",
+   "voice": "voice_hask",
+   "text": "More! Send more! The Bear is hungry!",
+   "out": "assets/voice/hask/reserves",
+   "v": 1
+  },
+  {
+   "id": "line_imre_greet",
+   "kind": "speech",
+   "voice": "voice_imre",
+   "text": "Admiral Imre. I have already read your plan.",
+   "out": "assets/voice/imre/greet",
+   "v": 2
+  },
+  {
+   "id": "line_imre_attack",
+   "kind": "speech",
+   "voice": "voice_imre",
+   "text": "Exactly as planned. Proceed.",
+   "out": "assets/voice/imre/attack",
+   "v": 1
+  },
+  {
+   "id": "line_imre_win",
+   "kind": "speech",
+   "voice": "voice_imre",
+   "text": "Calculated.",
+   "out": "assets/voice/imre/win",
+   "v": 1
+  },
+  {
+   "id": "line_imre_lose",
+   "kind": "speech",
+   "voice": "voice_imre",
+   "text": "Interesting. I will adjust.",
+   "out": "assets/voice/imre/lose",
+   "v": 1
+  },
+  {
+   "id": "line_imre_walkin",
+   "kind": "speech",
+   "voice": "voice_imre",
+   "text": "You moved. I did not. That was the whole trick.",
+   "out": "assets/voice/imre/walkin",
+   "v": 1
+  },
+  {
+   "id": "line_imre_eliminated",
+   "kind": "speech",
+   "voice": "voice_imre",
+   "text": "Well played. I underestimated you.",
+   "out": "assets/voice/imre/eliminated",
+   "v": 1
+  },
+  {
+   "id": "line_imre_victory",
+   "kind": "speech",
+   "voice": "voice_imre",
+   "text": "Checkmate.",
+   "out": "assets/voice/imre/victory",
+   "v": 1
+  },
+  {
+   "id": "line_imre_retreat",
+   "kind": "speech",
+   "voice": "voice_imre",
+   "text": "The odds have turned. We withdraw.",
+   "out": "assets/voice/imre/retreat",
+   "v": 1
+  },
+  {
+   "id": "line_imre_reserves",
+   "kind": "speech",
+   "voice": "voice_imre",
+   "text": "Commit the reserve. Now.",
+   "out": "assets/voice/imre/reserves",
+   "v": 1
+  }
+ ]
 }

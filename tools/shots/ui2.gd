@@ -18,6 +18,7 @@ func run(probe) -> void:
 	await p.frames(5)
 	main.start_tutorial()
 	await p.frames(10)
+	main.current.intro._done()
 	await snap("20_tutorial_open")
 	var s: Node = main.session
 	s.auto_deploy()
@@ -42,6 +43,7 @@ func run(probe) -> void:
 	await p.frames(5)
 	s = main.session
 	var gs: Control = main.current
+	gs.intro._done()
 	s.auto_deploy()
 	s.lock()
 	await p.frames(5)
@@ -59,10 +61,16 @@ func run(probe) -> void:
 	s.world.players["red"].cards = PackedStringArray(["sun", "moon", "wild", "star"])
 	var mine := MapLib.player_territory_ids(s.world, "red")
 	if mine.size() > 0:
-		gs._select(mine[0])
+		gs.select(mine[0])
 	gs.board.zoom_at(gs.board.anchor(mine[0]) if mine.size() > 0 else gs.board.size * 0.5, 1.8)
 	await p.frames(10)
 	await snap("23_world_cards_zoom")
+	gs.board.reset_view()
+	gs.select("")
+	gs.toggle_view()
+	await p.frames(8)
+	await snap("24_world_regions_view")
+	gs.toggle_view()
 
 func snap(name: String) -> void:
 	await RenderingServer.frame_post_draw

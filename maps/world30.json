@@ -307,5 +307,21 @@
         "tidewatch"
       ]
     }
+  },
+  "regionTerrain": {
+    "thornwood": "forest",
+    "norrmark": "snow",
+    "heartlands": "grass",
+    "ashen": "ash",
+    "duneveil": "desert",
+    "sunward": "coast"
+  },
+  "regionColors": {
+    "thornwood": "#5f8a55",
+    "norrmark": "#9fb3c8",
+    "heartlands": "#c9a85a",
+    "ashen": "#9a6e5c",
+    "duneveil": "#d3a75e",
+    "sunward": "#4f9a9a"
   }
 }

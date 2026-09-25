@@ -53,6 +53,9 @@ class MapDef extends RefCounted:
 	var min_players: int = 2
 	var max_players: int = 5
 	var blurb: String = ""
+	var battle: String = "decisive" ## "decisive" | "volleys"; the session may override
+	var region_colors: Dictionary = {} ## region -> "#rrggbb"
+	var region_terrain: Dictionary = {} ## region -> battlefield key
 	var pools: Dictionary = {} ## player count (int) -> starting pool
 
 	func territory_ids() -> PackedStringArray:
@@ -127,6 +130,13 @@ class MapDef extends RefCounted:
 		m.min_players = int(data.get("minPlayers", 2))
 		m.max_players = int(data.get("maxPlayers", 5))
 		m.blurb = str(data.get("blurb", ""))
+		m.battle = str(data.get("battle", "decisive"))
+		var rc: Variant = data.get("regionColors", {})
+		if typeof(rc) == TYPE_DICTIONARY:
+			m.region_colors = rc
+		var rt: Variant = data.get("regionTerrain", {})
+		if typeof(rt) == TYPE_DICTIONARY:
+			m.region_terrain = rt
 		var pools: Variant = data.get("pools", {})
 		if typeof(pools) == TYPE_DICTIONARY:
 			for k in pools.keys():
@@ -295,11 +305,14 @@ class Packet extends RefCounted:
 	var to_id: String = ""
 	var strength: int = 0
 	var surge_to: String = "" ## empty = none
+	var stance: String = "" ## standing battle orders: "" / hold | careful | bold | judgment
 
 	func to_dict() -> Dictionary:
 		var d := {"from": from_id, "to": to_id, "strength": strength}
 		if surge_to != "":
 			d["surgeTo"] = surge_to
+		if stance != "":
+			d["stance"] = stance
 		return d
 
 	static func from_dict(data: Dictionary) -> Packet:
@@ -308,6 +321,7 @@ class Packet extends RefCounted:
 		p.to_id = str(data.get("to", ""))
 		p.strength = int(data.get("strength", 0))
 		p.surge_to = str(data.get("surgeTo", ""))
+		p.stance = str(data.get("stance", ""))
 		return p
 
 
@@ -333,6 +347,7 @@ class Sheet extends RefCounted:
 	var cash_set: PackedStringArray = PackedStringArray()
 	var placements: Dictionary = {} ## String -> int
 	var packets: Array = [] ## Array of Packet
+	var calls: Dictionary = {} ## battle key -> Array of calls made live ("p" press, "r" reserves, "f" fall back)
 
 	func to_dict() -> Dictionary:
 		var place := {}
@@ -352,6 +367,13 @@ class Sheet extends RefCounted:
 			d["regroup"] = regroup.to_dict()
 		if cash_set.size() > 0:
 			d["cashSet"] = Array(cash_set)
+		if not calls.is_empty():
+			var c := {}
+			var ck: Array = calls.keys()
+			ck.sort()
+			for k in ck:
+				c[str(k)] = Array(calls[k]).duplicate()
+			d["calls"] = c
 		return d
 
 	static func from_dict(data: Dictionary) -> Sheet:
@@ -372,4 +394,12 @@ class Sheet extends RefCounted:
 			for raw in pkts:
 				if typeof(raw) == TYPE_DICTIONARY:
 					s.packets.append(Packet.from_dict(raw))
+		var calls_raw: Variant = data.get("calls", {})
+		if typeof(calls_raw) == TYPE_DICTIONARY:
+			for k in calls_raw.keys():
+				var arr: Array = []
+				if typeof(calls_raw[k]) == TYPE_ARRAY:
+					for c in calls_raw[k]:
+						arr.append(str(c))
+				s.calls[str(k)] = arr
 		return s

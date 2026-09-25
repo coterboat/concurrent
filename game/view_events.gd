@@ -31,7 +31,8 @@ static func apply(world: Types.World, event: Dictionary) -> void:
 			var to_ts: Types.TerritoryState = world.get_territory(str(event.get("to", "")))
 			if from_ts != null:
 				from_ts.armies = int(event.get("fromRemaining", from_ts.armies))
-				if from_ts.armies < 1:
+				## A dug-in garrison still holds the land after every mobile soldier walks.
+				if from_ts.armies < 1 and from_ts.garrison < 1:
 					world.set_hex(str(event.get("from", "")), Types.UNOCCUPIED, 0)
 			if to_ts != null:
 				to_ts.armies = int(event.get("toArmies", to_ts.armies))
@@ -40,6 +41,17 @@ static func apply(world: Types.World, event: Dictionary) -> void:
 		Types.EVENT_BECAME_UNOCCUPIED:
 			world.set_hex(str(event.get("terrId", "")), Types.UNOCCUPIED, 0)
 		Types.EVENT_INVASION:
+			## reserves marched out of their home lands
+			for r in event.get("reserves", []):
+				var os: Types.TerritoryState = world.get_territory(str(r.get("from", "")))
+				if os != null:
+					os.armies = int(r.get("left", os.armies))
+			if bool(event.get("pending", false)):
+				return
+			if bool(event.get("fellBack", false)):
+				var rt: Types.TerritoryState = world.get_territory(str(event.get("refuge", "")))
+				if rt != null:
+					rt.armies = int(event.get("refugeArmies", rt.armies))
 			if not bool(event.get("attackerWon", false)):
 				var ts: Types.TerritoryState = world.get_territory(str(event.get("to", "")))
 				if ts != null:
@@ -163,6 +175,8 @@ static func recap(events: Array, map = null) -> PackedStringArray:
 					var dest: String = str(event.get("to", ""))
 					if not taken.has(dest):
 						lines.append("%s captures %s." % [event.get("attackerId"), _hex(map, dest)])
+				elif bool(event.get("fellBack", false)):
+					lines.append("%s falls back from %s with %s." % [event.get("attackerId"), _hex(map, str(event.get("to", ""))), event.get("attackerLeft")])
 				else:
 					lines.append("%s holds %s." % [event.get("defenderId"), _hex(map, str(event.get("to", "")))])
 			Types.EVENT_PLAYER_ELIMINATED:

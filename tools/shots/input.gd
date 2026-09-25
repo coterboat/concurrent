@@ -22,6 +22,8 @@ func run(probe) -> void:
 	await p.frames(10)
 	var s: Node = main.session
 	var gs: Control = main.current
+	gs.intro._done()
+	await p.frames(3)
 	var b: Control = gs.board
 	var mine := MapLib.player_territory_ids(s.world, "red")
 	var t: String = mine[0]
@@ -51,7 +53,15 @@ func run(probe) -> void:
 				to = n
 	p.ok(from != "", "found an attack %s -> %s" % [from, to])
 	await click(b, from)
+	var mv := InputEventMouseMotion.new()
+	mv.position = screen(b, to)
+	mv.global_position = mv.position
+	vp.push_input(mv)
+	await p.frames(2)
+	var hov: Control = vp.gui_get_hovered_control()
+	p.log("after selecting %s: selected=%s  card=%s  target at %s  hovered=%s (%s)" % [from, gs.selected, gs.land_card.get_global_rect(), screen(b, to), hov, hov.get_script().resource_path if hov and hov.get_script() else ""])
 	await click(b, to)
+	p.log("after clicking %s: selected=%s packets=%s phase=%s" % [to, gs.selected, s.sheet().packets.size(), s.phase])
 	p.ok(s.packet_index(from, to) >= 0, "click own then enemy orders an attack")
 	s.remove_packet(s.packet_index(from, to))
 	await drag(b, from, to)
@@ -88,7 +98,8 @@ func run(probe) -> void:
 	p.ok(gs.selected == from, "clicks still land after zooming")
 
 func screen(b: Control, id: String) -> Vector2:
-	return b.get_global_transform_with_canvas() * b.anchor(id)
+	## pushed events are in window pixels; on a HiDPI screen the UI is scaled
+	return vp.get_final_transform() * (b.get_global_transform_with_canvas() * b.anchor(id))
 
 func click(b: Control, id: String, button := MOUSE_BUTTON_LEFT) -> void:
 	var pos := screen(b, id)

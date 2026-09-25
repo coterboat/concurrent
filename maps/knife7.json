@@ -112,5 +112,14 @@
   "regionBonus": {
     "northshore": 2,
     "southshore": 2
+  },
+  "regionTerrain": {
+    "northshore": "grass",
+    "southshore": "coast",
+    "": "mountain"
+  },
+  "regionColors": {
+    "northshore": "#6f8fb0",
+    "southshore": "#c09a55"
   }
 }

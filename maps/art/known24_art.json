@@ -411,29 +411,35 @@
   }
  ],
  "regions": {
-  "westreach": {
-   "x": 400,
-   "y": 425
-  },
-  "southrim": {
-   "x": 1225,
-   "y": 1215
-  },
-  "spine": {
-   "x": 1465,
-   "y": 411
+  "crownlands": {
+   "x": 890,
+   "y": 566,
+   "room": 158
   },
   "eastshore": {
-   "x": 2010,
-   "y": 458
-  },
-  "crownlands": {
-   "x": 942,
-   "y": 469
+   "x": 2102,
+   "y": 518,
+   "room": 166
   },
   "midsea": {
-   "x": 1229,
-   "y": 858
+   "x": 1796,
+   "y": 776,
+   "room": 130
+  },
+  "southrim": {
+   "x": 1670,
+   "y": 1112,
+   "room": 205
+  },
+  "spine": {
+   "x": 1544,
+   "y": 368,
+   "room": 144
+  },
+  "westreach": {
+   "x": 512,
+   "y": 386,
+   "room": 166
   }
  },
  "landAdjacency": [

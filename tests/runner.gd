@@ -12,8 +12,10 @@ const ViewEventsTest = preload("res://tests/test_view_events.gd")
 const SessionTest = preload("res://tests/test_session.gd")
 const CardsTest = preload("res://tests/test_cards.gd")
 const AiTest = preload("res://tests/test_ai.gd")
+const VolleysTest = preload("res://tests/test_volleys.gd")
 const MapsTest = preload("res://tests/test_maps.gd")
 const GarrisonTest = preload("res://tests/test_garrison.gd")
+const CallsTest = preload("res://tests/test_calls.gd")
 
 const KNIFE7 := "res://maps/knife7.json"
 
@@ -49,6 +51,10 @@ func _initialize() -> void:
 	GarrisonTest.new().run(Callable(self, "_ok"))
 	_section("cards + seats")
 	CardsTest.new().run(Callable(self, "_ok"))
+	_section("roll-by-roll battles")
+	VolleysTest.new().run(Callable(self, "_ok"))
+	_section("battle calls")
+	CallsTest.new().run(Callable(self, "_ok"))
 	_section("ai commanders")
 	AiTest.new().run(Callable(self, "_ok"))
 	print("")

@@ -18,6 +18,7 @@ const ODDS_COLOR := {
 
 var session: Node
 var gs: Control ## game screen: selection + surge picking
+var drawer := false ## review drawer: no seal button, no selected-land section
 var _body: VBoxContainer
 var _seal: Button
 var _clock: Label
@@ -48,6 +49,13 @@ func _ready() -> void:
 	_seal.expand_icon = true
 	_seal.add_theme_constant_override("icon_max_width", 44)
 	v.add_child(_seal)
+	if drawer:
+		_seal.visible = false
+		custom_minimum_size = Vector2(420, 0)
+		var close := Style.chip("Close ✕", func(): visible = false, Style.MUTED, 14)
+		close.size_flags_horizontal = Control.SIZE_SHRINK_END
+		v.add_child(close)
+		v.move_child(close, 0)
 
 
 func _process(_d: float) -> void:
@@ -64,7 +72,13 @@ func refresh() -> void:
 	if session == null or session.world == null:
 		return
 	var planning: bool = session.phase == Session.Phase.PLANNING or session.phase == Session.Phase.OPENING
-	visible = planning
+	if drawer:
+		if not planning:
+			visible = false
+		if not visible:
+			return
+	else:
+		visible = planning
 	if not planning:
 		return
 	var y: float = _scroll.scroll_vertical
@@ -75,7 +89,8 @@ func refresh() -> void:
 	_reinforcements()
 	if session.phase == Session.Phase.PLANNING and session.map.cards:
 		_cards()
-	_selected()
+	if not drawer:
+		_selected()
 	if session.phase == Session.Phase.PLANNING:
 		_orders()
 	_warnings()

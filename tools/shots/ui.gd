@@ -22,12 +22,16 @@ func run(probe) -> void:
 	main.start_game({"map": "res://maps/known24.json", "seed": 99, "length": "standard", "timer": 0, "seats": [
 		{"id": "red", "name": "Dad", "kind": "human", "ai": "", "portrait": "player"},
 		{"id": "blue", "name": "Captain Oren", "kind": "ai", "ai": "oren", "portrait": "oren"},
-		{"id": "green", "name": "The Quartermaster", "kind": "ai", "ai": "quill", "portrait": "quill"}]})
+		{"id": "green", "name": "Governor Quill", "kind": "ai", "ai": "quill", "portrait": "quill"}]})
 	await p.frames(10)
 	var gs: Control = main.current
+	await p.frames(30)
+	await snap("03a_intro")
+	gs.intro._done()
+	await p.frames(5)
 	var s: Node = main.session
 	var mine := MapLib.player_territory_ids(s.world, "red")
-	gs._select(mine[0])
+	gs.select(mine[0])
 	gs.place(mine[0], 1)
 	await p.frames(5)
 	await snap("03_opening")
@@ -42,26 +46,45 @@ func run(probe) -> void:
 	for t in MapLib.player_territory_ids(s.world, "red"):
 		if best == "" or s.world.get_territory(t).armies > s.world.get_territory(best).armies:
 			best = t
-	gs._select(best)
+	gs.select(best)
 	for n in MapLib.neighbors(s.map, best):
 		if s.world.get_territory(n).owner != "red":
 			gs.order_attack(best, n)
 			break
-	await p.frames(5)
+	await p.frames(8)
 	await snap("05_planning")
+	gs.edit_order("", "")
+	gs.select(best)
+	await p.frames(4)
+	await snap("05b_land_card")
+	gs.open_plan()
+	await p.frames(8)
+	await snap("05c_plan")
+	for c in gs.get_children():
+		if c.get_script() == load("res://game/ui/plan_dialog.gd"):
+			c.queue_free()
 	s.auto_deploy()
 	gs.try_seal()
 	await p.frames(30)
 	await snap("06_cinema_reveal")
-	## step to the first real fight and let the dice settle
-	for i in 6:
-		gs.cinema.paused = true
+	## step until the battlefield opens, roll twice, then look
+	var g2 := 0
+	while not gs.theater.visible and s.phase == Session.Phase.CINEMA and g2 < 30:
 		gs.cinema.advance()
-		await p.frames(2)
-		if gs.cinema._card.visible:
-			break
-	await p.frames(90)
-	await snap("07_cinema_battle")
+		await p.frames(3)
+		g2 += 1
+	if gs.theater.visible:
+		await p.frames(40)
+		await snap("07a_theater_ready")
+		gs.theater.press()
+		await p.frames(80)
+		await snap("07_theater_roll")
+		for k in 12:
+			gs.theater.press()
+			await p.frames(70)
+		await snap("07b_theater_result")
+		gs.theater._skip()
+		await p.frames(20)
 	gs.cinema.skip()
 	await p.frames(10)
 	await snap("08_recap")

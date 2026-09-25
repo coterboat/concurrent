@@ -9,6 +9,10 @@ var data := {
 	"music": 0.55,
 	"sfx": 0.8,
 	"ambience": 0.35,
+	"voices": 0.9,
+	"battles": "mine", ## mine | all | off — when to open the battle scene
+	"roll_yourself": true, ## wait for ROLL in your own battles
+	"map_view": 0,
 	"speed": "normal", ## slow | normal | fast
 	"tips": true,
 	"fullscreen": false,
@@ -32,6 +36,12 @@ func get_value(key: String, fallback: Variant = null) -> Variant:
 	return data.get(key, fallback)
 
 
+func remember(key: String, value: Variant) -> void:
+	## a quiet preference (a counter, the last standing order): saved, nothing re-applied
+	data[key] = value
+	save()
+
+
 func set_value(key: String, value: Variant) -> void:
 	data[key] = value
 	save()
@@ -39,7 +49,12 @@ func set_value(key: String, value: Variant) -> void:
 	changed.emit()
 
 
+var persist := true ## probes and tests turn this off so they never touch the player's prefs
+
+
 func save() -> void:
+	if not persist:
+		return
 	var cfg := ConfigFile.new()
 	for k in data.keys():
 		cfg.set_value("prefs", k, data[k])

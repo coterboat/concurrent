@@ -153,7 +153,10 @@ static func _combat_deaths(events: Array) -> int:
 		if kind == Types.EVENT_CLASH or kind == Types.EVENT_SPOILS:
 			n += int(e.get("sizeA", 0)) + int(e.get("sizeB", 0)) - int(e.get("winnerRemaining", 0))
 		elif kind == Types.EVENT_INVASION:
-			n += int(e.get("attackerSize", 0)) + int(e.get("defenderSize", 0)) - int(e.get("winnerRemaining", 0))
+			## reserves join from home; survivors who fall back live on
+			n += int(e.get("attackerSize", 0)) + int(e.get("reservesAdded", 0)) + int(e.get("defenderSize", 0)) - int(e.get("winnerRemaining", 0))
+			if bool(e.get("fellBack", false)):
+				n -= int(e.get("attackerLeft", 0))
 	return n
 
 

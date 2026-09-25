@@ -16,6 +16,7 @@ uniform float screen_per_texel = 0.5; // screen pixels per map pixel
 uniform int hover_id = -1;
 uniform int select_id = -1;
 uniform float pulse = 0.0;
+uniform int view_mode = 0; // 0 = owners, 1 = regions
 
 const int F_TARGET = 1;
 const int F_DIM = 2;
@@ -64,13 +65,28 @@ void fragment() {
 	vec3 base = desat(terrain, 0.55) * 0.55 + paper * 0.55;
 	vec3 owner = st.rgb;
 	bool empty = (flags & F_EMPTY) != 0;
-	vec3 land = empty ? mix(base, paper * 0.95, 0.35) : mix(base, owner, 0.58);
-	land *= mix(vec3(1.0), region_tint, 0.18);
-	// inner glow along each territory's edge, in its own colour
-	float glow = 1.0 - smoothstep(0.0, 22.0, bdist);
-	if (!empty) {
-		land = mix(land, owner * 1.12, glow * 0.4);
+	vec3 land;
+	if (view_mode == 1) {
+		// Regions: the land wears its region's colour; owners ride a band inside each border
+		land = mix(base, region_tint, 0.66);
+		float band_w = max(7.0 * px, 5.0);
+		float band = 1.0 - smoothstep(band_w - aa, band_w + aa, bdist);
+		if (!empty) {
+			land = mix(land, owner * 1.05, band * 0.92);
+		}
+	} else {
+		land = empty ? mix(base, paper * 0.95, 0.35) : mix(base, owner, 0.58);
+		land *= mix(vec3(1.0), region_tint, 0.12);
+		// inner glow along each territory's edge, in its own colour
+		float glow = 1.0 - smoothstep(0.0, 22.0, bdist);
+		if (!empty) {
+			land = mix(land, owner * 1.12, glow * 0.4);
+		}
 	}
+	// every region carries a soft band of its own colour just inside its outline
+	float edge_d = min(rdist, max(coast, 0.0)); // region border or shoreline, whichever is nearer
+	float rglow = 1.0 - smoothstep(0.0, max(16.0 * px, 12.0), edge_d);
+	land = mix(land, region_tint * 1.1, rglow * (view_mode == 1 ? 0.25 : 0.45));
 	bool hovered = id == hover_id;
 	bool selected = id == select_id;
 	if ((flags & F_DIM) != 0) {
@@ -99,12 +115,12 @@ void fragment() {
 		land = mix(land, vec3(1.0, 0.86, 0.4), sb);
 	}
 	land = mix(land, border_col, border * 0.85);
-	// region border: a double line, dark with a gold core
-	float rw = max(2.6 * px, 2.2);
+	// region border: a heavy dark rule with a bright gold core, readable at any zoom
+	float rw = max(3.6 * px, 3.0);
 	float rb = 1.0 - smoothstep(rw - aa, rw + aa, rdist);
-	float rcore = 1.0 - smoothstep(rw * 0.35 - aa, rw * 0.35 + aa, rdist);
-	land = mix(land, vec3(0.12, 0.09, 0.05), rb * 0.9);
-	land = mix(land, vec3(0.78, 0.62, 0.3), rcore * 0.7);
+	float rcore = 1.0 - smoothstep(rw * 0.38 - aa, rw * 0.38 + aa, rdist);
+	land = mix(land, vec3(0.1, 0.075, 0.04), rb * 0.95);
+	land = mix(land, vec3(0.95, 0.78, 0.38), rcore * 0.9);
 
 	// ---- coast
 	float land_a = smoothstep(-aa, aa, coast);

@@ -498,29 +498,35 @@
   }
  ],
  "regions": {
-  "heartlands": {
-   "x": 981,
-   "y": 752
-  },
-  "thornwood": {
-   "x": 348,
-   "y": 744
-  },
   "ashen": {
-   "x": 1875,
-   "y": 609
-  },
-  "sunward": {
-   "x": 2014,
-   "y": 1162
-  },
-  "norrmark": {
-   "x": 1012,
-   "y": 283
+   "x": 1892,
+   "y": 560,
+   "room": 205
   },
   "duneveil": {
-   "x": 1110,
-   "y": 1232
+   "x": 890,
+   "y": 1172,
+   "room": 155
+  },
+  "heartlands": {
+   "x": 872,
+   "y": 728,
+   "room": 191
+  },
+  "norrmark": {
+   "x": 1394,
+   "y": 152,
+   "room": 187
+  },
+  "sunward": {
+   "x": 2138,
+   "y": 986,
+   "room": 104
+  },
+  "thornwood": {
+   "x": 272,
+   "y": 668,
+   "room": 166
   }
  },
  "landAdjacency": [

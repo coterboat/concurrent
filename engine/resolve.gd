@@ -1,5 +1,10 @@
 ## regroup → place → vacate → A clash → B invasion → C spoils → D surge → upkeep.
 ## One lock. Seed is not stored on World. No Node. No UI. No unseeded RNG.
+## Battle calls (v1.2): an invasion stops after every exchange of three volleys for the
+## attacker's call. Recorded calls (Sheet.calls) are replayed; a player in `live` with no
+## recorded call pauses the whole round: the result carries "pending" and the events so
+## far, and the caller resolves again once the call is on the sheet. Same inputs, same
+## prefix, so a paused round and a replayed one agree exactly.
 extends RefCounted
 
 const Types := preload("res://engine/types.gd")
@@ -23,7 +28,7 @@ class Transit extends RefCounted:
 	var surge_to: String = ""
 
 
-static func resolve_round(world: Types.World, map: Types.MapDef, sheets: Array, match_seed: int) -> Dictionary:
+static func resolve_round(world: Types.World, map: Types.MapDef, sheets: Array, match_seed: int, live: Array = []) -> Dictionary:
 	var errors := PackedStringArray()
 	var by_player := {}
 	for raw in sheets:
@@ -44,17 +49,184 @@ static func resolve_round(world: Types.World, map: Types.MapDef, sheets: Array, 
 	for terr_id in world.territories.keys():
 		held[str(terr_id)] = world.get_territory(str(terr_id)).owner
 	var events: Array = []
+	var ctx := _context(by_player, live)
 	_apply_regroups(w, map, by_player, events)
 	_apply_placements(w, map, by_player, events)
 	var transits: Array = _vacate(w, by_player, events)
 	transits = _merge_same_owner(transits)
-	transits = _resolve_clashes(w, transits, match_seed, events)
+	transits = _resolve_clashes(w, map, transits, match_seed, events)
 	var surge_book := {}
-	_resolve_destinations(w, transits, match_seed, events, surge_book)
-	_resolve_surges(w, map, match_seed, events, surge_book)
+	_resolve_destinations(w, map, transits, match_seed, events, surge_book, ctx)
+	if not (ctx["pending"] as Dictionary).is_empty():
+		return {"world": w, "events": events, "errors": PackedStringArray(), "pending": ctx["pending"]}
+	_resolve_surges(w, map, match_seed, events, surge_book, ctx)
+	if not (ctx["pending"] as Dictionary).is_empty():
+		return {"world": w, "events": events, "errors": PackedStringArray(), "pending": ctx["pending"]}
 	_entrench(w, map, held, events)
 	_upkeep(w, map, events, held, match_seed)
 	return {"world": w, "events": events, "errors": PackedStringArray()}
+
+
+static func _context(by_player: Dictionary, live: Array) -> Dictionary:
+	var calls := {}
+	var stances := {}
+	for pid in by_player.keys():
+		var sheet: Types.Sheet = by_player[pid]
+		calls[pid] = sheet.calls
+		var st := {}
+		for raw in sheet.packets:
+			var p: Types.Packet = raw
+			st[p.from_id + "|" + p.to_id] = p.stance
+		stances[pid] = st
+	var lv := {}
+	for pid in live:
+		lv[str(pid)] = true
+	return {"calls": calls, "stances": stances, "live": lv, "pending": {}}
+
+
+static func _stance_of(ctx: Dictionary, t: Transit, dest: String) -> String:
+	## A merged attack follows the order from its first origin (sorted).
+	var st: Dictionary = ctx["stances"].get(t.owner, {})
+	for f in _froms(t):
+		var s: String = str(st.get(str(f) + "|" + dest, ""))
+		if s != "":
+			return s
+	## a surge carries its origin order's stance (or none: to the last man)
+	return str(ctx.get("surge_stance", {}).get(t.owner + "|" + t.from_id, ""))
+
+
+static func reserves_available(w: Types.World, owner: String, froms: PackedStringArray) -> int:
+	var n := 0
+	for f in froms:
+		var ts: Types.TerritoryState = w.get_territory(f)
+		if ts != null and ts.owner == owner:
+			n += Income.max_send(ts)
+	return n
+
+
+static func refuge_for(w: Types.World, map: Types.MapDef, owner: String, froms: PackedStringArray, dest: String) -> String:
+	## Survivors fall back to where they marched from; if that is lost, to the
+	## strongest friendly land bordering the battle. Nowhere: they are cut off.
+	var ids: Array = Array(froms)
+	ids.sort()
+	for f in ids:
+		var ts: Types.TerritoryState = w.get_territory(str(f))
+		if ts != null and ts.owner == owner:
+			return str(f)
+	var best := ""
+	var best_n := -1
+	var ns: Array = Array(MapLib.neighbors(map, dest))
+	ns.sort()
+	for n in ns:
+		var ts: Types.TerritoryState = w.get_territory(str(n))
+		if ts != null and ts.owner == owner and ts.held() > best_n:
+			best = str(n)
+			best_n = ts.held()
+	return best
+
+
+static func _invade(w: Types.World, map: Types.MapDef, t: Transit, dest: String, key: String, match_seed: int, ctx: Dictionary) -> RefCounted:
+	var ts: Types.TerritoryState = w.get_territory(dest)
+	var rng: RefCounted = Rng.derive_stream(match_seed, w.round, key)
+	if map.battle != Combat.MODE_VOLLEYS:
+		return Combat.invasion(t.strength, ts.held(), rng, map.battle)
+	var fight = Combat.FightResult.new()
+	fight.attacker_size = t.strength
+	fight.defender_size = ts.held()
+	var a: int = t.strength
+	var d: int = ts.held()
+	var recorded: Array = (ctx["calls"].get(t.owner, {}) as Dictionary).get(key, [])
+	var stance: String = _stance_of(ctx, t, dest)
+	var ci := 0
+	var used_reserves := false
+	var froms: PackedStringArray = _froms(t)
+	while a > 0 and d > 0:
+		var n := 0
+		while n < Combat.EXCHANGE and a > 0 and d > 0:
+			var r: Dictionary = Combat.volley_once(a, d, rng, false)
+			fight.rolls.append(r)
+			fight.attacker_die = int(r["a"])
+			fight.defender_die = int(r["b"])
+			fight.attacker_total = Combat.VOLLEY_DIE * int(r["a"]) + a
+			fight.defender_total = Combat.VOLLEY_DIE * int(r["b"]) + d
+			if str(r["w"]) == "a":
+				d -= 1
+			else:
+				a -= 1
+			n += 1
+		if a <= 0 or d <= 0:
+			break
+		## the call
+		var reserves: int = 0 if used_reserves else reserves_available(w, t.owner, froms)
+		var refuge: String = refuge_for(w, map, t.owner, froms, dest)
+		var call := ""
+		if ci < recorded.size():
+			call = str(recorded[ci])
+			ci += 1
+		elif (ctx["live"] as Dictionary).has(t.owner):
+			fight.pending = true
+			fight.attacker_left = a
+			fight.winner_remaining = d
+			ctx["pending"] = {"key": key, "attacker": t.owner, "defender": ts.owner, "to": dest, "from": t.from_id,
+				"a": a, "d": d, "reserves": reserves, "reserveFrom": _reserve_sources(w, t.owner, froms),
+				"refuge": refuge, "stance": stance, "call": fight.calls.size(), "rolls": fight.rolls.size()}
+			return fight
+		else:
+			call = Combat.doctrine(stance, a, d, reserves, refuge != "")
+		if call == Combat.CALL_RESERVES and reserves <= 0:
+			call = Combat.CALL_PRESS
+		if call == Combat.CALL_FALL_BACK and refuge == "":
+			call = Combat.CALL_PRESS
+		var entry := {"at": fight.rolls.size(), "call": call}
+		if call == Combat.CALL_RESERVES:
+			used_reserves = true
+			var added := 0
+			for f in froms:
+				var os: Types.TerritoryState = w.get_territory(f)
+				if os == null or os.owner != t.owner:
+					continue
+				var k: int = Income.max_send(os)
+				if k <= 0:
+					continue
+				os.armies -= k
+				added += k
+				fight.reserves.append({"from": f, "n": k, "left": os.armies})
+			a += added
+			fight.reserves_added += added
+			entry["n"] = added
+			fight.calls.append(entry)
+		elif call == Combat.CALL_FALL_BACK:
+			entry["n"] = a
+			entry["to"] = refuge
+			fight.calls.append(entry)
+			fight.fell_back = true
+			fight.refuge = refuge
+			fight.attacker_left = a
+			break
+		## a press is the default: not logged, so an order that never calls matches v1.1
+	fight.attacker_won = d <= 0 and a > 0 and not fight.fell_back
+	fight.winner_remaining = a if fight.attacker_won else d
+	if fight.attacker_won:
+		fight.attacker_left = a
+	return fight
+
+
+static func _reserve_sources(w: Types.World, owner: String, froms: PackedStringArray) -> Array:
+	var out: Array = []
+	for f in froms:
+		var ts: Types.TerritoryState = w.get_territory(f)
+		if ts != null and ts.owner == owner and Income.max_send(ts) > 0:
+			out.append({"from": f, "n": Income.max_send(ts)})
+	return out
+
+
+static func _fall_back(w: Types.World, events: Array, owner: String, fight) -> void:
+	## Survivors march to the refuge (always friendly: refuge_for checks it).
+	var rt: Types.TerritoryState = w.get_territory(fight.refuge)
+	if rt == null or rt.owner != owner:
+		return
+	rt.armies += fight.attacker_left
+	fight.refuge_armies = rt.armies
 
 
 static func _apply_regroups(w: Types.World, map: Types.MapDef, by_player: Dictionary, events: Array) -> void:
@@ -144,7 +316,7 @@ static func _pkt_key(p: Types.Packet) -> String:
 	return "%s|%s|%s" % [p.from_id, p.to_id, p.surge_to]
 
 
-static func _resolve_clashes(w: Types.World, transits: Array, match_seed: int, events: Array) -> Array:
+static func _resolve_clashes(w: Types.World, map: Types.MapDef, transits: Array, match_seed: int, events: Array) -> Array:
 	var pairs: Array = []
 	for i in transits.size():
 		for j in range(i + 1, transits.size()):
@@ -169,7 +341,7 @@ static func _resolve_clashes(w: Types.World, transits: Array, match_seed: int, e
 			b = tmp
 		var key := "clash|%s|%s|%s|%s" % [_min_s(a.from_id, a.to_id), _max_s(a.from_id, a.to_id), a.owner, b.owner]
 		var rng: RefCounted = Rng.derive_stream(match_seed, w.round, key)
-		var fight = Combat.clash(a.strength, b.strength, rng)
+		var fight = Combat.clash(a.strength, b.strength, rng, map.battle)
 		events.append(Events.clash_event(a.from_id, a.to_id, a.owner, b.owner, fight))
 		if fight.attacker_won:
 			a.strength = fight.winner_remaining
@@ -241,7 +413,9 @@ static func _merge_same_owner(transits: Array) -> Array:
 	return out
 
 
-static func _resolve_destinations(w: Types.World, transits: Array, match_seed: int, events: Array, surge_book: Dictionary) -> void:
+static func _resolve_destinations(w: Types.World, map: Types.MapDef, transits: Array, match_seed: int, events: Array, surge_book: Dictionary, ctx: Dictionary = {}) -> void:
+	if ctx.is_empty():
+		ctx = {"calls": {}, "stances": {}, "live": {}, "pending": {}}
 	var by_dest := {}
 	for t in transits:
 		if not by_dest.has(t.to_id):
@@ -267,14 +441,19 @@ static func _resolve_destinations(w: Types.World, transits: Array, match_seed: i
 				_remember_surge(surge_book, dest, t)
 				continue
 			var key := "invasion|%s|%s|%s" % [dest, t.owner, t.from_id]
-			var rng: RefCounted = Rng.derive_stream(match_seed, w.round, key)
 			var defense: int = ts.held()
 			var fight
 			if arrived_now:
-				fight = Combat.spoils(t.strength, defense, rng)
+				var rng: RefCounted = Rng.derive_stream(match_seed, w.round, key)
+				fight = Combat.spoils(t.strength, defense, rng, map.battle)
 				events.append(Events.spoils_event(dest, t.owner, ts.owner, fight))
 			else:
-				fight = Combat.invasion(t.strength, defense, rng)
+				fight = _invade(w, map, t, dest, key, match_seed, ctx)
+				if fight.pending:
+					events.append(Events.invasion_event(t.from_id, dest, t.owner, ts.owner, fight))
+					return
+				if fight.fell_back:
+					_fall_back(w, events, t.owner, fight)
 				events.append(Events.invasion_event(t.from_id, dest, t.owner, ts.owner, fight))
 			if fight.attacker_won:
 				_take(w, events, dest, t.owner, fight.winner_remaining)
@@ -285,10 +464,23 @@ static func _resolve_destinations(w: Types.World, transits: Array, match_seed: i
 
 
 static func _remember_surge(surge_book: Dictionary, dest: String, t: Transit) -> void:
-	surge_book[dest] = {"owner": t.owner, "surge_to": t.surge_to, "from": t.from_id}
+	surge_book[dest] = {"owner": t.owner, "surge_to": t.surge_to, "from": t.from_id, "froms": _froms(t)}
 
 
-static func _resolve_surges(w: Types.World, map: Types.MapDef, match_seed: int, events: Array, surge_book: Dictionary) -> void:
+static func _resolve_surges(w: Types.World, map: Types.MapDef, match_seed: int, events: Array, surge_book: Dictionary, ctx: Dictionary = {}) -> void:
+	if ctx.is_empty():
+		ctx = {"calls": {}, "stances": {}, "live": {}, "pending": {}}
+	## a surge fights under the stance of the order that broke through
+	var surge_stance := {}
+	for dest in surge_book.keys():
+		var info: Dictionary = surge_book[dest]
+		var st: Dictionary = ctx["stances"].get(str(info.get("owner", "")), {})
+		for f in info.get("froms", PackedStringArray([str(info.get("from", ""))])):
+			var s: String = str(st.get(str(f) + "|" + str(dest), ""))
+			if s != "":
+				surge_stance[str(info.get("owner", "")) + "|" + str(dest)] = s
+				break
+	ctx["surge_stance"] = surge_stance
 	var dests: Array = surge_book.keys()
 	dests.sort()
 	var surges: Array = []
@@ -342,7 +534,7 @@ static func _resolve_surges(w: Types.World, map: Types.MapDef, match_seed: int, 
 				b = tmp
 			var key := "spoils|surge|%s|%s|%s" % [dest, a.owner, b.owner]
 			var rng: RefCounted = Rng.derive_stream(match_seed, w.round, key)
-			var fight = Combat.spoils(a.strength, b.strength, rng)
+			var fight = Combat.spoils(a.strength, b.strength, rng, map.battle)
 			events.append(Events.spoils_event(dest, a.owner, b.owner, fight))
 			champ = a if fight.attacker_won else b
 			champ.strength = fight.winner_remaining
@@ -353,8 +545,12 @@ static func _resolve_surges(w: Types.World, map: Types.MapDef, match_seed: int, 
 			_take(w, events, dest, champ.owner, champ.strength)
 			continue
 		var ikey := "invasion|surge|%s|%s|%s" % [dest, champ.owner, champ.from_id]
-		var irng: RefCounted = Rng.derive_stream(match_seed, w.round, ikey)
-		var inv = Combat.invasion(champ.strength, ts.held(), irng)
+		var inv = _invade(w, map, champ, dest, ikey, match_seed, ctx)
+		if inv.pending:
+			events.append(Events.invasion_event(champ.from_id, dest, champ.owner, ts.owner, inv))
+			return
+		if inv.fell_back:
+			_fall_back(w, events, champ.owner, inv)
 		events.append(Events.invasion_event(champ.from_id, dest, champ.owner, ts.owner, inv))
 		if inv.attacker_won:
 			_take(w, events, dest, champ.owner, inv.winner_remaining)

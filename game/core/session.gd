@@ -24,6 +24,7 @@ const LENGTHS := {"short": 0.75, "standard": 1.0, "long": 1.5, "conquest": 0.0}
 
 signal changed
 signal phase_changed(phase: int)
+signal extended ## a paused round resolved further: events grew (same prefix)
 
 var config: Dictionary = {}
 var map: Types.MapDef
@@ -51,6 +52,10 @@ var time_left := 0.0
 var error_text := ""
 var watching := false ## every human is out; AIs play on
 var instant := false ## tests: resolve without waiting a frame
+var round_sheets: Array = [] ## this round's sheets while its battles are being called
+var live: Array = [] ## humans calling their own battles this round
+var pending: Dictionary = {} ## the battle call the round is waiting on (empty = none)
+var force_live := false ## tests: call battles live even when instant
 
 
 # ================================================================ lifecycle
@@ -87,6 +92,8 @@ func new_game(p_config: Dictionary) -> void:
 
 
 func _apply_length() -> void:
+	map.battle = str(config.get("battle", "volleys"))
+	config["battle"] = map.battle ## saves must replay with the same dice
 	var base: int = Setup.rounds_for(map)
 	var mode: String = str(config.get("length", "standard"))
 	var k: float = float(LENGTHS.get(mode, 1.0))
@@ -279,23 +286,82 @@ func _resolve_round() -> void:
 			var rng: RefCounted = Rng.derive_stream(match_seed, world.round, "ai|" + pid)
 			sheets.append(Ai.plan(world, map, pid, rng, Ai.profile_for(ai_of(pid))))
 	pre_world = world.clone()
-	var result: Dictionary = Resolve.resolve_round(world, map, sheets, match_seed)
+	round_sheets = sheets
+	live = _live_players()
+	_run(true)
+
+
+func _setting(key: String, fallback: Variant) -> Variant:
+	## Settings is an autoload; the headless test runner has none.
+	var st: Node = get_node_or_null("/root/Settings") if is_inside_tree() else null
+	return st.get_value(key, fallback) if st != null else fallback
+
+
+func _live_players() -> Array:
+	## Humans who will watch (and so call) their own battles this round.
+	if map.battle != Combat.MODE_VOLLEYS or watching or (instant and not force_live):
+		return []
+	if str(_setting("battles", "mine")) == "off":
+		return []
+	return living_humans()
+
+
+func _run(first: bool) -> void:
+	var result: Dictionary = Resolve.resolve_round(world, map, round_sheets, match_seed, live)
 	if not result["errors"].is_empty():
 		## Should never happen: every sheet was validated. Fall back to holds.
 		push_error("resolve rejected sheets: %s" % " ".join(result["errors"]))
-		sheets = []
+		round_sheets = []
 		for pid in MapLib.living_player_ids(world):
-			sheets.append(_empty(pid))
-		result = Resolve.resolve_round(world, map, sheets, match_seed)
-	var dicts: Array = []
-	for s in sheets:
-		dicts.append((s as Types.Sheet).to_dict())
-	rounds_log.append(dicts)
-	_absorb(sheets, result)
-	save()
-	phase = Phase.CINEMA
-	set_meta("opening_cinema", false)
-	_emit_phase()
+			round_sheets.append(_empty(pid))
+		live = []
+		result = Resolve.resolve_round(world, map, round_sheets, match_seed)
+	events = result["events"]
+	if result.has("pending"):
+		pending = result["pending"]
+	else:
+		pending = {}
+		var dicts: Array = []
+		for s in round_sheets:
+			dicts.append((s as Types.Sheet).to_dict())
+		rounds_log.append(dicts)
+		_absorb(round_sheets, result)
+		save()
+	if first:
+		phase = Phase.CINEMA
+		set_meta("opening_cinema", false)
+		_emit_phase()
+	else:
+		extended.emit()
+
+
+func answer(call: String) -> void:
+	## The attacker's live call at the paused battle: record it on their sheet, go on.
+	if pending.is_empty():
+		return
+	var pid: String = str(pending["attacker"])
+	for raw in round_sheets:
+		var sh: Types.Sheet = raw
+		if sh.player_id == pid:
+			var key: String = str(pending["key"])
+			var list: Array = sh.calls.get(key, [])
+			list.append(call)
+			sh.calls[key] = list
+	_run(false)
+
+
+func release_live() -> void:
+	## Nobody is watching any more (battles skipped): officers call the rest.
+	live = []
+	if not pending.is_empty():
+		_run(false)
+
+
+func officer_call() -> String:
+	## What the sealed standing order says for the paused battle.
+	if pending.is_empty():
+		return Combat.CALL_PRESS
+	return Combat.doctrine(str(pending.get("stance", "")), int(pending["a"]), int(pending["d"]), int(pending["reserves"]), str(pending["refuge"]) != "")
 
 
 func _absorb(sheets: Array, result: Dictionary) -> void:
@@ -346,11 +412,14 @@ func _tally(evs: Array) -> void:
 				var winner_id: String = a if won else d
 				if stats.has(winner_id):
 					stats[winner_id]["won"] += 1
-				var loser_id: String = d if won else a
-				if stats.has(loser_id):
-					stats[loser_id]["armies_lost"] += int(e["defenderSize"] if won else e["attackerSize"])
-				if stats.has(winner_id):
-					stats[winner_id]["armies_lost"] += int(e["attackerSize"] if won else e["defenderSize"]) - int(e["winnerRemaining"])
+				## reserves fight too; men who fall back are saved, not lost
+				var att_in: int = int(e["attackerSize"]) + int(e.get("reservesAdded", 0))
+				var att_lost: int = att_in - (int(e["winnerRemaining"]) if won else int(e.get("attackerLeft", 0)))
+				var def_lost: int = int(e["defenderSize"]) if won else int(e["defenderSize"]) - int(e["winnerRemaining"])
+				if stats.has(a):
+					stats[a]["armies_lost"] += att_lost
+				if stats.has(d):
+					stats[d]["armies_lost"] += def_lost
 			Types.EVENT_CLASH, Types.EVENT_SPOILS:
 				var w: String = str(e["winnerId"])
 				for pid in [str(e["playerA"]), str(e["playerB"])]:
@@ -623,6 +692,7 @@ func set_attack(from_id: String, to_id: String, strength: int = -1) -> String:
 		p.from_id = from_id
 		p.to_id = to_id
 		p.strength = n
+		p.stance = str(_setting("stance", Combat.STANCE_JUDGMENT))
 		sheet().packets.append(p)
 	changed.emit()
 	return ""
@@ -641,6 +711,22 @@ func set_packet_strength(i: int, n: int) -> void:
 	var p: Types.Packet = sheet().packets[i]
 	p.strength = clampi(n, 1, maxi(1, max_send(p.from_id, i)))
 	changed.emit()
+
+
+func set_stance(i: int, stance: String) -> void:
+	if i < 0 or i >= sheet().packets.size():
+		return
+	(sheet().packets[i] as Types.Packet).stance = stance
+	var st: Node = get_node_or_null("/root/Settings")
+	if st != null and not instant:
+		st.remember("stance", stance) ## the next order starts with the same doctrine
+	changed.emit()
+
+
+func reserves_at(from_id: String) -> int:
+	## Mobile armies still at home after this sheet's attacks leave: the reserves
+	## a battle call can throw in (before anything else happens to the land).
+	return max_send(from_id)
 
 
 func remove_packet(i: int) -> void:
@@ -754,10 +840,10 @@ func set_value_now() -> int:
 
 
 func odds(att: int, def: int) -> Dictionary:
-	var p: float = 1.0 if def <= 0 else Combat.invasion_capture_rate(att, def)
+	var p: float = 1.0 if def <= 0 else Combat.capture_rate(att, def, map.battle)
 	var word := "certain"
 	if def > 0:
-		word = Combat.odds_word(att, def)
+		word = Combat.odds_word(att, def, map.battle)
 	return {"p": p, "word": word}
 
 
@@ -862,6 +948,7 @@ func load_save() -> bool:
 	config["seed"] = match_seed
 	map = Types.MapDef.from_file(str(config["map"]))
 	map.rounds = int(d.get("rounds", map.rounds))
+	map.battle = str(config.get("battle", "decisive"))
 	seats = config["seats"]
 	stats = {}
 	for s in seats:

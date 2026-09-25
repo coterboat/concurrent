@@ -12,6 +12,7 @@ signal territory_clicked(id: String, button: int)
 signal territory_hovered(id: String)
 signal drag_order(from_id: String, to_id: String)
 signal empty_clicked
+signal arrow_clicked(from_id: String, to_id: String)
 
 var art: RefCounted
 var map: Types.MapDef
@@ -32,6 +33,12 @@ var fx: Array = [] ## floating texts {map, text, color, t, dur, size}
 var shake := {} ## id -> seconds of token pulse
 var interactive := true
 var plain := false ## thumbnails: geography only, no tokens
+var view_mode := 0 ## 0 owners, 1 regions
+var pad_top := 0.0 ## screen space kept clear of the map at fit (HUD above)
+var pad_bottom := 0.0 ## (HUD below)
+var show_region_labels := true
+var _label_hits: Array = [] ## [{pos, from, to}] arrow labels you can click
+var _region_font: FontVariation
 
 var zoom := 0.5
 var offset := Vector2.ZERO
@@ -122,11 +129,24 @@ func refresh() -> void:
 	overlay.queue_redraw()
 
 
-func _region_tint(region: String) -> Color:
+func region_color(region: String) -> Color:
+	if map != null and map.region_colors.has(region):
+		return Color(str(map.region_colors[region]))
 	if region == "":
-		return Color(0.9, 0.9, 0.9)
+		return Color(0.82, 0.78, 0.7)
 	var h: float = float(hash(region) % 1000) / 1000.0
-	return Color.from_hsv(h, 0.35, 1.0)
+	return Color.from_hsv(h, 0.35, 0.85)
+
+
+func _region_tint(region: String) -> Color:
+	return region_color(region)
+
+
+func set_view_mode(m: int) -> void:
+	view_mode = m
+	if _mat:
+		_mat.set_shader_parameter("view_mode", m)
+	overlay.queue_redraw()
 
 
 # ------------------------------------------------------------------ view math
@@ -146,10 +166,11 @@ func anchor(id: String) -> Vector2:
 func _on_resized() -> void:
 	if art == null or size.x < 10 or size.y < 10:
 		return
-	fit = minf(size.x / art.size.x, size.y / art.size.y)
+	var avail := Vector2(size.x, maxf(100.0, size.y - pad_top - pad_bottom))
+	fit = minf(avail.x / art.size.x, avail.y / art.size.y)
 	if _at_fit:
 		zoom = fit
-		offset = (size - art.size * zoom) * 0.5
+		offset = Vector2((size.x - art.size.x * zoom) * 0.5, pad_top + (avail.y - art.size.y * zoom) * 0.5)
 	_apply_view()
 
 
@@ -166,8 +187,8 @@ func _apply_view() -> void:
 		offset.x = (size.x - span.x) * 0.5
 	else:
 		offset.x = clampf(offset.x, size.x - span.x - slack.x, slack.x)
-	if span.y <= size.y:
-		offset.y = (size.y - span.y) * 0.5
+	if span.y <= size.y - pad_top - pad_bottom:
+		offset.y = pad_top + (size.y - pad_top - pad_bottom - span.y) * 0.5
 	else:
 		offset.y = clampf(offset.y, size.y - span.y - slack.y, slack.y)
 	terrain.position = offset
@@ -255,6 +276,10 @@ func _gui_input(event: InputEvent) -> void:
 					return
 				if not interactive:
 					return
+				for h in _label_hits:
+					if mb.position.distance_to(h["pos"]) < 16.0:
+						arrow_clicked.emit(str(h["from"]), str(h["to"]))
+						return
 				if id == "":
 					empty_clicked.emit()
 				else:
@@ -287,6 +312,9 @@ func _process(delta: float) -> void:
 			shake.erase(k)
 	if not fx.is_empty() or not shake.is_empty() or not battle.is_empty() or drag_from != "":
 		live = true
+	## the ships ride the swell
+	if art != null and not art.ornaments.is_empty() and Engine.get_frames_drawn() % 2 == 0:
+		live = true
 	if _mat != null:
 		_mat.set_shader_parameter("pulse", 0.5 + 0.5 * sin(_time * 6.0))
 	if live:
@@ -313,7 +341,11 @@ func _draw_overlay() -> void:
 	if art == null or world == null:
 		return
 	var ci := overlay
+	_label_hits.clear()
+	_draw_ornaments(ci)
 	_draw_lanes(ci)
+	if show_region_labels:
+		_draw_region_labels(ci)
 	if plain:
 		return
 	for g in ghosts:
@@ -338,6 +370,69 @@ func _draw_overlay() -> void:
 		var w: float = font.get_string_size(str(f["text"]), HORIZONTAL_ALIGNMENT_LEFT, -1, sz).x
 		ci.draw_string_outline(font, p - Vector2(w * 0.5, 0), str(f["text"]), HORIZONTAL_ALIGNMENT_LEFT, -1, sz, 6, Color(0, 0, 0, col.a * 0.85))
 		ci.draw_string(font, p - Vector2(w * 0.5, 0), str(f["text"]), HORIZONTAL_ALIGNMENT_LEFT, -1, sz, col)
+
+
+func _draw_ornaments(ci: CanvasItem) -> void:
+	## compass rose, title plate and ships of the line, painted on the sea
+	var k: float = zoom
+	for o in art.ornaments:
+		var p: Vector2 = map_to_screen(o["pos"])
+		var r: float = float(o["r"]) * k
+		match str(o["kind"]):
+			"rose":
+				var t: Texture2D = Style.tex("res://assets/art/chart_rose.png")
+				if t != null:
+					ci.draw_texture_rect(t, Rect2(p - Vector2(r, r), Vector2(r, r) * 2.0), false, Color(1, 1, 1, 0.78))
+			"ship":
+				var t2: Texture2D = Style.tex("res://assets/art/chart_ship.png")
+				if t2 != null:
+					var sz := Vector2(r * 2.0, r * 2.0 * t2.get_height() / maxf(1.0, t2.get_width()))
+					var bob: float = sin(_time * 1.1 + o["pos"].x * 0.01) * 0.035
+					ci.draw_set_transform(p, bob, Vector2(-1 if bool(o.get("flip", false)) else 1, 1))
+					ci.draw_texture_rect(t2, Rect2(-sz * 0.5, sz), false, Color(1, 1, 1, 0.9))
+					ci.draw_set_transform(Vector2.ZERO, 0.0, Vector2.ONE)
+			"cartouche":
+				var t3: Texture2D = Style.tex("res://assets/art/chart_cartouche.png")
+				if t3 != null:
+					var cw: float = r * 2.1
+					var ch: float = cw * t3.get_height() / maxf(1.0, t3.get_width())
+					ci.draw_texture_rect(t3, Rect2(p - Vector2(cw, ch) * 0.5, Vector2(cw, ch)), false, Color(1, 1, 1, 0.92))
+					var f := Style.font("display")
+					var title: String = map.display_name.to_upper() if map != null else ""
+					var fs: int = int(clampf(cw * 0.075, 10.0, 40.0))
+					var tw: float = f.get_string_size(title, HORIZONTAL_ALIGNMENT_LEFT, -1, fs).x
+					if tw > cw * 0.62:
+						fs = int(fs * cw * 0.62 / tw)
+						tw = f.get_string_size(title, HORIZONTAL_ALIGNMENT_LEFT, -1, fs).x
+					ci.draw_string(f, p + Vector2(-tw * 0.5, fs * 0.25), title, HORIZONTAL_ALIGNMENT_LEFT, -1, fs, Color(0.35, 0.12, 0.08, 0.95))
+
+
+func _draw_region_labels(ci: CanvasItem) -> void:
+	if _region_font == null:
+		_region_font = FontVariation.new()
+		_region_font.base_font = Style.font("display")
+		_region_font.spacing_glyph = 5
+	var k: float = zoom / maxf(fit, 0.01)
+	var sz: int = int(clampf(30.0 * sqrt(k) * (art.size.x / 2400.0 + 0.3), 20.0, 52.0))
+	for r in art.regions.keys():
+		if not map.region_bonus.has(r):
+			continue
+		var p: Vector2 = map_to_screen(art.regions[r])
+		var name: String = str(map.region_names.get(r, r)).to_upper()
+		var bonus := "+%d" % int(map.region_bonus[r])
+		var w: float = _region_font.get_string_size(name, HORIZONTAL_ALIGNMENT_LEFT, -1, sz).x
+		## a painted-map watermark: large, spaced, faint; tokens read on top of it
+		var col: Color = region_color(r).lightened(0.6)
+		col.a = 0.55
+		var at := p + Vector2(-w * 0.5, 0)
+		ci.draw_string_outline(_region_font, at, name, HORIZONTAL_ALIGNMENT_LEFT, -1, sz, 5, Color(0.05, 0.03, 0.02, 0.35))
+		ci.draw_string(_region_font, at, name, HORIZONTAL_ALIGNMENT_LEFT, -1, sz, col)
+		var bf := Style.font("display")
+		var bs: int = int(sz * 0.8)
+		var bw: float = bf.get_string_size(bonus, HORIZONTAL_ALIGNMENT_LEFT, -1, bs).x
+		var bp := p + Vector2(-bw * 0.5, bs + 4)
+		ci.draw_string_outline(bf, bp, bonus, HORIZONTAL_ALIGNMENT_LEFT, -1, bs, 5, Color(0.05, 0.03, 0.02, 0.4))
+		ci.draw_string(bf, bp, bonus, HORIZONTAL_ALIGNMENT_LEFT, -1, bs, Color(1.0, 0.85, 0.45, 0.7))
 
 
 func _draw_lanes(ci: CanvasItem) -> void:
@@ -411,6 +506,7 @@ func _draw_arrow(ci: CanvasItem, from_id: String, to_id: String, strength: int, 
 		ci.draw_colored_polygon(PackedVector2Array([st + sb * 9, st + ss * 7, st - ss * 7]), col)
 	if labeled:
 		var m: Vector2 = pts[11]
+		_label_hits.append({"pos": m, "from": from_id, "to": to_id})
 		var txt := str(strength)
 		var f := Style.font("bold")
 		var tw: float = f.get_string_size(txt, HORIZONTAL_ALIGNMENT_LEFT, -1, 17).x
@@ -447,6 +543,9 @@ func _draw_token(ci: CanvasItem, id: String) -> void:
 	var edge := Color(0.96, 0.9, 0.76) if id != selected else Color(1.0, 0.85, 0.35)
 	Style.draw_shape(ci, shape, p, r + 2.5, Color(0.08, 0.06, 0.05), Color(0.08, 0.06, 0.05), 1.0)
 	Style.draw_shape(ci, shape, p, r, col.darkened(0.08), edge, 2.0 if id != selected else 3.5)
+	## lacquer sheen: a soft highlight up and to the left, a shade below
+	Style.draw_shape(ci, shape, p + Vector2(0, r * 0.12), r * 0.78, Color(0, 0, 0, 0.12), Color(0, 0, 0, 0), 0.0)
+	ci.draw_circle(p + Vector2(-r * 0.3, -r * 0.34), r * 0.42, Color(1, 1, 1, 0.13))
 	var n: int = ts.armies + ts.garrison
 	var txt := str(n)
 	var fs := 22 if n < 100 else 18

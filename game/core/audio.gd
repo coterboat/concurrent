@@ -12,11 +12,13 @@ var _next := 0
 var _cache := {}
 var _current := ""
 var _last_play := {}
+var _voice: AudioStreamPlayer
+var _ducked := false
 
 
 func _ready() -> void:
 	process_mode = Node.PROCESS_MODE_ALWAYS
-	for bus in ["Music", "SFX", "Ambience"]:
+	for bus in ["Music", "SFX", "Ambience", "Voice"]:
 		if AudioServer.get_bus_index(bus) == -1:
 			AudioServer.add_bus()
 			var i := AudioServer.bus_count - 1
@@ -25,6 +27,8 @@ func _ready() -> void:
 	_music_a = _player("Music")
 	_music_b = _player("Music")
 	_amb = _player("Ambience")
+	_voice = _player("Voice")
+	_voice.finished.connect(func(): _duck(false))
 	for i in 10:
 		_pool.append(_player("SFX"))
 	apply_volumes()
@@ -45,6 +49,8 @@ func apply_volumes() -> void:
 	_set_bus("Music", music)
 	_set_bus("SFX", sfx_v)
 	_set_bus("Ambience", amb)
+	var voices: float = float(s.get_value("voices", 0.9)) if s else 0.9
+	_set_bus("Voice", voices)
 
 
 func _set_bus(name: String, v: float) -> void:
@@ -115,9 +121,41 @@ func music(name: String, fade: float = 1.2, loop: bool = true) -> void:
 		tw2.tween_property(nxt, "volume_db", 0.0, fade)
 
 
-func ambience(on: bool) -> void:
+func voice(path: String) -> float:
+	## Plays one spoken line (cutting off any line still going) and ducks the music.
+	## Returns its length in seconds, 0 if silent.
+	if path == "" or not ResourceLoader.exists(path):
+		return 0.0
+	var s := get_node_or_null("/root/Settings")
+	if s and float(s.get_value("voices", 0.9)) <= 0.001:
+		return 0.0
+	var st: AudioStream = load(path)
+	_voice.stream = st
+	_voice.play()
+	_duck(true)
+	return st.get_length()
+
+
+func voice_playing() -> bool:
+	return _voice.playing
+
+
+func _duck(on: bool) -> void:
+	if on == _ducked:
+		return
+	_ducked = on
+	var i := AudioServer.get_bus_index("Music")
+	var s := get_node_or_null("/root/Settings")
+	var base: float = linear_to_db(maxf(float(s.get_value("music", 0.55)) if s else 0.55, 0.001))
+	AudioServer.set_bus_volume_db(i, base - (9.0 if on else 0.0))
+
+
+func ambience(on: bool, name: String = "ambience_tent") -> void:
+	if on and _amb.playing and _amb.has_meta("name") and str(_amb.get_meta("name")) != name:
+		_amb.stop()
 	if on and not _amb.playing:
-		_amb.stream = _stream(MUSIC_DIR + "ambience_tent", true)
+		_amb.set_meta("name", name)
+		_amb.stream = _stream(MUSIC_DIR + name, true)
 		_amb.volume_db = -6.0
 		_amb.play()
 	elif not on and _amb.playing:

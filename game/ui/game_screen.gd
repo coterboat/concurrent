@@ -1,79 +1,127 @@
-## The table: top bar, the map, the order sheet, and the overlays for each phase.
+## The war table: full-bleed map, commanders top-right, the command bar below,
+## floating cards on the map, and the battlefield for the fights that matter.
 extends Control
 
 const Style := preload("res://game/core/style.gd")
 const Types := preload("res://engine/types.gd")
 const MapLib := preload("res://engine/map.gd")
 const Session := preload("res://game/core/session.gd")
+const Counsel := preload("res://game/core/counsel.gd")
+const Lines := preload("res://game/core/lines.gd")
 const Board := preload("res://game/board/map_board.gd")
-const TopBar := preload("res://game/ui/top_bar.gd")
+const CommandBar := preload("res://game/ui/command_bar.gd")
+const Roster := preload("res://game/ui/roster.gd")
+const LandCard := preload("res://game/ui/land_card.gd")
+const OrderCard := preload("res://game/ui/order_card.gd")
 const OrdersPanel := preload("res://game/ui/orders_panel.gd")
 const Cinema := preload("res://game/ui/cinema.gd")
+const Theater := preload("res://game/ui/battle_theater.gd")
 const Recap := preload("res://game/ui/recap.gd")
 const GameOver := preload("res://game/ui/game_over.gd")
-const Advisor := preload("res://game/ui/advisor.gd")
+const Intro := preload("res://game/ui/intro.gd")
+const PlanDialog := preload("res://game/ui/plan_dialog.gd")
 const HowTo := preload("res://game/ui/howto_screen.gd")
+const LeaderFace := preload("res://game/ui/leader_face.gd")
+
+const BAR := 156.0
+const TOP := 84.0
 
 var main: Control
 var session: Node
 var selected := ""
 var surge_pick := -1
+var log_lines: Array = [] ## [text, color]
 
-var top: PanelContainer
 var board: Control
-var panel: PanelContainer
+var bar: Control
+var roster: Control
 var cinema: Control
+var theater: Control
 var recap: Control
 var game_over: Control
-var advisor: Control
-var map_area: Control
-var legend: PanelContainer
-var _legend_box: VBoxContainer
+var land_card: PanelContainer
+var order_card: PanelContainer
+var drawer: PanelContainer
+var intro: Control
+var _plate_map: Label
+var _plate_round: Label
+var _plate_phase: Label
 var _cover: Control
-var _cover_box: VBoxContainer
 var _modal: Control
-var _loaded_map := ""
 var _hover_tip: PanelContainer
 var _hover_label: Label
+var _loaded_map := ""
+var _order_focus := ["", ""]
+var _spoken := {} ## advisor lines already said: key -> round
+var _intro_done := false
+var _defeat_shown := false
+var _last_place := ""
+var _pre_regions := {}
 
 
 func _ready() -> void:
-	var v := VBoxContainer.new()
-	v.set_anchors_and_offsets_preset(PRESET_FULL_RECT)
-	v.add_theme_constant_override("separation", 0)
-	add_child(v)
-	top = TopBar.new()
-	top.session = session
-	top.menu_pressed.connect(open_menu)
-	top.help_pressed.connect(func(): _open_rules(0))
-	v.add_child(top)
-	var h := HBoxContainer.new()
-	h.size_flags_vertical = Control.SIZE_EXPAND_FILL
-	h.add_theme_constant_override("separation", 0)
-	v.add_child(h)
-	map_area = Control.new()
-	map_area.size_flags_horizontal = Control.SIZE_EXPAND_FILL
-	map_area.clip_contents = true
-	h.add_child(map_area)
 	board = Board.new()
 	board.set_anchors_and_offsets_preset(PRESET_FULL_RECT)
-	map_area.add_child(board)
+	board.pad_top = TOP
+	board.pad_bottom = BAR + 4
+	add_child(board)
 	board.territory_clicked.connect(_on_click)
 	board.drag_order.connect(_on_drag)
-	board.empty_clicked.connect(func(): _select(""))
+	board.empty_clicked.connect(func(): select(""))
 	board.territory_hovered.connect(_on_hover)
-	_build_map_tools()
-	advisor = Advisor.new()
-	advisor.session = session
-	advisor.gs = self
-	map_area.add_child(advisor)
+	board.arrow_clicked.connect(func(a, b): edit_order(a, b))
+	board.set_view_mode(int(Settings.get_value("map_view", 0)))
+	_build_plate()
+	roster = Roster.new()
+	roster.session = session
+	roster.set_anchors_preset(PRESET_TOP_RIGHT)
+	roster.offset_right = -12
+	roster.offset_top = 12
+	roster.grow_horizontal = Control.GROW_DIRECTION_BEGIN
+	roster.hovered.connect(_on_roster_hover)
+	add_child(roster)
+	_build_zoom()
+	_hover_tip = PanelContainer.new()
+	_hover_tip.add_theme_stylebox_override("panel", Style.flat(Color(0.03, 0.045, 0.08, 0.93), Color(Style.GOLD, 0.5), 1, 6, 10))
+	_hover_tip.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	_hover_tip.visible = false
+	_hover_label = Style.label("", 16, Style.CREAM)
+	_hover_tip.add_child(_hover_label)
+	add_child(_hover_tip)
+	land_card = LandCard.new()
+	land_card.session = session
+	land_card.gs = self
+	add_child(land_card)
+	order_card = OrderCard.new()
+	order_card.session = session
+	order_card.gs = self
+	add_child(order_card)
+	drawer = OrdersPanel.new()
+	drawer.session = session
+	drawer.gs = self
+	drawer.drawer = true
+	drawer.set_anchors_preset(PRESET_RIGHT_WIDE)
+	drawer.offset_top = TOP + 190
+	drawer.offset_bottom = -BAR - 10
+	drawer.offset_left = -440
+	drawer.offset_right = -12
+	drawer.visible = false
+	add_child(drawer)
 	cinema = Cinema.new()
-	map_area.add_child(cinema)
+	cinema.bottom_margin = BAR + 10
+	add_child(cinema)
 	cinema.finished.connect(func(): session.cinema_done())
-	panel = OrdersPanel.new()
-	panel.session = session
-	panel.gs = self
-	h.add_child(panel)
+	bar = CommandBar.new()
+	bar.session = session
+	bar.gs = self
+	bar.set_anchors_preset(PRESET_BOTTOM_WIDE)
+	bar.offset_top = -BAR
+	add_child(bar)
+	theater = Theater.new()
+	add_child(theater)
+	cinema.theater = theater
+	cinema.theater_hook = _theater_wants
+	cinema.beat_hook = _on_beat
 	recap = Recap.new()
 	recap.session = session
 	recap.visible = false
@@ -95,44 +143,49 @@ func _ready() -> void:
 	_cover.visible = false
 	_cover.mouse_filter = Control.MOUSE_FILTER_STOP
 	add_child(_cover)
+	intro = Intro.new()
+	intro.finished.connect(func():
+		_intro_done = true
+		_refresh())
+	add_child(intro)
 	session.changed.connect(_refresh)
 	session.phase_changed.connect(_on_phase)
 	Audio.ambience(true)
 
 
-func _build_map_tools() -> void:
+func _build_plate() -> void:
+	var p := PanelContainer.new()
+	p.add_theme_stylebox_override("panel", Style.flat(Color(0.03, 0.045, 0.08, 0.86), Color(Style.GOLD, 0.45), 1, 8, 12))
+	p.set_anchors_preset(PRESET_TOP_LEFT)
+	p.offset_left = 12
+	p.offset_top = 12
+	p.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	add_child(p)
+	var v := VBoxContainer.new()
+	v.add_theme_constant_override("separation", -2)
+	p.add_child(v)
+	_plate_map = Style.label("", 14, Style.GOLD, "display")
+	v.add_child(_plate_map)
+	_plate_round = Style.label("", 28, Style.CREAM, "display")
+	v.add_child(_plate_round)
+	_plate_phase = Style.label("", 16, Style.PARCH, "bold")
+	v.add_child(_plate_phase)
+
+
+func _build_zoom() -> void:
 	var tools := VBoxContainer.new()
 	tools.set_anchors_preset(PRESET_BOTTOM_RIGHT)
-	tools.offset_left = -64
-	tools.offset_top = -170
-	tools.offset_right = -14
-	tools.offset_bottom = -14
+	tools.offset_left = -60
+	tools.offset_top = -BAR - 170
+	tools.offset_right = -12
+	tools.offset_bottom = -BAR - 14
 	tools.add_theme_constant_override("separation", 6)
-	map_area.add_child(tools)
+	add_child(tools)
 	for spec in [["+", func(): board.zoom_at(board.size * 0.5, 1.25)], ["−", func(): board.zoom_at(board.size * 0.5, 0.8)], ["⤢", func(): board.reset_view()]]:
 		var b := Style.chip(spec[0], spec[1], Style.CREAM, 22)
 		b.custom_minimum_size = Vector2(48, 44)
-		b.tooltip_text = {"+": "Zoom in (mouse wheel / pinch)", "−": "Zoom out", "⤢": "Show the whole map"}[spec[0]]
+		b.tooltip_text = {"+": "Zoom in (wheel / pinch)", "−": "Zoom out", "⤢": "Whole map"}[spec[0]]
 		tools.add_child(b)
-	## region legend
-	legend = PanelContainer.new()
-	legend.add_theme_stylebox_override("panel", Style.flat(Color(0.03, 0.045, 0.08, 0.86), Color(Style.GOLD, 0.35), 1, 6, 10))
-	legend.set_anchors_preset(PRESET_TOP_LEFT)
-	legend.offset_left = 12
-	legend.offset_top = 12
-	legend.mouse_filter = Control.MOUSE_FILTER_PASS
-	map_area.add_child(legend)
-	_legend_box = VBoxContainer.new()
-	_legend_box.add_theme_constant_override("separation", 2)
-	legend.add_child(_legend_box)
-	## hover card
-	_hover_tip = PanelContainer.new()
-	_hover_tip.add_theme_stylebox_override("panel", Style.flat(Color(0.03, 0.045, 0.08, 0.93), Color(Style.GOLD, 0.5), 1, 6, 10))
-	_hover_tip.mouse_filter = Control.MOUSE_FILTER_IGNORE
-	_hover_tip.visible = false
-	_hover_label = Style.label("", 16, Style.CREAM)
-	_hover_tip.add_child(_hover_label)
-	map_area.add_child(_hover_tip)
 
 
 # ================================================================ phases
@@ -144,22 +197,36 @@ func _on_phase(ph: int) -> void:
 	_cover.visible = false
 	recap.visible = false
 	surge_pick = -1
+	drawer.visible = false
+	edit_order("", "")
 	match ph:
 		Session.Phase.OPENING, Session.Phase.PLANNING:
-			_select("")
+			select("")
 			Audio.music("plan")
-			if session.is_last_round() and ph == Session.Phase.PLANNING and not session.conquest():
-				board.float_text(_any_owned(), "", Style.GOLD)
+			if ph == Session.Phase.OPENING and not _intro_done and not bool(session.config.get("tutorial", false)):
+				if not intro.play(session):
+					_intro_done = true
+			else:
+				_intro_done = true
+			if ph == Session.Phase.PLANNING:
+				_pre_regions = _regions_of_humans()
+				if session.is_last_round() and not session.conquest():
+					_say_once("final", "alarm")
+				elif session.world.round == 1 and not bool(session.config.get("tutorial", false)):
+					_say_once("reinforce")
 		Session.Phase.PASS:
 			_show_pass()
 		Session.Phase.RESOLVING:
 			_show_sealing()
 		Session.Phase.CINEMA:
 			_cover.visible = false
+			select("")
 			cinema.play(session, board)
 		Session.Phase.RECAP:
 			Audio.music("plan")
+			_log_round()
 			recap.show_round()
+			_react_to_round()
 			_maybe_defeat_notice()
 		Session.Phase.GAME_OVER:
 			var won: bool = session.is_human(session.winner)
@@ -170,44 +237,20 @@ func _on_phase(ph: int) -> void:
 			Audio.music("victory" if (won or not any_human) else "defeat", 0.6, false)
 			Audio.ambience(false)
 			game_over.show_result()
+			_game_over_voice(won, any_human)
 	_refresh()
 
 
-var _defeat_shown := false
-
-
-func _maybe_defeat_notice() -> void:
-	## The last human just fell: say so, and offer to watch or leave.
-	if _defeat_shown or session.winner != "":
-		return
-	var fell: Array = []
-	for e in session.events:
-		if str(e.get("kind", "")) == "PlayerEliminated" and session.is_human(str(e["playerId"])):
-			fell.append(session.name_of(str(e["playerId"])))
-	if fell.is_empty() or not session.living_humans().is_empty():
-		return
-	_defeat_shown = true
-	Audio.sfx("eliminated")
-	_confirm("%s ha%s been defeated" % [" and ".join(fell), "s" if fell.size() == 1 else "ve"],
-		"The commanders will fight on without you. Watch them finish the war, or leave the field.",
-		[["Watch the rest", func(): pass], ["New game", func(): main.show_setup()], ["Main menu", func(): main.show_title()]])
-
-
-func _any_owned() -> String:
-	var mine := MapLib.player_territory_ids(session.world, session.planner)
-	return mine[0] if mine.size() > 0 else ""
-
-
 func _refresh() -> void:
-	if session.world == null or board.art == null and session.map != null:
-		if session.map != null and board.art == null:
-			board.load_map(session.map)
-			_loaded_map = session.map.id
-	top.refresh()
-	panel.refresh()
-	advisor.refresh()
-	_refresh_legend()
+	if session.map != null and board.art == null:
+		board.load_map(session.map)
+		_loaded_map = session.map.id
+	if session.world == null:
+		return
 	var ph: int = session.phase
+	_refresh_plate()
+	roster.refresh()
+	bar.refresh()
 	var planning: bool = ph == Session.Phase.OPENING or ph == Session.Phase.PLANNING
 	if planning:
 		board.interactive = true
@@ -223,10 +266,17 @@ func _refresh() -> void:
 		board.ghosts = session.ghosts if ph == Session.Phase.PLANNING else []
 		board.orders = _my_arrows()
 		board.targets = _targets()
-		board.dimmed = {}
 		board.battle = {}
 		board.refresh()
-	elif ph == Session.Phase.PASS or ph == Session.Phase.RESOLVING or ph == Session.Phase.RECAP or ph == Session.Phase.GAME_OVER:
+		land_card.show_for(selected if not order_card.visible else "")
+		if order_card.visible:
+			order_card.rebuild()
+		if drawer.visible:
+			drawer.refresh()
+		_update_counsel()
+	elif ph != Session.Phase.CINEMA:
+		land_card.show_for("")
+		order_card.visible = false
 		board.interactive = false
 		board.viewer = ""
 		board.world = session.world
@@ -237,6 +287,37 @@ func _refresh() -> void:
 		board.ghosts = session.ghosts if ph != Session.Phase.GAME_OVER else []
 		board.show_ceiling = false
 		board.refresh()
+	else:
+		land_card.show_for("")
+		order_card.visible = false
+
+
+func _refresh_plate() -> void:
+	var s = session
+	_plate_map.text = s.map.display_name.to_upper()
+	var total: int = s.rounds_total()
+	if s.phase == Session.Phase.OPENING or s.setup_dict.is_empty() or (s.phase == Session.Phase.CINEMA and bool(s.get_meta("opening_cinema", false))):
+		_plate_round.text = "Deployment"
+	else:
+		var n: int = s.world.round
+		if s.phase == Session.Phase.CINEMA or s.phase == Session.Phase.RECAP or s.phase == Session.Phase.GAME_OVER:
+			n = maxi(1, s.world.round - 1)
+		_plate_round.text = ("Round %d" % n) if s.conquest() else ("Round %d of %d" % [mini(n, total), total])
+	match s.phase:
+		Session.Phase.OPENING:
+			_plate_phase.text = "Deployment — %s" % s.name_of(s.planner)
+		Session.Phase.PLANNING:
+			_plate_phase.text = ("FINAL ROUND — " if s.is_last_round() and not s.conquest() else "") + "Orders for %s" % s.name_of(s.planner)
+		Session.Phase.CINEMA:
+			_plate_phase.text = "Battle report"
+		Session.Phase.RECAP:
+			_plate_phase.text = "The round is done"
+		Session.Phase.GAME_OVER:
+			_plate_phase.text = "The war is over"
+		Session.Phase.RESOLVING:
+			_plate_phase.text = "Orders sealed"
+		_:
+			_plate_phase.text = ""
 
 
 func _my_arrows() -> Array:
@@ -272,11 +353,62 @@ func _targets() -> Dictionary:
 	return t
 
 
+# ================================================================ counsel + voice
+
+func _update_counsel() -> void:
+	var items: Array = []
+	var les: Dictionary = Counsel.lesson(session, surge_pick)
+	if not les.is_empty():
+		items.append(les)
+	if bool(Settings.get_value("tips", true)) or bool(session.config.get("tutorial", false)):
+		items.append_array(Counsel.advice(session))
+	if items.is_empty():
+		items.append({"key": "idle", "text": "Awaiting your orders, Commander.", "mood": "neutral", "voice": "", "focus": [], "rank": 0})
+	bar.set_counsel(items)
+	## speak the most important thing, once per round
+	var top: Dictionary = items[0]
+	var v: String = str(top.get("voice", ""))
+	if v != "" and (int(top["rank"]) >= 80 or v in ["welcome", "deploy", "cards", "dug_in", "surge", "attack_hint"]):
+		_say_once(v, {"alarmed": "alarm", "pleased": "happy"}.get(str(top["mood"]), "neutral"), str(top["key"]))
+
+
+func _say_once(line: String, mood: String = "neutral", key: String = "") -> void:
+	var k: String = key if key != "" else line
+	var r: int = session.world.round if session.world else 0
+	if _spoken.get(k, -1) == r:
+		return
+	_spoken[k] = r
+	if not Lines.has("advisor", line):
+		return
+	bar.advisor.react(mood, line, 3.0)
+
+
+func focus_advice(item: Dictionary) -> void:
+	var f: Array = item.get("focus", [])
+	board.battle = {}
+	for id in f:
+		board.battle[id] = true
+	board.refresh()
+	get_tree().create_timer(1.6).timeout.connect(func():
+		board.battle = {}
+		board.refresh())
+
+
+func open_plan() -> void:
+	if session.phase != Session.Phase.PLANNING:
+		return
+	var d: Control = PlanDialog.new()
+	d.session = session
+	add_child(d)
+
+
 # ================================================================ map input
 
-func _select(id: String) -> void:
+func select(id: String) -> void:
 	selected = id
 	surge_pick = -1
+	if id == "" or id != _order_focus[0]:
+		edit_order("", "")
 	_refresh()
 
 
@@ -292,6 +424,7 @@ func _on_click(id: String, button: int) -> void:
 			Audio.sfx("error")
 		else:
 			Audio.sfx("surge", -6.0)
+			log_line("Surge planned into %s." % session.hex_name(id), Style.GOLD)
 		surge_pick = -1
 		_refresh()
 		return
@@ -303,26 +436,25 @@ func _on_click(id: String, button: int) -> void:
 		if selected == id:
 			place(id, 1)
 		else:
-			_select(id)
+			select(id)
 			Audio.sfx("click", -8.0)
 		return
-	## an enemy or empty land
 	if ph == Session.Phase.PLANNING and selected != "" and session.world.get_territory(selected).owner == session.planner and session.map.is_adjacent(selected, id):
 		order_attack(selected, id)
 		return
-	_select(id)
+	select(id)
 
 
 func _on_drag(from_id: String, to_id: String) -> void:
 	if session.phase != Session.Phase.PLANNING:
 		return
-	var a: Types.TerritoryState = session.world.get_territory(from_id)
-	if a.owner != session.planner:
+	if session.world.get_territory(from_id).owner != session.planner:
 		return
 	if not session.map.is_adjacent(from_id, to_id):
 		_toast("%s does not border %s." % [session.hex_name(to_id), session.hex_name(from_id)])
 		Audio.sfx("error")
 		return
+	selected = from_id
 	if session.world.get_territory(to_id).owner == session.planner:
 		order_move(from_id, to_id)
 	else:
@@ -330,7 +462,7 @@ func _on_drag(from_id: String, to_id: String) -> void:
 
 
 func _on_hover(id: String) -> void:
-	if id == "" or session.world == null:
+	if id == "" or session.world == null or land_card.visible and id == selected:
 		_hover_tip.visible = false
 		return
 	var w: Types.World = board.world
@@ -342,17 +474,86 @@ func _on_hover(id: String) -> void:
 	if ts.owner == Types.UNOCCUPIED:
 		lines.append("Empty")
 	else:
-		lines.append("%s · %d armies%s" % [session.name_of(ts.owner), ts.held(), (" (%d dug in)" % ts.garrison) if ts.garrison > 0 else ""])
+		lines.append("%s · %s%s" % [session.name_of(ts.owner), Style.plural(ts.held(), "army", "armies"), (" (%d dug in)" % ts.garrison) if ts.garrison > 0 else ""])
 	_hover_label.text = "\n".join(lines)
 	_hover_tip.visible = true
 	_hover_tip.reset_size()
-	var p: Vector2 = board.anchor(id) + Vector2(26, -_hover_tip.size.y - 20)
-	p.x = clampf(p.x, 4, map_area.size.x - _hover_tip.size.x - 4)
-	p.y = clampf(p.y, 4, map_area.size.y - _hover_tip.size.y - 4)
+	var p: Vector2 = board.anchor(id) + Vector2(28, -_hover_tip.size.y - 22)
+	p.x = clampf(p.x, 4, size.x - _hover_tip.size.x - 4)
+	p.y = clampf(p.y, TOP, size.y - BAR - _hover_tip.size.y - 4)
 	_hover_tip.position = p
 
 
-# ================================================================ orders (called by the panel too)
+func _on_roster_hover(pid: String) -> void:
+	if session.world == null:
+		return
+	board.dimmed = {}
+	if pid != "":
+		for t in session.world.territories.keys():
+			if session.world.get_territory(t).owner != pid:
+				board.dimmed[t] = true
+	board.refresh()
+
+
+func place_popover(ctrl: Control, land: String) -> void:
+	if land == "" or board.art == null:
+		return
+	## Pick the side that hides the fewest neighbors — they are what you click next.
+	var a: Vector2 = board.anchor(land)
+	var sz: Vector2 = ctrl.size
+	var r: float = board.token_radius() + 10.0
+	var low: float = size.y - BAR - sz.y - 12
+	var candidates := [
+		a + Vector2(r + 36, -sz.y * 0.35),
+		a + Vector2(-r - 36 - sz.x, -sz.y * 0.35),
+		a + Vector2(-sz.x * 0.5, r + 34),
+		a + Vector2(-sz.x * 0.5, -r - 20 - sz.y),
+		Vector2(12, low),
+		Vector2(size.x - sz.x - 72, low),
+		Vector2(12, a.y - sz.y * 0.5),
+		Vector2(size.x - sz.x - 72, a.y - sz.y * 0.5),
+	]
+	var near: Array = [a]
+	for n in session.map.get_territory(land).adjacent:
+		near.append(board.anchor(n))
+	var best: Vector2 = candidates[0]
+	var best_cost := 1e9
+	for i in candidates.size():
+		var p: Vector2 = candidates[i]
+		p.x = clampf(p.x, 8, size.x - sz.x - 8)
+		p.y = clampf(p.y, TOP + 8, size.y - BAR - sz.y - 8)
+		var rect := Rect2(p, sz).grow(18)
+		var cost := float(i) * 0.02 + (p + sz * 0.5).distance_to(a) * 0.0006
+		for q in near:
+			if rect.has_point(q):
+				cost += 1.0
+		if cost < best_cost:
+			best_cost = cost
+			best = p
+	ctrl.position = best
+
+
+func place_order_card(ctrl: Control, a: String, b: String) -> void:
+	if board.art == null:
+		return
+	var m: Vector2 = (board.anchor(a) + board.anchor(b)) * 0.5
+	var p := m + Vector2(30, 24)
+	if p.x + ctrl.size.x > size.x - 8:
+		p.x = m.x - 30 - ctrl.size.x
+	p.x = clampf(p.x, 8, size.x - ctrl.size.x - 8)
+	p.y = clampf(p.y, TOP + 8, size.y - BAR - ctrl.size.y - 8)
+	ctrl.position = p
+
+
+func _process(_d: float) -> void:
+	## cards follow the map when it pans or zooms
+	if land_card.visible and land_card.land != "":
+		place_popover(land_card, land_card.land)
+	if order_card.visible:
+		place_order_card(order_card, _order_focus[0], _order_focus[1])
+
+
+# ================================================================ orders
 
 func place(id: String, delta: int) -> void:
 	var err: String = session.add_place(id, delta)
@@ -361,6 +562,16 @@ func place(id: String, delta: int) -> void:
 		Audio.sfx("error")
 	else:
 		Audio.sfx("place" if delta > 0 else "unplace")
+		bar.bump_coin()
+		board.pulse_token(id, 0.3)
+		if delta > 0:
+			var n: int = session.placed_on(id)
+			var txt := "%s placed in %s." % ["A battalion has been" if n == 1 else "%d battalions have been" % n, session.hex_name(id)]
+			if _last_place == id and not log_lines.is_empty():
+				log_lines[-1] = [txt, Style.CREAM]
+			else:
+				log_line(txt, Style.CREAM)
+			_last_place = id
 	if selected != id:
 		selected = id
 		_refresh()
@@ -374,7 +585,11 @@ func order_attack(from_id: String, to_id: String) -> void:
 		return
 	Audio.sfx("order_attack")
 	selected = from_id
-	_refresh()
+	var idx: int = session.packet_index(from_id, to_id)
+	var n: int = (session.sheet().packets[idx] as Types.Packet).strength
+	log_line("Attack ordered: %s ➜ %s with %d." % [session.hex_name(from_id), session.hex_name(to_id), n], Style.CRIMSON.lightened(0.2))
+	_last_place = ""
+	edit_order(from_id, to_id)
 
 
 func order_move(from_id: String, to_id: String) -> void:
@@ -384,21 +599,45 @@ func order_move(from_id: String, to_id: String) -> void:
 		Audio.sfx("error")
 		return
 	Audio.sfx("order_move")
+	log_line("Move ordered: %s ➜ %s." % [session.hex_name(from_id), session.hex_name(to_id)], Style.PARCH)
+	_refresh()
+
+
+func edit_order(a: String, b: String) -> void:
+	_order_focus = [a, b]
+	if a == "":
+		order_card.visible = false
+		return
+	order_card.show_for(a, b)
 	_refresh()
 
 
 func begin_surge_pick(i: int) -> void:
 	surge_pick = i
+	edit_order("", "")
 	var p: Types.Packet = session.sheet().packets[i]
 	_toast("Click a land next to %s to surge into it. (Esc cancels)" % session.hex_name(p.to_id))
 	_refresh()
+
+
+func primary_action() -> void:
+	match session.phase:
+		Session.Phase.OPENING, Session.Phase.PLANNING:
+			try_seal()
+		Session.Phase.CINEMA:
+			if not theater.visible:
+				cinema.advance()
+		Session.Phase.RECAP:
+			recap.visible = false
+			session.next_round()
 
 
 func try_seal() -> void:
 	if session.phase != Session.Phase.PLANNING and session.phase != Session.Phase.OPENING:
 		return
 	if session.income_left() > 0:
-		_confirm("%d reinforcement%s still unplaced" % [session.income_left(), "" if session.income_left() == 1 else "s"],
+		_say_once("unplaced", "alarm")
+		_confirm("%d troops still unplaced" % session.income_left(),
 			"Anything you don't place is lost.",
 			[["Place them for me", func():
 				session.auto_deploy()
@@ -414,7 +653,171 @@ func _seal() -> void:
 		Audio.sfx("error")
 		return
 	Audio.sfx("seal")
+	log_line("Orders sealed.", Style.GOLD)
 	selected = ""
+
+
+func toggle_view() -> void:
+	var m: int = 1 - board.view_mode
+	board.set_view_mode(m)
+	Settings.set_value("map_view", m)
+	_toast("Map shows %s" % ("region colours — owners ride the borders" if m == 1 else "owner colours"))
+
+
+func open_drawer() -> void:
+	drawer.visible = not drawer.visible
+	if drawer.visible:
+		drawer.refresh()
+
+
+func open_rules() -> void:
+	_open_rules(0)
+
+
+func cinema_progress() -> String:
+	return cinema.progress_text()
+
+
+func log_line(text: String, color: Color = Style.CREAM) -> void:
+	log_lines.append([text, color])
+	if log_lines.size() > 40:
+		log_lines.pop_front()
+	bar.refresh()
+
+
+# ================================================================ cinema hooks
+
+func _theater_wants(b: Dictionary) -> bool:
+	match str(Settings.get_value("battles", "mine")):
+		"off":
+			return false
+		"all":
+			return true
+	return session.is_human(str(b["a"])) or session.is_human(str(b["b"]))
+
+
+func _on_beat(b: Dictionary) -> void:
+	bar.set_message("%s — %s" % [b.get("caption", ""), b.get("sub", "")] if str(b.get("sub", "")) != "" else str(b.get("caption", "")))
+	bar.refresh()
+	if bool(b.get("reveal", false)) and not session.living_humans().is_empty():
+		_say_once("reveal")
+	if b.has("walkin"):
+		var who: String = str(b["walkin"])
+		var victim: String = str(b["victim"])
+		var voice: String = str(session.seat(who).get("portrait", ""))
+		if session.is_human(victim) and roster.faces.has(who) and Lines.has(voice, "walkin"):
+			roster.faces[who].react("win", "walkin", 3.2)
+		elif session.is_human(who):
+			bar.advisor.react("happy", "walkin_us", 3.0)
+		elif session.is_human(victim):
+			bar.advisor.react("alarm", "walkin_them", 3.0)
+	if b.has("eliminated"):
+		_show_fallen(str(b["eliminated"]))
+
+
+func _show_fallen(pid: String) -> void:
+	var card := PanelContainer.new()
+	card.add_theme_stylebox_override("panel", Style.panel_box(22))
+	card.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	add_child(card)
+	var v := VBoxContainer.new()
+	v.alignment = BoxContainer.ALIGNMENT_CENTER
+	v.add_theme_constant_override("separation", 6)
+	card.add_child(v)
+	var holder := CenterContainer.new()
+	v.add_child(holder)
+	var face: Control = LeaderFace.new()
+	face.custom_minimum_size = Vector2(170, 170)
+	face.bubble_side = "none"
+	holder.add_child(face)
+	var seat: Dictionary = session.seat(pid)
+	var who: String = str(seat.get("portrait", "player"))
+	face.setup(who, pid, session.name_of(pid))
+	var n := Style.label("%s HAS FALLEN" % session.name_of(pid).to_upper(), 28, Style.seat_color(pid).lightened(0.4), "display")
+	n.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+	v.add_child(n)
+	var q := Style.label("", 19, Style.PARCH, "italic")
+	q.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+	q.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
+	q.custom_minimum_size = Vector2(420, 0)
+	v.add_child(q)
+	if Lines.has(who, "eliminated"):
+		q.text = "“%s”" % Lines.text(who, "eliminated")
+	card.reset_size()
+	card.position = (size - card.size) * 0.5 - Vector2(0, BAR * 0.4)
+	face.react("dead", "eliminated", 3.5)
+	card.modulate.a = 0.0
+	var tw := card.create_tween()
+	tw.tween_property(card, "modulate:a", 1.0, 0.3)
+	tw.tween_interval(3.4)
+	tw.tween_property(card, "modulate:a", 0.0, 0.5)
+	tw.tween_callback(card.queue_free)
+	if not session.is_human(pid) and not session.living_humans().is_empty():
+		get_tree().create_timer(4.0).timeout.connect(func(): bar.advisor.react("happy", "enemy_out", 2.5))
+
+
+func _regions_of_humans() -> Dictionary:
+	var out := {}
+	for pid in session.living_humans():
+		for r in session.map.region_bonus.keys():
+			if MapLib.holds_region(session.world, session.map, pid, str(r)):
+				out["%s|%s" % [pid, r]] = true
+	return out
+
+
+func _react_to_round() -> void:
+	var now := _regions_of_humans()
+	for k in now.keys():
+		if not _pre_regions.has(k):
+			var r: String = str(k).split("|")[1]
+			log_line("%s is ours! +%d every round." % [session.map.region_names.get(r, r), int(session.map.region_bonus[r])], Style.GOLD)
+			_say_once("region", "happy", "region_" + r)
+			return
+
+
+func _log_round() -> void:
+	var took := {}
+	var lost := {}
+	for e in session.events:
+		if str(e.get("kind", "")) == "Occupied":
+			var who: String = str(e["playerId"])
+			var prev: String = str(e.get("previousOwner", ""))
+			took[who] = int(took.get(who, 0)) + 1
+			if prev != "":
+				lost[prev] = int(lost.get(prev, 0)) + 1
+	var n: int = maxi(1, session.world.round - 1)
+	for pid in session.living_humans():
+		var t: int = int(took.get(pid, 0))
+		var l: int = int(lost.get(pid, 0))
+		log_line("Round %d: %s took %d, lost %d." % [n, session.name_of(pid), t, l], Style.GOOD if t >= l else Style.WARN)
+
+
+func _game_over_voice(won: bool, any_human: bool) -> void:
+	var w: String = session.winner
+	var who: String = str(session.seat(w).get("portrait", ""))
+	get_tree().create_timer(0.8).timeout.connect(func():
+		if not session.is_human(w) and Lines.has(who, "victory"):
+			Audio.voice(Lines.voice_path(who, "victory"))
+		elif won:
+			Audio.voice(Lines.voice_path("advisor", "victory"))
+		elif any_human:
+			Audio.voice(Lines.voice_path("advisor", "defeat")))
+
+
+func _maybe_defeat_notice() -> void:
+	if _defeat_shown or session.winner != "":
+		return
+	var fell: Array = []
+	for e in session.events:
+		if str(e.get("kind", "")) == "PlayerEliminated" and session.is_human(str(e["playerId"])):
+			fell.append(session.name_of(str(e["playerId"])))
+	if fell.is_empty() or not session.living_humans().is_empty():
+		return
+	_defeat_shown = true
+	bar.advisor.react("dead", "defeat", 3.0)
+	_confirm("%s ha%s been defeated" % [" and ".join(fell), "s" if fell.size() == 1 else "ve"],
+		"The commanders will fight on without you. Watch them finish the war, or leave the field.",
+		[["Watch the rest", func(): pass], ["New game", func(): main.show_setup()], ["Main menu", func(): main.show_title()]])
 
 
 # ================================================================ overlays
@@ -444,12 +847,13 @@ func _show_pass() -> void:
 	v.add_theme_constant_override("separation", 16)
 	p.add_child(v)
 	var pid: String = session.pass_to
-	var pic := TextureRect.new()
-	pic.texture = Style.portrait(str(session.seat(pid).get("portrait", "player")))
-	pic.expand_mode = TextureRect.EXPAND_IGNORE_SIZE
-	pic.stretch_mode = TextureRect.STRETCH_KEEP_ASPECT_CENTERED
-	pic.custom_minimum_size = Vector2(0, 180)
-	v.add_child(pic)
+	var holder := CenterContainer.new()
+	v.add_child(holder)
+	var face: Control = LeaderFace.new()
+	face.custom_minimum_size = Vector2(180, 180)
+	face.bubble_side = "none"
+	holder.add_child(face)
+	face.setup(str(session.seat(pid).get("portrait", "player")), pid, session.name_of(pid))
 	var t := Style.label("Pass the computer to %s" % session.name_of(pid), 40, Style.seat_color(pid).lightened(0.4), "display")
 	t.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
 	v.add_child(t)
@@ -470,7 +874,7 @@ func _show_sealing() -> void:
 	_clear_cover()
 	_cover.visible = true
 	var dim := ColorRect.new()
-	dim.color = Color(0.01, 0.02, 0.04, 0.6)
+	dim.color = Color(0.01, 0.02, 0.04, 0.55)
 	dim.set_anchors_and_offsets_preset(PRESET_FULL_RECT)
 	_cover.add_child(dim)
 	var c := CenterContainer.new()
@@ -497,6 +901,8 @@ func _show_sealing() -> void:
 	var tw := create_tween().set_parallel(true)
 	tw.tween_property(seal, "scale", Vector2.ONE, 0.25).set_trans(Tween.TRANS_BACK).set_ease(Tween.EASE_OUT)
 	tw.tween_property(seal, "modulate:a", 1.0, 0.15)
+	if not session.living_humans().is_empty():
+		_say_once("sealed")
 
 
 func _toast(text: String) -> void:
@@ -504,13 +910,14 @@ func _toast(text: String) -> void:
 	p.add_theme_stylebox_override("panel", Style.flat(Color(0.08, 0.05, 0.04, 0.95), Style.WARN, 1, 6, 12))
 	var l := Style.label(text, 18, Style.CREAM)
 	l.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
-	l.custom_minimum_size = Vector2(0, 0)
+	## a wrapping label has no natural width: give it the text's own, up to a line's worth
+	var w: float = Style.font("body").get_string_size(text, HORIZONTAL_ALIGNMENT_LEFT, -1, 18).x
+	l.custom_minimum_size = Vector2(minf(w + 4.0, 680.0), 0)
 	p.add_child(l)
 	p.mouse_filter = Control.MOUSE_FILTER_IGNORE
-	map_area.add_child(p)
+	add_child(p)
 	p.reset_size()
-	var w: float = minf(p.size.x, map_area.size.x - 40)
-	p.position = Vector2((map_area.size.x - w) * 0.5, map_area.size.y - p.size.y - 90)
+	p.position = Vector2((size.x - p.size.x) * 0.5, size.y - BAR - p.size.y - 26)
 	var tw := p.create_tween()
 	tw.tween_interval(2.6)
 	tw.tween_property(p, "modulate:a", 0.0, 0.5)
@@ -557,8 +964,7 @@ func _confirm(title: String, body: String, choices: Array) -> void:
 
 
 func open_menu() -> void:
-	var saved_note := "Your campaign is saved after every round."
-	_confirm("Paused", saved_note, [
+	_confirm("Paused", "Your campaign is saved after every round.", [
 		["Resume", func(): pass],
 		["How to play", func(): _open_rules(0)],
 		["Settings", func(): main.open_settings()],
@@ -575,41 +981,6 @@ func _open_rules(page: int) -> void:
 	add_child(h)
 
 
-func _refresh_legend() -> void:
-	for c in _legend_box.get_children():
-		c.queue_free()
-	if session.map == null or session.map.region_bonus.is_empty():
-		legend.visible = false
-		return
-	legend.visible = true
-	_legend_box.add_child(Style.label("Regions", 17, Style.GOLD, "display"))
-	var keys: Array = session.map.region_bonus.keys()
-	keys.sort()
-	for r in keys:
-		var members := MapLib.region_members(session.map, str(r))
-		var holder := ""
-		var mine := 0
-		for pid in MapLib.living_player_ids(session.world):
-			if MapLib.holds_region(session.world, session.map, pid, str(r)):
-				holder = pid
-		if session.planner != "":
-			for m in members:
-				if session.world.get_territory(m).owner == session.planner:
-					mine += 1
-		var row := HBoxContainer.new()
-		row.add_theme_constant_override("separation", 6)
-		var dot := _Dot.new()
-		dot.pid = holder
-		dot.custom_minimum_size = Vector2(14, 14)
-		row.add_child(dot)
-		var txt := "%s  +%d" % [session.map.region_names.get(r, r), int(session.map.region_bonus[r])]
-		var l := Style.label(txt, 15, Style.CREAM if holder == "" else Style.seat_color(holder).lightened(0.45), "bold")
-		row.add_child(l)
-		if (session.phase == Session.Phase.PLANNING or session.phase == Session.Phase.OPENING) and holder == "":
-			row.add_child(Style.label("you %d/%d" % [mine, members.size()], 13, Style.MUTED))
-		_legend_box.add_child(row)
-
-
 func _unhandled_input(event: InputEvent) -> void:
 	if not (event is InputEventKey) or not event.pressed or event.echo:
 		return
@@ -620,22 +991,18 @@ func _unhandled_input(event: InputEvent) -> void:
 		elif surge_pick >= 0:
 			surge_pick = -1
 			_refresh()
+		elif order_card.visible:
+			edit_order("", "")
+		elif drawer.visible:
+			drawer.visible = false
 		elif selected != "":
-			_select("")
+			select("")
 		elif session.phase != Session.Phase.CINEMA:
 			open_menu()
 		get_viewport().set_input_as_handled()
 	elif event.keycode == KEY_ENTER and (event.meta_pressed or event.ctrl_pressed):
 		try_seal()
 		get_viewport().set_input_as_handled()
-
-
-class _Dot extends Control:
-	const Style := preload("res://game/core/style.gd")
-	var pid := ""
-
-	func _draw() -> void:
-		if pid == "":
-			draw_arc(size * 0.5, 5.5, 0, TAU, 16, Style.MUTED, 1.2)
-			return
-		Style.draw_shape(self, Style.seat_shape(pid), size * 0.5, 6.0, Style.seat_color(pid), Style.CREAM, 1.0)
+	elif event.keycode == KEY_V and session.phase != Session.Phase.CINEMA:
+		toggle_view()
+		get_viewport().set_input_as_handled()

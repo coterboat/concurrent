@@ -1,6 +1,6 @@
 # CONCURRENT
 
-A SameTime conquest game. Everyone writes their orders in secret, everyone's orders happen at once, and the armies you send away leave home empty. Whoever strips a border gets walked.
+A SameTime conquest game of rival empires. Everyone writes their orders in secret, everyone's orders happen at once, and the armies you send away leave home empty. Whoever strips a border gets walked.
 
 Two to five commanders on one of three maps. Any seat can be a person at this computer (hotseat) or one of six AI commanders, from easy to hard.
 
@@ -28,7 +28,8 @@ That builds `build/CONCURRENT-mac.zip` and `build/windows/CONCURRENT.exe`.
 
 - **Reinforce.** Each round you get armies: one per three lands you hold (at least 3), plus a little for a big connected empire and a bonus for each whole region. A land can take at most 1 + (your neighboring lands). Unplaced armies are lost.
 - **Attack.** Send armies from your land at a neighbor. They leave home the moment orders are sealed. One must stay behind unless the land is dug in.
-- **Battles.** One roll: armies + one die each. Higher total wins, and ties go to the attacker. The loser is wiped out; the winner loses half as many as the loser had.
+- **Battles.** Roll by roll: each volley both sides score die × 5 + armies, and the lower score loses a man (ties go to the attacker). In your own battles you press ROLL. A setup option switches to one decisive roll (armies + a die); both styles give the same odds.
+- **Battle calls.** An assault runs in exchanges of three volleys. After each one the attacker calls it: **press on**, throw in the **reserves** still at home (once), or **fall back** and save the survivors. Watch your own battles and you make the calls. Otherwise your officers follow the standing order on the attack (officer's judgment, to the last man, all in, or fall back if it turns).
 - **Clashes and spoils.** Two lands attacking each other meet in the field first. Several invaders on one land fight the defender, then each other.
 - **Surge.** Name a second target. If the first attack wins, everyone but one pushes on, after all other battles.
 - **Dig in.** Every round you keep a land it gains a dug-in defender (the shield), who never marches.
@@ -40,10 +41,11 @@ That builds `build/CONCURRENT-mac.zip` and `build/windows/CONCURRENT.exe`.
 | | |
 |---|---|
 | **Maps** | *The Isthmus* (7 lands, the teaching map), *The Known World* (24 lands, an island sea), *The Wide World* (30 lands, six regions) |
-| **Commanders** | Captain Oren (easy) · Old Bear Hask, The Quartermaster (medium) · Marshal Varek, Lady Ysolde, Commander Imre (hard). Hard commanders simulate several plans against predicted enemy moves before sealing. |
+| **Commanders** | Captain Oren of the Hussars (easy) · Commodore Hask, Governor Quill of the Company (medium) · Grand Marshal Varek, Viceroy Ysolde, Admiral Imre (hard). Hard commanders simulate several plans against predicted enemy moves before sealing. Each fights with a temperament: Hask and Ysolde throw in every reserve, Quill cuts his losses, Oren never knows when to quit. |
 | **Modes** | Solo vs AI, hotseat for 2–5 people (a cover screen hides each sheet), mixed, or all-AI to watch |
 | **Options** | Game length (short / standard / long / conquest), planning clock, battle speed, text size, advisor tips, colorblind-safe token shapes |
-| **Presentation** | Painted map with shore foam and region borders, battle cinema with dice, round reports, end-of-war chart, music and sound |
+| **Presentation** | An imperial war room: a painted chart dressed with a compass rose, a title cartouche and ships of the line; heavy region borders and a regions view; a Risk II–style command bar in brass and gilt; a battlefield scene where tin soldiers march in, breathe, fire, topple and retreat; round reports, end-of-war chart; martial music (drums, brass, fifes) |
+| **Characters** | Voiced commanders in gilded rings who breathe and talk (seamless animated loops) and whose faces react: greetings, battle cries, curses, walk-in taunts, retreats, farewells. A chief of staff who reads the board, warns you, counsels you mid-battle, and drafts a whole plan on request |
 | **Saves** | The campaign autosaves after every round; *Continue* picks it up |
 
 ## Controls
@@ -57,7 +59,11 @@ That builds `build/CONCURRENT-mac.zip` and `build/windows/CONCURRENT.exe`.
 | Surge | **Surge onward…** on an order, then click the next land |
 | Seal | **Seal Orders** (or ⌘↩) |
 | Zoom / pan | Mouse wheel or pinch / drag the sea or two-finger scroll; ⤢ shows the whole map |
-| Battle cinema | Space = next, P = pause, Esc = skip to the report |
+| Edit an attack | Click the number on its arrow |
+| Advisor's plan | The button in the dispatch panel drafts a whole sheet; adopt it or keep yours |
+| Map view | **View** coin or V: owner colours ↔ region colours |
+| Battle scene | Space / ROLL = roll the next exchange; at a call Space = press on, R = reserves, F = fall back; Esc = skip the battles |
+| Battle report | Space = next, P = pause, Esc = skip to the report |
 | Fullscreen | F11, or Settings |
 
 ## For developers
@@ -77,19 +83,22 @@ tests/       headless suite: kernel, queue T1–T8, properties, cards, AI, sessi
 
 | Command | What |
 |---|---|
-| `./scripts/test.sh` | Full headless suite (320 checks) |
+| `./scripts/test.sh` | Full headless suite (367 checks) |
+| `godot --headless --path . --script res://tools/compile_check.gd` | Compile every script (catches UI errors in seconds) |
 | `godot --headless --path . --script res://tools/arena.gd -- map=world30 n=40 seats=general,veteran,hask` | AI tournament: win rates, game length, walk-ins, combat bands |
 | `./scripts/combat_sim.sh` | Combat capture bands |
 | `node tools/mapgen/mapgen.mjs knife7 known24 world30` | Regenerate map geography from `tools/mapgen/*.geo.json` |
 | `python3 tools/ludo/ludo.py [ids…]` | Generate missing art/audio from `tools/ludo/manifest.json` (reads `LUDO_API_KEY` from `.env.local`; idempotent) |
-| `./scripts/shot.sh ui` | Drive the real client and save screenshots (`SHOT_DIR=…`) |
+| `./scripts/shot.sh ui` | Drive the real client and save screenshots (`SHOT_DIR=…`); `calls` plays a battle with live calls, `input` clicks with the real mouse path |
+| `python3 tools/ludo/v12_content.py` | Rewrite the v1.2 manifest entries and `game/data/lines.json` (version-bumps anything whose prompt changed) |
+| `python3 tools/ludo/pack_anims.py [--fetch]` | Pack Ludo animation masters into game sheets, checking every loop's seam and clipping |
 | `./scripts/cli.sh play --seed 42` | Text-mode knife-fight vs the monkey |
 
 Design history: [CONCURRENT_Build_Bible.pdf](CONCURRENT_Build_Bible.pdf) → [v0.2](CONCURRENT_Build_Bible_v0.2.pdf) → [BUILD_PLAN.md](BUILD_PLAN.md) → [docs/CHANGELOG.md](docs/CHANGELOG.md) (v1.0 and every rule amendment since the bible).
 
 ## Credits
 
-- Art, music and sound effects generated with [Ludo.ai](https://ludo.ai). The prompts are in `tools/ludo/manifest.json` and the job ledger is in `assets/ludo_ledger.json`.
+- Art, music, sound effects, portrait reactions, portrait and soldier animations and all 87 voiced lines were generated with [Ludo.ai](https://ludo.ai). The prompts are in `tools/ludo/manifest.json` (lines and the v1.2 art direction in `tools/ludo/v12_content.py`), and the job ledger is in `assets/ludo_ledger.json`.
 - Fonts: Cinzel and Alegreya Sans, SIL Open Font License (`assets/fonts/OFL-*.txt`).
 - Built with [Godot Engine](https://godotengine.org) (MIT).
 - An original game in the SameTime tradition. Not affiliated with any published board game.

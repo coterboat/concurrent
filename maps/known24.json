@@ -346,5 +346,21 @@
         "reef"
       ]
     }
+  },
+  "regionTerrain": {
+    "westreach": "moor",
+    "crownlands": "grass",
+    "spine": "mountain",
+    "eastshore": "forest",
+    "midsea": "coast",
+    "southrim": "desert"
+  },
+  "regionColors": {
+    "westreach": "#7d8f5a",
+    "crownlands": "#c9a85a",
+    "spine": "#8f8b86",
+    "eastshore": "#5e9a82",
+    "midsea": "#5d86b0",
+    "southrim": "#c5804e"
   }
 }

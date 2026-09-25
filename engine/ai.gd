@@ -29,19 +29,19 @@ const Setup := preload("res://engine/setup.gd")
 ##   hunt       extra appetite for the score leader
 ##   read       how well it predicts enemy reinforcements (0..1)
 const PROFILES := {
-	"recruit": {"p_win": 0.55, "attacks": 2, "caution": 0.12, "noise": 0.45, "surge": false, "region": 0.6, "hunt": 0.0, "read": 0.0},
-	"veteran": {"p_win": 0.68, "attacks": 4, "caution": 0.3, "noise": 0.2, "surge": true, "region": 1.0, "hunt": 0.15, "read": 0.6},
-	"general": {"p_win": 0.68, "attacks": 8, "caution": 0.3, "noise": 0.06, "surge": true, "region": 1.25, "hunt": 0.3, "read": 1.0, "search": true},
+	"recruit": {"p_win": 0.55, "attacks": 2, "caution": 0.12, "noise": 0.45, "surge": false, "region": 0.6, "hunt": 0.0, "read": 0.0, "stance": "hold"},
+	"veteran": {"p_win": 0.68, "attacks": 4, "caution": 0.3, "noise": 0.2, "surge": true, "region": 1.0, "hunt": 0.15, "read": 0.6, "stance": "judgment"},
+	"general": {"p_win": 0.68, "attacks": 8, "caution": 0.3, "noise": 0.06, "surge": true, "region": 1.25, "hunt": 0.3, "read": 1.0, "search": true, "stance": "judgment"},
 }
 
 ## Named commanders: a base level plus a lean.
 const COMMANDERS := {
-	"varek": {"name": "Marshal Varek", "level": "general", "lean": {}, "blurb": "Old, patient, never wastes a man."},
-	"ysolde": {"name": "Lady Ysolde", "level": "general", "lean": {"caution": 0.6, "p_win": 0.78}, "blurb": "Holds what she takes. Punishes every empty keep."},
-	"imre": {"name": "Commander Imre", "level": "general", "lean": {"region": 1.6, "hunt": 0.5}, "blurb": "Goes for bonuses and the leader's throat."},
-	"hask": {"name": "Old Bear Hask", "level": "veteran", "lean": {"p_win": 0.6, "attacks": 6, "caution": 0.15}, "blurb": "Attacks everything. Leaves the door open."},
-	"quill": {"name": "The Quartermaster", "level": "veteran", "lean": {"region": 1.5, "attacks": 3}, "blurb": "Counts coin. Builds a region and sits on it."},
-	"oren": {"name": "Captain Oren", "level": "recruit", "lean": {"p_win": 0.5, "attacks": 3}, "blurb": "Young, brave, and not always wise."},
+	"varek": {"name": "Grand Marshal Varek", "level": "general", "lean": {}, "blurb": "Old, patient, never wastes a man. Falls back when it's hopeless."},
+	"ysolde": {"name": "Viceroy Ysolde", "level": "general", "lean": {"caution": 0.6, "p_win": 0.78, "stance": "bold"}, "blurb": "Holds what she takes. Throws in every reserve."},
+	"imre": {"name": "Admiral Imre", "level": "general", "lean": {"region": 1.6, "hunt": 0.5}, "blurb": "Goes for bonuses and the leader's throat."},
+	"hask": {"name": "Commodore Hask", "level": "veteran", "lean": {"p_win": 0.6, "attacks": 6, "caution": 0.15, "stance": "bold"}, "blurb": "Attacks everything. Never retreats. Leaves the door open."},
+	"quill": {"name": "Governor Quill", "level": "veteran", "lean": {"region": 1.5, "attacks": 3, "stance": "careful"}, "blurb": "Counts coin. Cuts his losses the moment a battle turns."},
+	"oren": {"name": "Captain Oren", "level": "recruit", "lean": {"p_win": 0.5, "attacks": 3}, "blurb": "Young, brave, and never knows when to quit."},
 }
 
 const ARMY_COST := 0.11
@@ -60,7 +60,12 @@ static func profile_for(spec: String) -> Dictionary:
 	for i in range(1, parts.size()):
 		var kv: PackedStringArray = parts[i].split("=")
 		if kv.size() == 2:
-			p[kv[0]] = float(kv[1]) if kv[1].is_valid_float() else (kv[1] == "true")
+			if kv[1].is_valid_float():
+				p[kv[0]] = float(kv[1])
+			elif kv[1] == "true" or kv[1] == "false":
+				p[kv[0]] = kv[1] == "true"
+			else:
+				p[kv[0]] = kv[1]
 	return p
 
 
@@ -110,9 +115,20 @@ static func opening_placements(world: Types.World, map: Types.MapDef, pid: Strin
 # ---------------------------------------------------------------- sheet
 
 static func plan(world: Types.World, map: Types.MapDef, pid: String, rng: RefCounted, prof: Dictionary) -> Types.Sheet:
+	var s: Types.Sheet
 	if bool(prof.get("search", false)):
-		return _search(world, map, pid, rng, prof)
-	return _heuristic(world, map, pid, rng, prof)
+		s = _search(world, map, pid, rng, prof)
+	else:
+		s = _heuristic(world, map, pid, rng, prof)
+	return stamp(s, prof)
+
+
+static func stamp(sheet: Types.Sheet, prof: Dictionary) -> Types.Sheet:
+	## Standing battle orders: every attack carries the commander's temperament.
+	var st: String = str(prof.get("stance", "judgment"))
+	for raw in sheet.packets:
+		(raw as Types.Packet).stance = st
+	return sheet
 
 
 ## Variants a searching commander drafts before choosing.
@@ -143,7 +159,7 @@ static func _search(world: Types.World, map: Types.MapDef, pid: String, rng: Ref
 		var lean: Dictionary = DRAFTS[i]
 		for k in lean.keys():
 			p[k] = lean[k]
-		var sheet: Types.Sheet = _heuristic(world, map, pid, rng, p)
+		var sheet: Types.Sheet = stamp(_heuristic(world, map, pid, rng, p), prof)
 		var key: String = JSON.stringify(sheet.to_dict())
 		if seen.has(key):
 			continue
@@ -160,7 +176,7 @@ static func _search(world: Types.World, map: Types.MapDef, pid: String, rng: Ref
 		var guess: Array = []
 		for o in foes:
 			var style: String = ["veteran", "hask", "ysolde"][k % 3]
-			guess.append(_heuristic(world, map, o, rng, profile_for(style)))
+			guess.append(stamp(_heuristic(world, map, o, rng, profile_for(style)), profile_for(style)))
 		scenarios.append(guess)
 	var best: Types.Sheet = drafts[0]
 	var best_v := -1.0e9
@@ -406,7 +422,7 @@ class Planner extends RefCounted:
 		if th < 1.0:
 			return 0.0
 		var d: int = maxi(0, defense)
-		var p_hit: float = 1.0 if d == 0 else Combat.invasion_capture_rate(int(round(th)), d)
+		var p_hit: float = 1.0 if d == 0 else Combat.capture_rate(int(round(th)), d, map.battle)
 		var tempt: float = clampf(th / float(d + 1), 0.3, 1.6)
 		return float(prof.get("caution", 0.3)) * tempt * p_hit
 
@@ -596,7 +612,7 @@ class Planner extends RefCounted:
 			got += take
 		if got < need:
 			return {}
-		var p_win: float = 1.0 if d_eff == 0 else Combat.invasion_capture_rate(got, d_eff)
+		var p_win: float = 1.0 if d_eff == 0 else Combat.capture_rate(got, d_eff, map.battle)
 		var value: float = target_value(e, targeted)
 		var loss_win: float = float(d_eff / 2)
 		var exp_loss: float = p_win * loss_win + (1.0 - p_win) * float(got)
@@ -610,7 +626,7 @@ class Planner extends RefCounted:
 
 	func _needed(d: int, p_want: float) -> int:
 		for a in range(1, d + 12):
-			if Combat.invasion_capture_rate(a, d) >= p_want:
+			if Combat.capture_rate(a, d, map.battle) >= p_want:
 				return a
 		return d + 12
 
@@ -638,7 +654,7 @@ class Planner extends RefCounted:
 				if owner_of(n) == pid or targeted.has(n) or from_set.has(n):
 					continue
 				var d: int = w.get_territory(n).held() + enemy_add(n)
-				var p: float = 1.0 if d == 0 else Combat.invasion_capture_rate(left - 1, d)
+				var p: float = 1.0 if d == 0 else Combat.capture_rate(left - 1, d, map.battle)
 				if p < 0.62:
 					continue
 				var score: float = p * target_value(n, targeted)
