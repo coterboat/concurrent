@@ -24,7 +24,8 @@ var targets := {} ## id -> true, pulsing gold
 var dimmed := {}
 var battle := {}
 var clash: Array = [] ## [land a, land b]: a border clash being fought on the line between them
-var orders: Array = [] ## [{from, to, strength, owner, surge, kind: "attack"|"move"}]
+var orders: Array = [] ## [{from, to, strength, owner, surge, kind: "attack"|"move", born?}]
+var flow := false ## columns on the move: marching chevrons run along the live arrows (the battle report)
 var ghosts: Array = [] ## last round's packets
 var placements := {} ## id -> queued reinforcements (viewer)
 var show_ceiling := false
@@ -354,7 +355,7 @@ func _process(delta: float) -> void:
 		shake[k] = float(shake[k]) - delta
 		if float(shake[k]) <= 0.0:
 			shake.erase(k)
-	if not fx.is_empty() or not shake.is_empty() or not battle.is_empty() or not clash.is_empty() or drag_from != "":
+	if not fx.is_empty() or not shake.is_empty() or not battle.is_empty() or not clash.is_empty() or drag_from != "" or flow:
 		live = true
 	## the ships ride the swell
 	if art != null and not art.ornaments.is_empty() and Engine.get_frames_drawn() % 2 == 0:
@@ -363,6 +364,10 @@ func _process(delta: float) -> void:
 		_mat.set_shader_parameter("pulse", 0.5 + 0.5 * sin(_time * 6.0))
 	if live:
 		overlay.queue_redraw()
+
+
+func now() -> float:
+	return _time
 
 
 func float_text(id: String, text: String, color: Color, dur: float = 1.6, size_px: int = 26) -> void:
@@ -392,10 +397,13 @@ func _draw_overlay() -> void:
 		_draw_region_labels(ci)
 	if plain:
 		return
+	_surges_drawn = {}
 	for g in ghosts:
 		_draw_arrow(ci, str(g["from"]), str(g["to"]), int(g.get("strength", 1)), str(g.get("owner", "")), str(g.get("surgeTo", "")), str(g.get("kind", "attack")), 0.22, false)
+	_surges_drawn = {}
 	for o in orders:
-		_draw_arrow(ci, str(o["from"]), str(o["to"]), int(o.get("strength", 1)), str(o.get("owner", "")), str(o.get("surge", "")), str(o.get("kind", "attack")), float(o.get("alpha", 1.0)), true)
+		var grow: float = clampf((_time - float(o["born"])) / 0.55, 0.0, 1.0) if o.has("born") else 1.0
+		_draw_arrow(ci, str(o["from"]), str(o["to"]), int(o.get("strength", 1)), str(o.get("owner", "")), str(o.get("surge", "")), str(o.get("kind", "attack")), float(o.get("alpha", 1.0)), true, grow, int(o.get("surge_n", 0)))
 	if drag_from != "":
 		var a: Vector2 = anchor(drag_from)
 		ci.draw_line(a, _mouse, Color(1, 0.9, 0.6, 0.85), 5.0, true)
@@ -547,7 +555,11 @@ func _curve(a: Vector2, b: Vector2, bend: float) -> PackedVector2Array:
 	return pts
 
 
-func _draw_arrow(ci: CanvasItem, from_id: String, to_id: String, strength: int, owner: String, surge: String, kind: String, alpha: float, labeled: bool) -> void:
+var _surges_drawn := {}
+
+
+func _draw_arrow(ci: CanvasItem, from_id: String, to_id: String, strength: int, owner: String, surge: String, kind: String, alpha: float, labeled: bool, grow: float = 1.0, surge_n: int = 0) -> void:
+	## strength < 0: a surge onward (everyone left after the capture, less the one who stays)
 	if not art.anchors.has(from_id) or not art.anchors.has(to_id):
 		return
 	var r := token_radius()
@@ -561,10 +573,14 @@ func _draw_arrow(ci: CanvasItem, from_id: String, to_id: String, strength: int, 
 	if kind == "move":
 		bend *= 0.5
 	var pts := _curve(a, b, bend)
+	if grow < 1.0:
+		## a column setting out: the arrow draws itself from its origin
+		var keep: int = maxi(3, int(ceil(grow * float(pts.size() - 1))) + 1)
+		pts = pts.slice(0, keep)
 	var col: Color = Style.seat_color(owner)
 	col = col.lightened(0.15)
 	col.a = alpha
-	var w: float = clampf(4.0 + sqrt(float(strength)) * 1.6, 4.0, 13.0)
+	var w: float = clampf(4.0 + sqrt(float(strength if strength > 0 else 5)) * 1.6, 4.0, 13.0)
 	var dark := Color(0.05, 0.04, 0.03, alpha * 0.9)
 	if kind == "move":
 		for i in range(0, pts.size() - 1, 2):
@@ -580,20 +596,28 @@ func _draw_arrow(ci: CanvasItem, from_id: String, to_id: String, strength: int, 
 	ci.draw_colored_polygon(head, dark)
 	var inner := PackedVector2Array([tip + back * (w + 4), tip + side * (w + 2.5), tip - side * (w + 2.5)])
 	ci.draw_colored_polygon(inner, col)
-	if surge != "" and art.anchors.has(surge):
-		var c: Vector2 = anchor(surge)
-		var sp := _curve(anchor(to_id) + (c - anchor(to_id)).normalized() * (r + 4), c - (c - anchor(to_id)).normalized() * (r + 8), bend)
-		for i in range(0, sp.size() - 1, 2):
-			ci.draw_line(sp[i], sp[i + 1], dark, 6.0, true)
-			ci.draw_line(sp[i], sp[i + 1], col, 3.5, true)
-		var st: Vector2 = sp[sp.size() - 1]
-		var sb: Vector2 = (st - sp[sp.size() - 3]).normalized()
-		var ss: Vector2 = sb.orthogonal()
-		ci.draw_colored_polygon(PackedVector2Array([st + sb * 9, st + ss * 7, st - ss * 7]), col)
-	if labeled:
-		var m: Vector2 = pts[11]
-		_label_hits.append({"pos": m, "from": from_id, "to": to_id})
-		var txt := str(strength)
+	if flow and alpha >= 0.95 and grow >= 1.0:
+		## marching chevrons: which way the column is going, at a glance
+		for k in 3:
+			var u: float = fposmod(_time * 0.7 + float(k) / 3.0, 1.0)
+			var fi: float = u * float(pts.size() - 1)
+			var i0: int = clampi(int(fi), 0, pts.size() - 2)
+			var at: Vector2 = pts[i0].lerp(pts[i0 + 1], fi - float(i0))
+			var fwd: Vector2 = (pts[i0 + 1] - pts[i0]).normalized()
+			var sd: Vector2 = fwd.orthogonal()
+			var cw: float = w * 0.55 + 2.0
+			var chev := PackedVector2Array([at - fwd * cw + sd * cw, at, at - fwd * cw - sd * cw])
+			var fade: float = sin(u * PI)
+			ci.draw_polyline(chev, Color(0.05, 0.04, 0.03, alpha * 0.8 * fade), 4.5, true)
+			ci.draw_polyline(chev, Color(1, 0.96, 0.85, alpha * fade), 2.2, true)
+	if surge != "" and art.anchors.has(surge) and not _surges_drawn.has(owner + to_id + surge):
+		## the surge is a march like any other, on from the land being taken
+		_surges_drawn[owner + to_id + surge] = true
+		_draw_arrow(ci, to_id, surge, -1 if surge_n <= 0 else -(surge_n + 1), owner, "", kind, alpha, labeled, grow)
+	if labeled and grow >= 1.0:
+		var m: Vector2 = pts[mini(11, pts.size() - 1)]
+		_label_hits.append({"pos": m, "from": from_id, "to": to_id}) ## a surge's label opens its card too
+		var txt := str(strength) if strength >= 0 else ("all" if strength == -1 else "≤%d" % (-strength - 1))
 		var f := Style.font("bold")
 		var tw: float = f.get_string_size(txt, HORIZONTAL_ALIGNMENT_LEFT, -1, 17).x
 		var rad: float = maxf(12.0, tw * 0.5 + 7.0)
@@ -635,19 +659,23 @@ func _draw_token(ci: CanvasItem, id: String) -> void:
 	var n: int = ts.armies + ts.garrison ## everyone who defends (the ceiling counts them all)
 	## v1.3: the token's number is the army that can march; the dug-in defenders who never
 	## march sit on their own shield. Two separate numbers, never one inside the other.
-	var txt := str(ts.armies)
-	var fs := 22 if ts.armies < 100 else 18
+	## v1.5: the big number is exactly who can march; the shield, who stays home
+	var split: Array = Income.home_split(ts)
+	var marching: int = int(split[0])
+	var home: int = int(split[1])
+	var txt := str(marching)
+	var fs := 22 if marching < 100 else 18
 	var tw: float = f.get_string_size(txt, HORIZONTAL_ALIGNMENT_LEFT, -1, fs).x
-	var num_col := Color(1, 0.98, 0.92) if ts.armies > 0 else Color(1, 0.98, 0.92, 0.5)
+	var num_col := Color(1, 0.98, 0.92) if marching > 0 else Color(1, 0.98, 0.92, 0.5)
 	ci.draw_string_outline(f, p + Vector2(-tw * 0.5, fs * 0.36), txt, HORIZONTAL_ALIGNMENT_LEFT, -1, fs, 4, Color(0.05, 0.03, 0.02, 0.9))
 	ci.draw_string(f, p + Vector2(-tw * 0.5, fs * 0.36), txt, HORIZONTAL_ALIGNMENT_LEFT, -1, fs, num_col)
 	## the garrison's shield, on the token's left shoulder
 	var gp: Vector2 = p + Vector2(-r * 1.05, -r * 0.55)
 	var gr: float = clampf(r * 0.52, 9.0, 14.0)
-	if ts.garrison > 0:
+	if home > 0:
 		ci.draw_circle(gp + Vector2(1.5, 2.5), gr, Color(0, 0, 0, 0.35))
 		Style.draw_shape(ci, "shield", gp, gr, Color(0.36, 0.24, 0.08), Color(1.0, 0.84, 0.45), 2.0)
-		var gt := str(ts.garrison)
+		var gt := str(home)
 		var gs: int = int(gr * 1.15)
 		var gw: float = f.get_string_size(gt, HORIZONTAL_ALIGNMENT_LEFT, -1, gs).x
 		ci.draw_string_outline(f, gp + Vector2(-gw * 0.5, gs * 0.36), gt, HORIZONTAL_ALIGNMENT_LEFT, -1, gs, 3, Color(0.1, 0.06, 0.02, 0.9))

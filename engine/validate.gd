@@ -161,6 +161,13 @@ static func _validate_packets(world: Types.World, map: Types.MapDef, sheet: Type
 		elif to == str(dest) or not MapLib.is_adjacent(map, str(dest), to):
 			errors.append("surge from %s must go to a neighbouring land" % dest)
 
+	## v1.5 a surge may carry a count: at least one man, and only for a surge that was ordered
+	for dest in sheet.surge_n.keys():
+		if not sheet.surges.has(dest):
+			errors.append("surge count for %s: no surge from there" % dest)
+		elif int(sheet.surge_n[dest]) < 1:
+			errors.append("surge from %s must push on with at least one man" % dest)
+
 	for from_id in outgoing.keys():
 		var ts: Types.TerritoryState = world.get_territory(from_id)
 		if ts == null:

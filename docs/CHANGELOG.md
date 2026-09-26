@@ -2,6 +2,234 @@
 
 The bible says amendments come with a dated entry and the test or band that justified them. Everything below has both.
 
+## v1.5 — 25 Sep 2026: the phases pass
+
+### Dice with real physics
+
+- **How a throw works.** Every throw is now a rigid-body simulation of all the dice together (`game/ui/dice_stage.gd`):
+  - The dice are tossed in over the far rail, tumble on the felt, bounce off the rails and knock into each other.
+  - They come to rest on whatever face the physics says, and a dealer then squares each pair up so the sums line up.
+  - Every knock on the felt, a rail or another die plays its sound, as hard as it hit.
+- **Landing on the engine's roll.** The throw is simulated before it plays, 8–48 ms for up to ten dice. Then each die's pips are turned by a symmetry of the cube until the face that came up is the engine's roll. The shape and the tumble never change, only which face carries which number.
+- **Why the engine still decides.** Saves replay, AI battles resolve instantly, and hotseat stays fair, so the number has to come from the seeded engine. The physics decides how the die rolls, not what it shows.
+- **Checked.** `tools/shots/dice.gd` throws 1,000 dice and checks every one shows its roll.
+- **Everywhere.** The commanders' order dice in the land draft fall onto the map the same way and stay where they land. So does the deciding throw on a map battle card.
+- **Melees and scrambles** now throw up to four duels at once. A two-army scramble throws three pairs like any exchange, not one die at a time.
+
+### The round, in four phases
+
+Every round is now four phases, each opening with a banner and a drum-and-brass sting:
+
+| Phase | What happens |
+|---|---|
+| **Reinforcement** | Click your lands to place recruits (one click, one man; right-click takes one back) and turn in cards. The dial says **ORDERS**. |
+| **Orders** | Attacks and surges, then **SEAL**. **◀ Recruits** goes back. |
+| **The Battles** | Everyone's orders at once. |
+| **Regroup** | What v1.3 called the reinforcement phase: marching troops one land toward the front. |
+
+- **The sheet is the same.** Each commander still places and orders in secret; the split is only the screen, so hotseat and the AI are unchanged.
+- **The battle report announces its stages:** border clashes, the assaults, the surges (all at once, after every other battle) and the reckoning. The chief of staff calls the surges.
+- **Card turn-ins are news.** When anyone turns in a set, the report opens with it: the three cards rise from the table into the commander's ring, with a +N and a line. Every commander has one, and the chief of staff speaks for you or warns you about a rival.
+
+### Amendment 16: surges
+
+- **Head-on surges clash.** Two surges running at each other's freshly taken lands used to pass in the night and each fight the other's leftovers. Now they meet in a border clash, like any two columns marching at each other.
+- **A count.** A surge carries a count (`Sheet.surge_n`): up to N men push on, and the rest hold the land just taken. With no count, it's all who survive but one, as before.
+- **Ordered like any march.** Drag from the land you're attacking on to the next one, or use **Surge onward…**. It draws as a full arrow labelled "all" or "≤N", and clicking the arrow opens its card to set the count.
+- **Old saves** keep the old surges (`config.rules` is 0 for them).
+
+### Garrisons: three deep, and the shield shows who stays home
+
+- **Dig-in reaches three** for new games (v1.4 capped it at two). Alone, this tested neutral.
+- **The shield always shows who stays home.** On a land with nobody dug in yet, the one man who must stay behind stands on the shield with the garrison. The big number is exactly who can march. This is how the table now teaches the old Risk rule "one army must stay behind".
+- **The literal version: tried and left off.** Taken literally, the man left behind would be locked in the garrison for good. The arena says that costs a marching man on every land:
+
+  | Wide World, 4 seats | v1.4 | cap 3 | man locked in | both |
+  |---|---|---|---|---|
+  | Wars won by conquest | 21/60 | 22/60 | 13/60 | 4/60 |
+  | Walk-ins per game | 13.2 | — | 9.4 | — |
+  | Hard AI wins (coin flip 25%) | 37% | 40% | 30% | 25% |
+
+  So the lock-in is an engine switch (`config.first_digs_in`), off by default.
+
+### Battles
+
+- **Formations.** Armies draw up in formation instead of a crowd:
+  - the foot in a line at the front of their ground, four abreast, rank behind rank
+  - the horse behind the foot
+  - the guns in a battery in the far lanes, three deep, so nothing stands in front of a muzzle
+
+  An army too big for its half of the field closes ranks.
+- **Sound.**
+  - Muskets now fire with a violent black-powder crack and boom (three volley takes and two single shots), and one man firing is a shot, not a volley.
+  - Cavalry charges and gallops in a real three-beat rhythm.
+  - A quiet battle beyond the battle plays underneath: far cannon, far volleys, drums, a bugle, a distant roar, one every few seconds.
+- **The odds bar.**
+  - It ends on the verdict ("You take The Gate · Decided"). Before, it kept the last odds, like 10%, after the fight was over.
+  - An even fight explains its lean: "12 men against 12: even numbers, the dice decide · ties go to the attacker". The attacker's 58.7% at 12 against 12 is right, and a simulation of 20,000 battles agrees.
+- **Grammar for "You".** "You hold", "You take", "You throw", not "You holds".
+
+### Bands after v1.5
+
+Same seeds as v1.4. The pace and the hard commander's edge hold:
+
+| | v1.4 | v1.5 |
+|---|---|---|
+| General vs two Veterans, Known World (coin flip 33%) | 51% | 47% |
+| General vs three Veterans, Wide World (coin flip 25%) | 37% | 40% |
+| Known World 3-seat wars won by conquest (before the last round) | 51% (34%) | 50% (34%) |
+| Wide World 4-seat wars won by conquest | 21/60 | 22/60 |
+
+### Tools and checks
+
+- **Tests.** `tests/test_v15.gd` covers:
+  - head-on surges clashing (40/40), with the old rule kept for old saves
+  - surge counts, their validation and the save
+  - the garrison display, and the literal lock-in switch
+  - dig-in reaching three
+  - whole wars under v1.5 rules
+  - reinforcement, then orders, then back
+- **Probes.**
+  - `tools/shots/v15.gd`: the phases, a dragged surge with a count, the physics dice in battle, the stages of the report, the regroup phase and a set turned in.
+  - `tools/shots/field.gd`: formations at every size.
+  - `tools/shots/dice.gd`: 1,000 physics dice.
+- **Audio.** `tools/ludo/v15_content.py` has the new sounds and lines, and `tools/ludo/prep_sfx.py` cuts them (it can now cut named sounds only).
+- **Arena.** New arguments: `rules=`, `first=`.
+
+## v1.4 — 25 Sep 2026: the dice pass
+
+### Balance: what the arena says, and what changed
+
+A balance study measured 200 seeded games in each of four setups: the Known World with 3 and 4 seats, and the Wide World with 4 and 5. It then tried nine rule tweaks on the same seeds. The instrumented runner and raw data stayed out of the repo.
+
+**What it found.**
+- **It isn't a turtle game.** Attackers still take 86–88% of assaults on dug-in land. They just bring about twice the men.
+- **The problem is free dig-in.** From round 4 on, dug-in men are about 60% of every man on the board. Most of them sit on interior lands no enemy touches (70–76% by the end), where they are dead weight that thickens the board and slows the late war.
+- **Snowballing is strong on the Known World with 3 seats** (the round-3 leader wins 78%) and moderate elsewhere (55–67%). Region bonuses drive it, at 36% of income there. The only levers that reduce it (half region income, catch-up income) also halve the decisive finishes, so they stay out: a merciless game should snowball.
+- **Card sets** swell late income on the Wide World, but capping them changed nothing measurable.
+- **The loss order** was already right: the field army falls first and the dug-in men behind the walls last. The code comments said the opposite and are fixed.
+
+**Amendment 15: nobody digs in deeper than two.** New games cap the dug-in defenders on any land at two. A land with no neighbour of yours stays at one, unless you hold its whole region. Fronts dig in exactly as before in the first rounds; only the interior stockpiles go. In the study:
+- more wars ended by conquest
+- more assaults late in the game
+- about 25% fewer men per land from round 4
+- more comebacks
+- no loss of attacker odds
+
+Old saves keep the old ceiling (`config.dig_cap` is 0 for them).
+
+**The hard commanders march to strike.** Every commander used to march the same way in the reinforcement phase, one step toward the nearest threat. Varek, Ysolde and Imre (and your chief of staff's *Advisor's marches*) now march on the front that faces the richest, weakest prey:
+- a region to finish or break
+- a rival down to their last lands, and their war chest
+- thinly held ground
+
+A quiet front also lends its spare men to the neighbour that will attack next.
+
+**Not changed:** marches stay one land per soldier, as you asked for in v1.3. The study found two-land marches make wars more decisive still, so it's an option for later.
+
+**Bands after v1.4** (arena, same seeds; the column before is v1.4's other rules with the old march planner). The arena now counts games decided *before* the last round separately. v1.3's "45% end early" also counted conquests completed in the final round.
+
+| | before | v1.4 |
+|---|---|---|
+| General vs two Veterans, Known World (coin flip 33%) | 45% | 51% |
+| General vs three Veterans, Wide World (coin flip 25%) | 35% | 37% |
+| Known World 3-seat wars won by conquest (before the last round) | 46% | 51% (34%) |
+| Wide World 4-seat wars won by conquest (before the last round) | 28% | 35% (22%) |
+| General vs two Veterans, lands claimed in turn, Known World | 36% | 43% |
+| General vs three Veterans, lands claimed in turn, Wide World | 38% | 43% |
+
+In drafted games everyone starts on a clean block, so there is less for the hard commander to exploit. Its one-turn lookahead on the claims won back most of its edge.
+
+### Dice you can hear
+
+- **Real dice on a real table.** Every throw in the battlefield is a pair of 3D dice per duel. They fly in from each side over the armies, bounce, tumble edge over edge across a baize tray and settle on the engine's own roll. Each die knocks on the table as it lands (`game/ui/dice_stage.gd`, `game/ui/dice.gdshader`).
+  - The motion is planned backwards from the face that must come up, so every throw looks loose and still always lands on the right number.
+  - An exchange of three volleys is one throw of three pairs. A melee or a scramble throws each salvo, with one pair per front.
+  - The dice keep the battle speed from Settings and hurry a little in auto-roll.
+- **Dice by army size.** The dice an army throws are made of what it can afford, and they change mid-battle as it bleeds:
+
+  | Army | Dice |
+  |---|---|
+  | Lone holdout (1–2) | whittled wood, burnt pips |
+  | Company (3–6) | old bone |
+  | Regiment (7–14) | ivory, pips in the commander's colours, brass trim |
+  | Brigade (15–29) | lacquer in the commander's colours, brass edges |
+  | Grand army (30+) | gold, gem pips, the imperial star on the one |
+
+  Wood knocks, bone and ivory click, and gold lands with a heavy clunk.
+- **The sums, in plain sight.** Under every die the table shows what it made: `4×5 + 14 = 34`. The winner's sum is in gold, and the loser's die goes dark with a −1.
+  - Above the field, a tug-of-war bar gives your chance of taking the land from here, updated every volley.
+  - Under it sits the reason: "14 men against 9: Varek throws with a 5-man edge (1 pip on every throw)".
+  - **? Dice** opens the scoring rules and the dice ladder.
+- **Battles on the map** (the ones you don't open) drop their deciding throw onto the battle card. The card now shows each side's men in and men left.
+
+### Amendment 14: the scramble
+
+When the defenders of a melee fall, or two or more commanders' columns march into the same empty land, the survivors no longer fight a ladder of duels. That ladder let the order of the duels decide too much when three armies met. Now:
+
+> Every army duels every other at once. Each salvo, every pair still standing throws a duel: score = 5 × die + this army's weight against that foe, where an army splits its men across its foes in proportion to their size (weight = mine × theirs ÷ all my foes). The loser of a duel loses one man, and a tie costs nobody. Duels in a salvo run in a fixed order, and a man already down fights no more that salvo, so someone is always left standing. The last army standing takes the land.
+
+- **Two armies** fight exactly a volley fight. `tests/test_v14.gd` measures a 6-vs-4 scramble won 83.3% of the time against the exact 82.8%.
+- **The same rule** settles surges that converge on one land, and a surge into a held land by two commanders is a melee.
+- **Owner's columns.** Under the new rules, an owner's own columns arriving at a land under attack join its defence before anyone fights.
+- **On the battlefield,** the victors turn on each other on both sides of the field ("Every man for himself!"), throwing one pair of dice per duel.
+- **Old saves** keep the ladder of duels (`config.scramble` is false for them).
+
+### The war chest
+
+Take a commander's last land and every card they held is yours. The rule was there, but it looked for the fallen commander's lands from the start of the round, so a last land they had only just captured never counted. Now the very last land they lose decides it. The moment has its own beat: the fallen commander's cards fly across the table into your ring, with a chest-and-brass sting and a line from the chief of staff.
+
+### Lands claimed in turn
+
+A new game can deal the lands at random, as before, or have the commanders claim them in turn (Setup → Lands, or Settings → Lands in new games).
+
+- **The order.** Every commander's die drops onto the map, in their colours. The highest throw chooses first, and ties throw again among themselves.
+- **The claims.** Round the table in that order, each claims one free land until everyone holds what the deal would give. The two-seat neutral doorstop is pinned first, and unclaimed lands are left exactly as the deal leaves them.
+- **The AI picks** for regions it can still finish, friends next door, few borders and room to grow. It avoids lands ringed by rivals and takes the last free land of a region a rival is about to own. Sloppier commanders pick sloppier.
+- **The hard commanders** (and your advisor's **PICK**) look one turn ahead. For each of their best claims, they let the rivals who choose before them next take what they would take, then judge the board that's left.
+- **You click** a free land. **PICK** takes the advisor's choice, and **Hurry** speeds up the others.
+- **Checked by** `tests/test_v14.gd`:
+  - the order roll: everyone placed once, highest first, ties re-thrown
+  - the claims matching the deal's counts on every map
+  - drafted wars that are legal and finish
+  - a drafted session that claims every land and opens on deployment
+- **The arena** plays drafts with `deal=draft`.
+
+### Soldiers who aim the right way
+
+The v1.2 firing loops had the musket held butt-first, and a second musket still hung at the soldier's side. Now:
+
+- **New poses.** The infantry have Ludo poses for aiming standing and aiming from the knee, drawn as proper side views with the barrel and bayonet level to the right.
+- **The shot is drawn in code:** the snap up to the shoulder, the shot, a recoil kick, and back to the stance. The muzzle flash is a hot, untinted star at the real muzzle, and the smoke follows it.
+- **Why not the animations.** The generated firing animations baked the flash and smoke into the figure, where they took the army's colour, so they're not used.
+
+### Sound
+
+- **Cheers scale with the winners.** A handful of men cheer for a handful, a company for a company, and a grand army roars. The takes are levelled by loudness, so bigger sounds fuller, not louder. Battles on the map get a distant cheer.
+- **Dice.** A cup rattle before each throw, and single knocks in wood, bone and brass for every bounce. The dice have their own small pool of players, so a clatter never steals a volley's sound.
+- **The draft.** A flag planted for every claim, and a fanfare for the order.
+- **Voices.** The second take of the commanders' voices is now the default. Captain Oren was recast closer to his original voice (a cocky young hussar, not a princess), and Viceroy Ysolde is now Russian. The classic takes are still in Settings. New lines:
+  - each commander's claim in the draft
+  - the chief of staff on the order roll, your first pick, a war chest seized, and the victors turning on each other
+- `tools/ludo/prep_sfx.py` cuts Ludo's raw sounds into game-ready WAVs: the loudest single hit for a knock, and loudness-levelled cheers.
+
+### On the map
+
+- **Surges march like any other column.** A surge is drawn as a full arrow from the land being taken to the next, in the same style as any attack and labelled "all". In the battle report its arrow appears only when the surge sets off, and it draws itself out from the captured land while the arrow that took it stays lit, so A → B → C reads as one march.
+- **Columns on the move.** In the battle report, marching chevrons run along every live arrow.
+
+### Tools and checks
+
+- **Tests.** `tests/test_v14.gd` has 24 checks. With them the suite is 423 checks, all passing.
+- **Probes.**
+  - `tools/shots/v14.gd` plays a melee that ends in a scramble on the dice table (and replays it), then a whole land draft.
+  - `tools/shots/v14b.gd` covers a surge from plan to hop, a battle card's dice, and a war chest.
+  - `tools/shots/dice.gd` shows every tier of dice, on the tray and dropped onto the map.
+- **Arena.** New arguments: `deal=draft`, `scramble=`, `dig=`. It reports scrambles, and conquests before the last round.
+- **Ludo.**
+  - `tools/ludo/v14_content.py` holds the poses, sounds, voices, new lines and How to Play art. `tools/ludo/prep_sfx.py` cuts the sounds.
+  - Ludo credits this pass: about 50, for 53 generations, including the failed pose edits and the unused firing loops.
+
 ## v1.3 — 25 Sep 2026: the campaign pass
 
 ### Amendment 10: the melee

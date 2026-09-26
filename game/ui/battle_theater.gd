@@ -14,6 +14,7 @@ const Lines := preload("res://game/core/lines.gd")
 const Combat := preload("res://engine/combat.gd")
 const LeaderFace := preload("res://game/ui/leader_face.gd")
 const BattleField := preload("res://game/ui/battle_field.gd")
+const DiceStage := preload("res://game/ui/dice_stage.gd")
 
 signal finished(skip_rest: bool)
 
@@ -48,11 +49,16 @@ var _name_a: Label
 var _name_b: Label
 var _field: Control ## BattleField
 var _melee := false ## several invaders at once (v1.3): fronts, one per invader
+var _scramble := false ## v1.4: victors fighting each other for the prize, every army against every other
 var _fronts: Array = [] ## the melee's fronts from the event
 var _left: Array = [] ## men standing per army: fronts (or the one attacker) first, the defender last
 var _extra: Array = [] ## [{face, name, count}] rings for the second and third invaders
-var _dice_a: HBoxContainer
-var _dice_b: HBoxContainer
+var _tray: Control ## DiceStage: the dice table at the foot of the field
+var _reads: Array = [] ## this throw's readouts, one under each die
+var _odds_bar: Control ## who the battle favours from here, and why
+var _tier_a: Label
+var _tier_b: Label
+var _help: PanelContainer
 var _score: Label
 var _result: Label
 var _shout: Label
@@ -85,7 +91,7 @@ func _ready() -> void:
 	_field = BattleField.new()
 	_field.set_anchors_and_offsets_preset(PRESET_FULL_RECT)
 	_field.offset_top = 250
-	_field.offset_bottom = -190
+	_field.offset_bottom = -226
 	_field.offset_left = 40
 	_field.offset_right = -40
 	add_child(_field)
@@ -129,44 +135,57 @@ func _ready() -> void:
 	_shout.mouse_filter = Control.MOUSE_FILTER_IGNORE
 	_shout.modulate.a = 0.0
 	add_child(_shout)
-	## dice tray + score
-	var tray := VBoxContainer.new()
-	tray.set_anchors_and_offsets_preset(PRESET_CENTER_BOTTOM)
-	tray.offset_bottom = -104
-	tray.grow_horizontal = Control.GROW_DIRECTION_BOTH
-	tray.grow_vertical = Control.GROW_DIRECTION_BEGIN
-	tray.alignment = BoxContainer.ALIGNMENT_CENTER
-	tray.mouse_filter = Control.MOUSE_FILTER_IGNORE
-	add_child(tray)
+	## the dice table, at the foot of the field: the dice fly in over the armies and land on it
+	_tray = DiceStage.new()
+	_tray.set_anchors_and_offsets_preset(PRESET_BOTTOM_WIDE)
+	_tray.offset_top = -430
+	_tray.offset_bottom = -100
+	_tray.grow_vertical = Control.GROW_DIRECTION_BEGIN
+	_tray.width = 21.0
+	_tray.table_w = 13.6
+	_tray.ground_h = 124.0
+	add_child(_tray)
 	_result = Style.label("", 32, Style.CREAM, "display")
+	_result.set_anchors_and_offsets_preset(PRESET_CENTER_BOTTOM)
+	_result.offset_bottom = -246
+	_result.offset_top = -290
+	_result.grow_horizontal = Control.GROW_DIRECTION_BOTH
 	_result.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
 	_result.add_theme_constant_override("outline_size", 10)
 	_result.add_theme_color_override("font_outline_color", Color(0, 0, 0, 0.8))
-	tray.add_child(_result)
-	var drow := HBoxContainer.new()
-	drow.alignment = BoxContainer.ALIGNMENT_CENTER
-	drow.add_theme_constant_override("separation", 26)
-	tray.add_child(drow)
-	_dice_a = HBoxContainer.new()
-	_dice_a.add_theme_constant_override("separation", 8)
-	drow.add_child(_dice_a)
-	var vs := Style.label("VS", 26, Style.GOLD, "display")
-	vs.add_theme_constant_override("outline_size", 6)
-	vs.add_theme_color_override("font_outline_color", Color(0, 0, 0, 0.8))
-	drow.add_child(vs)
-	_dice_b = HBoxContainer.new()
-	_dice_b.add_theme_constant_override("separation", 8)
-	drow.add_child(_dice_b)
-	_score = Style.label("", 18, Style.PARCH, "bold")
+	_result.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	add_child(_result)
+	## the odds from here, under the title: a tug of war between the colours
+	_odds_bar = _OddsBar.new()
+	_odds_bar.set_anchors_and_offsets_preset(PRESET_CENTER_TOP)
+	_odds_bar.offset_top = 104
+	_odds_bar.offset_bottom = 162
+	_odds_bar.offset_left = -300
+	_odds_bar.offset_right = 300
+	_odds_bar.grow_horizontal = Control.GROW_DIRECTION_BOTH
+	add_child(_odds_bar)
+	_score = Style.label("", 15, Style.PARCH, "italic")
+	_score.set_anchors_and_offsets_preset(PRESET_CENTER_TOP)
+	_score.offset_top = 164
+	_score.offset_bottom = 186
+	_score.grow_horizontal = Control.GROW_DIRECTION_BOTH
 	_score.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
 	_score.add_theme_constant_override("outline_size", 6)
 	_score.add_theme_color_override("font_outline_color", Color(0, 0, 0, 0.85))
-	tray.add_child(_score)
+	_score.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	add_child(_score)
+	_tier_a = _side_label(15)
+	_tier_b = _side_label(15)
+	for tl in [_tier_a, _tier_b]:
+		tl.add_theme_font_override("font", Style.font("italic"))
+		tl.add_theme_color_override("font_color", Style.GOLD)
+	_help = _dice_help()
+	add_child(_help)
 	## the battle call: a war-council plate above the dice when the commander must decide
 	_call_plate = PanelContainer.new()
 	_call_plate.add_theme_stylebox_override("panel", Style.flat(Color(0.07, 0.035, 0.025, 0.93), Color(Style.GOLD, 0.75), 2, 10, 14))
 	_call_plate.set_anchors_and_offsets_preset(PRESET_CENTER_BOTTOM)
-	_call_plate.offset_bottom = -222
+	_call_plate.offset_bottom = -300
 	_call_plate.grow_horizontal = Control.GROW_DIRECTION_BOTH
 	_call_plate.grow_vertical = Control.GROW_DIRECTION_BEGIN
 	_call_plate.visible = false
@@ -212,13 +231,17 @@ func _ready() -> void:
 	_dial.size = Vector2(96, 96)
 	_dial.pressed.connect(func(): press())
 	ctl.add_child(_dial)
+	var dh := Style.chip("? Dice", func(): _toggle_help(), Style.PARCH, 15)
+	dh.size_flags_vertical = Control.SIZE_SHRINK_CENTER
+	dh.tooltip_text = "How a throw is scored, and why big armies roll finer dice"
+	ctl.add_child(dh)
 	var skip := Style.chip("Skip battles ▶▶", func(): _skip(), Style.PARCH, 16)
 	skip.size_flags_vertical = Control.SIZE_SHRINK_CENTER
 	skip.tooltip_text = "Settle this round's remaining battles on the map (your standing orders decide the calls)"
 	ctl.add_child(skip)
 	## the chief of staff, at your elbow
 	_advisor = LeaderFace.new()
-	_advisor.bubble_side = "right"
+	_advisor.bubble_side = "top" ## above his ring, clear of the dice table
 	_advisor.set_anchors_and_offsets_preset(PRESET_BOTTOM_LEFT)
 	_advisor.offset_left = 18
 	_advisor.offset_top = -176
@@ -259,6 +282,10 @@ func _layout() -> void:
 	_count_a.size = Vector2(242, 56)
 	_count_b.position = Vector2(w - 252, 222)
 	_count_b.size = Vector2(242, 56)
+	_tier_a.position = Vector2(10, 274)
+	_tier_a.size = Vector2(242, 22)
+	_tier_b.position = Vector2(w - 252, 274)
+	_tier_b.size = Vector2(242, 22)
 
 
 func _shade_tex() -> GradientTexture2D:
@@ -303,6 +330,13 @@ func play(p_session: Node, beats: Array, human_involved: bool) -> void:
 	Audio.ambience(true, "ambience_battle")
 	Audio.music("charge")
 	Audio.sfx("charge", -3.0)
+	## the first two times you watch, the scoring rules open beside the table on their own
+	_help.visible = false
+	var seen: int = int(Settings.get_value("dice_help_seen", 0))
+	if human_involved and seen < 2:
+		Settings.remember("dice_help_seen", seen + 1)
+		_help.visible = true
+		get_tree().create_timer(9.0).timeout.connect(func(): _help.visible = false)
 	_next_engagement()
 
 
@@ -384,9 +418,16 @@ func _unhandled_input(e: InputEvent) -> void:
 			get_viewport().set_input_as_handled()
 
 
+var _bed_t := 3.0 ## the battle beyond this one: now and then, far off and quiet
+
+
 func _process(delta: float) -> void:
 	if not visible:
 		return
+	_bed_t -= delta
+	if _bed_t <= 0.0:
+		_bed_t = randf_range(4.5, 9.0)
+		Audio.sfx("far", randf_range(-21.0, -16.0), 0.06)
 	if _state == "ready" and not manual:
 		_auto_t -= delta
 		if _auto_t <= 0.0:
@@ -422,6 +463,7 @@ func _next_engagement() -> void:
 	if land == "":
 		land = str((b.get("focus", [""]) as Array)[0])
 	_melee = kind == Types.EVENT_MELEE
+	_scramble = kind == Types.EVENT_SCRAMBLE
 	_seen_calls = {}
 	_exchange = 0
 	_advised = false
@@ -441,6 +483,17 @@ func _next_engagement() -> void:
 		## the lead ring goes to a watching commander if there is one
 		_a_pid = str(b["a"])
 		_b_pid = str(e["defenderId"])
+	elif _scramble:
+		## no defender: every army against every other, split either side of the field
+		_fronts = e.get("fronts", [])
+		_rolls = e.get("salvos", [])
+		_volley_mode = true
+		_left = []
+		for i in _fronts.size():
+			list.append({"pid": _front_pid(i), "side": i % 2, "n": int(_fronts[i]["size"])})
+			_left.append(int(_fronts[i]["size"]))
+		_a_pid = str(b["a"])
+		_b_pid = _front_pid(_b_front())
 	else:
 		_fronts = []
 		_a_pid = str(b["a"])
@@ -450,7 +503,7 @@ func _next_engagement() -> void:
 		_left = [int(b["a_size"]), int(b["b_size"])]
 		list = [{"pid": _a_pid, "side": 0, "n": _left[0]}, {"pid": _b_pid, "side": 1, "n": _left[1]}]
 	_a_left = _left[0]
-	_b_left = _left[_def()]
+	_b_left = _left[_def()] if not _scramble else _left[_b_front()]
 	## the ground under this fight
 	var region: String = session.map.get_territory(land).region if land != "" else ""
 	var terrain: String = str(session.map.region_terrain.get(region, "grass"))
@@ -463,20 +516,30 @@ func _next_engagement() -> void:
 			_sub.text = "Two invaders, one prize — no retreat"
 		Types.EVENT_MELEE:
 			_sub.text = "%d armies storm it at once — the defenders must hold every front" % _fronts.size()
+		Types.EVENT_SCRAMBLE:
+			_sub.text = "%d armies, one prize — every man for himself" % _fronts.size()
 		_:
-			_sub.text = "%s attacks from %s" % [session.name_of(_a_pid), session.hex_name(str(e.get("from", "")))]
-	_setup_side(_face_a, _name_a, _melee_lead_pid() if _melee else _a_pid, true)
+			_sub.text = "%s from %s" % [Style.says(session.name_of(_a_pid), "attacks"), session.hex_name(str(e.get("from", "")))]
+	_setup_side(_face_a, _name_a, _melee_lead_pid() if (_melee or _scramble) else _a_pid, true)
 	_setup_side(_face_b, _name_b, _b_pid, false)
 	_setup_extras()
 	_update_counts()
 	_field.setup(list)
 	_result.text = ""
-	_score.text = ("Every front fights at once: die × 5 + armies against the defenders' share there." if _melee else "Each volley: die × 5 + armies. Loser of the volley loses one.") if _volley_mode else "One roll: armies + die. Higher total wins."
+	if _melee:
+		_score.text = "Every front throws at once: pips × 5 + its men, against pips × 5 + the defenders' share of the wall there."
+	elif _scramble:
+		_score.text = "Every army duels every other at once, its men split among its foes: pips × 5 + men. Last army standing takes it."
+	elif _volley_mode:
+		_score.text = "Each volley: pips × 5 + men standing, both sides. The higher total wins; the loser loses a man."
+	else:
+		_score.text = "One throw: men + pips. The higher total wins."
 	_clear_dice()
+	_update_odds()
 	_progress.text = "Battle %d of %d at this land" % [_bi + 1, _beats.size()] if _beats.size() > 1 else ""
 	if not _spoken_attack:
 		_spoken_attack = true
-		var who: String = _who(_melee_lead_pid() if _melee else _a_pid)
+		var who: String = _who(_melee_lead_pid() if (_melee or _scramble) else _a_pid)
 		if Lines.has(who, "attack"):
 			_face_a.react("win", "attack", 2.4)
 		else:
@@ -485,18 +548,36 @@ func _next_engagement() -> void:
 			Audio.sfx("melee", -4.0)
 			if _advisor.visible:
 				get_tree().create_timer(1.2).timeout.connect(func(): _advisor.react("alarm", "melee", 3.0))
+	if _scramble:
+		Audio.sfx("melee", -5.0)
+		if _advisor.visible:
+			get_tree().create_timer(0.8).timeout.connect(func(): _advisor.react("alarm", "scramble", 3.2))
 	_state = "ready"
 	_auto_t = 1.4 ## let them march in
 	_dial.set_label("ROLL", "Space")
 
 
 func _melee_lead_pid() -> String:
-	return str(_fronts[_lead_front()]["attackerId"]) if not _fronts.is_empty() else _a_pid
+	return _front_pid(_lead_front()) if not _fronts.is_empty() else _a_pid
+
+
+func _front_pid(i: int) -> String:
+	var f: Dictionary = _fronts[i]
+	return str(f.get("attackerId", f.get("playerId", "")))
 
 
 func _lead_front() -> int:
 	for i in _fronts.size():
-		if str(_fronts[i]["attackerId"]) == _a_pid:
+		if _front_pid(i) == _a_pid:
+			return i
+	return 0
+
+
+func _b_front() -> int:
+	## the scramble's second ring: the first army that isn't the lead
+	var lead: int = _lead_front()
+	for i in _fronts.size():
+		if i != lead:
 			return i
 	return 0
 
@@ -512,13 +593,13 @@ func _setup_extras() -> void:
 		(x["name"] as Control).queue_free()
 		(x["count"] as Control).queue_free()
 	_extra = []
-	if not _melee:
+	if not _melee and not _scramble:
 		return
 	var k := 0
 	for i in _fronts.size():
-		if i == _lead_front():
+		if i == _lead_front() or (_scramble and i == _b_front()):
 			continue
-		var pid: String = str(_fronts[i]["attackerId"])
+		var pid: String = _front_pid(i)
 		var face: Control = LeaderFace.new()
 		face.bubble_side = "bottom"
 		face.position = Vector2(236 + k * 138, 40)
@@ -538,8 +619,10 @@ func _setup_extras() -> void:
 
 
 func _face_of_front(i: int) -> Control:
-	if not _melee or i == _lead_front():
+	if (not _melee and not _scramble) or i == _lead_front():
 		return _face_a
+	if _scramble and i == _b_front():
+		return _face_b
 	for x in _extra:
 		if int(x["front"]) == i:
 			return x["face"]
@@ -570,20 +653,26 @@ func _setup_side(face: Control, name_l: Label, pid: String, left: bool) -> void:
 
 
 func _update_counts() -> void:
-	if _melee:
-		_count_a.text = str(maxi(0, int(_left[_lead_front()])))
+	var na: int = maxi(0, _a_left)
+	var nb: int = maxi(0, _b_left)
+	if _melee or _scramble:
+		na = maxi(0, int(_left[_lead_front()]))
 		for x in _extra:
 			(x["count"] as Label).text = str(maxi(0, int(_left[int(x["front"])])))
-	else:
-		_count_a.text = str(maxi(0, _a_left))
-	_count_b.text = str(maxi(0, _b_left))
+		if _scramble:
+			nb = maxi(0, int(_left[_b_front()]))
+	_count_a.text = str(na)
+	_count_b.text = str(nb)
+	## the dice each side throws, by the men it has left
+	_tier_a.text = (DiceStage.tier_name(na) + " dice") if na > 0 else ""
+	_tier_b.text = (DiceStage.tier_name(nb) + " dice") if nb > 0 else ""
 
 
 func _clear_dice() -> void:
-	for c in _dice_a.get_children():
-		c.queue_free()
-	for c in _dice_b.get_children():
-		c.queue_free()
+	_tray.clear()
+	for r in _reads:
+		(r as Node).queue_free()
+	_reads = []
 
 
 func _roll_exchange() -> void:
@@ -593,102 +682,295 @@ func _roll_exchange() -> void:
 	_state = "rolling"
 	_call_plate.visible = false
 	_dial.set_label("…", "")
-	_clear_dice()
-	## one exchange: three volleys (or three salvos of a melee, or the one decisive roll)
-	var chunk: Array = []
-	if _melee:
-		while _ri < _rolls.size() and chunk.size() < Combat.EXCHANGE:
-			chunk.append(_rolls[_ri])
+	## one exchange: three volleys thrown together (a melee or scramble: three salvos,
+	## one throw each; the decisive style: its one throw)
+	var throws: Array = []
+	if _melee or _scramble:
+		## salvos share a throw while it holds four duels or fewer, so a two-army scramble
+		## throws three pairs at once like any exchange, and a three-way melee one salvo a throw
+		var n := 0
+		var cur: Array = []
+		while _ri < _rolls.size() and n < Combat.EXCHANGE:
+			var salvo: Array = _rolls[_ri]
+			if not cur.is_empty() and cur.size() + salvo.size() > 4:
+				throws.append(cur)
+				cur = []
+			cur.append_array(salvo)
 			_ri += 1
+			n += 1
+		if not cur.is_empty():
+			throws.append(cur)
 	elif _volley_mode:
+		var chunk: Array = []
 		var decided := 0
 		while _ri < _rolls.size() and decided < Combat.EXCHANGE:
 			chunk.append(_rolls[_ri])
 			_ri += 1
 			if str(chunk[-1].get("w", "")) != "":
 				decided += 1
+		throws.append(chunk)
 	else:
-		chunk = _rolls.duplicate()
+		throws.append([_rolls[-1]])
 		_ri = _rolls.size()
-	Audio.sfx("dice")
-	var t := 0.55 if manual else 0.4
-	var tw := create_tween()
-	tw.tween_interval(t)
-	for r in chunk:
-		tw.tween_callback(func(): _show_roll(r))
-		tw.tween_interval(0.5 if _melee else (0.42 if _volley_mode else 0.2))
-	tw.tween_callback(func(): _after_exchange())
+	## the dice keep the battle speed from Settings (and hurry a little when they roll themselves)
+	var sp: float = clampf(1.4 / maxf(0.3, Settings.battle_delay()), 0.8, 1.8) * (1.0 if manual else 1.3)
+	_tray.pace = sp
+	_tray.gravity = 34.0 * sp
+	Audio.sfx("dice_shake", -4.0)
+	get_tree().create_timer(0.3 if manual else 0.18).timeout.connect(func(): _next_throw(throws, 0))
 
 
-func _show_roll(r: Variant) -> void:
-	## lay out this volley's (or salvo's) dice, then settle them
+func _next_throw(throws: Array, k: int) -> void:
+	if not visible or _state != "rolling":
+		return
+	if k >= throws.size():
+		_after_exchange()
+		return
+	var pairs: Array = _pairs_of(throws[k])
 	_clear_dice()
-	var pairs: Array = r if _melee else [r]
-	var made: Array = []
-	for v in pairs:
-		var ap: String = str(_fronts[int(v["i"])]["attackerId"]) if _melee else _a_pid
-		var da := _Die.new()
-		da.tint = Style.seat_color(ap)
-		da.rolling = true
-		_dice_a.add_child(da)
-		var db := _Die.new()
-		db.tint = Style.seat_color(_b_pid)
-		db.rolling = true
-		_dice_b.add_child(db)
-		made.append([da, db, v])
-	var tw := create_tween()
-	tw.tween_interval(0.18)
-	tw.tween_callback(func():
-		var lines: Array = []
-		for m in made:
-			lines.append(_settle(m[0], m[1], m[2]))
-		if _melee:
-			_score.text = "    ·    ".join(lines))
+	var specs: Array = []
+	var m: int = pairs.size()
+	var span: float = minf(3.6, 12.6 / float(maxi(1, m)))
+	for i in m:
+		var pr: Dictionary = pairs[i]
+		var cx: float = (float(i) - float(m - 1) * 0.5) * span
+		var zl: float = -0.35 + randf_range(-0.12, 0.12)
+		specs.append({"value": int(pr["lv"]), "n": int(pr["ln"]), "tint": Style.seat_color(str(pr["lp"])), "to": Vector2(cx - 0.72, zl),
+			"from": Vector3(-11.0, 2.6 + randf() * 0.6, randf_range(-1.0, 0.4)), "delay": 0.05 * i})
+		specs.append({"value": int(pr["rv"]), "n": int(pr["rn"]), "tint": Style.seat_color(str(pr["rp"])), "to": Vector2(cx + 0.72, -0.35 + randf_range(-0.12, 0.12)),
+			"from": Vector3(11.0, 2.6 + randf() * 0.6, randf_range(-1.0, 0.4)), "delay": 0.03 + 0.05 * i})
+	var dur: float = _tray.throw(specs)
+	get_tree().create_timer(dur + 0.05).timeout.connect(func(): _reveal(pairs, 0, func(): _next_throw(throws, k + 1)))
 
 
-func _settle(da: _Die, db: _Die, r: Dictionary) -> String:
-	da.rolling = false
-	db.rolling = false
-	da.value = int(r["a"])
-	db.value = int(r["b"])
-	var w: String = str(r.get("w", ""))
-	if not _volley_mode:
-		return ""
-	var fi: int = int(r.get("i", 0))
-	var army: int = _army_of_front(fi) if _melee else 0
-	var ap: String = str(_fronts[fi]["attackerId"]) if _melee else _a_pid
-	var sa: float = 5.0 * int(r["a"]) + float(r["sa"])
-	var sb: float = 5.0 * int(r["b"]) + float(r["sd"])
-	if w == "":
-		_score.text = "%d vs %d — a tie in the field. Roll again." % [int(sa), int(sb)]
-		da.dim = true
-		db.dim = true
-		return ""
-	var line: String
-	if _melee:
-		line = "%s %s" % [session.name_of(ap), "✔" if w == "a" else "✘"]
+func _pairs_of(r: Variant) -> Array:
+	## The duels in one throw, left die against right die, with the sums each side made.
+	##   l*/r*: pid, pip value, men (picks the dice), what the men count for; w: "a" left won,
+	##   "b" right won, "" tie; la/ra: the army index on the field
+	var out: Array = []
+	if _scramble:
+		for v in r:
+			var i: int = int(v["i"])
+			var j: int = int(v["j"])
+			out.append({"lp": _front_pid(i), "lv": int(v["a"]), "ln": int(_left[i]), "lw": float(v["si"]), "la": i,
+				"rp": _front_pid(j), "rv": int(v["b"]), "rn": int(_left[j]), "rw": float(v["sj"]), "ra": j, "w": str(v.get("w", ""))})
+	elif _melee:
+		for v in r:
+			var fi: int = int(v["i"])
+			out.append({"lp": _front_pid(fi), "lv": int(v["a"]), "ln": int(v["sa"]), "lw": float(v["sa"]), "la": fi,
+				"rp": _b_pid, "rv": int(v["b"]), "rn": int(_left[_def()]), "rw": float(v["sd"]), "ra": _def(), "w": str(v.get("w", ""))})
+	elif _volley_mode:
+		for v in r:
+			out.append({"lp": _a_pid, "lv": int(v["a"]), "ln": int(v["sa"]), "lw": float(v["sa"]), "la": 0,
+				"rp": _b_pid, "rv": int(v["b"]), "rn": int(v["sd"]), "rw": float(v["sd"]), "ra": _def(), "w": str(v.get("w", ""))})
 	else:
-		_score.text = "%s  5×%d + %d = %d    vs    %s  5×%d + %d = %d" % [session.name_of(ap), r["a"], r["sa"], int(sa), session.name_of(_b_pid) if _b_pid != "neutral" else "Neutral", r["b"], r["sd"], int(sb)]
-		line = ""
-	var sound := "volley"
-	if w == "a":
-		db.dim = true
-		_left[_def()] = int(_left[_def()]) - 1
-		sound = _field.volley(army)
+		var bt: Dictionary = _beats[_bi]
+		var last: Dictionary = r[0]
+		var a_won: bool = bool(bt["a_won"])
+		out.append({"lp": _a_pid, "lv": int(last["a"]), "ln": int(bt["a_size"]), "lw": float(bt["a_size"]), "la": 0,
+			"rp": _b_pid, "rv": int(last["b"]), "rn": int(bt["b_size"]), "rw": float(bt["b_size"]), "ra": 1, "w": "a" if a_won else "b", "decisive": true})
+	return out
+
+
+func _reveal(pairs: Array, k: int, done: Callable) -> void:
+	## the dice are down: settle each duel in turn, left to right
+	if not visible or _state != "rolling":
+		return
+	if k >= pairs.size():
+		done.call()
+		return
+	_settle_pair(pairs[k], k)
+	var gap: float = (0.34 if manual else 0.24) if pairs.size() <= 3 else 0.2
+	get_tree().create_timer(gap).timeout.connect(func(): _reveal(pairs, k + 1, done))
+
+
+func _num(x: float) -> String:
+	return str(int(x)) if absf(x - round(x)) < 0.05 else "%.1f" % x
+
+
+func _settle_pair(pr: Dictionary, k: int) -> void:
+	var w: String = str(pr["w"])
+	var dec: bool = bool(pr.get("decisive", false))
+	var sl: float = (float(pr["lv"]) + float(pr["lw"])) if dec else (5.0 * float(pr["lv"]) + float(pr["lw"]))
+	var sr: float = (float(pr["rv"]) + float(pr["rw"])) if dec else (5.0 * float(pr["rv"]) + float(pr["rw"]))
+	var tl: String = ("%s + %d = %s" % [_num(float(pr["lw"])), int(pr["lv"]), _num(sl)]) if dec else ("%d×5 + %s = %s" % [int(pr["lv"]), _num(float(pr["lw"])), _num(sl)])
+	var tr: String = ("%s + %d = %s" % [_num(float(pr["rw"])), int(pr["rv"]), _num(sr)]) if dec else ("%d×5 + %s = %s" % [int(pr["rv"]), _num(float(pr["rw"])), _num(sr)])
+	_read(k * 2, tl, w == "a", w == "")
+	_read(k * 2 + 1, tr, w == "b", w == "")
+	if w == "":
+		_tray.mark(k * 2, "tie")
+		_tray.mark(k * 2 + 1, "tie")
+		_float_at(k * 2, "tie!", Style.PARCH)
+		return
+	_tray.mark(k * 2, "win" if w == "a" else "lose")
+	_tray.mark(k * 2 + 1, "win" if w == "b" else "lose")
+	if dec:
+		return ## the decisive throw's losses land all at once (_after_exchange)
+	var la: int = int(pr["la"])
+	var ra: int = int(pr["ra"])
+	var winner_army: int = la if w == "a" else ra
+	var loser_army: int = ra if w == "a" else la
+	_left[loser_army] = int(_left[loser_army]) - 1
+	_float_at(k * 2 + (1 if w == "a" else 0), "−1", Style.CRIMSON.lightened(0.35))
+	var sound: String = _field.volley(winner_army)
+	_field.set_count(loser_army, maxi(0, int(_left[loser_army])))
+	if _scramble:
+		_flinch(_face_of_front(loser_army))
+	elif loser_army == _def():
 		_flinch(_face_b)
 	else:
-		da.dim = true
-		_left[army] = int(_left[army]) - 1
-		sound = _field.volley(_def())
-		_flinch(_face_of_front(fi) if _melee else _face_a)
+		_flinch(_face_of_front(loser_army) if _melee else _face_a)
 	_a_left = int(_left[0])
-	_b_left = int(_left[_def()])
-	_field.set_count(army, maxi(0, int(_left[army])))
-	_field.set_count(_def(), maxi(0, int(_left[_def()])))
+	_b_left = int(_left[_def()]) if not _scramble else int(_left[_b_front()])
 	_update_counts()
-	Audio.sfx(sound, -5.0 if sound == "volley" else -3.0, 0.12)
+	_update_odds()
+	Audio.sfx(sound, -1.5 if sound == "volley" or sound == "shot" else -3.0, 0.08)
 	get_tree().create_timer(0.12).timeout.connect(func(): Audio.sfx("hit", -9.0, 0.15))
-	return line
+
+
+func _read(i: int, text: String, won: bool, tie: bool) -> void:
+	## the sum a die made, written on the felt in front of it
+	var l := Style.label(text, 17, Style.CREAM, "bold")
+	l.add_theme_constant_override("outline_size", 7)
+	l.add_theme_color_override("font_outline_color", Color(0, 0, 0, 0.9))
+	l.add_theme_color_override("font_color", Style.GOLD if won else (Style.PARCH if tie else Color(0.85, 0.55, 0.5)))
+	l.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	l.size = Vector2(170, 24)
+	## the two sums of a duel lean away from each other, so they never overlap
+	var at: Vector2 = _tray.position + _tray.die_screen(i)
+	var mate: Vector2 = _tray.position + _tray.die_screen(i + 1 if i % 2 == 0 else i - 1)
+	var mid: float = (at.x + mate.x) * 0.5
+	if i % 2 == 0:
+		l.horizontal_alignment = HORIZONTAL_ALIGNMENT_RIGHT
+		l.position = Vector2(mid - 6.0 - l.size.x, at.y + 28)
+	else:
+		l.horizontal_alignment = HORIZONTAL_ALIGNMENT_LEFT
+		l.position = Vector2(mid + 6.0, at.y + 28)
+	add_child(l)
+	_reads.append(l)
+	l.modulate.a = 0.0
+	create_tween().tween_property(l, "modulate:a", 1.0, 0.12)
+
+
+func _float_at(i: int, text: String, col: Color) -> void:
+	var l := Style.label(text, 26, col, "display")
+	l.add_theme_constant_override("outline_size", 7)
+	l.add_theme_color_override("font_outline_color", Color(0, 0, 0, 0.9))
+	l.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	var at: Vector2 = _tray.position + _tray.die_screen(i)
+	l.position = at + Vector2(-16, -64)
+	add_child(l)
+	var tw := create_tween().set_parallel(true)
+	tw.tween_property(l, "position:y", l.position.y - 34.0, 0.8)
+	tw.tween_property(l, "modulate:a", 0.0, 0.8).set_delay(0.3)
+	tw.chain().tween_callback(l.queue_free)
+
+
+func _update_odds() -> void:
+	## who this fight favours from here, in plain numbers
+	var bar: _OddsBar = _odds_bar
+	if not _volley_mode and not _melee:
+		bar.show_odds(-1.0, _a_pid, _b_pid, "", "")
+		return
+	if _scramble:
+		var bits: Array = []
+		for i in _fronts.size():
+			if int(_left[i]) > 0:
+				bits.append("%s %d" % [session.name_of(_front_pid(i)), int(_left[i])])
+		bar.show_odds(-1.0, _a_pid, _b_pid, "Last army standing takes it", "  ·  ".join(bits))
+		return
+	var a := 0
+	if _melee:
+		for i in _fronts.size():
+			if not _fled(i):
+				a += maxi(0, int(_left[i]))
+	else:
+		a = maxi(0, int(_left[0]))
+	var d: int = maxi(0, int(_left[_def()]))
+	var land0: String = session.hex_name(str(_beats[_bi].get("resolves", ""))) if _bi >= 0 else ""
+	if a <= 0 or d <= 0:
+		## decided: the bar goes all the way, and says so (it used to keep the last odds)
+		var taken: bool = d <= 0
+		var winner0: String = (_melee_lead_pid() if _melee else _a_pid) if taken else _b_pid
+		var wn: String = session.name_of(winner0) if winner0 != "neutral" else "The garrison"
+		var what: String = ("%s %s" % [Style.says(wn, "takes"), land0]) if _event_kind() == Types.EVENT_INVASION or _melee else ("%s the field" % Style.says(wn, "wins"))
+		if not taken and (_event_kind() == Types.EVENT_INVASION or _melee):
+			what = "%s %s" % [Style.says(wn, "holds"), land0]
+		bar.show_odds(1.0 if taken else 0.0, _melee_lead_pid() if _melee else _a_pid, _b_pid, what, "Decided.")
+		return
+	var ties: bool = _event_kind() == Types.EVENT_INVASION or _melee
+	var p: float = Combat.volley_capture_rate(a, d, ties)
+	var land: String = session.hex_name(str(_beats[_bi].get("resolves", ""))) if _bi >= 0 else ""
+	var head: String
+	var who: String = session.name_of(_melee_lead_pid() if _melee else _a_pid)
+	if _melee:
+		head = "All the attackers together: %d%% to take %s" % [int(round(p * 100.0)), land]
+	elif _event_kind() == Types.EVENT_INVASION:
+		head = "%s: %d%% to take %s" % [who, int(round(p * 100.0)), land]
+	else:
+		head = "%s: %d%% to win the field" % [who, int(round(p * 100.0))]
+	var diff: int = a - d
+	var edge: String
+	var men := func(n: int) -> String: return Style.plural(n, "man", "men")
+	var tie_note: String = "  ·  ties go to the attacker" if ties and not _melee else ""
+	if _melee:
+		edge = "%d attackers on %d fronts against %d defenders, who must split themselves across every front" % [a, _fronts_up(), d]
+	elif diff == 0:
+		edge = "%s against %d: even numbers, the dice decide%s" % [men.call(a), d, tie_note]
+	else:
+		var side: String = who if diff > 0 else (session.name_of(_b_pid) if _b_pid != "neutral" else "The garrison")
+		var pips: float = absf(float(diff)) / 5.0
+		edge = "%s against %d: %s with a %d-man edge (%s pip%s on every throw)%s" % [men.call(a), d, Style.says(side, "throws"), absi(diff), _num(pips), "" if absf(pips - 1.0) < 0.05 else "s", tie_note]
+	bar.show_odds(p, _melee_lead_pid() if _melee else _a_pid, _b_pid, head, edge)
+
+
+func _fronts_up() -> int:
+	var n := 0
+	for i in _fronts.size():
+		if int(_left[i]) > 0 and not _fled(i):
+			n += 1
+	return n
+
+
+func _event_kind() -> String:
+	return str(_event().get("kind", ""))
+
+
+func _dice_help() -> PanelContainer:
+	var pc := PanelContainer.new()
+	pc.add_theme_stylebox_override("panel", Style.flat(Color(0.06, 0.04, 0.03, 0.94), Color(Style.GOLD, 0.7), 2, 10, 14))
+	pc.set_anchors_and_offsets_preset(PRESET_BOTTOM_RIGHT)
+	pc.offset_right = -18
+	pc.offset_bottom = -104
+	pc.offset_left = -400
+	pc.offset_top = -420
+	pc.grow_horizontal = Control.GROW_DIRECTION_BEGIN
+	pc.grow_vertical = Control.GROW_DIRECTION_BEGIN
+	pc.visible = false
+	pc.mouse_filter = Control.MOUSE_FILTER_STOP
+	var v := VBoxContainer.new()
+	v.add_theme_constant_override("separation", 6)
+	pc.add_child(v)
+	v.add_child(Style.label("HOW A THROW IS SCORED", 18, Style.GOLD, "display"))
+	var t := Style.label("Each side throws a die. Its pips count five men apiece; add the men still standing. The higher total wins the volley and the loser loses a man.\n\nSo every five men you bring is worth a whole pip on every throw — a big army wins most volleys even on a bad roll, and a lone holdout needs a miracle.", 14, Style.CREAM)
+	t.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
+	t.custom_minimum_size = Vector2(360, 0)
+	v.add_child(t)
+	v.add_child(Style.label("THE DICE AN ARMY THROWS", 15, Style.GOLD, "display"))
+	var names := ["whittled wood, burnt pips", "old bone", "ivory, enamel pips in its colours", "lacquer in its colours, brass edges", "gold, gem pips and the imperial star"]
+	for i in DiceStage.TIERS.size():
+		var tdef: Dictionary = DiceStage.TIERS[i]
+		var hi: int = int(DiceStage.TIERS[i + 1]["min"]) - 1 if i + 1 < DiceStage.TIERS.size() else -1
+		var rng: String = ("%d–%d men" % [int(tdef["min"]), hi]) if hi > int(tdef["min"]) else (("%d+ men" % int(tdef["min"])) if hi < 0 else "%d men" % int(tdef["min"]))
+		var row := Style.label("%s  (%s): %s" % [str(tdef["name"]), rng, names[i]], 13, Style.PARCH, "italic")
+		row.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
+		row.custom_minimum_size = Vector2(360, 0)
+		v.add_child(row)
+	return pc
+
+
+func _toggle_help() -> void:
+	_help.visible = not _help.visible
 
 
 func _flinch(face: Control) -> void:
@@ -706,10 +988,6 @@ func _after_exchange() -> void:
 	if not _volley_mode:
 		## the decisive roll: reveal totals, then the loser falls and the winner bleeds
 		var b: Dictionary = _beats[_bi]
-		var last: Dictionary = _rolls[-1]
-		var ta: int = int(b["a_size"]) + int(last["a"])
-		var tb: int = int(b["b_size"]) + int(last["b"])
-		_score.text = "%d + %d = %d    vs    %d + %d = %d" % [b["a_size"], last["a"], ta, b["b_size"], last["b"], tb]
 		var a_won: bool = bool(b["a_won"])
 		var left: int = int(b["left"])
 		_a_left = left if a_won else 0
@@ -747,6 +1025,12 @@ func _after_exchange() -> void:
 
 
 func _all_down() -> bool:
+	if _scramble:
+		var standing := 0
+		for v in _left:
+			if int(v) > 0:
+				standing += 1
+		return standing <= 1
 	if int(_left[_def()]) <= 0:
 		return true
 	for i in range(0, _def()):
@@ -904,7 +1188,7 @@ func _show_call(c: Dictionary) -> void:
 			_update_counts()
 			_field.set_count(army, int(_left[army]))
 			_shout_text("RESERVES!  +%d" % n, Style.GOLD)
-			_sub.text = "%s throws in the reserves from home" % session.name_of(pid)
+			_sub.text = "%s in the reserves from home" % Style.says(session.name_of(pid), "throws")
 			Audio.sfx("reserves", -2.0)
 			get_tree().create_timer(0.5).timeout.connect(func(): Audio.sfx("hurrah", -4.0))
 			if Lines.has(who, "reserves"):
@@ -914,7 +1198,7 @@ func _show_call(c: Dictionary) -> void:
 				_advisor.react("happy", "reserves", 2.4)
 		Combat.CALL_FALL_BACK:
 			_shout_text("FALL BACK!", Style.PARCH)
-			_sub.text = "%s sounds the retreat to %s" % [session.name_of(pid), session.hex_name(str(c.get("to", "")))]
+			_sub.text = "%s the retreat to %s" % [Style.says(session.name_of(pid), "sounds"), session.hex_name(str(c.get("to", "")))]
 			Audio.sfx("retreat", -2.0)
 			_field.retreat(army)
 			_seen_calls["fell|%d" % fi] = true
@@ -949,6 +1233,9 @@ func _finish_engagement() -> void:
 	if _melee:
 		_finish_melee(e, land)
 		return
+	if _scramble:
+		_finish_scramble(e, land)
+		return
 	var a_won: bool = bool(b["a_won"])
 	var fell: bool = bool(e.get("fellBack", false))
 	var winner: String = _a_pid if a_won else _b_pid
@@ -966,17 +1253,23 @@ func _finish_engagement() -> void:
 	_left = [_a_left, _b_left]
 	_update_counts()
 	if fell:
-		_result.text = ("%s falls back to %s — %d saved" % [session.name_of(_a_pid), session.hex_name(str(e.get("refuge", ""))), _a_left]).to_upper()
+		_result.text = ("%s back to %s — %d saved" % [Style.says(session.name_of(_a_pid), "falls"), session.hex_name(str(e.get("refuge", ""))), _a_left]).to_upper()
 		Audio.sfx("hold")
 	elif kind == "Invasion":
-		_result.text = ("%s TAKES %s" % [session.name_of(winner), session.hex_name(land)]).to_upper() if a_won else ("%s HOLDS %s" % [session.name_of(winner) if winner != "neutral" else "THE GARRISON", session.hex_name(land)]).to_upper()
+		_result.text = ("%s %s" % [Style.says(session.name_of(winner), "takes"), session.hex_name(land)]).to_upper() if a_won else ("%s %s" % [Style.says(session.name_of(winner) if winner != "neutral" else "The garrison", "holds"), session.hex_name(land)]).to_upper()
 		Audio.sfx("capture" if a_won else "hold")
 	else:
-		_result.text = ("%s wins the field" % session.name_of(winner)).to_upper()
+		_result.text = ("%s the field" % Style.says(session.name_of(winner), "wins")).to_upper()
 		Audio.sfx("clash")
 	_result.add_theme_color_override("font_color", Style.seat_color(winner).lightened(0.5))
+	## the bar ends where the fight did
+	var wn: String = session.name_of(winner) if winner != "neutral" else "The garrison"
+	var verdict: String = "%s back" % Style.says(session.name_of(_a_pid), "falls") if fell else (("%s %s" % [Style.says(wn, "takes" if a_won else "holds"), session.hex_name(land)]) if kind == "Invasion" else "%s the field" % Style.says(wn, "wins"))
+	_odds_bar.show_odds(1.0 if a_won and not fell else 0.0, _a_pid, _b_pid, verdict, "Decided.")
 	_field.cheer(0 if a_won else 1)
-	get_tree().create_timer(0.35).timeout.connect(func(): Audio.sfx("cheer", -6.0))
+	var cheering: int = _a_left if a_won else _b_left
+	if not fell:
+		get_tree().create_timer(0.35).timeout.connect(func(): Audio.cheer(cheering))
 	## reactions: winner exults, loser curses; AI commanders speak one line
 	var face_w: Control = _face_a if a_won else _face_b
 	var face_l: Control = _face_b if a_won else _face_a
@@ -1013,7 +1306,7 @@ func _finish_melee(e: Dictionary, land: String) -> void:
 	_b_left = int(_left[_def()])
 	_update_counts()
 	if held:
-		_result.text = ("%s HOLDS %s AGAINST ALL COMERS" % [session.name_of(_b_pid) if _b_pid != "neutral" else "THE GARRISON", session.hex_name(land)]).to_upper()
+		_result.text = ("%s %s against all comers" % [Style.says(session.name_of(_b_pid) if _b_pid != "neutral" else "The garrison", "holds"), session.hex_name(land)]).to_upper()
 		_result.add_theme_color_override("font_color", Style.seat_color(_b_pid).lightened(0.5))
 		Audio.sfx("hold")
 		_field.cheer(_def())
@@ -1036,58 +1329,97 @@ func _finish_melee(e: Dictionary, land: String) -> void:
 		else:
 			_face_a.react("win")
 		_face_b.react("lose")
-	get_tree().create_timer(0.35).timeout.connect(func(): Audio.sfx("cheer", -6.0))
+	var cheering := 0
+	if held:
+		cheering = int(_left[_def()])
+	else:
+		for i in _fronts.size():
+			if not bool(_fronts[i].get("fellBack", false)):
+				cheering += maxi(0, int(_left[i]))
+	get_tree().create_timer(0.35).timeout.connect(func(): Audio.cheer(cheering))
 	_state = "done"
 	_auto_t = 2.6
 	_dial.set_label("NEXT" if _bi < _beats.size() - 1 else "DONE", "")
 
 
-class _Die extends Control:
-	var value := 1
-	var rolling := false
-	var dim := false:
-		set(v):
-			dim = v
-			queue_redraw()
-	var tint := Color.WHITE
-	var _tick := 0.0
+func _finish_scramble(e: Dictionary, land: String) -> void:
+	for i in _fronts.size():
+		_left[i] = int(_fronts[i].get("left", 0))
+		_field.set_count(i, int(_left[i]))
+	var win: String = str(e.get("winnerId", ""))
+	var wi := 0
+	for i in _fronts.size():
+		if _front_pid(i) == win:
+			wi = i
+	_a_left = int(_left[0])
+	_b_left = int(_left[_b_front()])
+	_update_counts()
+	_update_odds()
+	_result.text = ("%s %s — last army standing" % [Style.says(session.name_of(win), "takes"), session.hex_name(land)]).to_upper()
+	_result.add_theme_color_override("font_color", Style.seat_color(win).lightened(0.5))
+	Audio.sfx("capture")
+	_field.cheer(wi)
+	var face: Control = _face_of_front(wi)
+	if Lines.has(_who(win), "win"):
+		face.react("win", "win", 2.6)
+	else:
+		face.react("win")
+	for i in _fronts.size():
+		if i != wi:
+			_face_of_front(i).react("lose")
+	var cheering: int = int(_left[wi])
+	get_tree().create_timer(0.35).timeout.connect(func(): Audio.cheer(cheering))
+	_state = "done"
+	_auto_t = 2.6
+	_dial.set_label("NEXT" if _bi < _beats.size() - 1 else "DONE", "")
+
+
+class _OddsBar extends Control:
+	## a tug of war in the two commanders' colours, the chance in words above it and the
+	## reason (the edge in men, and what it is worth in pips) below
+	const Style := preload("res://game/core/style.gd")
+	var p := -1.0
+	var shown := -1.0
+	var a_pid := ""
+	var b_pid := ""
+	var head := ""
+	var edge := ""
 
 	func _init() -> void:
-		custom_minimum_size = Vector2(70, 70)
 		mouse_filter = Control.MOUSE_FILTER_IGNORE
 
+	func show_odds(np: float, a: String, b: String, h: String, e: String) -> void:
+		p = np
+		a_pid = a
+		b_pid = b
+		head = h
+		edge = e
+		if shown < 0.0:
+			shown = np
+		queue_redraw()
+
 	func _process(delta: float) -> void:
-		if rolling:
-			_tick += delta
-			if _tick > 0.055:
-				_tick = 0.0
-				value = randi_range(1, 6)
-				queue_redraw()
+		if p >= 0.0 and absf(shown - p) > 0.002:
+			shown = move_toward(shown, p, delta * 0.8)
+			queue_redraw()
 
 	func _draw() -> void:
-		var s: Vector2 = size
-		var wob := randf_range(-0.2, 0.2) if rolling else 0.0
-		var lift := randf_range(-6.0, 0.0) if rolling else 0.0
-		draw_set_transform(s * 0.5 + Vector2(0, lift), wob, Vector2.ONE)
-		var r := Rect2(-s * 0.42, s * 0.84)
-		var body := StyleBoxFlat.new()
-		body.bg_color = Color(0.97, 0.94, 0.86) if not dim else Color(0.55, 0.53, 0.5)
-		body.border_color = tint.darkened(0.1) if not dim else tint.darkened(0.6)
-		body.set_border_width_all(5)
-		body.set_corner_radius_all(11)
-		body.shadow_color = Color(0, 0, 0, 0.5)
-		body.shadow_size = 6
-		body.shadow_offset = Vector2(2, 4)
-		draw_style_box(body, r)
-		## a lacquer highlight
-		draw_rect(Rect2(r.position + Vector2(8, 6), Vector2(r.size.x - 16, 7)), Color(1, 1, 1, 0.35 if not dim else 0.1))
-		var pips := {
-			1: [Vector2(0, 0)], 2: [Vector2(-1, -1), Vector2(1, 1)], 3: [Vector2(-1, -1), Vector2(0, 0), Vector2(1, 1)],
-			4: [Vector2(-1, -1), Vector2(1, -1), Vector2(-1, 1), Vector2(1, 1)],
-			5: [Vector2(-1, -1), Vector2(1, -1), Vector2(0, 0), Vector2(-1, 1), Vector2(1, 1)],
-			6: [Vector2(-1, -1), Vector2(1, -1), Vector2(-1, 0), Vector2(1, 0), Vector2(-1, 1), Vector2(1, 1)],
-		}
-		var pc := Color(0.14, 0.08, 0.06) if value != 1 else Color(0.7, 0.1, 0.08)
-		for p in pips[clampi(value, 1, 6)]:
-			draw_circle(p * r.size.x * 0.27, 6.0, pc if not dim else pc.lightened(0.3))
-		draw_set_transform(Vector2.ZERO, 0.0, Vector2.ONE)
+		if head == "" and edge == "":
+			return
+		var f := Style.font("bold")
+		var fi := Style.font("italic")
+		var w: float = size.x
+		var hw: float = f.get_string_size(head, HORIZONTAL_ALIGNMENT_LEFT, -1, 17).x
+		draw_string_outline(f, Vector2((w - hw) * 0.5, 16), head, HORIZONTAL_ALIGNMENT_LEFT, -1, 17, 6, Color(0, 0, 0, 0.85))
+		draw_string(f, Vector2((w - hw) * 0.5, 16), head, HORIZONTAL_ALIGNMENT_LEFT, -1, 17, Style.CREAM)
+		if p >= 0.0:
+			var r := Rect2(Vector2(40, 23), Vector2(w - 80, 12))
+			draw_rect(r.grow(2.0), Color(0, 0, 0, 0.7))
+			var split: float = r.size.x * clampf(shown, 0.0, 1.0)
+			draw_rect(Rect2(r.position, Vector2(split, r.size.y)), Style.seat_color(a_pid).lightened(0.1))
+			draw_rect(Rect2(r.position + Vector2(split, 0), Vector2(r.size.x - split, r.size.y)), Style.seat_color(b_pid).lightened(0.1) if b_pid != "neutral" else Color(0.55, 0.53, 0.5))
+			draw_rect(Rect2(r.position + Vector2(split - 2.0, -4), Vector2(4, r.size.y + 8)), Style.GOLD)
+		var ew: float = fi.get_string_size(edge, HORIZONTAL_ALIGNMENT_LEFT, -1, 14).x
+		var ey: float = 52.0 if p >= 0.0 else 36.0
+		draw_string_outline(fi, Vector2((w - ew) * 0.5, ey), edge, HORIZONTAL_ALIGNMENT_LEFT, -1, 14, 5, Color(0, 0, 0, 0.85))
+		draw_string(fi, Vector2((w - ew) * 0.5, ey), edge, HORIZONTAL_ALIGNMENT_LEFT, -1, 14, Style.PARCH)

@@ -6,6 +6,7 @@ const Style := preload("res://game/core/style.gd")
 const Types := preload("res://engine/types.gd")
 const ViewEvents := preload("res://game/view_events.gd")
 const Combat := preload("res://engine/combat.gd")
+const DiceStage := preload("res://game/ui/dice_stage.gd")
 
 signal finished
 
@@ -27,8 +28,7 @@ var _card_title: Label
 var _left: _Side
 var _right: _Side
 var _result: Label
-var _dice_l: _Die
-var _dice_r: _Die
+var _dice: Control ## DiceStage: the deciding throw, dropped onto the card
 var _vs: Label
 var _controls: HBoxContainer
 var _pause_btn: Button
@@ -89,14 +89,14 @@ func _ready() -> void:
 	cv.add_child(row)
 	_left = _Side.new()
 	row.add_child(_left)
-	_dice_l = _Die.new()
-	_dice_l.size_flags_vertical = Control.SIZE_SHRINK_CENTER
-	row.add_child(_dice_l)
-	_vs = Style.label("vs", 22, Style.MUTED, "display")
-	row.add_child(_vs)
-	_dice_r = _Die.new()
-	_dice_r.size_flags_vertical = Control.SIZE_SHRINK_CENTER
-	row.add_child(_dice_r)
+	_dice = DiceStage.new()
+	_dice.board = false
+	_dice.width = 5.2
+	_dice.pitch = 62.0
+	_dice.custom_minimum_size = Vector2(220, 110)
+	_dice.size_flags_vertical = Control.SIZE_SHRINK_CENTER
+	row.add_child(_dice)
+	_vs = Style.label("", 1, Style.MUTED, "display")
 	_right = _Side.new()
 	row.add_child(_right)
 	_result = Style.label("", 24, Style.CREAM, "display")
@@ -139,6 +139,7 @@ func play(p_session: Node, p_board: Control) -> void:
 	visible = true
 	_active = true
 	board.interactive = false
+	board.flow = true
 	board.show_ceiling = false
 	board.selected = ""
 	board.targets = {}
@@ -148,7 +149,10 @@ func play(p_session: Node, p_board: Control) -> void:
 	board.world = _pre.clone()
 	board.refresh()
 	Audio.music("battle")
-	advance()
+	if bool(session.get_meta("opening_cinema", false)):
+		advance()
+	else:
+		_wait = 1.5 ## let THE BATTLES banner have its moment first
 
 
 func advance() -> void:
@@ -212,6 +216,7 @@ func _finish() -> void:
 	board.dimmed = {}
 	board.clash = []
 	board.orders = []
+	board.flow = false
 	board.refresh()
 	finished.emit()
 
@@ -251,14 +256,7 @@ func _process(delta: float) -> void:
 	if _rolling > 0.0:
 		_rolling -= delta
 		if _rolling <= 0.0:
-			_dice_l.value = _roll_final.x
-			_dice_r.value = _roll_final.y
-			_dice_l.rolling = false
-			_dice_r.rolling = false
 			_reveal_result()
-		else:
-			_dice_l.rolling = true
-			_dice_r.rolling = true
 	if paused:
 		return
 	_wait -= delta
@@ -291,7 +289,7 @@ func _build_beats() -> Array:
 		if kind == Types.EVENT_PLACED or kind == Types.EVENT_REGROUP_APPLIED or kind == Types.EVENT_SET_CASHED:
 			last_setup = k
 			if kind == Types.EVENT_SET_CASHED:
-				cashes.append("%s trades cards for +%d" % [_name(str(evs[k]["playerId"])), int(evs[k]["value"])])
+				cashes.append("%s cards for +%d" % [Style.says(_name(str(evs[k]["playerId"])), "trades"), int(evs[k]["value"])])
 			elif kind == Types.EVENT_REGROUP_APPLIED:
 				moves += 1
 			else:
@@ -299,6 +297,16 @@ func _build_beats() -> Array:
 		elif kind == Types.EVENT_VACATED:
 			break
 	var opening: bool = bool(session.get_meta("opening_cinema", false))
+	## v1.5: a set turned in is news: each gets its own moment, before the recruits muster
+	for k in range(0, maxi(0, last_setup) + 1):
+		if str(evs[k]["kind"]) == Types.EVENT_SET_CASHED:
+			var cp: String = str(evs[k]["playerId"])
+			var kinds0: Array = []
+			for c in evs[k].get("cards", []):
+				kinds0.append({"sun": "Infantry", "moon": "Cavalry", "star": "Artillery", "wild": "Wild"}.get(str(c), str(c)))
+			out.append({"upto": k, "caption": "%s in a set of cards!" % Style.says(_name(cp), "turns"),
+				"sub": "%s — %d fresh troops join the colours." % [", ".join(kinds0), int(evs[k]["value"])],
+				"sound": "turn_in", "delay": 2.2, "cash": cp, "cash_value": int(evs[k]["value"]), "cards": evs[k].get("cards", [])})
 	if last_setup >= 0:
 		var sub := "%d armies placed" % placed
 		if moves > 0:
@@ -339,9 +347,21 @@ func _build_beats() -> Array:
 			vacated[str(e["from"])] = str(e["playerId"])
 	var dug := 0
 	var drawn: Array = []
+	var stage := ""
+	var seen_surge := false
 	while i < n:
 		var e: Dictionary = evs[i]
 		var kind: String = str(e["kind"])
+		## v1.5: the stages of the battle report, each announced as it begins
+		var st: String = _stage_of(kind, seen_surge)
+		if kind == Types.EVENT_SURGE:
+			seen_surge = true
+			st = "surge"
+		if st != "" and st != stage:
+			stage = st
+			var mark: Dictionary = _stage_beat(st, i - 1)
+			if not mark.is_empty():
+				out.append(mark)
 		match kind:
 			Types.EVENT_CLASH:
 				var cb := _fight_beat(i, "Border clash", _hex(str(e["hexA"])) + " ⇄ " + _hex(str(e["hexB"])),
@@ -379,11 +399,36 @@ func _build_beats() -> Array:
 				var upto3 := i
 				if not held and i + 1 < n and str(evs[i + 1]["kind"]) == Types.EVENT_OCCUPIED:
 					upto3 = i + 1
-				var outcome: String = ("%s holds with %d left." % [_name(str(e["defenderId"])), int(e["defenderLeft"])]) if held else "The defenders are overrun!"
+				var outcome: String = ("%s with %d left." % [Style.says(_name(str(e["defenderId"])), "holds"), int(e["defenderLeft"])]) if held else "The defenders are overrun!"
 				out.append({"upto": upto3, "caption": "Melee at %s" % _hex(to3), "sub": "%s storm %s's %d at once. %s" % [" and ".join(names), _name(str(e["defenderId"])), int(e["defenderSize"]), outcome],
 					"fight": true, "melee": true, "event": e, "a": human if human != "" else attackers[0], "b": str(e["defenderId"]), "attackers": attackers,
 					"focus": froms, "resolves": to3, "delay": 2.6, "sound": "melee", "a_won": not held})
 				i = upto3
+			Types.EVENT_SCRAMBLE:
+				var to4: String = str(e["to"])
+				var names4: Array = []
+				var froms4: Array = [to4]
+				var who4: Array = []
+				var human4 := ""
+				for f in e.get("fronts", []):
+					var fp: String = str(f["playerId"])
+					who4.append(fp)
+					names4.append("%s (%d)" % [_name(fp), int(f["size"])])
+					if not froms4.has(str(f["from"])):
+						froms4.append(str(f["from"]))
+					if human4 == "" and session.is_human(fp):
+						human4 = fp
+				var upto4 := i
+				if i + 1 < n and str(evs[i + 1]["kind"]) == Types.EVENT_OCCUPIED:
+					upto4 = i + 1
+				var lead4: String = human4 if human4 != "" else str(who4[0])
+				var other4: String = str(who4[1]) if str(who4[0]) == lead4 else str(who4[0])
+				var after_melee: bool = str(e.get("after", "")) == "melee"
+				out.append({"upto": upto4, "caption": ("The victors turn on each other at %s" if after_melee else "Scramble for %s") % _hex(to4),
+					"sub": "%s — every man for himself. %s is left standing with %d." % [", ".join(names4), _name(str(e["winnerId"])), int(e["winnerLeft"])],
+					"fight": true, "scramble": true, "event": e, "a": lead4, "b": other4, "attackers": who4,
+					"focus": froms4, "resolves": to4, "delay": 2.4, "sound": "melee", "a_won": true})
+				i = upto4
 			Types.EVENT_SPOILS:
 				var to2: String = str(e["to"])
 				var upto2 := i
@@ -399,16 +444,25 @@ func _build_beats() -> Array:
 				var hex: String = str(e["terrId"])
 				var who: String = str(e["playerId"])
 				if vacated.has(hex) and vacated[hex] != who:
-					out.append({"upto": i, "caption": "Walk-in!", "sub": "%s strolls into %s — %s left it bare." % [_name(who), _hex(hex), _name(vacated[hex])], "sound": "walkin", "delay": 2.0, "focus": [hex], "flash": hex, "flash_text": "WALK-IN", "resolves": hex, "walkin": who, "victim": vacated[hex]})
+					out.append({"upto": i, "caption": "Walk-in!", "sub": "%s into %s — %s left it bare." % [Style.says(_name(who), "strolls"), _hex(hex), _name(vacated[hex])], "sound": "walkin", "delay": 2.0, "focus": [hex], "flash": hex, "flash_text": "WALK-IN", "resolves": hex, "walkin": who, "victim": vacated[hex]})
 				else:
-					out.append({"upto": i, "caption": "%s takes %s" % [_name(who), _hex(hex)], "sub": "Nobody was home.", "sound": "capture", "delay": 1.1, "focus": [hex], "flash": hex, "flash_text": "+1", "resolves": hex})
+					out.append({"upto": i, "caption": "%s %s" % [Style.says(_name(who), "takes"), _hex(hex)], "sub": "Nobody was home.", "sound": "capture", "delay": 1.1, "focus": [hex], "flash": hex, "flash_text": "+1", "resolves": hex})
 			Types.EVENT_SURGE:
-				_packets.append({"from": str(e["from"]), "to": str(e["to"]), "strength": int(e["strength"]), "owner": str(e["playerId"]), "kind": "attack"})
-				out.append({"upto": i, "caption": "%s surges on!" % _name(str(e["playerId"])), "sub": "%d push on from %s into %s." % [int(e["strength"]), _hex(str(e["from"])), _hex(str(e["to"]))], "sound": "surge", "sound2": "hoofs", "delay": 1.4, "focus": [str(e["from"]), str(e["to"])]})
+				## the surge marches like any column, on from the land just taken; its arrow
+				## appears (and draws itself out) only when it sets off
+				var sp := {"from": str(e["from"]), "to": str(e["to"]), "strength": int(e["strength"]), "owner": str(e["playerId"]), "kind": "attack", "late": true}
+				_packets.append(sp)
+				out.append({"upto": i, "caption": "%s on!" % Style.says(_name(str(e["playerId"])), "surges"), "sub": "%d push on from %s into %s." % [int(e["strength"]), _hex(str(e["from"])), _hex(str(e["to"]))], "sound": "surge", "sound2": "hoofs", "delay": 1.6, "focus": [str(e["from"]), str(e["to"])], "surge_arrow": sp})
 			Types.EVENT_PLAYER_ELIMINATED:
-				out.append({"upto": i, "caption": "%s is wiped out" % _name(str(e["playerId"])), "sub": "Their banners fall.", "sound": "eliminated", "delay": 2.4, "eliminated": str(e["playerId"])})
+				out.append({"upto": i, "caption": "%s wiped out" % Style.says(_name(str(e["playerId"])), "is"), "sub": "Their banners fall.", "sound": "eliminated", "delay": 2.4, "eliminated": str(e["playerId"])})
 			Types.EVENT_CARDS_CAPTURED:
-				out.append({"upto": i, "caption": "Spoils of war", "sub": "%s seizes %s's %d card%s." % [_name(str(e["to"])), _name(str(e["from"])), (e["cards"] as Array).size(), "" if (e["cards"] as Array).size() == 1 else "s"], "sound": "card", "delay": 1.4})
+				var cc: Array = e["cards"]
+				var kinds: Array = []
+				for c in cc:
+					kinds.append({"sun": "Infantry", "moon": "Cavalry", "star": "Artillery", "wild": "Wild"}.get(str(c), str(c)))
+				out.append({"upto": i, "caption": "%s %s's war chest" % [Style.says(_name(str(e["to"])), "seizes"), _name(str(e["from"]))],
+					"sub": "Every card they held changes hands: %s." % ", ".join(kinds), "sound": "", "delay": 2.8,
+					"cards_to": str(e["to"]), "cards_from": str(e["from"]), "cards": cc})
 			Types.EVENT_ENTRENCHED:
 				dug += 1
 			Types.EVENT_CARD_DRAWN:
@@ -424,6 +478,29 @@ func _build_beats() -> Array:
 				out.append({"upto": i, "caption": "The dust settles", "sub": sub3.strip_edges(), "sound": "round", "delay": 1.3, "dig": true})
 		i += 1
 	return out
+
+
+func _stage_of(kind: String, after_surge: bool) -> String:
+	match kind:
+		Types.EVENT_CLASH:
+			return "surge" if after_surge else "clash"
+		Types.EVENT_INVASION, Types.EVENT_MELEE, Types.EVENT_SCRAMBLE, Types.EVENT_SPOILS, Types.EVENT_OCCUPIED:
+			return "surge" if after_surge else "assault"
+		Types.EVENT_PLAYER_ELIMINATED, Types.EVENT_CARDS_CAPTURED:
+			return "reckoning"
+	return ""
+
+
+func _stage_beat(st: String, upto: int) -> Dictionary:
+	var t := {
+		"clash": ["BORDER CLASHES", "Columns that march on each other meet in the field first."],
+		"assault": ["THE ASSAULTS", "Every army reaches its target. Defenders stand; the empty fall to whoever arrives."],
+		"surge": ["THE SURGES", "Every breakthrough charges on at once, after all the other battles."],
+		"reckoning": ["THE RECKONING", "Lands held dig in, cards are drawn, the fallen are counted."],
+	}
+	if not t.has(st):
+		return {}
+	return {"upto": maxi(0, upto), "caption": t[st][0], "sub": t[st][1], "sound": "phase_tap", "delay": 1.1, "stage": st}
 
 
 func _fight_beat(upto: int, title: String, subtitle: String, a: String, a_size: int, a_die: int, b: String, b_size: int, b_die: int, a_won: bool, left: int, sub: String, focus: Array, dest: String) -> Dictionary:
@@ -446,6 +523,7 @@ func _show(b: Dictionary) -> void:
 	if beat_hook.is_valid():
 		beat_hook.call(b)
 	var delay_base: float = Settings.battle_delay()
+	_banner.visible = not b.has("stage") ## a stage has the big banner of its own
 	_caption.text = str(b.get("caption", ""))
 	_sub.text = str(b.get("sub", ""))
 	_sub.visible = _sub.text != ""
@@ -456,11 +534,22 @@ func _show(b: Dictionary) -> void:
 	if b.has("sound2"):
 		get_tree().create_timer(0.5).timeout.connect(func(): Audio.sfx(str(b["sound2"]), -4.0))
 	if bool(b.get("reveal", false)):
-		board.orders = _packets.duplicate(true)
+		board.orders = []
+		for pk in _packets:
+			if not bool(pk.get("late", false)):
+				board.orders.append(pk.duplicate(true))
+	if b.has("surge_arrow"):
+		var sa: Dictionary = (b["surge_arrow"] as Dictionary).duplicate(true)
+		sa["born"] = board.now()
+		sa.erase("late")
+		board.orders.append(sa)
 	if b.has("resolves") and str(b["resolves"]) != "":
 		_resolved[str(b["resolves"])] = true
 	for o in board.orders:
 		o["alpha"] = 0.28 if _resolved.has(str(o["to"])) else 1.0
+		## a surge: the hop that took the land stays lit, so A → B → C reads as one march
+		if b.has("surge_arrow") and str(o["to"]) == str(b["surge_arrow"]["from"]) and str(o.get("owner", "")) == str(b["surge_arrow"]["owner"]):
+			o["alpha"] = 0.75
 	var focus: Array = b.get("focus", [])
 	board.battle = {}
 	for f in focus:
@@ -485,7 +574,7 @@ func _show(b: Dictionary) -> void:
 		board.clash = [str(ev["hexA"]), str(ev["hexB"])]
 		Audio.sfx("border_clash", -2.0)
 		_caption.text = "BORDER CLASH!"
-	_card.visible = bool(b.get("fight", false)) and not bool(b.get("melee", false))
+	_card.visible = bool(b.get("fight", false)) and not bool(b.get("melee", false)) and not bool(b.get("scramble", false))
 	if _card.visible:
 		_start_fight(b)
 	else:
@@ -576,12 +665,17 @@ func _start_fight(b: Dictionary) -> void:
 	_card_title.text = str(b["caption"])
 	_left.setup(str(b["a"]), _name(str(b["a"])), int(b["a_size"]), "attacks" if inv else "")
 	_right.setup(str(b["b"]), _name(str(b["b"])), int(b["b_size"]), "defends" if inv else "")
-	_dice_l.tint = Style.seat_color(str(b["a"]))
-	_dice_r.tint = Style.seat_color(str(b["b"]))
 	_result.text = ""
 	_roll_final = Vector2i(int(b["a_die"]), int(b["b_die"]))
-	_rolling = clampf(Settings.battle_delay() * 0.5, 0.35, 1.0)
-	Audio.sfx("dice")
+	## the deciding throw, each die made of what its army could afford
+	var fast: bool = Settings.battle_delay() < 0.8
+	_dice.gravity = 46.0 if fast else 36.0
+	_dice.pace = 1.5 if fast else 1.1
+	var dur: float = _dice.throw([
+		{"value": _roll_final.x, "n": int(b["a_size"]), "tint": Style.seat_color(str(b["a"])), "to": Vector2(-0.8, 0.0), "from": Vector3(-3.4, 2.4, -0.4)},
+		{"value": _roll_final.y, "n": int(b["b_size"]), "tint": Style.seat_color(str(b["b"])), "to": Vector2(0.8, 0.0), "from": Vector3(3.4, 2.4, -0.4), "delay": 0.04}])
+	_rolling = dur + 0.05
+	Audio.sfx("dice_shake", -6.0)
 	## the map shows the moment before the result
 	board.world = ViewEvents.apply_through(_pre, _events, int(b["upto"]) - (1 if int(b["upto"]) > 0 and str(_events[int(b["upto"])]["kind"]) == Types.EVENT_OCCUPIED else 0) - 1)
 	board.refresh()
@@ -593,9 +687,19 @@ func _reveal_result() -> void:
 		return
 	var ta: int = int(b["a_size"]) + int(b["a_die"])
 	var tb: int = int(b["b_size"]) + int(b["b_die"])
-	_left.total(ta)
-	_right.total(tb)
 	var a_won: bool = bool(b["a_won"])
+	var ev0: Dictionary = b.get("event", {})
+	if (ev0.get("rolls", []) as Array).size() > 0 and (ev0["rolls"][0] as Dictionary).has("sa"):
+		## volleys: the card tells the whole fight, men in and men left
+		var a_end: int = int(b["left"]) if a_won else int(ev0.get("attackerLeft", 0))
+		var b_end: int = 0 if a_won else int(b["left"])
+		_left.tally(int(b["a_size"]) + int(ev0.get("reservesAdded", 0)), a_end)
+		_right.tally(int(b["b_size"]), b_end)
+	else:
+		_left.total(ta)
+		_right.total(tb)
+	_dice.mark(0, "win" if a_won else "lose")
+	_dice.mark(1, "lose" if a_won else "win")
 	var winner: String = str(b["a"]) if a_won else str(b["b"])
 	var loser: String = str(b["b"]) if a_won else str(b["a"])
 	var inv: bool = bool(b.get("invasion", false))
@@ -605,22 +709,25 @@ func _reveal_result() -> void:
 		txt = "Reserves +%d!  " % int(ev["reservesAdded"])
 		Audio.sfx("reserves", -4.0)
 	if inv and bool(ev.get("fellBack", false)):
-		txt += "%s falls back to %s — %d saved" % [_name(str(b["a"])), _hex(str(ev.get("refuge", ""))), int(ev.get("attackerLeft", 0))]
+		txt += "%s back to %s — %d saved" % [Style.says(_name(str(b["a"])), "falls"), _hex(str(ev.get("refuge", ""))), int(ev.get("attackerLeft", 0))]
 		Audio.sfx("retreat")
 	elif inv:
 		if a_won:
-			txt += "%s takes %s with %d left" % [_name(winner), _hex(str(b["resolves"])), int(b["left"])]
+			txt += "%s %s with %d left" % [Style.says(_name(winner), "takes"), _hex(str(b["resolves"])), int(b["left"])]
 			if ta == tb:
 				txt += "  (ties go to the attacker)"
 			Audio.sfx("capture")
 		else:
-			txt += "%s holds! %d remain" % [_name(winner), int(b["left"])]
+			txt += "%s! %d remain" % [Style.says(_name(winner), "holds"), int(b["left"])]
 			Audio.sfx("hold")
 	else:
-		txt = "%s wins with %d left — %s is destroyed" % [_name(winner), int(b["left"]), _name(loser)]
+		txt = "%s with %d left — %s destroyed" % [Style.says(_name(winner), "wins"), int(b["left"]), Style.says(_name(loser), "is")]
 		Audio.sfx("clash")
 	_result.text = txt
 	_result.add_theme_color_override("font_color", Style.seat_color(winner).lightened(0.35))
+	if not (inv and bool(ev.get("fellBack", false))):
+		var cheering: int = int(b["left"])
+		get_tree().create_timer(0.3).timeout.connect(func(): Audio.cheer(cheering, -12.0)) ## a distant cheer, as big as the army that won
 	_apply(b)
 	if inv and a_won:
 		board.float_text(str(b["resolves"]), "Captured", Style.GOLD, 1.8, 26)
@@ -665,6 +772,9 @@ class _Side extends VBoxContainer:
 	func total(t: int) -> void:
 		_size.text = "%d + die = %d" % [int(get_meta("n", 0)), t]
 
+	func tally(start: int, end: int) -> void:
+		_size.text = "%d → %d" % [start, end]
+
 
 class _Mark extends Control:
 	const Style := preload("res://game/core/style.gd")
@@ -674,51 +784,3 @@ class _Mark extends Control:
 		if pid == "":
 			return
 		Style.draw_shape(self, Style.seat_shape(pid), size * 0.5, 17.0, Style.seat_color(pid), Style.CREAM, 2.0)
-
-
-class _Die extends Control:
-	var value := 1
-	var rolling := false
-	var tint := Color.WHITE
-	var _tick := 0.0
-
-	func _init() -> void:
-		custom_minimum_size = Vector2(64, 64)
-
-	func _process(delta: float) -> void:
-		if rolling:
-			_tick += delta
-			if _tick > 0.06:
-				_tick = 0.0
-				value = randi_range(1, 6)
-				queue_redraw()
-		elif _tick != -1.0:
-			_tick = -1.0
-			queue_redraw()
-
-	func _draw() -> void:
-		var r := Rect2(Vector2(6, 6), size - Vector2(12, 12))
-		var wob := 0.0
-		if rolling:
-			wob = randf_range(-0.12, 0.12)
-		draw_set_transform(size * 0.5, wob, Vector2.ONE)
-		var rr := Rect2(-r.size * 0.5, r.size)
-		var body := StyleBoxFlat.new()
-		body.bg_color = Color(0.96, 0.93, 0.85)
-		body.border_color = tint.darkened(0.2)
-		body.set_border_width_all(4)
-		body.set_corner_radius_all(9)
-		body.shadow_color = Color(0, 0, 0, 0.4)
-		body.shadow_size = 4
-		draw_style_box(body, rr)
-		var pips := {
-			1: [Vector2(0, 0)],
-			2: [Vector2(-1, -1), Vector2(1, 1)],
-			3: [Vector2(-1, -1), Vector2(0, 0), Vector2(1, 1)],
-			4: [Vector2(-1, -1), Vector2(1, -1), Vector2(-1, 1), Vector2(1, 1)],
-			5: [Vector2(-1, -1), Vector2(1, -1), Vector2(0, 0), Vector2(-1, 1), Vector2(1, 1)],
-			6: [Vector2(-1, -1), Vector2(1, -1), Vector2(-1, 0), Vector2(1, 0), Vector2(-1, 1), Vector2(1, 1)],
-		}
-		for p in pips[clampi(value, 1, 6)]:
-			draw_circle(p * r.size.x * 0.27, 5.0, Color(0.12, 0.08, 0.06))
-		draw_set_transform(Vector2.ZERO, 0.0, Vector2.ONE)

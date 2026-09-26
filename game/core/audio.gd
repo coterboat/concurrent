@@ -31,6 +31,8 @@ func _ready() -> void:
 	_voice.finished.connect(func(): _duck(false))
 	for i in 10:
 		_pool.append(_player("SFX"))
+	for i in 6:
+		_knocks.append(_player("SFX"))
 	apply_volumes()
 
 
@@ -85,12 +87,44 @@ func _stream(path_no_ext: String, loop: bool = false) -> AudioStream:
 	return s
 
 
+## v1.5: some sounds are a handful of takes, picked at random so a long fight never repeats
+## itself: black-powder volleys and shots that boom, and horses at a real three-beat gallop.
+const VARIANTS := {
+	"volley": ["musket_volley_1", "musket_volley_2", "musket_volley_3"],
+	"shot": ["musket_shot_1", "musket_shot_2"],
+	"hoofs": ["cavalry_gallop"],
+	"cavalry": ["cavalry_charge"],
+	"far": ["far_cannon", "far_volley", "far_drums", "far_bugle", "far_shouts"],
+}
+var _last_variant := {}
+
+
 func sfx(name: String, volume_db: float = 0.0, pitch_jitter: float = 0.04) -> void:
 	## Same sound within 60 ms is dropped so a burst of events does not stack.
+	if VARIANTS.has(name):
+		var takes: Array = []
+		for t in VARIANTS[name]:
+			if _stream(SFX_DIR + str(t)) != null:
+				takes.append(str(t))
+		if not takes.is_empty():
+			if takes.size() > 1:
+				takes.erase(_last_variant.get(name, ""))
+			var pick: String = str(takes[randi() % takes.size()])
+			_last_variant[name] = pick
+			var now0 := Time.get_ticks_msec()
+			if now0 - int(_last_play.get(name, -1000)) < 60:
+				return
+			_last_play[name] = now0
+			_play_sfx(pick, volume_db, pitch_jitter)
+			return
 	var now := Time.get_ticks_msec()
 	if now - int(_last_play.get(name, -1000)) < 60:
 		return
 	_last_play[name] = now
+	_play_sfx(name, volume_db, pitch_jitter)
+
+
+func _play_sfx(name: String, volume_db: float, pitch_jitter: float) -> void:
 	var s := _stream(SFX_DIR + name)
 	if s == null:
 		return
@@ -100,6 +134,40 @@ func sfx(name: String, volume_db: float = 0.0, pitch_jitter: float = 0.04) -> vo
 	p.volume_db = volume_db
 	p.pitch_scale = 1.0 + randf_range(-pitch_jitter, pitch_jitter)
 	p.play()
+
+
+## v1.4: every die that hits the table knocks, by what it is made of, as hard as it hit.
+## Their own small pool, so a clatter of dice never steals a volley's player.
+var _knocks: Array = []
+var _knock_i := 0
+
+
+func knock(name: String, strength: float) -> void:
+	var s := _stream(SFX_DIR + name)
+	if s == null:
+		s = _stream(SFX_DIR + "dice_click")
+	if s == null:
+		return
+	var p: AudioStreamPlayer = _knocks[_knock_i]
+	_knock_i = (_knock_i + 1) % _knocks.size()
+	p.stream = s
+	p.volume_db = linear_to_db(clampf(0.18 + 0.82 * strength, 0.05, 1.0)) - 3.0
+	p.pitch_scale = randf_range(0.9, 1.12) * (1.0 + (1.0 - strength) * 0.08)
+	p.play()
+
+
+func cheer(n: int, volume_db: float = -6.0) -> void:
+	## a handful of men cheer for a handful; a grand army roars. Bigger is fuller, not louder:
+	## the takes are levelled, and the big ones sit a little further back.
+	if n <= 0:
+		return
+	if n <= 4:
+		sfx("cheer_few", volume_db + 1.0, 0.06)
+	elif n <= 14:
+		sfx("cheer_company", volume_db, 0.05)
+	else:
+		sfx("cheer_company", volume_db - 3.0, 0.05)
+		get_tree().create_timer(0.12).timeout.connect(func(): sfx("cheer_army", volume_db - (2.0 if n >= 30 else 4.0), 0.03))
 
 
 ## v1.3 music: each mood is a playlist of takes. A take plays through once, and a few

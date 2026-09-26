@@ -25,7 +25,8 @@ const EVENT_ENTRENCHED := "Entrenched"
 const EVENT_SET_CASHED := "SetCashed"
 const EVENT_CARDS_CAPTURED := "CardsCaptured"
 const EVENT_MELEE := "Melee" ## v1.3: several invaders storm one land at once
-const EVENT_MANEUVERED := "Maneuvered" ## v1.3: a move in the reinforcement phase
+const EVENT_MANEUVERED := "Maneuvered" ## v1.3: a move in the regroup phase
+const EVENT_SCRAMBLE := "Scramble" ## v1.4: three or more (or two) armies of different commanders fight for one prize at once
 
 const UNOCCUPIED := ""
 
@@ -60,7 +61,11 @@ class MapDef extends RefCounted:
 	var region_terrain: Dictionary = {} ## region -> battlefield key
 	var pools: Dictionary = {} ## player count (int) -> starting pool
 	var wild_cards: bool = true ## v1.3 new games: false (men, horses, cannon only); the session sets it
-	var maneuvers: bool = false ## v1.3 new games: true (a reinforcement phase after the battles)
+	var maneuvers: bool = false ## v1.3 new games: true (a regroup phase after the battles)
+	var scramble: bool = false ## v1.4 new games: true (spoils are one free-for-all, not a ladder of duels)
+	var dig_cap: int = 0 ## v1.4 new games: 2 (v1.5: 3) (no land digs in deeper); 0 = the old ceiling of 1 + neighbours
+	var rules: int = 0 ## v1.5 new games: 15 (surges clash head-on and carry a count)
+	var first_digs_in: bool = false ## the man left behind is locked in as a dug-in defender for good (tried in v1.5; off: it halved the conquests)
 
 	func territory_ids() -> PackedStringArray:
 		var ids: Array = territories.keys()
@@ -353,6 +358,7 @@ class Sheet extends RefCounted:
 	var packets: Array = [] ## Array of Packet
 	var calls: Dictionary = {} ## battle key -> Array of calls made live ("p" press, "r" reserves, "f" fall back)
 	var surges: Dictionary = {} ## v1.3: land being attacked -> land to surge into (the whole force that takes it)
+	var surge_n: Dictionary = {} ## v1.5: land being attacked -> most men to push on (absent = all but the one who stays)
 
 	func to_dict() -> Dictionary:
 		var place := {}
@@ -379,6 +385,13 @@ class Sheet extends RefCounted:
 			for k in sk:
 				sg[str(k)] = str(surges[k])
 			d["surges"] = sg
+		if not surge_n.is_empty():
+			var sn := {}
+			var nk: Array = surge_n.keys()
+			nk.sort()
+			for k in nk:
+				sn[str(k)] = int(surge_n[k])
+			d["surgeN"] = sn
 		if not calls.is_empty():
 			var c := {}
 			var ck: Array = calls.keys()
@@ -410,6 +423,10 @@ class Sheet extends RefCounted:
 		if typeof(surges_raw) == TYPE_DICTIONARY:
 			for k in surges_raw.keys():
 				s.surges[str(k)] = str(surges_raw[k])
+		var sn_raw: Variant = data.get("surgeN", {})
+		if typeof(sn_raw) == TYPE_DICTIONARY:
+			for k in sn_raw.keys():
+				s.surge_n[str(k)] = int(sn_raw[k])
 		var calls_raw: Variant = data.get("calls", {})
 		if typeof(calls_raw) == TYPE_DICTIONARY:
 			for k in calls_raw.keys():

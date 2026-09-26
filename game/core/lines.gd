@@ -23,10 +23,11 @@ static func has(who: String, key: String) -> bool:
 
 
 static func voice_path(who: String, key: String) -> String:
-	## v1.3: a second take of the commanders' voices (assets/voice13), chosen in Settings.
+	## v1.3: a second take of the commanders' voices (assets/voice13), the default since
+	## v1.4 (Oren and Ysolde recast); Settings can bring back the classic takes.
 	## The advisor keeps his one voice either way.
 	var st: Node = Engine.get_main_loop().root.get_node_or_null("Settings") if Engine.get_main_loop() is SceneTree else null
-	if who != "advisor" and st != null and str(st.get_value("commander_voices", "classic")) == "new":
+	if who != "advisor" and (st == null or str(st.get_value("commander_voices", "new")) != "classic"):
 		for ext in [".mp3", ".wav", ".ogg"]:
 			var p2 := "res://assets/voice13/%s/%s%s" % [who, key, ext]
 			if ResourceLoader.exists(p2):

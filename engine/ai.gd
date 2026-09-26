@@ -239,7 +239,7 @@ static func _heuristic(world: Types.World, map: Types.MapDef, pid: String, rng: 
 
 	var p := Planner.new()
 	p.setup(world, map, pid, rng, _endgame(world, map, prof))
-	if world.round > 1 and not map.maneuvers: ## v1.3: troops move in the reinforcement phase instead
+	if world.round > 1 and not map.maneuvers: ## v1.3: troops move in the regroup phase instead
 		sheet.regroup = p.choose_regroup()
 		if sheet.regroup != null:
 			Validate._apply_regroup_to(p.w, sheet)
@@ -726,3 +726,151 @@ class Planner extends RefCounted:
 				p.surge_to = str(a["surge"])
 				out.append(p)
 		return out
+
+
+# ---------------------------------------------------------------- the land draft (v1.4)
+
+static func draft_pick(world: Types.World, map: Types.MapDef, pid: String, rng: RefCounted, prof: Dictionary, picks_left: Dictionary, upcoming: Array = []) -> String:
+	## The hard commanders look one turn ahead: for each of their best few claims, they
+	## let the rivals who choose before their next turn take what they would take, then
+	## judge the board they are left with. Everyone else claims by the land's own merits.
+	if bool(prof.get("search", false)) and not upcoming.is_empty():
+		var ranked: Array = _draft_rank(world, map, pid, rng, prof, picks_left)
+		var best_l := ""
+		var best_s := -INF
+		for k in mini(6, ranked.size()):
+			var cand: String = str(ranked[k][1])
+			var w2: Types.World = world.clone()
+			w2.set_hex(cand, pid, 1)
+			var left2: Dictionary = picks_left.duplicate()
+			left2[pid] = int(left2.get(pid, 1)) - 1
+			for rival in upcoming:
+				if str(rival) == pid:
+					break
+				var calm := {"region": 1.0, "noise": 0.0}
+				var r_rank: Array = _draft_rank(w2, map, str(rival), rng, calm, left2)
+				if r_rank.is_empty():
+					break
+				w2.set_hex(str(r_rank[0][1]), str(rival), 1)
+				left2[str(rival)] = int(left2.get(str(rival), 1)) - 1
+			var score: float = _draft_eval(w2, map, pid, left2) + 0.35 * float(ranked[k][0])
+			if score > best_s:
+				best_s = score
+				best_l = cand
+		if best_l != "":
+			return best_l
+	var r: Array = _draft_rank(world, map, pid, rng, prof, picks_left)
+	return str(r[0][1]) if not r.is_empty() else ""
+
+
+static func _draft_eval(world: Types.World, map: Types.MapDef, pid: String, picks_left: Dictionary) -> float:
+	## how good a half-drafted board is for pid: regions still ours to finish, a solid
+	## block, and few borders with rivals
+	var v := 0.0
+	var mine_left: int = int(picks_left.get(pid, 0))
+	for reg in map.region_bonus.keys():
+		var members := MapLib.region_members(map, str(reg))
+		var ours := 0
+		var open := 0
+		var rival := false
+		for m in members:
+			var o: String = world.get_territory(m).owner
+			if o == pid:
+				ours += 1
+			elif o == Types.UNOCCUPIED:
+				open += 1
+			elif o != Income.NEUTRAL_ID:
+				rival = true
+		if ours == 0:
+			continue
+		var bonus: float = float(map.region_bonus[reg])
+		if not rival and members.size() - ours <= mine_left:
+			var frac: float = float(ours) / float(members.size())
+			v += bonus * 3.0 * frac * frac
+		elif rival:
+			v -= 0.4 * bonus * float(ours) / float(members.size())
+	for t in MapLib.player_territory_ids(world, pid):
+		for n in MapLib.neighbors(map, t):
+			var o2: String = world.get_territory(n).owner
+			if o2 == pid:
+				v += 0.35
+			elif o2 != Types.UNOCCUPIED and o2 != Income.NEUTRAL_ID:
+				v -= 0.3
+	return v
+
+
+static func _draft_rank(world: Types.World, map: Types.MapDef, pid: String, rng: RefCounted, prof: Dictionary, picks_left: Dictionary) -> Array:
+	## [[value, land], ...] best first. Weighs, for every land still free:
+	##   the region it opens (worth more the more of it we could still own outright, and
+	##     nothing much once a rival has a foot in it),
+	##   friends next door (a solid block holds and pays the bloc bonus),
+	##   rivals next door (a claim ringed by enemies is a claim lost in round one),
+	##   denial (the last free land of a region a rival is about to own),
+	##   and room to grow. Sloppier commanders add noise.
+	## picks_left: pid -> claims each commander still has to make.
+	var free: Array = []
+	for t in map.territory_ids():
+		if world.get_territory(str(t)).owner == Types.UNOCCUPIED:
+			free.append(str(t))
+	var out: Array = []
+	if free.is_empty():
+		return out
+	free.sort()
+	var mine_left: int = int(picks_left.get(pid, 1))
+	var region_w: float = float(prof.get("region", 1.0))
+	var noise: float = float(prof.get("noise", 0.1))
+	for t in free:
+		var td: Types.TerritoryDef = map.get_territory(t)
+		var v := 0.0
+		## the region
+		var reg: String = td.region
+		if reg != "" and map.region_bonus.has(reg):
+			var bonus: float = float(map.region_bonus[reg])
+			var size := 0
+			var ours := 0
+			var theirs := {}
+			var open := 0
+			for u in map.territory_ids():
+				if map.get_territory(str(u)).region != reg:
+					continue
+				size += 1
+				var o: String = world.get_territory(str(u)).owner
+				if o == pid:
+					ours += 1
+				elif o == Types.UNOCCUPIED:
+					open += 1
+				else:
+					theirs[o] = int(theirs.get(o, 0)) + 1
+			var per: float = bonus / float(maxi(1, size))
+			if theirs.is_empty():
+				## still ours to take: the closer to whole, and the cheaper to finish, the better
+				var need: int = size - ours
+				var reach: float = 1.0 if need <= mine_left else 0.45
+				v += region_w * (1.4 * per + 2.2 * bonus * float(ours + 1) / float(size)) * reach
+			else:
+				v += region_w * 0.25 * per
+				## a rival who could close it out with the free lands left: take one to spoil it
+				for o in theirs.keys():
+					if int(theirs[o]) + open == size and int(theirs[o]) >= maxi(1, size - 3):
+						v += region_w * (1.2 + 0.9 * bonus) * float(theirs[o]) / float(size)
+		## neighbours
+		var friends := 0
+		var rivals := 0
+		var empty := 0
+		for n in MapLib.neighbors(map, t):
+			var o2: String = world.get_territory(str(n)).owner
+			if o2 == pid:
+				friends += 1
+			elif o2 == Types.UNOCCUPIED:
+				empty += 1
+			elif o2 != Income.NEUTRAL_ID:
+				rivals += 1
+		v += 1.6 * friends - 0.9 * rivals + 0.35 * empty
+		var deg: int = MapLib.neighbors(map, t).size()
+		v += 0.25 * float(maxi(0, 5 - deg)) ## a land with few borders is easy to hold
+		if noise > 0.0:
+			v *= 1.0 + noise * (float(rng.roll_int(0, 1000)) / 1000.0 - 0.5) * 2.0
+			v += noise * float(rng.roll_int(0, 1000)) / 1000.0
+		out.append([v, t])
+	out.sort_custom(func(a, b): return float(a[0]) > float(b[0]) or (float(a[0]) == float(b[0]) and str(a[1]) < str(b[1])))
+	return out

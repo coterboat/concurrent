@@ -23,6 +23,7 @@ static func summarize_events(events: Array) -> Dictionary:
 	var reserves := 0
 	var fallbacks := 0
 	var melees := 0
+	var scrambles := 0
 	for event in events:
 		var kind: String = str(event.get("kind", ""))
 		match kind:
@@ -54,6 +55,8 @@ static func summarize_events(events: Array) -> Dictionary:
 					r32 += 1
 					if won:
 						r32_cap += 1
+			Types.EVENT_SCRAMBLE:
+				scrambles += 1
 			Types.EVENT_MELEE:
 				melees += 1
 				for f in event.get("fronts", []):
@@ -83,6 +86,7 @@ static func summarize_events(events: Array) -> Dictionary:
 		"reserves": reserves,
 		"fallbacks": fallbacks,
 		"melees": melees,
+		"scrambles": scrambles,
 		"leader": leader,
 		"scores": scores,
 		"winner": winner,

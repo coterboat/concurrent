@@ -262,6 +262,29 @@ func refresh() -> void:
 				Audio.sfx("place"), Style.CREAM, 14))
 			_tally_row.add_child(Style.chip("Clear", func(): s.clear_placements(), Style.MUTED, 14))
 			_dial.set_label("SEAL", "deployment")
+		Session.Phase.PLANNING when s.plan_step == "reinforce":
+			## v1.5 the reinforcement phase: recruits (and cards) first
+			_tally_title.text = ("FINAL ROUND · " if s.is_last_round() and not s.conquest() else "") + "REINFORCEMENT PHASE · ROUND %d" % s.world.round
+			_tally.text = "%d of %d recruits placed" % [s.placed_total(), s.income_total()]
+			var sub_r := "Click your lands to place them · right-click takes one back"
+			if s.map.cards and s.hand().size() > 0:
+				sub_r = "%d card%s in hand · %s" % [s.hand().size(), "" if s.hand().size() == 1 else "s", sub_r]
+			_tally_sub.text = sub_r
+			var ap2 := Style.chip("Auto-place", func():
+				s.auto_deploy()
+				Audio.sfx("place"), Style.CREAM, 14)
+			ap2.disabled = s.income_left() <= 0
+			_tally_row.add_child(ap2)
+			_tally_row.add_child(Style.chip("Clear", func(): s.clear_placements(), Style.MUTED, 14))
+			if s.map.cards:
+				var ready2: bool = Cards.best_set(s.hand()).size() == 3
+				var label2 := "Cards (%d)" % s.hand().size()
+				if not s.sheet().cash_set.is_empty():
+					label2 = "Cards ✓ +%d" % s.set_value_now()
+				elif ready2:
+					label2 = "Cards ✦ set!"
+				_tally_row.add_child(Style.chip(label2, func(): gs.open_cards(), Style.GOLD if ready2 or not s.sheet().cash_set.is_empty() else Style.CREAM, 14))
+			_dial.set_label("ORDERS", "next ▸")
 		Session.Phase.PLANNING:
 			var sh: Types.Sheet = s.sheet()
 			var targets := {}
@@ -272,7 +295,7 @@ func refresh() -> void:
 				parts.append("%d attack%s" % [targets.size(), "" if targets.size() == 1 else "s"])
 			if sh.regroup != null:
 				parts.append("1 move")
-			_tally_title.text = "FINAL ORDERS" if s.is_last_round() and not s.conquest() else "ORDERS · ROUND %d" % s.world.round
+			_tally_title.text = "FINAL ORDERS" if s.is_last_round() and not s.conquest() else "ORDERS PHASE · ROUND %d" % s.world.round
 			_tally.text = ", ".join(parts) if not parts.is_empty() else "Holding everything"
 			var sub := "%d of %d troops placed" % [s.placed_total(), s.income_total()]
 			if s.map.cards and s.hand().size() > 0:
@@ -280,12 +303,8 @@ func refresh() -> void:
 				if not s.sheet().cash_set.is_empty():
 					sub += " (trading +%d)" % s.set_value_now()
 			_tally_sub.text = sub
+			_tally_row.add_child(Style.chip("◀ Recruits", func(): s.back_to_reinforce(), Style.PARCH, 14))
 			_tally_row.add_child(Style.chip("Review", func(): gs.open_drawer(), Style.CREAM, 14))
-			var ap := Style.chip("Auto-place", func():
-				s.auto_deploy()
-				Audio.sfx("place"), Style.CREAM, 14)
-			ap.disabled = s.income_left() <= 0
-			_tally_row.add_child(ap)
 			if s.map.cards:
 				## the hand opens on the table; a set glows when one is ready
 				var ready: bool = Cards.best_set(s.hand()).size() == 3
@@ -296,12 +315,30 @@ func refresh() -> void:
 					label = "Cards ✦ set!"
 				_tally_row.add_child(Style.chip(label, func(): gs.open_cards(), Style.GOLD if ready or not s.sheet().cash_set.is_empty() else Style.CREAM, 14))
 			_dial.set_label("SEAL", "orders")
+		Session.Phase.DRAFT:
+			var turn: String = s.draft_turn()
+			var picking: bool = str(gs._draft_state) == "picking"
+			_tally_title.text = "CLAIMING THE LANDS"
+			_tally.text = ("%s's pick" % s.name_of(turn)) if picking and turn != "" else "Throwing for the order"
+			var free := 0
+			for t in s.map.territory_ids():
+				if s.world.get_territory(str(t)).owner == Types.UNOCCUPIED:
+					free += 1
+			_tally_sub.text = "%d land%s each · %d still free" % [int(s.draft.get("quota", 0)), "" if int(s.draft.get("quota", 0)) == 1 else "s", free]
+			if picking and s.is_human(turn):
+				_tally_row.add_child(Style.chip("Advisor's pick", func(): gs.draft_advise(), Style.CREAM, 14))
+				_dial.set_label("PICK", "for me")
+			else:
+				_tally_row.add_child(Style.chip("Hurry ▶▶" if not gs.draft_fast else "Normal pace", func():
+					gs.draft_fast = not gs.draft_fast
+					refresh(), Style.PARCH, 14))
+				_dial.set_label("…", "")
 		Session.Phase.MANEUVER:
 			var men := 0
 			for m in s.my_moves():
 				men += int(m["n"])
 			var k: int = s.my_moves().size()
-			_tally_title.text = "REINFORCEMENT PHASE"
+			_tally_title.text = "REGROUP PHASE"
 			_tally.text = ("%d march%s · %d soldier%s" % [k, "" if k == 1 else "es", men, "" if men == 1 else "s"]) if k > 0 else "Every post holds"
 			_tally_sub.text = "Drag between your lands. One land per soldier."
 			_tally_row.add_child(Style.chip("Advisor's marches", func():

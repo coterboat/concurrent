@@ -24,7 +24,7 @@ static func advice(s: Node) -> Array:
 	var w: Types.World = s.world
 	var map: Types.MapDef = s.map
 	if s.phase == Session.Phase.OPENING:
-		out.append(_item("deploy", "Place your starting armies: click a land, then click it again to add. Put strength where enemies touch you — and on lands that could complete a region.", "neutral", "deploy", [], 50))
+		out.append(_item("deploy", "Place your starting armies: click one of your lands to add one (right-click takes one back). Put strength where enemies touch you — and on lands that could complete a region.", "neutral", "deploy", [], 50))
 		return out
 	## 1. unplaced men
 	var left: int = s.income_left()
@@ -212,21 +212,25 @@ static func lesson(s: Node, surge_pick: int) -> Dictionary:
 	if bool(s.config.get("tutorial", false)):
 		var r: int = s.world.round
 		if ph == Session.Phase.OPENING:
-			return _item("t-open", "Welcome, Commander. This is the Isthmus: a north shore and a south shore joined only by The Gate. First, place your starting armies — click a land to select it, click again to add.", "neutral", "welcome", [], 150)
+			return _item("t-open", "Welcome, Commander. This is the Isthmus: a north shore and a south shore joined only by The Gate. First, place your starting armies — click one of our lands to add one there.", "neutral", "welcome", [], 150)
 		if r == 1:
-			if s.placed_total() < s.income_total():
-				return _item("t-r1a", "Every round brings reinforcements. Click our lands to place them — they can attack this very round. The ≤ badge on an enemy land is the most it could hold after they secretly reinforce.", "neutral", "reinforce", [], 150)
+			if s.plan_step == "reinforce":
+				if s.placed_total() < s.income_total():
+					return _item("t-r1a", "Every round begins with the reinforcement phase. Click our lands to place the recruits — they can attack this very round. The ≤ badge on an enemy land is the most it could hold after they secretly reinforce.", "neutral", "reinforce", [], 150)
+				return _item("t-r1a2", "All placed. Press ORDERS to move on to the orders phase and choose where to strike.", "pleased", "", [], 150)
 			if s.sheet().packets.is_empty():
 				return _item("t-r1b", "Now attack: with our land selected, click an enemy or empty neighbor, or drag onto it. Every order happens at once — and armies you send LEAVE HOME.", "neutral", "attack_hint", [], 150)
 			return _item("t-r1c", battle_rule + " Happy? Press SEAL, then watch it unfold — you roll the dice in your own battles.", "pleased", "", [], 150)
 		if r == 2:
-			return _item("t-r2", "Lands we hold dig in: each round a held land gains a dug-in defender (the gold shield beside its number). They never march, so a dug-in land can send every other soldier and still stay ours. And after every round's battles comes the reinforcement phase, when we march troops one land toward the front." if s.map.maneuvers else "Lands we hold dig in: each round a held land gains a dug-in defender (the little shield). They never march, so a dug-in land can send every other soldier and still stay ours. From now on we may also make one move: drag onto a land of ours.", "neutral", "dug_in", [], 150)
+			return _item("t-r2", "Lands we hold dig in: each round a held land gains a dug-in defender (the gold shield beside its number). They never march, so a dug-in land can send every other soldier and still stay ours. And after every round's battles comes the regroup phase, when we march troops one land toward the front." if s.map.maneuvers else "Lands we hold dig in: each round a held land gains a dug-in defender (the little shield). They never march, so a dug-in land can send every other soldier and still stay ours. From now on we may also make one move: drag onto a land of ours.", "neutral", "dug_in", [], 150)
 		if r == 3:
-			return _item("t-r3", "Surge: click the number on an attack arrow and press 'Surge onward'. If the attack wins, the survivors push on into the next land — after every other battle.", "neutral", "surge", [], 150)
+			return _item("t-r3", "Surge: after ordering an attack, drag from the land you're attacking on to the next one. If the attack wins, the men who took it push on — after every other battle. Click the surge arrow to choose how many.", "neutral", "surge", [], 150)
 		if s.is_last_round():
 			return _item("t-last", "Final round! Score is lands plus region bonuses. Soldiers left standing are worth nothing now — spend them.", "alarmed", "final", [], 150)
 		if r == 4:
 			return _item("t-r4", "Look for a walk-in: the faded arrows show where everyone marched last round. A land left with one man falls to a small push.", "neutral", "", [], 150)
+	elif s.world.round == 1 and ph == Session.Phase.PLANNING and s.plan_step == "reinforce":
+		return _item("r1r", "The reinforcement phase: click our lands to place the recruits, then press ORDERS. Or press 'Advisor's plan' and I will draft the whole sheet for you.", "neutral", "", [], 35)
 	elif s.world.round == 1 and ph == Session.Phase.PLANNING and s.sheet().packets.is_empty():
-		return _item("r1", "Select one of our lands, then click an enemy neighbor to attack — or drag onto it. Or press 'Advisor's plan' and I will draft the whole sheet for you.", "neutral", "", [], 35)
+		return _item("r1", "The orders phase: select one of our lands, then click an enemy neighbor to attack — or drag onto it.", "neutral", "", [], 35)
 	return {}

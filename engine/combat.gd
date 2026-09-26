@@ -111,6 +111,65 @@ static func spoils(left_armies: int, right_armies: int, rng: RefCounted, mode: S
 	return clash(left_armies, right_armies, rng, mode)
 
 
+static func scramble(sizes: Array, rng: RefCounted) -> Dictionary:
+	## v1.4 spoils: every army fights every other at once. Each salvo, every pair still
+	## standing duels once: score = 5 x die + this army's weight against that foe, where an
+	## army splits its men across its foes in proportion to their size
+	## (weight = mine x theirs / all my foes). The loser of a duel loses one man; a tie
+	## costs nobody. Duels run in a fixed order and a man who is down fights no more that
+	## salvo, so someone is always left standing. With two armies it is a volley fight.
+	## Returns {salvos: [[{i, j, a, b, si, sj, w}]], left: [n], winner: index}.
+	var left: Array = []
+	for n in sizes:
+		left.append(maxi(0, int(n)))
+	var salvos: Array = []
+	var guard := 0
+	while _standing(left) > 1 and guard < 4000:
+		guard += 1
+		var snap: Array = left.duplicate()
+		var tot := 0
+		for v in snap:
+			tot += int(v)
+		var salvo: Array = []
+		for i in left.size():
+			for j in range(i + 1, left.size()):
+				if int(left[i]) <= 0 or int(left[j]) <= 0:
+					continue
+				var wi: float = float(snap[i]) * float(snap[j]) / float(maxi(1, tot - int(snap[i])))
+				var wj: float = float(snap[j]) * float(snap[i]) / float(maxi(1, tot - int(snap[j])))
+				var di: int = rng.roll_d6()
+				var dj: int = rng.roll_d6()
+				var si: float = float(VOLLEY_DIE * di) + wi
+				var sj: float = float(VOLLEY_DIE * dj) + wj
+				var w := ""
+				if si > sj:
+					w = "a"
+					left[j] = int(left[j]) - 1
+				elif sj > si:
+					w = "b"
+					left[i] = int(left[i]) - 1
+				salvo.append({"i": i, "j": j, "a": di, "b": dj, "si": snappedf(wi, 0.1), "sj": snappedf(wj, 0.1), "w": w})
+		salvos.append(salvo)
+	var winner := 0
+	for k in left.size():
+		if int(left[k]) > int(left[winner]):
+			winner = k
+	if _standing(left) > 1:
+		## the guard (never seen): the biggest army carries the field, the rest are routed
+		for k in left.size():
+			if k != winner:
+				left[k] = 0
+	return {"salvos": salvos, "left": left, "winner": winner}
+
+
+static func _standing(left: Array) -> int:
+	var n := 0
+	for v in left:
+		if int(v) > 0:
+			n += 1
+	return n
+
+
 static func volley_once(a: int, d: int, rng: RefCounted, reroll_ties: bool) -> Dictionary:
 	## One volley, rolled exactly as _volleys rolls it (attacker die first).
 	var da: int = rng.roll_d6()

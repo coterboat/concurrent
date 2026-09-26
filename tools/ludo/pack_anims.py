@@ -107,6 +107,13 @@ def main():
         ("cannon_fire", None, gun),
         ("cannon_reload", None, gun),
     ]
+    ## v1.4 aiming poses: single frames on the shared canvas; the theater kicks, flashes and smokes them
+    for name in ("soldier_aim", "soldier_kneel_aim"):
+        raw = os.path.join(ROOT, "assets/raw/battle/%s_pad.png" % name)
+        if os.path.exists(raw):
+            out = "assets/battle/%s.webp" % name
+            print(tool("shrink", raw, "1", "1", "384", out, "1"))
+            patch(out, ax=inf[0], ay=inf[1], fill=inf[2])
     for name, order, (ax, ay, fill) in battle:
         raw = os.path.join(ROOT, "assets/raw/battle/%s.webp" % name)
         if not os.path.exists(raw):

@@ -14,6 +14,8 @@ static func apply(world: Types.World, event: Dictionary) -> void:
 			var ts: Types.TerritoryState = world.get_territory(from_id)
 			if ts == null:
 				return
+			if int(event.get("dugIn", 0)) > 0:
+				ts.garrison = maxi(ts.garrison, 1) ## v1.5: the man who stayed behind dug in
 			if left < 1:
 				if ts.garrison < 1:
 					world.set_hex(from_id, Types.UNOCCUPIED, 0)
@@ -26,6 +28,7 @@ static func apply(world: Types.World, event: Dictionary) -> void:
 			var ts: Types.TerritoryState = world.get_territory(terr_id)
 			if ts != null:
 				ts.armies = int(event.get("armies", ts.armies))
+				ts.garrison = int(event.get("garrison", ts.garrison))
 		Types.EVENT_REGROUP_APPLIED:
 			var from_ts: Types.TerritoryState = world.get_territory(str(event.get("from", "")))
 			var to_ts: Types.TerritoryState = world.get_territory(str(event.get("to", "")))
@@ -55,7 +58,7 @@ static func apply(world: Types.World, event: Dictionary) -> void:
 			if not bool(event.get("attackerWon", false)):
 				var ts: Types.TerritoryState = world.get_territory(str(event.get("to", "")))
 				if ts != null:
-					## Same split as resolve: the garrison absorbs losses first.
+					## Same split as resolve: the field army falls first, the dug-in men last.
 					var remnant: int = int(event.get("winnerRemaining", ts.held()))
 					if remnant >= ts.garrison:
 						ts.armies = remnant - ts.garrison
@@ -117,6 +120,7 @@ static func apply(world: Types.World, event: Dictionary) -> void:
 			var ts: Types.TerritoryState = world.get_territory(str(event.get("terrId", "")))
 			if ts != null:
 				ts.garrison = int(event.get("garrison", ts.garrison))
+				ts.armies -= int(event.get("converted", 0)) ## v1.5: its first soldier dug in
 		_:
 			pass
 
@@ -219,6 +223,11 @@ static func recap(events: Array, map = null) -> PackedStringArray:
 					lines.append("Melee at %s: %s holds against %s." % [_hex(map, str(event.get("to", ""))), event.get("defenderId"), " and ".join(who)])
 				else:
 					lines.append("Melee at %s: %s's defenders are overrun." % [_hex(map, str(event.get("to", ""))), event.get("defenderId")])
+			Types.EVENT_SCRAMBLE:
+				var who2: Array = []
+				for f in event.get("fronts", []):
+					who2.append(str(f.get("playerId", "")))
+				lines.append("Scramble for %s between %s: %s is left standing with %s." % [_hex(map, str(event.get("to", ""))), ", ".join(who2), event.get("winnerId"), event.get("winnerLeft")])
 			Types.EVENT_PLAYER_ELIMINATED:
 				lines.append("%s is out." % event.get("playerId"))
 			Types.EVENT_SCORE:

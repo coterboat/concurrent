@@ -20,7 +20,9 @@ var data := {
 	"ceilings": true,
 	"last_setup": {},
 	"seen_tutorial": false,
-	"commander_voices": "classic", ## classic | new (v1.3 second take)
+	"commander_voices": "new", ## new (v1.3/1.4 second take, the default since v1.4) | classic
+	"deal": "random", ## random | draft: how new games hand out the lands (also chosen on the setup screen)
+	"dice_help_seen": 0, ## the battlefield opens "How a throw is scored" by itself the first two times
 	"stance": "judgment",
 	"calls_seen": 0,
 }

@@ -17,7 +17,7 @@ var to_id := ""
 var _box: VBoxContainer
 var _slider: HSlider
 var _building := false
-var kind := "attack" ## attack | move (a march in the reinforcement phase)
+var kind := "attack" ## attack | move (a march in the regroup phase) | surge (on from a land being taken)
 
 
 func _ready() -> void:
@@ -37,6 +37,72 @@ func show_for(a: String, b: String) -> void:
 	visible = a != "" and session.packet_index(a, b) >= 0
 	if visible:
 		rebuild()
+
+
+func show_surge(a: String, b: String) -> void:
+	## a: the land being attacked, b: where the surge goes on to
+	kind = "surge"
+	from_id = a
+	to_id = b
+	visible = a != "" and str(session.sheet().surges.get(a, "")) == b
+	if visible:
+		rebuild()
+
+
+func _rebuild_surge() -> void:
+	var s = session
+	if str(s.sheet().surges.get(from_id, "")) != to_id:
+		visible = false
+		return
+	_building = true
+	for c in _box.get_children():
+		_box.remove_child(c)
+		c.queue_free()
+	var h := HBoxContainer.new()
+	var t := Style.label("Surge %s ➜ %s" % [s.hex_name(from_id), s.hex_name(to_id)], 20, Style.GOLD, "display")
+	t.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	h.add_child(t)
+	h.add_child(Style.chip("✕", func(): gs.edit_order("", ""), Style.MUTED, 13))
+	_box.add_child(h)
+	_box.add_child(Style.label("If %s falls, the men who took it march on — after every other battle, all surges at once." % s.hex_name(from_id), 14, Style.PARCH, "italic"))
+	var most: int = s.surge_most(from_id)
+	var n0: int = s.surge_count(from_id)
+	var shown: int = most if n0 <= 0 else n0
+	var row := HBoxContainer.new()
+	row.add_theme_constant_override("separation", 8)
+	row.add_child(Style.chip(" − ", func(): s.set_surge_count(from_id, shown - 1), Style.CREAM, 17))
+	_slider = HSlider.new()
+	_slider.min_value = 1
+	_slider.max_value = most
+	_slider.step = 1
+	_slider.value = shown
+	_slider.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	_slider.custom_minimum_size = Vector2(100, 28)
+	_slider.value_changed.connect(func(v):
+		if not _building:
+			s.set_surge_count(from_id, int(v)))
+	row.add_child(_slider)
+	row.add_child(Style.chip(" + ", func(): s.set_surge_count(from_id, shown + 1), Style.CREAM, 17))
+	var nl := Style.label("all" if n0 <= 0 else "%d" % shown, 24, Style.GOLD, "display")
+	nl.custom_minimum_size = Vector2(44, 0)
+	nl.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+	row.add_child(nl)
+	_box.add_child(row)
+	_box.add_child(Style.label(("Up to %d push on (fewer if the battle costs more); the rest hold %s." % [shown, s.hex_name(from_id)]) if n0 > 0 else "Everyone who survives pushes on but the one who stays to hold %s." % s.hex_name(from_id), 14, Style.PARCH))
+	var act := HBoxContainer.new()
+	act.add_theme_constant_override("separation", 6)
+	act.add_child(Style.chip("All who can", func(): s.set_surge_count(from_id, 0), Style.CREAM, 14))
+	act.add_child(Style.chip("Cancel surge", func():
+		gs.edit_order("", "")
+		var i0: int = gs._attack_into(from_id)
+		if i0 >= 0:
+			s.set_surge(i0, "")
+		Audio.sfx("unplace"), Style.CRIMSON.lightened(0.3), 14))
+	_box.add_child(act)
+	_box.add_child(_ok_button())
+	_building = false
+	reset_size()
+	gs.place_order_card(self, from_id, to_id)
 
 
 func show_move(a: String, b: String) -> void:
@@ -113,6 +179,9 @@ func _set_move(v: int) -> void:
 func rebuild() -> void:
 	if kind == "move":
 		_rebuild_move()
+		return
+	if kind == "surge":
+		_rebuild_surge()
 		return
 	var s = session
 	var idx: int = s.packet_index(from_id, to_id)
@@ -198,11 +267,11 @@ func rebuild() -> void:
 	var act := HBoxContainer.new()
 	act.add_theme_constant_override("separation", 6)
 	if p.surge_to != "":
-		act.add_child(Style.label("then surge → %s" % s.hex_name(p.surge_to), 14, Style.GOLD, "italic"))
-		act.add_child(Style.chip("no surge", func(): s.set_surge(idx, ""), Style.MUTED, 13))
+		var sn: int = s.surge_count(to_id)
+		act.add_child(Style.chip("then surge → %s (%s)" % [s.hex_name(p.surge_to), "all" if sn <= 0 else str(sn)], func(): gs.edit_order(to_id, p.surge_to), Style.GOLD, 13))
 	else:
 		var sb := Style.chip("Surge onward…", func(): gs.begin_surge_pick(idx), Style.PARCH, 14)
-		sb.tooltip_text = "If this wins, all but one push on into a land next to %s — after every other battle." % s.hex_name(to_id)
+		sb.tooltip_text = "If this wins, the men who took %s push on into a land next to it — after every other battle. Or drag from %s to the next land." % [s.hex_name(to_id), s.hex_name(to_id)]
 		act.add_child(sb)
 	var rm := Style.chip("Cancel attack", func():
 		gs.edit_order("", "")

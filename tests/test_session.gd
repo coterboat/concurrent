@@ -53,7 +53,8 @@ func _solo(report: Callable, tree: SceneTree) -> void:
 		report.call(s.set_attack(best, target) == "", "attack order accepted")
 		var p: Types.Packet = s.sheet().packets[0]
 		report.call(p.strength == s.max_send(best, 0) and p.strength >= 1, "default strength is everyone who can march")
-		report.call(s.projected_world().get_territory(best).armies == 1, "the origin shows 1 left at home the moment you order")
+		var home: Array = load("res://engine/income.gd").home_split(s.projected_world().get_territory(best))
+		report.call(int(home[0]) == 0 and int(home[1]) >= 1, "the origin shows only its garrison left at home the moment you order")
 		s.set_packet_strength(0, 999)
 		report.call(p.strength == s.max_send(best, 0), "strength clamps to what can march")
 	s.auto_deploy()

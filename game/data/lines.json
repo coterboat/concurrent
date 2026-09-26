@@ -44,7 +44,16 @@
    "opening_bad": "A bloody opening. Fall back now and save the men, or press on and pray.",
    "opening_good": "A glorious opening! One more push and the land is ours.",
    "maneuver": "The dust has settled, Commander. March the men up to the front before the next assault.",
-   "melee": "A melee, Commander! Every army piling in at once. Steady on every front!"
+   "melee": "A melee, Commander! Every army piling in at once. Steady on every front!",
+   "draft_roll": "Every commander throws a die. The highest roll claims first, and so on round the table.",
+   "draft_first": "Fortune smiles, Commander. We choose first. Take the land that matters most.",
+   "draft_pick": "Our pick, Commander. Claim a land.",
+   "cards_seized": "Their war chest is ours, Commander. Every card they held now fights for us.",
+   "scramble": "The defenders are finished. Now the victors turn on each other. Every man for himself!",
+   "cash_us": "Cards turned in, Commander. Fresh regiments are marching to the front.",
+   "cash_them": "They have turned in their cards. Expect a flood of fresh troops across the border.",
+   "orders": "The troops are placed, Commander. Now, where do we strike?",
+   "surges": "Now the breakthroughs. Every surge charges on at once!"
   },
   "varek": {
    "greet": "Grand Marshal Varek. I have buried a hundred generals. You will be a hundred and one.",
@@ -55,7 +64,9 @@
    "eliminated": "My war is over. Remember the old soldier.",
    "victory": "The world is mine. It always was.",
    "retreat": "Fall back. Regroup. We return at dawn.",
-   "reserves": "Bring up the reserves. End this."
+   "reserves": "Bring up the reserves. End this.",
+   "claim": "This ground is mine. Dig in.",
+   "cash": "Fresh regiments. Send them to the front."
   },
   "ysolde": {
    "greet": "Viceroy Ysolde. Every land at this table will fly my banner. Guard your doors.",
@@ -66,7 +77,9 @@
    "eliminated": "This is not the end of my house.",
    "victory": "Kneel. The empire is mine.",
    "retreat": "Withdraw. For now.",
-   "reserves": "Send everything. I do not lose."
+   "reserves": "Send everything. I do not lose.",
+   "claim": "I will take this one. Remember who chose first.",
+   "cash": "My reserves have arrived. Now you will see an army."
   },
   "quill": {
    "greet": "Governor Quill, of the Company. Everything has its price, and I intend to buy the world.",
@@ -77,7 +90,9 @@
    "eliminated": "Bankrupt. Well, it was lovely doing business.",
    "victory": "Tally it up. The Company owns the lot.",
    "retreat": "Cut our losses, lads. Back to the ships.",
-   "reserves": "Double the investment! Send the reserves!"
+   "reserves": "Double the investment! Send the reserves!",
+   "claim": "A fine piece of property. I will take it.",
+   "cash": "A fine return on the investment. More men, at once!"
   },
   "oren": {
    "greet": "Captain Oren of the Hussars! First war, but I have a very fast horse!",
@@ -88,7 +103,9 @@
    "eliminated": "I will be back. With more horses.",
    "victory": "I won? I won! Somebody tell my mother!",
    "retreat": "Retreat! Tactical retreat! Very tactical!",
-   "reserves": "Everybody! Everybody charge!"
+   "reserves": "Everybody! Everybody charge!",
+   "claim": "Ooh, that one! I call that one!",
+   "cash": "Reinforcements! Oh, this is going to be fun!"
   },
   "hask": {
    "greet": "Commodore Hask, the Old Bear! Bring me your best, little general, and I will sink it!",
@@ -99,7 +116,9 @@
    "eliminated": "Bah! Pour me a drink. I am done.",
    "victory": "The Bear rules land and sea! Ha ha ha!",
    "retreat": "Back to the ships! I will be back for you!",
-   "reserves": "More! Send more! The Bear is hungry!"
+   "reserves": "More! Send more! The Bear is hungry!",
+   "claim": "Ha! Plant my flag there, lads!",
+   "cash": "More lads for the Bear! Ha!"
   },
   "imre": {
    "greet": "Admiral Imre. I have already read your plan.",
@@ -110,7 +129,9 @@
    "eliminated": "Well played. I underestimated you.",
    "victory": "Checkmate.",
    "retreat": "The odds have turned. We withdraw.",
-   "reserves": "Commit the reserve. Now."
+   "reserves": "Commit the reserve. Now.",
+   "claim": "That one. You were about to take it, were you not?",
+   "cash": "I have been saving these. Now they matter."
   }
  }
 }

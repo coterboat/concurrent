@@ -5,6 +5,7 @@ extends Control
 const Style := preload("res://game/core/style.gd")
 const Types := preload("res://engine/types.gd")
 const MapLib := preload("res://engine/map.gd")
+const Income := preload("res://engine/income.gd")
 const Session := preload("res://game/core/session.gd")
 const Counsel := preload("res://game/core/counsel.gd")
 const Lines := preload("res://game/core/lines.gd")
@@ -22,6 +23,7 @@ const Intro := preload("res://game/ui/intro.gd")
 const PlanDialog := preload("res://game/ui/plan_dialog.gd")
 const HowTo := preload("res://game/ui/howto_screen.gd")
 const LeaderFace := preload("res://game/ui/leader_face.gd")
+const DiceStage := preload("res://game/ui/dice_stage.gd")
 
 const BAR := 156.0
 const TOP := 84.0
@@ -57,6 +59,18 @@ var _intro_done := false
 var _defeat_shown := false
 var _last_place := ""
 var _pre_regions := {}
+## v1.4 the land draft: dice dropped on the map for the order, then claims round the table
+var _draft_ui: Control
+var _draft_dice: Control
+var _draft_title: Label
+var _draft_row: HBoxContainer
+var _draft_state := "" ## "" | rolling | picking | done
+var _draft_marks: Array = []
+var _draft_spoke := {}
+var draft_fast := false
+var _fallen_until := 0.0 ## the fallen commander's panel is up until then (msec)
+var _fallen_at := Vector2.ZERO
+var _chest_taken := false
 
 
 func _ready() -> void:
@@ -81,6 +95,7 @@ func _ready() -> void:
 	roster.hovered.connect(_on_roster_hover)
 	add_child(roster)
 	_build_zoom()
+	_build_draft()
 	_hover_tip = PanelContainer.new()
 	_hover_tip.add_theme_stylebox_override("panel", Style.flat(Color(0.03, 0.045, 0.08, 0.93), Color(Style.GOLD, 0.5), 1, 6, 10))
 	_hover_tip.mouse_filter = Control.MOUSE_FILTER_IGNORE
@@ -200,11 +215,22 @@ func _on_phase(ph: int) -> void:
 	drawer.visible = false
 	edit_order("", "")
 	match ph:
+		Session.Phase.DRAFT:
+			select("")
+			Audio.music("plan")
+			if _intro_done:
+				phase_banner("CLAIMING THE LANDS", "Every commander throws a die for the order of choosing")
+			if not _intro_done and not bool(session.config.get("tutorial", false)):
+				if not intro.play(session):
+					_intro_done = true
+			else:
+				_intro_done = true
 		Session.Phase.MANEUVER:
 			select("")
 			Audio.music("muster")
+			phase_banner("REGROUP PHASE", "March troops one land toward the front")
 			_say_once("maneuver", "neutral")
-			log_line("Reinforcement phase: march troops one land toward the front.", Style.GOOD)
+			log_line("Regroup phase: march troops one land toward the front.", Style.GOOD)
 		Session.Phase.OPENING, Session.Phase.PLANNING:
 			select("")
 			Audio.music("plan")
@@ -213,7 +239,10 @@ func _on_phase(ph: int) -> void:
 					_intro_done = true
 			else:
 				_intro_done = true
+			if ph == Session.Phase.OPENING and _intro_done:
+				phase_banner("DEPLOYMENT", "Place your starting armies")
 			if ph == Session.Phase.PLANNING:
+				phase_banner("REINFORCEMENT PHASE", "Round %d · place %d fresh recruits on your lands" % [session.world.round, session.income_total()])
 				_pre_regions = _regions_of_humans()
 				_note_rival_marches()
 				if session.is_last_round() and not session.conquest():
@@ -227,6 +256,8 @@ func _on_phase(ph: int) -> void:
 		Session.Phase.CINEMA:
 			_cover.visible = false
 			select("")
+			if not bool(session.get_meta("opening_cinema", false)):
+				phase_banner("THE BATTLES", "Every order happens at once")
 			cinema.play(session, board)
 		Session.Phase.RECAP:
 			Audio.music("plan")
@@ -258,7 +289,29 @@ func _refresh() -> void:
 	roster.refresh()
 	bar.refresh()
 	var planning: bool = ph == Session.Phase.OPENING or ph == Session.Phase.PLANNING
-	if ph == Session.Phase.MANEUVER:
+	_draft_ui.visible = ph == Session.Phase.DRAFT
+	if ph == Session.Phase.DRAFT:
+		board.interactive = true
+		board.viewer = session.planner
+		board.world = session.world
+		board.show_ceiling = false
+		board.selected = ""
+		board.placements = {}
+		board.ghosts = []
+		board.orders = []
+		board.battle = {}
+		board.targets = {}
+		if _draft_state == "picking" and session.is_human(session.draft_turn()):
+			for t in session.map.territory_ids():
+				if session.world.get_territory(str(t)).owner == Types.UNOCCUPIED:
+					board.targets[str(t)] = true
+		board.refresh()
+		land_card.show_for("")
+		order_card.visible = false
+		_draft_strip()
+		if _intro_done and _draft_state == "":
+			_draft_begin()
+	elif ph == Session.Phase.MANEUVER:
 		board.interactive = true
 		board.viewer = session.planner
 		board.world = session.maneuver_world()
@@ -276,7 +329,7 @@ func _refresh() -> void:
 		land_card.show_for(selected if not order_card.visible else "")
 		if order_card.visible:
 			order_card.rebuild()
-		bar.set_counsel([{"key": "maneuver", "text": "Reinforcement phase. The battles are done: march troops one land at a time toward the front. Soldiers who arrive stay put, and dug-in defenders never leave.", "mood": "neutral", "voice": "", "focus": [], "rank": 50}])
+		bar.set_counsel([{"key": "maneuver", "text": "Regroup phase. The battles are done: march troops one land at a time toward the front. Soldiers who arrive stay put, and dug-in defenders never leave.", "mood": "neutral", "voice": "", "focus": [], "rank": 50}])
 	elif planning:
 		board.interactive = true
 		board.viewer = session.planner
@@ -329,12 +382,15 @@ func _refresh_plate() -> void:
 			n = maxi(1, s.world.round - 1)
 		_plate_round.text = ("Round %d" % n) if s.conquest() else ("Round %d of %d" % [mini(n, total), total])
 	match s.phase:
+		Session.Phase.DRAFT:
+			_plate_round.text = "Claiming the lands"
+			_plate_phase.text = ("%s's pick" % s.name_of(s.draft_turn())) if _draft_state == "picking" and s.draft_turn() != "" else "Rolling for the order"
 		Session.Phase.OPENING:
 			_plate_phase.text = "Deployment — %s" % s.name_of(s.planner)
 		Session.Phase.PLANNING:
-			_plate_phase.text = ("FINAL ROUND — " if s.is_last_round() and not s.conquest() else "") + "Orders for %s" % s.name_of(s.planner)
+			_plate_phase.text = ("FINAL ROUND — " if s.is_last_round() and not s.conquest() else "") + ("Reinforcements for %s" if s.plan_step == "reinforce" else "Orders for %s") % s.name_of(s.planner)
 		Session.Phase.MANEUVER:
-			_plate_phase.text = "Reinforcement phase — %s" % s.name_of(s.planner)
+			_plate_phase.text = "Regroup phase — %s" % s.name_of(s.planner)
 		Session.Phase.CINEMA:
 			_plate_phase.text = "Battle report"
 		Session.Phase.RECAP:
@@ -354,7 +410,7 @@ func _my_arrows() -> Array:
 	var s: Types.Sheet = session.sheet()
 	for raw in s.packets:
 		var p: Types.Packet = raw
-		out.append({"from": p.from_id, "to": p.to_id, "strength": p.strength, "owner": session.planner, "surge": p.surge_to, "kind": "attack"})
+		out.append({"from": p.from_id, "to": p.to_id, "strength": p.strength, "owner": session.planner, "surge": p.surge_to, "surge_n": session.surge_count(p.to_id), "kind": "attack"})
 	if s.regroup != null:
 		out.append({"from": s.regroup.from_id, "to": s.regroup.to_id, "strength": s.regroup.strength, "owner": session.planner, "kind": "move"})
 	return out
@@ -369,6 +425,13 @@ func _targets() -> Dictionary:
 		for n in MapLib.neighbors(session.map, p.to_id):
 			if n != p.from_id and session.world.get_territory(n).owner != session.planner:
 				t[n] = true
+		return t
+	if session.plan_step == "reinforce":
+		## where the recruits can still go
+		if session.income_left() > 0:
+			for id in MapLib.player_territory_ids(session.world, session.planner):
+				if session.place_cap(id) - session.placed_on(id) > 0:
+					t[id] = true
 		return t
 	if selected == "" or session.world.get_territory(selected).owner != session.planner:
 		return t
@@ -385,12 +448,18 @@ func _targets() -> Dictionary:
 func _update_counsel() -> void:
 	var items: Array = []
 	var les: Dictionary = Counsel.lesson(session, surge_pick)
+	var placing: bool = session.phase == Session.Phase.PLANNING and session.plan_step == "reinforce"
+	if placing and str(les.get("voice", "")) == "attack_hint":
+		les = {} ## attacks wait for the orders phase
 	if not les.is_empty():
 		items.append(les)
 	if bool(Settings.get_value("tips", true)) or bool(session.config.get("tutorial", false)):
 		items.append_array(Counsel.advice(session))
+	if placing:
+		## the reinforcement phase: where to put the men (threats and regions first), not whom to hit
+		items = items.filter(func(it): return not str(it.get("key", "")).begins_with("soft_"))
 	if items.is_empty():
-		items.append({"key": "idle", "text": "Awaiting your orders, Commander.", "mood": "neutral", "voice": "", "focus": [], "rank": 0})
+		items.append({"key": "idle", "text": "Place your recruits, Commander." if placing else "Awaiting your orders, Commander.", "mood": "neutral", "voice": "", "focus": [], "rank": 0})
 	bar.set_counsel(items)
 	## speak the most important thing, once per round
 	var top: Dictionary = items[0]
@@ -473,6 +542,16 @@ func _note_rival_marches() -> void:
 
 func _on_click(id: String, button: int) -> void:
 	var ph: int = session.phase
+	if ph == Session.Phase.DRAFT:
+		if _draft_state == "picking" and session.is_human(session.draft_turn()):
+			var who: String = session.draft_turn()
+			var err: String = session.claim(id)
+			if err != "":
+				_toast(err)
+				Audio.sfx("error")
+			else:
+				_draft_claimed(who, id)
+		return
 	if ph == Session.Phase.MANEUVER:
 		var own: bool = session.world.get_territory(id).owner == session.planner
 		if own and selected != "" and selected != id and session.world.get_territory(selected).owner == session.planner and session.map.is_adjacent(selected, id):
@@ -495,23 +574,113 @@ func _on_click(id: String, button: int) -> void:
 			Audio.sfx("surge", -6.0)
 			log_line("Surge planned into %s." % session.hex_name(id), Style.GOLD)
 		surge_pick = -1
+		var sp_idx: int = session.packet_index(selected, id) if selected != "" else -1
 		_refresh()
+		if err == "":
+			for raw in session.sheet().packets:
+				var pk: Types.Packet = raw
+				if pk.surge_to == id:
+					edit_order(pk.to_id, id) ## straight to its card: how many push on
+					break
 		return
 	if button == MOUSE_BUTTON_RIGHT:
-		if ts.owner == session.planner:
+		if ts.owner == session.planner and _placing():
 			place(id, -1)
 		return
-	if ts.owner == session.planner:
-		if selected == id:
+	if _placing():
+		## the reinforcement phase: every click on one of ours puts a recruit there
+		if ts.owner == session.planner:
+			if selected != id:
+				select(id)
 			place(id, 1)
 		else:
 			select(id)
-			Audio.sfx("click", -8.0)
 		return
-	if ph == Session.Phase.PLANNING and selected != "" and session.world.get_territory(selected).owner == session.planner and session.map.is_adjacent(selected, id):
+	## the orders phase: pick one of ours, then the enemy to strike
+	if ts.owner == session.planner:
+		select(id if selected != id else "")
+		Audio.sfx("click", -8.0)
+		return
+	if selected != "" and session.world.get_territory(selected).owner == session.planner and session.map.is_adjacent(selected, id):
 		order_attack(selected, id)
 		return
 	select(id)
+
+
+var _banner_node: Control
+
+
+func phase_banner(title: String, sub: String = "", quiet: bool = false) -> void:
+	## v1.5: every phase opens with a banner across the map and a drum-and-brass sting,
+	## so it is always clear when a new phase begins
+	if _banner_node != null and is_instance_valid(_banner_node):
+		_banner_node.queue_free()
+	var root := Control.new()
+	root.set_anchors_and_offsets_preset(PRESET_CENTER_TOP)
+	root.offset_top = TOP + 170 ## over the heart of the map, clear of the report's caption
+	root.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	add_child(root)
+	if theater != null:
+		move_child(root, theater.get_index()) ## over the map, under the battlefield
+	_banner_node = root
+	var pc := PanelContainer.new()
+	pc.add_theme_stylebox_override("panel", Style.flat(Color(0.05, 0.035, 0.03, 0.9), Color(Style.GOLD, 0.85), 2, 6, 22))
+	pc.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	root.add_child(pc)
+	var v := VBoxContainer.new()
+	v.alignment = BoxContainer.ALIGNMENT_CENTER
+	v.add_theme_constant_override("separation", 2)
+	v.mouse_filter = Control.MOUSE_FILTER_IGNORE ## the banner never eats a click meant for the map
+	pc.add_child(v)
+	var t := Style.label(title, 46, Style.GOLD, "display")
+	t.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	t.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+	t.add_theme_constant_override("outline_size", 10)
+	t.add_theme_color_override("font_outline_color", Color(0, 0, 0, 0.8))
+	v.add_child(t)
+	if sub != "":
+		var sl := Style.label(sub, 19, Style.PARCH, "italic")
+		sl.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+		sl.mouse_filter = Control.MOUSE_FILTER_IGNORE
+		v.add_child(sl)
+	pc.reset_size()
+	pc.position = Vector2(-pc.size.x * 0.5, 0)
+	pc.pivot_offset = pc.size * 0.5
+	pc.scale = Vector2(1.25, 1.25)
+	pc.modulate.a = 0.0
+	var tw := pc.create_tween()
+	tw.tween_property(pc, "modulate:a", 1.0, 0.18)
+	tw.parallel().tween_property(pc, "scale", Vector2.ONE, 0.3).set_trans(Tween.TRANS_BACK).set_ease(Tween.EASE_OUT)
+	tw.tween_interval(1.6)
+	tw.tween_property(pc, "modulate:a", 0.0, 0.5)
+	tw.tween_callback(root.queue_free)
+	if not quiet:
+		Audio.sfx("phase_sting", -5.0)
+
+
+func _placing() -> bool:
+	## deployment, or the reinforcement step of a round's planning
+	return session.phase == Session.Phase.OPENING or (session.phase == Session.Phase.PLANNING and session.plan_step == "reinforce")
+
+
+func begin_orders() -> void:
+	## from the reinforcement phase to the orders phase
+	if session.phase != Session.Phase.PLANNING or session.plan_step == "orders":
+		return
+	var go := func():
+		session.begin_orders()
+		select("")
+		phase_banner("ORDERS PHASE", "Choose where to strike. Every commander's orders happen at once.")
+		_say_once("orders")
+	if session.income_left() > 0:
+		_say_once("unplaced", "alarm")
+		_confirm("%d recruits still unplaced" % session.income_left(),
+			"Anything you don't place is lost when you seal your orders.",
+			[["Place them for me", func():
+				session.auto_deploy()
+				go.call()], ["On to the orders", func(): go.call()], ["Go back", func(): pass]])
+		return
+	go.call()
 
 
 func _on_drag(from_id: String, to_id: String) -> void:
@@ -524,7 +693,25 @@ func _on_drag(from_id: String, to_id: String) -> void:
 		return
 	if session.phase != Session.Phase.PLANNING:
 		return
+	if session.plan_step == "reinforce":
+		if session.income_left() > 0:
+			_toast("Place your %d recruits first, then press ORDERS to attack." % session.income_left())
+			Audio.sfx("error")
+			return
+		session.begin_orders()
+	## v1.5: drag on from a land you're attacking to surge beyond it
 	if session.world.get_territory(from_id).owner != session.planner:
+		var idx: int = _attack_into(from_id)
+		if idx >= 0 and session.map.is_adjacent(from_id, to_id):
+			var err0: String = session.set_surge(idx, to_id)
+			if err0 != "":
+				_toast(err0)
+				Audio.sfx("error")
+			else:
+				Audio.sfx("surge", -6.0)
+				log_line("Surge planned from %s into %s." % [session.hex_name(from_id), session.hex_name(to_id)], Style.GOLD)
+				edit_order(from_id, to_id)
+			_refresh()
 		return
 	if not session.map.is_adjacent(from_id, to_id):
 		_toast("%s does not border %s." % [session.hex_name(to_id), session.hex_name(from_id)])
@@ -532,7 +719,7 @@ func _on_drag(from_id: String, to_id: String) -> void:
 		return
 	selected = from_id
 	if session.world.get_territory(to_id).owner == session.planner and session.map.maneuvers:
-		_toast("Troops march between your lands in the reinforcement phase, after the battles.")
+		_toast("Troops march between your lands in the regroup phase, after the battles.")
 		Audio.sfx("error")
 	elif session.world.get_territory(to_id).owner == session.planner:
 		order_move(from_id, to_id)
@@ -553,7 +740,8 @@ func _on_hover(id: String) -> void:
 	if ts.owner == Types.UNOCCUPIED:
 		lines.append("Empty")
 	else:
-		lines.append("%s · %s%s" % [session.name_of(ts.owner), Style.plural(ts.armies, "army", "armies"), (" · %d dug in" % ts.garrison) if ts.garrison > 0 else " · none dug in"])
+		var sp: Array = Income.home_split(ts)
+		lines.append("%s · %s · %d in the garrison" % [session.name_of(ts.owner), Style.plural(int(sp[0]), "army", "armies"), int(sp[1])])
 	_hover_label.text = "\n".join(lines)
 	_hover_tip.visible = true
 	_hover_tip.reset_size()
@@ -689,9 +877,23 @@ func edit_order(a: String, b: String) -> void:
 		return
 	if session.phase == Session.Phase.MANEUVER:
 		order_card.show_move(a, b)
+	elif session.phase == Session.Phase.PLANNING and session.world.get_territory(a).owner != session.planner and str(session.sheet().surges.get(a, "")) == b:
+		order_card.show_surge(a, b) ## v1.5: a surge edits like any march
 	else:
 		order_card.show_for(a, b)
 	_refresh()
+
+
+func _attack_into(dest: String) -> int:
+	## the first of our attacks on dest (-1: none)
+	if session.phase != Session.Phase.PLANNING:
+		return -1
+	var i := 0
+	for raw in session.sheet().packets:
+		if (raw as Types.Packet).to_id == dest:
+			return i
+		i += 1
+	return -1
 
 
 func begin_surge_pick(i: int) -> void:
@@ -704,8 +906,15 @@ func begin_surge_pick(i: int) -> void:
 
 func primary_action() -> void:
 	match session.phase:
-		Session.Phase.OPENING, Session.Phase.PLANNING:
+		Session.Phase.DRAFT:
+			draft_advise()
+		Session.Phase.OPENING:
 			try_seal()
+		Session.Phase.PLANNING:
+			if session.plan_step == "reinforce":
+				begin_orders()
+			else:
+				try_seal()
 		Session.Phase.MANEUVER:
 			var err: String = session.lock()
 			if err != "":
@@ -816,6 +1025,324 @@ func _on_beat(b: Dictionary) -> void:
 			bar.advisor.react("alarm", "walkin_them", 3.0)
 	if b.has("eliminated"):
 		_show_fallen(str(b["eliminated"]))
+	if b.has("cards_to"):
+		_show_war_chest(str(b["cards_from"]), str(b["cards_to"]), b.get("cards", []))
+	if b.has("stage"):
+		phase_banner(str(b["caption"]), str(b.get("sub", "")), true)
+		if str(b["stage"]) == "surge" and not session.living_humans().is_empty():
+			_say_once("surges", "alarm")
+	if b.has("cash"):
+		_show_cash(str(b["cash"]), b.get("cards", []), int(b.get("cash_value", 0)))
+
+
+# ================================================================ the land draft (v1.4)
+
+func _build_draft() -> void:
+	_draft_ui = Control.new()
+	_draft_ui.set_anchors_and_offsets_preset(PRESET_FULL_RECT)
+	_draft_ui.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	_draft_ui.visible = false
+	add_child(_draft_ui)
+	## the commanders' dice fall onto the map itself
+	_draft_dice = DiceStage.new()
+	_draft_dice.board = false
+	_draft_dice.arrange = false ## where each commander's die comes to rest is where it stays
+	_draft_dice.pitch = 66.0
+	_draft_dice.width = 17.0
+	_draft_dice.set_anchors_and_offsets_preset(PRESET_FULL_RECT)
+	_draft_dice.offset_bottom = -BAR
+	_draft_ui.add_child(_draft_dice)
+	## the order of claims, top centre
+	var pc := PanelContainer.new()
+	pc.add_theme_stylebox_override("panel", Style.flat(Color(0.03, 0.04, 0.07, 0.9), Color(Style.GOLD, 0.6), 1, 10, 12))
+	pc.set_anchors_preset(PRESET_CENTER_TOP)
+	pc.offset_top = 92
+	pc.grow_horizontal = Control.GROW_DIRECTION_BOTH
+	pc.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	_draft_ui.add_child(pc)
+	var v := VBoxContainer.new()
+	v.alignment = BoxContainer.ALIGNMENT_CENTER
+	v.add_theme_constant_override("separation", 6)
+	pc.add_child(v)
+	_draft_title = Style.label("", 24, Style.GOLD, "display")
+	_draft_title.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+	v.add_child(_draft_title)
+	_draft_row = HBoxContainer.new()
+	_draft_row.alignment = BoxContainer.ALIGNMENT_CENTER
+	_draft_row.add_theme_constant_override("separation", 14)
+	v.add_child(_draft_row)
+
+
+func _draft_strip() -> void:
+	## the commanders in the order they choose (seat order until the dice have spoken)
+	for c in _draft_row.get_children():
+		c.queue_free()
+	if session.draft.is_empty():
+		return
+	var order: Array = session.draft["order"] if _draft_state == "picking" else []
+	if order.is_empty():
+		for st in session.seats:
+			order.append(str(st["id"]))
+	var turn: String = session.draft_turn() if _draft_state == "picking" else ""
+	for k in order.size():
+		var pid: String = str(order[k])
+		var box := VBoxContainer.new()
+		box.alignment = BoxContainer.ALIGNMENT_CENTER
+		box.add_theme_constant_override("separation", 0)
+		var lf: Control = LeaderFace.new()
+		lf.custom_minimum_size = Vector2(58, 58)
+		lf.size_flags_horizontal = Control.SIZE_SHRINK_CENTER
+		box.add_child(lf)
+		lf.setup(str(session.seat(pid).get("portrait", "player")), pid, session.name_of(pid))
+		if turn != "" and pid != turn:
+			lf.modulate = Color(0.6, 0.6, 0.6)
+		var rank: String = ("%d. " % (k + 1)) if _draft_state == "picking" else ""
+		var nm := Style.label(rank + session.name_of(pid).get_slice(" ", session.name_of(pid).get_slice_count(" ") - 1), 15, Style.seat_color(pid).lightened(0.45) if pid == turn or turn == "" else Style.MUTED, "bold")
+		nm.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+		box.add_child(nm)
+		if _draft_state == "picking":
+			var owned := 0
+			for t in session.map.territory_ids():
+				if session.world.get_territory(str(t)).owner == pid:
+					owned += 1
+			var ct := Style.label("%d / %d" % [owned, int(session.draft["quota"])], 13, Style.PARCH, "italic")
+			ct.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+			box.add_child(ct)
+		_draft_row.add_child(box)
+
+
+func _draft_begin() -> void:
+	_draft_state = "rolling"
+	_draft_title.text = "ROLLING FOR THE ORDER OF CLAIMS"
+	bar.set_message("Every commander throws a die: the highest claims first, and so on round the table.")
+	if not session.living_humans().is_empty():
+		_say_once("draft_roll")
+	get_tree().create_timer(1.4).timeout.connect(func(): _draft_throw(0))
+
+
+func _draft_clear_marks() -> void:
+	for m in _draft_marks:
+		(m as Node).queue_free()
+	_draft_marks = []
+
+
+func _draft_throw(k: int) -> void:
+	if session.phase != Session.Phase.DRAFT:
+		return
+	var throws: Array = session.draft["throws"]
+	if k >= throws.size():
+		_draft_order()
+		return
+	_draft_clear_marks()
+	var t: Array = throws[k]
+	var specs: Array = []
+	for i in t.size():
+		var x: float = (float(i) - float(t.size() - 1) * 0.5) * 2.7
+		specs.append({"value": int(t[i]["die"]), "n": 9, "tint": Style.seat_color(str(t[i]["pid"])), "to": Vector2(x, 0.2), "drop": true, "delay": 0.09 * i})
+	Audio.sfx("dice_shake", -2.0)
+	var dur: float = _draft_dice.throw(specs)
+	get_tree().create_timer(dur + 0.15).timeout.connect(func(): _draft_landed(k))
+
+
+func _draft_landed(k: int) -> void:
+	if session.phase != Session.Phase.DRAFT:
+		return
+	var throws: Array = session.draft["throws"]
+	var t: Array = throws[k]
+	for i in t.size():
+		var pid: String = str(t[i]["pid"])
+		var l := Style.label("%s  %d" % [session.name_of(pid), int(t[i]["die"])], 20, Style.seat_color(pid).lightened(0.5), "display")
+		l.add_theme_constant_override("outline_size", 8)
+		l.add_theme_color_override("font_outline_color", Color(0, 0, 0, 0.9))
+		l.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+		l.size = Vector2(220, 30)
+		l.position = _draft_dice.position + _draft_dice.die_screen(i) + Vector2(-110, 52)
+		l.mouse_filter = Control.MOUSE_FILTER_IGNORE
+		_draft_ui.add_child(l)
+		_draft_marks.append(l)
+	if k + 1 < throws.size():
+		var tied: Array = []
+		for r in throws[k + 1]:
+			tied.append(session.name_of(str(r["pid"])))
+		_draft_title.text = "%s TIE — THEY THROW AGAIN" % " AND ".join(tied).to_upper()
+		get_tree().create_timer(1.8).timeout.connect(func(): _draft_throw(k + 1))
+	else:
+		get_tree().create_timer(1.3).timeout.connect(func(): _draft_order())
+
+
+func _draft_order() -> void:
+	if session.phase != Session.Phase.DRAFT:
+		return
+	_draft_state = "picking"
+	Audio.sfx("fanfare_order", -3.0)
+	_draft_title.text = "THE ORDER OF CLAIMS"
+	var order: Array = session.draft["order"]
+	var names: Array = []
+	for pid in order:
+		names.append(session.name_of(str(pid)))
+	log_line("Order of claims: %s." % ", ".join(names), Style.GOLD)
+	if session.is_human(str(order[0])):
+		_say_once("draft_first", "happy")
+	_draft_strip()
+	get_tree().create_timer(2.2).timeout.connect(func():
+		_draft_clear_marks()
+		_draft_dice.clear()
+		_draft_next())
+
+
+func _draft_next() -> void:
+	if session.phase != Session.Phase.DRAFT or not session.drafting():
+		return
+	var pid: String = session.draft_turn()
+	_refresh()
+	if session.is_human(pid):
+		_draft_title.text = "%s — CLAIM A LAND" % session.name_of(pid).to_upper()
+		bar.set_message("Click any free land to claim it (%d more to claim). The dial picks the advisor's choice." % session.draft_left(pid))
+		_say_once("draft_pick", "neutral")
+	else:
+		_draft_title.text = "%s CHOOSES…" % session.name_of(pid).to_upper()
+		get_tree().create_timer(0.12 if draft_fast else 0.7).timeout.connect(func():
+			if session.phase == Session.Phase.DRAFT and session.draft_turn() == pid and _draft_state == "picking":
+				var land: String = session.ai_claim()
+				if land != "":
+					_draft_claimed(pid, land))
+
+
+func draft_advise() -> void:
+	## the advisor's choice, for a commander who'd rather not agonize
+	if session.phase != Session.Phase.DRAFT or _draft_state != "picking":
+		return
+	var pid: String = session.draft_turn()
+	if not session.is_human(pid):
+		return
+	var land: String = session.draft_pick_for(pid)
+	if land != "" and session.claim(land) == "":
+		_draft_claimed(pid, land)
+
+
+func _draft_claimed(pid: String, land: String) -> void:
+	Audio.sfx("flag_plant", -5.0 if draft_fast else -2.0)
+	board.float_text(land, "⚑ " + session.name_of(pid).get_slice(" ", session.name_of(pid).get_slice_count(" ") - 1), Style.seat_color(pid).lightened(0.45), 1.4, 20)
+	board.pulse_token(land, 0.7)
+	var voice: String = str(session.seat(pid).get("portrait", ""))
+	if not _draft_spoke.has(pid) and roster.faces.has(pid) and not session.is_human(pid):
+		_draft_spoke[pid] = true
+		if Lines.has(voice, "claim"):
+			roster.faces[pid].react("win", "claim", 2.4)
+	if session.phase == Session.Phase.DRAFT:
+		get_tree().create_timer(0.08 if draft_fast else 0.3).timeout.connect(func(): _draft_next())
+	else:
+		_draft_state = "done"
+		draft_fast = false
+		log_line("Every land is claimed. Deploy your armies.", Style.GOOD)
+
+
+func _show_cash(pid: String, cards: Array, value: int) -> void:
+	## v1.5: a set turned in: the cards fly up from the table into the commander's ring,
+	## and everyone hears about it
+	var to_p: Vector2 = size * Vector2(0.5, 0.3)
+	if roster.faces.has(pid):
+		var tf: Control = roster.faces[pid]
+		to_p = tf.global_position - global_position + tf.size * 0.5
+	for k in cards.size():
+		var tr := TextureRect.new()
+		tr.texture = Style.tex("res://assets/cards/%s.webp" % str(cards[k]))
+		tr.expand_mode = TextureRect.EXPAND_IGNORE_SIZE
+		tr.stretch_mode = TextureRect.STRETCH_KEEP_ASPECT
+		tr.size = Vector2(90, 128)
+		tr.pivot_offset = tr.size * 0.5
+		tr.mouse_filter = Control.MOUSE_FILTER_IGNORE
+		var mid: Vector2 = size * Vector2(0.5, 0.45) + Vector2((float(k) - 1.0) * 96.0, 0) - tr.size * 0.5
+		tr.position = mid + Vector2(0, 60)
+		tr.rotation = (float(k) - 1.0) * 0.12
+		tr.modulate.a = 0.0
+		add_child(tr)
+		var tw := create_tween()
+		tw.tween_interval(0.08 * k)
+		tw.tween_property(tr, "modulate:a", 1.0, 0.15)
+		tw.parallel().tween_property(tr, "position", mid, 0.35).set_trans(Tween.TRANS_BACK).set_ease(Tween.EASE_OUT)
+		tw.tween_interval(0.8)
+		tw.tween_property(tr, "position", to_p - tr.size * 0.5, 0.45).set_trans(Tween.TRANS_CUBIC).set_ease(Tween.EASE_IN)
+		tw.parallel().tween_property(tr, "scale", Vector2(0.3, 0.3), 0.45)
+		tw.parallel().tween_property(tr, "modulate:a", 0.0, 0.45).set_delay(0.2)
+		tw.tween_callback(tr.queue_free)
+	board_float_value(pid, value)
+	var voice: String = str(session.seat(pid).get("portrait", ""))
+	if session.is_human(pid):
+		bar.advisor.react("happy", "cash_us", 3.0)
+	else:
+		if roster.faces.has(pid) and Lines.has(voice, "cash"):
+			roster.faces[pid].react("win", "cash", 2.6)
+		elif not session.living_humans().is_empty():
+			bar.advisor.react("alarm", "cash_them", 3.0)
+
+
+func board_float_value(pid: String, value: int) -> void:
+	## "+N" rises over the commander's ring
+	if not roster.faces.has(pid):
+		return
+	var tf: Control = roster.faces[pid]
+	var l := Style.label("+%d" % value, 34, Style.GOLD, "display")
+	l.add_theme_constant_override("outline_size", 8)
+	l.add_theme_color_override("font_outline_color", Color(0, 0, 0, 0.9))
+	l.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	l.position = tf.global_position - global_position + Vector2(tf.size.x * 0.5 - 24, tf.size.y)
+	add_child(l)
+	var tw := create_tween()
+	tw.tween_interval(1.0)
+	tw.tween_property(l, "position:y", l.position.y + 30.0, 1.0)
+	tw.parallel().tween_property(l, "modulate:a", 0.0, 1.0).set_delay(0.4)
+	tw.tween_callback(l.queue_free)
+
+
+func _show_war_chest(from_pid: String, to_pid: String, cards: Array) -> void:
+	## the fallen commander's cards fly across the table to whoever took their last land;
+	## if their fallen panel is still up, the cards spill out of it as it fades
+	var wait: float = maxf(0.0, (_fallen_until - Time.get_ticks_msec()) / 1000.0)
+	if wait > 0.05:
+		_chest_taken = true
+		get_tree().create_timer(wait).timeout.connect(func(): _fly_chest(from_pid, to_pid, cards, _fallen_at))
+		return
+	var from_p: Vector2 = size * Vector2(0.5, 0.35)
+	if roster.faces.has(from_pid):
+		var ff: Control = roster.faces[from_pid]
+		from_p = ff.global_position - global_position + ff.size * 0.5
+	_fly_chest(from_pid, to_pid, cards, from_p)
+
+
+func _fly_chest(from_pid: String, to_pid: String, cards: Array, from_p: Vector2) -> void:
+	if session.is_human(to_pid):
+		bar.advisor.react("happy", "cards_seized", 3.2)
+	Audio.sfx("war_chest", -4.0)
+	var to_p: Vector2 = size * Vector2(0.5, 0.35)
+	if roster.faces.has(to_pid):
+		var tf: Control = roster.faces[to_pid]
+		to_p = tf.global_position - global_position + tf.size * 0.5
+	for k in cards.size():
+		var tr := TextureRect.new()
+		tr.texture = Style.tex("res://assets/cards/%s.webp" % str(cards[k]))
+		tr.expand_mode = TextureRect.EXPAND_IGNORE_SIZE
+		tr.stretch_mode = TextureRect.STRETCH_KEEP_ASPECT
+		tr.size = Vector2(84, 120)
+		tr.pivot_offset = tr.size * 0.5
+		tr.mouse_filter = Control.MOUSE_FILTER_IGNORE
+		tr.position = from_p - tr.size * 0.5
+		tr.rotation = randf_range(-0.3, 0.3)
+		tr.modulate.a = 0.0
+		add_child(tr)
+		var mid: Vector2 = size * Vector2(0.5, 0.42) + Vector2((float(k) - float(cards.size() - 1) * 0.5) * 70.0, 0) - tr.size * 0.5
+		var tw := create_tween()
+		tw.tween_interval(0.12 * k)
+		tw.tween_property(tr, "modulate:a", 1.0, 0.15)
+		tw.parallel().tween_property(tr, "position", mid, 0.45).set_trans(Tween.TRANS_BACK).set_ease(Tween.EASE_OUT)
+		tw.parallel().tween_property(tr, "scale", Vector2(1.35, 1.35), 0.45)
+		tw.tween_interval(0.7)
+		tw.tween_property(tr, "position", to_p - tr.size * 0.5, 0.5).set_trans(Tween.TRANS_CUBIC).set_ease(Tween.EASE_IN)
+		tw.parallel().tween_property(tr, "scale", Vector2(0.3, 0.3), 0.5)
+		tw.parallel().tween_property(tr, "modulate:a", 0.0, 0.5).set_delay(0.3)
+		tw.tween_callback(tr.queue_free)
+	if roster.faces.has(to_pid):
+		get_tree().create_timer(1.6).timeout.connect(func(): roster.faces[to_pid].react("win"))
 
 
 func _show_fallen(pid: String) -> void:
@@ -848,6 +1375,9 @@ func _show_fallen(pid: String) -> void:
 		q.text = "“%s”" % Lines.text(who, "eliminated")
 	card.reset_size()
 	card.position = (size - card.size) * 0.5 - Vector2(0, BAR * 0.4)
+	_fallen_until = Time.get_ticks_msec() + 3700.0
+	_fallen_at = card.position + card.size * 0.5
+	_chest_taken = false
 	face.react("dead", "eliminated", 3.5)
 	card.modulate.a = 0.0
 	var tw := card.create_tween()
@@ -856,7 +1386,9 @@ func _show_fallen(pid: String) -> void:
 	tw.tween_property(card, "modulate:a", 0.0, 0.5)
 	tw.tween_callback(card.queue_free)
 	if not session.is_human(pid) and not session.living_humans().is_empty():
-		get_tree().create_timer(4.0).timeout.connect(func(): bar.advisor.react("happy", "enemy_out", 2.5))
+		get_tree().create_timer(4.0).timeout.connect(func():
+			if not _chest_taken:
+				bar.advisor.react("happy", "enemy_out", 2.5))
 
 
 func _regions_of_humans() -> Dictionary:

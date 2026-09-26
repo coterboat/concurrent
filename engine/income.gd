@@ -36,7 +36,23 @@ static func garrison_cap(world: Types.World, map: Types.MapDef, terr_id: String)
 	var t: Types.TerritoryDef = map.get_territory(terr_id)
 	if t != null and t.region != "" and MapLib.holds_region(world, map, ts.owner, t.region):
 		n += 1
+	## v1.4 (Amendment 15): never deeper than two. Interior fortresses were dead weight,
+	## 60% of every man on the board by mid-game, and they slowed the late war to a crawl.
+	if map.dig_cap > 0:
+		n = mini(n, map.dig_cap)
 	return n
+
+
+static func home_split(ts: Types.TerritoryState) -> Array:
+	## v1.5 display: [who can march, who stays home]. Home is the dug-in garrison; a land
+	## with nobody dug in yet keeps one man back, and he stands with the garrison.
+	if ts == null or ts.owner == Types.UNOCCUPIED:
+		return [0, 0]
+	if ts.owner == NEUTRAL_ID or ts.garrison >= 1:
+		return [ts.armies, ts.garrison]
+	if ts.armies >= 1:
+		return [ts.armies - 1, 1]
+	return [0, 0]
 
 
 static func max_send(ts: Types.TerritoryState) -> int:

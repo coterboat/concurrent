@@ -2,6 +2,7 @@
 extends PanelContainer
 
 const Style := preload("res://game/core/style.gd")
+const Income := preload("res://engine/income.gd")
 const Types := preload("res://engine/types.gd")
 const MapLib := preload("res://engine/map.gd")
 const Session := preload("res://game/core/session.gd")
@@ -69,12 +70,14 @@ func rebuild() -> void:
 	if not mine:
 		var d: Dictionary = s.expected_defense(land)
 		if ts.owner != Types.UNOCCUPIED:
-			var line := "%s" % Style.plural(ts.armies, "army", "armies")
-			line += ("  ·  %d dug in" % ts.garrison) if ts.garrison > 0 else "  ·  none dug in"
+			var sp: Array = Income.home_split(ts)
+			var line := "%s  ·  %d in the garrison" % [Style.plural(int(sp[0]), "army", "armies"), int(sp[1])]
 			if int(d["ceiling"]) > int(d["now"]):
 				line += "  ·  could reach %d" % d["ceiling"]
 			_box.add_child(Style.label(line, 17, Style.CREAM, "bold"))
-		if planning:
+		if planning and s.plan_step == "reinforce":
+			_box.add_child(Style.label("Attacks come in the orders phase, once your recruits are placed.", 14, Style.MUTED, "italic"))
+		elif planning:
 			var any := false
 			for n in MapLib.neighbors(s.map, land):
 				if s.world.get_territory(n).owner == s.planner:
@@ -86,11 +89,24 @@ func rebuild() -> void:
 		return
 	## ours
 	var placed: int = s.placed_on(land)
-	var line2 := Style.plural(ts.armies, "army", "armies")
-	line2 += ("  ·  %d dug in" % ts.garrison) if ts.garrison > 0 else "  ·  none dug in yet"
+	var sp2: Array = Income.home_split(ts)
+	var line2 := "%s  ·  %d in the garrison" % [Style.plural(int(sp2[0]), "army", "armies"), int(sp2[1])]
 	if placed > 0:
 		line2 += "  (+%d arriving)" % placed
 	_box.add_child(Style.label(line2, 17, Style.CREAM, "bold"))
+	if planning and s.plan_step == "orders":
+		## the recruits are placed; the card is about the orders now
+		pass
+	else:
+		_box.add_child(_recruit_row(land, placed))
+	if not planning or s.plan_step == "reinforce":
+		_fit()
+		return
+	_orders_rows(land, ts)
+
+
+func _recruit_row(land: String, placed: int) -> HBoxContainer:
+	var s = session
 	var pr := HBoxContainer.new()
 	pr.add_theme_constant_override("separation", 6)
 	pr.add_child(Style.label("Recruits", 16, Style.GOLD, "bold"))
@@ -101,13 +117,14 @@ func rebuild() -> void:
 	pr.add_child(q)
 	pr.add_child(Style.chip("  +  ", func(): gs.place(land, 1), Style.CREAM, 18))
 	pr.add_child(Style.label("room %d" % maxi(0, s.place_cap(land) - placed), 14, Style.MUTED))
-	_box.add_child(pr)
-	if not planning:
-		_fit()
-		return
+	return pr
+
+
+func _orders_rows(land: String, ts: Types.TerritoryState) -> void:
+	var s = session
 	var sends: int = s.max_send(land)
 	var note := "%d can march" % sends
-	note += " (dug-in hold the land)" if ts.garrison > 0 else " (1 stays home)"
+	note += " (the garrison holds the land)"
 	_box.add_child(Style.label(note, 14, Style.MUTED, "italic"))
 	var rows := 0
 	for n in MapLib.neighbors(s.map, land):
@@ -116,14 +133,14 @@ func rebuild() -> void:
 			rows += 1
 	for n in MapLib.neighbors(s.map, land):
 		if s.world.get_territory(n).owner == s.planner and s.world.round > 1 and not s.map.maneuvers:
-			_box.add_child(_move_row(land, n)) ## v1.3 games march in the reinforcement phase instead
+			_box.add_child(_move_row(land, n)) ## v1.3 games march in the regroup phase instead
 	if rows > 0:
 		_box.add_child(Style.label("Tip: click an enemy land, or drag onto it.", 13, Style.MUTED, "italic"))
 	_fit()
 
 
 func _rebuild_maneuver(ts: Types.TerritoryState, td: Types.TerritoryDef, mine: bool) -> void:
-	## the reinforcement phase: where can this land's soldiers march?
+	## the regroup phase: where can this land's soldiers march?
 	var s = session
 	var h := HBoxContainer.new()
 	var dot := _Dot.new()
@@ -139,7 +156,8 @@ func _rebuild_maneuver(ts: Types.TerritoryState, td: Types.TerritoryDef, mine: b
 	var now: Types.TerritoryState = w.get_territory(land)
 	var who: String = "Empty land" if ts.owner == Types.UNOCCUPIED else s.name_of(ts.owner)
 	_box.add_child(Style.label(who, 15, Style.PARCH, "italic"))
-	var line := Style.plural(now.armies, "army", "armies") + (("  ·  %d dug in" % now.garrison) if now.garrison > 0 else "  ·  none dug in")
+	var sp3: Array = Income.home_split(now)
+	var line := "%s  ·  %d in the garrison" % [Style.plural(int(sp3[0]), "army", "armies"), int(sp3[1])]
 	_box.add_child(Style.label(line, 17, Style.CREAM, "bold"))
 	if not mine:
 		_fit()

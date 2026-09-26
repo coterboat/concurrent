@@ -139,9 +139,11 @@ static func _placed_added(events: Array) -> int:
 
 
 static func _entrenched_added(events: Array) -> int:
+	## a land digging in deeper gains a man; v1.5's first soldier digging in is only a
+	## soldier changing places (from the army to the shield)
 	var n := 0
 	for e in events:
-		if str(e.get("kind", "")) == Types.EVENT_ENTRENCHED:
+		if str(e.get("kind", "")) == Types.EVENT_ENTRENCHED and int(e.get("converted", 0)) == 0:
 			n += 1
 	return n
 
@@ -157,6 +159,9 @@ static func _combat_deaths(events: Array) -> int:
 			n += int(e.get("attackerSize", 0)) + int(e.get("reservesAdded", 0)) + int(e.get("defenderSize", 0)) - int(e.get("winnerRemaining", 0))
 			if bool(e.get("fellBack", false)):
 				n -= int(e.get("attackerLeft", 0))
+		elif kind == Types.EVENT_SCRAMBLE:
+			for f in e.get("fronts", []):
+				n += int(f.get("size", 0)) - int(f.get("left", 0))
 		elif kind == Types.EVENT_MELEE:
 			## everyone who went in, less everyone still standing (survivors may fight on for the spoils)
 			n += int(e.get("defenderSize", 0)) - int(e.get("defenderLeft", 0))

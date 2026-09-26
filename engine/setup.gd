@@ -224,6 +224,13 @@ static func apply_opening(world: Types.World, map: Types.MapDef, placements_by_p
 			remaining -= spent
 			if add > 0:
 				ts.armies += add
+	## (first_digs_in) on every land the first soldier digs in, so every other man is free to march
+	if map != null and map.first_digs_in:
+		for terr_id in world.territories.keys():
+			var t2: Types.TerritoryState = world.get_territory(str(terr_id))
+			if t2.owner != Types.UNOCCUPIED and t2.owner != Income.NEUTRAL_ID and t2.garrison < 1 and t2.armies >= 1:
+				t2.armies -= 1
+				t2.garrison = 1
 
 
 static func _human_count(world: Types.World) -> int:
@@ -255,3 +262,102 @@ static func _shuffle(arr: Array, rng: RefCounted) -> void:
 		var tmp = arr[i]
 		arr[i] = arr[j]
 		arr[j] = tmp
+
+
+# ---------------------------------------------------------------- the land draft (v1.4)
+## "Claimed in turn": instead of a random deal, every commander throws a die for the
+## order of choosing, then they claim lands one at a time, round the table, until each
+## holds as many as the deal would have given. The two-seat doorstop is still pinned
+## neutral first, and what nobody claims is left as the deal would leave it.
+
+static func draft_world(map: Types.MapDef, seats: Array, match_seed: int) -> Types.World:
+	var w: Types.World = Types.World.empty_from_map(map)
+	w.round = 1
+	for seat in seats:
+		var sid: String = str(seat.get("id", ""))
+		w.players[sid] = make_player(sid, str(seat.get("name", sid.capitalize())), seat_color(sid))
+	if seats.size() == 2:
+		w.players[Income.NEUTRAL_ID] = make_player(Income.NEUTRAL_ID, "Neutral", "#6b6560")
+		var pin: String = _draft_pin(map)
+		if pin != "":
+			var armies: int = NEUTRAL_GATE_ARMIES if _knife_duel(map) else (map.neutral_armies if map.neutral_armies > 0 else NEUTRAL_GATE_ARMIES)
+			w.set_hex(pin, Income.NEUTRAL_ID, armies)
+	return w
+
+
+static func _knife_duel(map: Types.MapDef) -> bool:
+	return map.deal_each <= 3 and map.territories.size() == 7
+
+
+static func _draft_pin(map: Types.MapDef) -> String:
+	if _knife_duel(map):
+		return "gate" if map.get_territory("gate") != null else ""
+	return map.pin_neutral if map.pin_neutral != "" and map.get_territory(map.pin_neutral) != null else ""
+
+
+static func draft_quota(map: Types.MapDef, seat_count: int) -> int:
+	## the lands each commander claims: exactly what the random deal would hand them
+	if seat_count == 2:
+		if _knife_duel(map):
+			return 3
+		var free: int = map.territories.size() - (1 if _draft_pin(map) != "" else 0)
+		return mini(map.deal_each if map.deal_each > 0 else 9, free / 2)
+	return map.territories.size() / maxi(1, seat_count)
+
+
+static func order_roll(match_seed: int, pids: Array) -> Dictionary:
+	## Everyone throws one die; ties throw again among themselves until every place is
+	## settled. Returns {throws: [[{pid, die}]], order: [pid, ...]} — highest first.
+	var throws: Array = []
+	var order: Array = []
+	var groups: Array = [pids.duplicate()]
+	var k := 0
+	while not groups.is_empty() and k < 40:
+		var grp: Array = groups.pop_front()
+		if grp.size() == 1:
+			order.append(grp[0])
+			continue
+		var rng: RefCounted = Rng.derive_stream(match_seed, 0, "order|%d" % k)
+		k += 1
+		var t: Array = []
+		for pid in grp:
+			t.append({"pid": str(pid), "die": int(rng.roll_d6())})
+		throws.append(t)
+		## split into groups by die, highest first; each tied group throws again in place
+		var by_die := {}
+		for r in t:
+			var d: int = int(r["die"])
+			if not by_die.has(d):
+				by_die[d] = []
+			by_die[d].append(r["pid"])
+		var dice: Array = by_die.keys()
+		dice.sort()
+		dice.reverse()
+		var next: Array = []
+		for d in dice:
+			next.append(by_die[d])
+		groups = next + groups
+	return {"throws": throws, "order": order}
+
+
+static func draft_turns(order: Array, quota: int, free: int) -> Array:
+	## straight round the table in the rolled order, as in Risk, until everyone has their quota
+	var turns: Array = []
+	for r in quota:
+		for pid in order:
+			if turns.size() >= free:
+				return turns
+			turns.append(pid)
+	return turns
+
+
+static func finish_draft(w: Types.World, map: Types.MapDef, seat_count: int) -> void:
+	## lands nobody claimed: the two-seat doorstop keeps them neutral, as the deal would
+	if seat_count != 2 or not map.neutral_leftover or _knife_duel(map):
+		return
+	var ids: Array = Array(map.territory_ids())
+	ids.sort()
+	for t in ids:
+		var ts: Types.TerritoryState = w.get_territory(str(t))
+		if ts.owner == Types.UNOCCUPIED:
+			w.set_hex(str(t), Income.NEUTRAL_ID, map.neutral_leftover_armies)

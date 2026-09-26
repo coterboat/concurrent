@@ -233,8 +233,8 @@ func _selected() -> void:
 		box.add_child(_wrap(owner_txt, 17, Style.CREAM))
 		if int(d["ceiling"]) > int(d["now"]):
 			box.add_child(_wrap("They could reinforce it to %d before battle." % d["ceiling"], 16, Style.PARCH))
-		if ts.garrison > 0:
-			box.add_child(_wrap("%d of those are dug in and never leave." % ts.garrison, 16, Style.PARCH))
+		if int(Income.home_split(ts)[1]) > 0:
+			box.add_child(_wrap("%d of those hold the garrison and never leave." % int(Income.home_split(ts)[1]), 16, Style.PARCH))
 		## Who of ours can hit it?
 		for n in MapLib.neighbors(session.map, id):
 			var ns: Types.TerritoryState = session.world.get_territory(n)
@@ -245,8 +245,8 @@ func _selected() -> void:
 	var placed: int = session.placed_on(id)
 	var cap: int = session.place_cap(id)
 	var info := Style.plural(ts.armies, "army", "armies")
-	if ts.garrison > 0:
-		info += " + %d dug in" % ts.garrison
+	if int(Income.home_split(ts)[1]) > 0:
+		info += " + %d in the garrison" % int(Income.home_split(ts)[1])
 	box.add_child(Style.label(info, 18, Style.CREAM, "bold"))
 	var pr := HBoxContainer.new()
 	pr.add_theme_constant_override("separation", 8)
@@ -263,7 +263,7 @@ func _selected() -> void:
 	var sends: int = session.max_send(id)
 	if sends > 0 or ts.garrison > 0:
 		var note := "%d can march out" % sends
-		note += " (the dug-in %d hold the land)" % ts.garrison if ts.garrison > 0 else " (1 must stay home)"
+		note += " (the garrison of %d holds the land)" % int(Income.home_split(ts)[1])
 		box.add_child(Style.label(note, 15, Style.MUTED, "italic"))
 	for n in MapLib.neighbors(session.map, id):
 		var ns: Types.TerritoryState = session.world.get_territory(n)

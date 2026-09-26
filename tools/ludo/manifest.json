@@ -2509,86 +2509,6 @@
    "v": 1
   },
   {
-   "id": "voice2_ysolde",
-   "kind": "voice",
-   "describe": "Aristocratic English woman in her forties, cool low alto, crisp precise diction, measured and imperious, natural speech",
-   "text": "Viceroy Ysolde. I do not raise my voice, Commander, and I do not repeat myself. Take the fort. Leave nothing standing. When it is done, you may tell me how easy it was.",
-   "out": "assets/voice13/ysolde/_sample",
-   "v": 1
-  },
-  {
-   "id": "line2_ysolde_greet",
-   "kind": "speech",
-   "voice": "voice2_ysolde",
-   "text": "Viceroy Ysolde. Every land at this table will fly my banner. Guard your doors.",
-   "out": "assets/voice13/ysolde/greet",
-   "v": 1
-  },
-  {
-   "id": "line2_ysolde_attack",
-   "kind": "speech",
-   "voice": "voice2_ysolde",
-   "text": "Take it. Leave nothing standing.",
-   "out": "assets/voice13/ysolde/attack",
-   "v": 1
-  },
-  {
-   "id": "line2_ysolde_win",
-   "kind": "speech",
-   "voice": "voice2_ysolde",
-   "text": "Predictable.",
-   "out": "assets/voice13/ysolde/win",
-   "v": 1
-  },
-  {
-   "id": "line2_ysolde_lose",
-   "kind": "speech",
-   "voice": "voice2_ysolde",
-   "text": "You will pay for that. Dearly.",
-   "out": "assets/voice13/ysolde/lose",
-   "v": 1
-  },
-  {
-   "id": "line2_ysolde_walkin",
-   "kind": "speech",
-   "voice": "voice2_ysolde",
-   "text": "An empty fort is an insult to its owner. I have corrected it.",
-   "out": "assets/voice13/ysolde/walkin",
-   "v": 1
-  },
-  {
-   "id": "line2_ysolde_eliminated",
-   "kind": "speech",
-   "voice": "voice2_ysolde",
-   "text": "This is not the end of my house.",
-   "out": "assets/voice13/ysolde/eliminated",
-   "v": 1
-  },
-  {
-   "id": "line2_ysolde_victory",
-   "kind": "speech",
-   "voice": "voice2_ysolde",
-   "text": "Kneel. The empire is mine.",
-   "out": "assets/voice13/ysolde/victory",
-   "v": 1
-  },
-  {
-   "id": "line2_ysolde_retreat",
-   "kind": "speech",
-   "voice": "voice2_ysolde",
-   "text": "Withdraw. For now.",
-   "out": "assets/voice13/ysolde/retreat",
-   "v": 1
-  },
-  {
-   "id": "line2_ysolde_reserves",
-   "kind": "speech",
-   "voice": "voice2_ysolde",
-   "text": "Send everything. I do not lose.",
-   "out": "assets/voice13/ysolde/reserves",
-   "v": 1
-  },
-  {
    "id": "voice2_quill",
    "kind": "voice",
    "describe": "Middle-aged English merchant governor, jovial and sly, slightly nasal tenor, quick chatty delivery with a smile in the voice, natural speech",
@@ -2666,86 +2586,6 @@
    "voice": "voice2_quill",
    "text": "Double the investment! Send the reserves!",
    "out": "assets/voice13/quill/reserves",
-   "v": 1
-  },
-  {
-   "id": "voice2_oren",
-   "kind": "voice",
-   "describe": "Young English cavalry officer in his early twenties, bright tenor, eager and cheerful, fast excited delivery, natural speech",
-   "text": "Captain Oren of the Hussars! Honestly, this is my very first war, but I have an excellent horse and I have read absolutely every book. Right then. Charge! No, wait. Yes. Charge!",
-   "out": "assets/voice13/oren/_sample",
-   "v": 1
-  },
-  {
-   "id": "line2_oren_greet",
-   "kind": "speech",
-   "voice": "voice2_oren",
-   "text": "Captain Oren of the Hussars! First war, but I have a very fast horse!",
-   "out": "assets/voice13/oren/greet",
-   "v": 1
-  },
-  {
-   "id": "line2_oren_attack",
-   "kind": "speech",
-   "voice": "voice2_oren",
-   "text": "Charge! For glory!",
-   "out": "assets/voice13/oren/attack",
-   "v": 1
-  },
-  {
-   "id": "line2_oren_win",
-   "kind": "speech",
-   "voice": "voice2_oren",
-   "text": "Ha! Did you see that?",
-   "out": "assets/voice13/oren/win",
-   "v": 1
-  },
-  {
-   "id": "line2_oren_lose",
-   "kind": "speech",
-   "voice": "voice2_oren",
-   "text": "Wait, that was not supposed to happen!",
-   "out": "assets/voice13/oren/lose",
-   "v": 1
-  },
-  {
-   "id": "line2_oren_walkin",
-   "kind": "speech",
-   "voice": "voice2_oren",
-   "text": "Nobody home? Do not mind if I do!",
-   "out": "assets/voice13/oren/walkin",
-   "v": 1
-  },
-  {
-   "id": "line2_oren_eliminated",
-   "kind": "speech",
-   "voice": "voice2_oren",
-   "text": "I will be back. With more horses.",
-   "out": "assets/voice13/oren/eliminated",
-   "v": 1
-  },
-  {
-   "id": "line2_oren_victory",
-   "kind": "speech",
-   "voice": "voice2_oren",
-   "text": "I won? I won! Somebody tell my mother!",
-   "out": "assets/voice13/oren/victory",
-   "v": 1
-  },
-  {
-   "id": "line2_oren_retreat",
-   "kind": "speech",
-   "voice": "voice2_oren",
-   "text": "Retreat! Tactical retreat! Very tactical!",
-   "out": "assets/voice13/oren/retreat",
-   "v": 1
-  },
-  {
-   "id": "line2_oren_reserves",
-   "kind": "speech",
-   "voice": "voice2_oren",
-   "text": "Everybody! Everybody charge!",
-   "out": "assets/voice13/oren/reserves",
    "v": 1
   },
   {
@@ -2906,6 +2746,705 @@
    "voice": "voice2_imre",
    "text": "Commit the reserve. Now.",
    "out": "assets/voice13/imre/reserves",
+   "v": 1
+  },
+  {
+   "id": "soldier_aim",
+   "kind": "edit",
+   "from": "soldier_stand",
+   "cutout": true,
+   "out": "assets/raw/battle/soldier_aim",
+   "prompt": "The same toy soldier now standing and aiming his musket to the right: the wooden butt of the musket tucked into his right shoulder, his cheek against the stock, the long steel barrel and bayonet pointing straight out level to the right, same white colors, same side view facing right, holding only one musket",
+   "v": 1
+  },
+  {
+   "id": "soldier_kneel_aim",
+   "kind": "edit",
+   "from": "soldier_stand",
+   "cutout": true,
+   "out": "assets/raw/battle/soldier_kneel_aim",
+   "prompt": "The same toy soldier now kneeling on one knee and aiming his musket to the right: the wooden butt of the musket tucked into his shoulder, his cheek against the stock, the long steel barrel and bayonet pointing straight out level to the right, same white colors, same side view facing right, holding only one musket",
+   "v": 1
+  },
+  {
+   "id": "dice_tray",
+   "kind": "image",
+   "type": "art",
+   "style": false,
+   "art_style": "Digital Painting",
+   "perspective": "Top-Down",
+   "aspect": "ar_16_9",
+   "out": "assets/battle/dice_tray",
+   "prompt": "Top-down view of an empty campaign dice tray: a deep green baize felt surface inside a polished dark mahogany frame with brass corner fittings, soft even light from above, flat, no dice, no text",
+   "v": 1
+  },
+  {
+   "id": "sfx_dice_shake",
+   "kind": "sfx",
+   "duration": 1,
+   "out": "assets/raw/sfx/dice_shake",
+   "prompt": "two dice rattled quickly in a leather dice cup, close up, dry, no music",
+   "v": 1
+  },
+  {
+   "id": "sfx_dice_throw",
+   "kind": "sfx",
+   "duration": 2,
+   "out": "assets/raw/sfx/dice_throw",
+   "prompt": "a handful of dice thrown onto a wooden table, tumbling and clattering across the wood, then coming to rest, close up",
+   "v": 1
+  },
+  {
+   "id": "sfx_dice_click",
+   "kind": "sfx",
+   "duration": 1,
+   "out": "assets/raw/sfx/dice_click",
+   "prompt": "a single ivory die hitting a hardwood table top once, one sharp dry click, close up, nothing else",
+   "v": 1
+  },
+  {
+   "id": "sfx_dice_knock",
+   "kind": "sfx",
+   "duration": 1,
+   "out": "assets/raw/sfx/dice_knock",
+   "prompt": "a small rough wooden die knocking once on a wooden table, one dull hollow tok, close up, nothing else",
+   "v": 1
+  },
+  {
+   "id": "sfx_dice_clunk",
+   "kind": "sfx",
+   "duration": 1,
+   "out": "assets/raw/sfx/dice_clunk",
+   "prompt": "a heavy solid brass die dropped once on a wooden table, one weighty metallic clunk, close up, nothing else",
+   "v": 1
+  },
+  {
+   "id": "sfx_dice_settle",
+   "kind": "sfx",
+   "duration": 1,
+   "out": "assets/raw/sfx/dice_settle",
+   "prompt": "a single die rocking to a stop on a wooden table, a tiny rattle then silence, close up",
+   "v": 1
+  },
+  {
+   "id": "sfx_cheer_few",
+   "kind": "sfx",
+   "duration": 2,
+   "out": "assets/raw/sfx/cheer_few",
+   "prompt": "three or four soldiers give one short victorious cheer, huzzah, close up, no music",
+   "v": 1
+  },
+  {
+   "id": "sfx_cheer_company",
+   "kind": "sfx",
+   "duration": 3,
+   "out": "assets/raw/sfx/cheer_company",
+   "prompt": "a company of about forty soldiers cheering huzzah together in victory, short, no music",
+   "v": 1
+  },
+  {
+   "id": "sfx_cheer_army",
+   "kind": "sfx",
+   "duration": 4,
+   "out": "assets/raw/sfx/cheer_army",
+   "prompt": "a vast army of thousands roaring in triumph across a battlefield, huge and distant, short, no music",
+   "v": 1
+  },
+  {
+   "id": "sfx_flag_plant",
+   "kind": "sfx",
+   "duration": 2,
+   "out": "assets/raw/sfx/flag_plant",
+   "prompt": "a flagpole driven into the earth with a solid thud and a flag snapping open in the wind",
+   "v": 1
+  },
+  {
+   "id": "sfx_fanfare_order",
+   "kind": "sfx",
+   "duration": 2,
+   "out": "assets/raw/sfx/fanfare_order",
+   "prompt": "a short bright brass fanfare of three notes announcing the order of play",
+   "v": 1
+  },
+  {
+   "id": "sfx_war_chest",
+   "kind": "sfx",
+   "duration": 2,
+   "out": "assets/raw/sfx/war_chest",
+   "prompt": "a heavy iron-bound chest thrown open, coins and papers spilling out, a short triumphant brass sting",
+   "v": 1
+  },
+  {
+   "id": "voice2_oren",
+   "kind": "voice",
+   "describe": "Young British man in his twenties, dashing hussar cavalry captain, clear masculine voice, cocky and boyish, overconfident swagger, speaks fast, natural speech",
+   "text": "Captain Oren of the Hussars! First war, yes, but I have the fastest horse in the regiment and I have read every book on cavalry. Right then, lads. Sabres out. Charge!",
+   "out": "assets/voice13/oren/_sample",
+   "v": 2
+  },
+  {
+   "id": "voice2_ysolde",
+   "kind": "voice",
+   "describe": "Russian aristocratic woman in her forties, strong Russian accent, cool low alto, imperious and unhurried, crisp precise speech, natural speech",
+   "text": "Viceroy Ysolde. In my country the winter kills more men than cannon, and I am colder than the winter. Take the fort. Leave nothing standing. Then you may tell me how easy it was.",
+   "out": "assets/voice13/ysolde/_sample",
+   "v": 2
+  },
+  {
+   "id": "line2_varek_claim",
+   "kind": "speech",
+   "voice": "voice2_varek",
+   "text": "This ground is mine. Dig in.",
+   "out": "assets/voice13/varek/claim",
+   "v": 1
+  },
+  {
+   "id": "line2_ysolde_greet",
+   "kind": "speech",
+   "voice": "voice2_ysolde",
+   "text": "Viceroy Ysolde. Every land at this table will fly my banner. Guard your doors.",
+   "out": "assets/voice13/ysolde/greet",
+   "voice_v": 2,
+   "v": 2
+  },
+  {
+   "id": "line2_ysolde_attack",
+   "kind": "speech",
+   "voice": "voice2_ysolde",
+   "text": "Take it. Leave nothing standing.",
+   "out": "assets/voice13/ysolde/attack",
+   "voice_v": 2,
+   "v": 2
+  },
+  {
+   "id": "line2_ysolde_win",
+   "kind": "speech",
+   "voice": "voice2_ysolde",
+   "text": "Predictable.",
+   "out": "assets/voice13/ysolde/win",
+   "voice_v": 2,
+   "v": 2
+  },
+  {
+   "id": "line2_ysolde_lose",
+   "kind": "speech",
+   "voice": "voice2_ysolde",
+   "text": "You will pay for that. Dearly.",
+   "out": "assets/voice13/ysolde/lose",
+   "voice_v": 2,
+   "v": 2
+  },
+  {
+   "id": "line2_ysolde_walkin",
+   "kind": "speech",
+   "voice": "voice2_ysolde",
+   "text": "An empty fort is an insult to its owner. I have corrected it.",
+   "out": "assets/voice13/ysolde/walkin",
+   "voice_v": 2,
+   "v": 2
+  },
+  {
+   "id": "line2_ysolde_eliminated",
+   "kind": "speech",
+   "voice": "voice2_ysolde",
+   "text": "This is not the end of my house.",
+   "out": "assets/voice13/ysolde/eliminated",
+   "voice_v": 2,
+   "v": 2
+  },
+  {
+   "id": "line2_ysolde_victory",
+   "kind": "speech",
+   "voice": "voice2_ysolde",
+   "text": "Kneel. The empire is mine.",
+   "out": "assets/voice13/ysolde/victory",
+   "voice_v": 2,
+   "v": 2
+  },
+  {
+   "id": "line2_ysolde_retreat",
+   "kind": "speech",
+   "voice": "voice2_ysolde",
+   "text": "Withdraw. For now.",
+   "out": "assets/voice13/ysolde/retreat",
+   "voice_v": 2,
+   "v": 2
+  },
+  {
+   "id": "line2_ysolde_reserves",
+   "kind": "speech",
+   "voice": "voice2_ysolde",
+   "text": "Send everything. I do not lose.",
+   "out": "assets/voice13/ysolde/reserves",
+   "voice_v": 2,
+   "v": 2
+  },
+  {
+   "id": "line2_ysolde_claim",
+   "kind": "speech",
+   "voice": "voice2_ysolde",
+   "text": "I will take this one. Remember who chose first.",
+   "out": "assets/voice13/ysolde/claim",
+   "voice_v": 2,
+   "v": 1
+  },
+  {
+   "id": "line2_quill_claim",
+   "kind": "speech",
+   "voice": "voice2_quill",
+   "text": "A fine piece of property. I will take it.",
+   "out": "assets/voice13/quill/claim",
+   "v": 1
+  },
+  {
+   "id": "line2_oren_greet",
+   "kind": "speech",
+   "voice": "voice2_oren",
+   "text": "Captain Oren of the Hussars! First war, but I have a very fast horse!",
+   "out": "assets/voice13/oren/greet",
+   "voice_v": 2,
+   "v": 2
+  },
+  {
+   "id": "line2_oren_attack",
+   "kind": "speech",
+   "voice": "voice2_oren",
+   "text": "Charge! For glory!",
+   "out": "assets/voice13/oren/attack",
+   "voice_v": 2,
+   "v": 2
+  },
+  {
+   "id": "line2_oren_win",
+   "kind": "speech",
+   "voice": "voice2_oren",
+   "text": "Ha! Did you see that?",
+   "out": "assets/voice13/oren/win",
+   "voice_v": 2,
+   "v": 2
+  },
+  {
+   "id": "line2_oren_lose",
+   "kind": "speech",
+   "voice": "voice2_oren",
+   "text": "Wait, that was not supposed to happen!",
+   "out": "assets/voice13/oren/lose",
+   "voice_v": 2,
+   "v": 2
+  },
+  {
+   "id": "line2_oren_walkin",
+   "kind": "speech",
+   "voice": "voice2_oren",
+   "text": "Nobody home? Do not mind if I do!",
+   "out": "assets/voice13/oren/walkin",
+   "voice_v": 2,
+   "v": 2
+  },
+  {
+   "id": "line2_oren_eliminated",
+   "kind": "speech",
+   "voice": "voice2_oren",
+   "text": "I will be back. With more horses.",
+   "out": "assets/voice13/oren/eliminated",
+   "voice_v": 2,
+   "v": 2
+  },
+  {
+   "id": "line2_oren_victory",
+   "kind": "speech",
+   "voice": "voice2_oren",
+   "text": "I won? I won! Somebody tell my mother!",
+   "out": "assets/voice13/oren/victory",
+   "voice_v": 2,
+   "v": 2
+  },
+  {
+   "id": "line2_oren_retreat",
+   "kind": "speech",
+   "voice": "voice2_oren",
+   "text": "Retreat! Tactical retreat! Very tactical!",
+   "out": "assets/voice13/oren/retreat",
+   "voice_v": 2,
+   "v": 2
+  },
+  {
+   "id": "line2_oren_reserves",
+   "kind": "speech",
+   "voice": "voice2_oren",
+   "text": "Everybody! Everybody charge!",
+   "out": "assets/voice13/oren/reserves",
+   "voice_v": 2,
+   "v": 2
+  },
+  {
+   "id": "line2_oren_claim",
+   "kind": "speech",
+   "voice": "voice2_oren",
+   "text": "Ooh, that one! I call that one!",
+   "out": "assets/voice13/oren/claim",
+   "voice_v": 2,
+   "v": 1
+  },
+  {
+   "id": "line2_hask_claim",
+   "kind": "speech",
+   "voice": "voice2_hask",
+   "text": "Ha! Plant my flag there, lads!",
+   "out": "assets/voice13/hask/claim",
+   "v": 1
+  },
+  {
+   "id": "line2_imre_claim",
+   "kind": "speech",
+   "voice": "voice2_imre",
+   "text": "That one. You were about to take it, were you not?",
+   "out": "assets/voice13/imre/claim",
+   "v": 1
+  },
+  {
+   "id": "line_advisor_draft_roll",
+   "kind": "speech",
+   "voice": "voice_advisor",
+   "text": "Every commander throws a die. The highest roll claims first, and so on round the table.",
+   "out": "assets/voice/advisor/draft_roll",
+   "v": 1
+  },
+  {
+   "id": "line_advisor_draft_first",
+   "kind": "speech",
+   "voice": "voice_advisor",
+   "text": "Fortune smiles, Commander. We choose first. Take the land that matters most.",
+   "out": "assets/voice/advisor/draft_first",
+   "v": 1
+  },
+  {
+   "id": "line_advisor_draft_pick",
+   "kind": "speech",
+   "voice": "voice_advisor",
+   "text": "Our pick, Commander. Claim a land.",
+   "out": "assets/voice/advisor/draft_pick",
+   "v": 1
+  },
+  {
+   "id": "line_advisor_cards_seized",
+   "kind": "speech",
+   "voice": "voice_advisor",
+   "text": "Their war chest is ours, Commander. Every card they held now fights for us.",
+   "out": "assets/voice/advisor/cards_seized",
+   "v": 1
+  },
+  {
+   "id": "line_advisor_scramble",
+   "kind": "speech",
+   "voice": "voice_advisor",
+   "text": "The defenders are finished. Now the victors turn on each other. Every man for himself!",
+   "out": "assets/voice/advisor/scramble",
+   "v": 1
+  },
+  {
+   "id": "soldier_aim_img",
+   "kind": "image",
+   "type": "sprite",
+   "cutout": true,
+   "style": false,
+   "art_style": "Hand-Painted",
+   "perspective": "Side-Scroll",
+   "aspect": "ar_4_3",
+   "out": "assets/raw/battle/soldier_aim_img",
+   "prompt": "A single toy soldier of imperial line infantry, tall shako with a plume, crossbelts and tailcoat, standing and aiming his long musket straight out to the right: the wooden butt tucked into his shoulder, cheek on the stock, the barrel and bayonet level and pointing right, full body side view facing right, the whole figure painted pure white and very light grey with no other colors, glossy painted tin-soldier miniature look, isolated on a plain white background",
+   "v": 1
+  },
+  {
+   "id": "soldier_aim_sty",
+   "kind": "styled",
+   "style_from": "soldier_stand",
+   "type": "sprite",
+   "cutout": true,
+   "out": "assets/raw/battle/soldier_aim_sty",
+   "prompt": "A single toy soldier of imperial line infantry, tall shako with a plume, crossbelts and tailcoat, standing and aiming his long musket straight out to the right: the wooden butt tucked into his shoulder, cheek on the stock, the barrel and bayonet level and pointing right, full body side view facing right, the whole figure painted pure white and very light grey with no other colors, glossy painted tin-soldier miniature look, isolated on a plain white background",
+   "v": 1
+  },
+  {
+   "id": "soldier_kneel_aim_img",
+   "kind": "image",
+   "type": "sprite",
+   "cutout": true,
+   "style": false,
+   "art_style": "Hand-Painted",
+   "perspective": "Side-Scroll",
+   "aspect": "ar_4_3",
+   "out": "assets/raw/battle/soldier_kneel_aim_img",
+   "prompt": "A single toy soldier of imperial line infantry, tall shako with a plume, crossbelts and tailcoat, kneeling on one knee and aiming his long musket straight out to the right: the wooden butt tucked into his shoulder, cheek on the stock, the barrel and bayonet level and pointing right, full body side view facing right, the whole figure painted pure white and very light grey with no other colors, glossy painted tin-soldier miniature look, isolated on a plain white background",
+   "v": 1
+  },
+  {
+   "id": "soldier_kneel_aim_sty",
+   "kind": "styled",
+   "style_from": "soldier_stand",
+   "type": "sprite",
+   "cutout": true,
+   "out": "assets/raw/battle/soldier_kneel_aim_sty",
+   "prompt": "A single toy soldier of imperial line infantry, tall shako with a plume, crossbelts and tailcoat, kneeling on one knee and aiming his long musket straight out to the right: the wooden butt tucked into his shoulder, cheek on the stock, the barrel and bayonet level and pointing right, full body side view facing right, the whole figure painted pure white and very light grey with no other colors, glossy painted tin-soldier miniature look, isolated on a plain white background",
+   "v": 1
+  },
+  {
+   "id": "soldier_volley_anim",
+   "kind": "animate",
+   "from_file": "assets/raw/battle/soldier_aim_pad.png",
+   "prompt": "fires the musket: a bright flash and a puff of white smoke burst from the muzzle at the far right end of the barrel, the shoulder kicks back with the recoil, then he steadies his aim again exactly as at the start",
+   "image_type": "sprite",
+   "model": "forge",
+   "duration": 2,
+   "frames": 16,
+   "frame_size": -9,
+   "loop": false,
+   "crop": false,
+   "final_same": true,
+   "out": "assets/raw/battle/soldier_volley",
+   "v": 1
+  },
+  {
+   "id": "soldier_kneel_volley_anim",
+   "kind": "animate",
+   "from_file": "assets/raw/battle/soldier_kneel_aim_pad.png",
+   "prompt": "fires the musket from the knee: a bright flash and a puff of white smoke burst from the muzzle at the far right end of the barrel, the shoulder kicks back with the recoil, then he steadies his aim again exactly as at the start",
+   "image_type": "sprite",
+   "model": "forge",
+   "duration": 2,
+   "frames": 16,
+   "frame_size": -9,
+   "loop": false,
+   "crop": false,
+   "final_same": true,
+   "out": "assets/raw/battle/soldier_kneel_volley",
+   "v": 1
+  },
+  {
+   "id": "howto_dice",
+   "kind": "image",
+   "type": "art",
+   "aspect": "ar_16_9",
+   "out": "assets/art/howto_dice",
+   "prompt": "Two rival generals' hands throwing dice onto a green baize campaign dice tray on a war table among maps and tin soldiers: one throws rough wooden dice, the other gleaming gold dice with jewelled pips, candlelight",
+   "v": 1
+  },
+  {
+   "id": "howto_scramble",
+   "kind": "image",
+   "type": "art",
+   "aspect": "ar_16_9",
+   "out": "assets/art/howto_scramble",
+   "prompt": "Three armies in crimson, navy blue and green coats storming a burning hilltop fort from three sides, then turning their muskets on each other in the smoke, battle flags everywhere, chaos",
+   "v": 1
+  },
+  {
+   "id": "howto_draft",
+   "kind": "image",
+   "type": "art",
+   "aspect": "ar_16_9",
+   "out": "assets/art/howto_draft",
+   "prompt": "Rival commanders leaning over a great map table, planting little coloured flags on a painted map of unclaimed lands while dice on the table decide who chooses first, candlelight",
+   "v": 1
+  },
+  {
+   "id": "sfx_musket_volley_1",
+   "kind": "sfx",
+   "duration": 2,
+   "out": "assets/raw/sfx/musket_volley_1",
+   "prompt": "a volley of a dozen 19th-century flintlock muskets fired together at close range, a violent deafening crack of black powder and a heavy boom that echoes across a battlefield, no music",
+   "v": 1
+  },
+  {
+   "id": "sfx_musket_volley_2",
+   "kind": "sfx",
+   "duration": 2,
+   "out": "assets/raw/sfx/musket_volley_2",
+   "prompt": "a ragged line of 19th-century muskets firing in a rolling volley, loud violent cracks and booms of black powder with a long echo, no music",
+   "v": 1
+  },
+  {
+   "id": "sfx_musket_volley_3",
+   "kind": "sfx",
+   "duration": 2,
+   "out": "assets/raw/sfx/musket_volley_3",
+   "prompt": "a company of redcoat soldiers firing their muskets all at once, one enormous booming crack with smoke-thick echo, 19th century battle, no music",
+   "v": 1
+  },
+  {
+   "id": "sfx_musket_shot_1",
+   "kind": "sfx",
+   "duration": 1,
+   "out": "assets/raw/sfx/musket_shot_1",
+   "prompt": "a single heavy 19th-century musket shot very close, a sharp violent crack and deep boom with a short echo, no music",
+   "v": 1
+  },
+  {
+   "id": "sfx_musket_shot_2",
+   "kind": "sfx",
+   "duration": 1,
+   "out": "assets/raw/sfx/musket_shot_2",
+   "prompt": "one Brown Bess flintlock musket firing, the flint snap then a loud booming black powder blast, close up, no music",
+   "v": 1
+  },
+  {
+   "id": "sfx_cavalry_charge",
+   "kind": "sfx",
+   "duration": 4,
+   "out": "assets/raw/sfx/cavalry_charge",
+   "prompt": "a squadron of heavy cavalry charging at full gallop straight at the listener, thundering rhythmic three-beat gallop of hooves on hard earth, harness jingling, getting louder, no music",
+   "v": 1
+  },
+  {
+   "id": "sfx_cavalry_gallop",
+   "kind": "sfx",
+   "duration": 3,
+   "out": "assets/raw/sfx/cavalry_gallop",
+   "prompt": "several war horses galloping past in a steady rhythmic gallop, clear drumming three-beat hoofbeats on packed earth, no music",
+   "v": 1
+  },
+  {
+   "id": "sfx_horse_trample",
+   "kind": "sfx",
+   "duration": 2,
+   "out": "assets/raw/sfx/horse_trample",
+   "prompt": "war horses trampling and stamping heavily in place, hooves pounding the ground in a rough rhythm, snorting, no music",
+   "v": 1
+  },
+  {
+   "id": "sfx_far_cannon",
+   "kind": "sfx",
+   "duration": 3,
+   "out": "assets/raw/sfx/far_cannon",
+   "prompt": "distant cannon fire rumbling across a wide valley, two or three deep far-off booms, no music",
+   "v": 1
+  },
+  {
+   "id": "sfx_far_volley",
+   "kind": "sfx",
+   "duration": 3,
+   "out": "assets/raw/sfx/far_volley",
+   "prompt": "distant musket volleys crackling far away across a battlefield, faint and echoing, no music",
+   "v": 1
+  },
+  {
+   "id": "sfx_far_drums",
+   "kind": "sfx",
+   "duration": 4,
+   "out": "assets/raw/sfx/far_drums",
+   "prompt": "distant military drums beating a marching rhythm far across a battlefield, faint, no music",
+   "v": 1
+  },
+  {
+   "id": "sfx_far_bugle",
+   "kind": "sfx",
+   "duration": 3,
+   "out": "assets/raw/sfx/far_bugle",
+   "prompt": "a distant cavalry bugle call far across a battlefield, faint and echoing, no music",
+   "v": 1
+  },
+  {
+   "id": "sfx_far_shouts",
+   "kind": "sfx",
+   "duration": 3,
+   "out": "assets/raw/sfx/far_shouts",
+   "prompt": "distant soldiers shouting and a faint roar of a charge far away across a battlefield, no music",
+   "v": 1
+  },
+  {
+   "id": "sfx_phase_sting",
+   "kind": "sfx",
+   "duration": 2,
+   "out": "assets/raw/sfx/phase_sting",
+   "prompt": "a short military snare drum roll ending on a single bold brass chord, announcing the start of a new phase, no reverb tail",
+   "v": 1
+  },
+  {
+   "id": "sfx_phase_tap",
+   "kind": "sfx",
+   "duration": 1,
+   "out": "assets/raw/sfx/phase_tap",
+   "prompt": "a short crisp military snare drum flourish, three strokes, no music",
+   "v": 1
+  },
+  {
+   "id": "line_advisor_cash_us",
+   "kind": "speech",
+   "voice": "voice_advisor",
+   "text": "Cards turned in, Commander. Fresh regiments are marching to the front.",
+   "out": "assets/voice/advisor/cash_us",
+   "v": 1
+  },
+  {
+   "id": "line_advisor_cash_them",
+   "kind": "speech",
+   "voice": "voice_advisor",
+   "text": "They have turned in their cards. Expect a flood of fresh troops across the border.",
+   "out": "assets/voice/advisor/cash_them",
+   "v": 1
+  },
+  {
+   "id": "line_advisor_orders",
+   "kind": "speech",
+   "voice": "voice_advisor",
+   "text": "The troops are placed, Commander. Now, where do we strike?",
+   "out": "assets/voice/advisor/orders",
+   "v": 1
+  },
+  {
+   "id": "line_advisor_surges",
+   "kind": "speech",
+   "voice": "voice_advisor",
+   "text": "Now the breakthroughs. Every surge charges on at once!",
+   "out": "assets/voice/advisor/surges",
+   "v": 1
+  },
+  {
+   "id": "line2_varek_cash",
+   "kind": "speech",
+   "voice": "voice2_varek",
+   "text": "Fresh regiments. Send them to the front.",
+   "out": "assets/voice13/varek/cash",
+   "v": 1
+  },
+  {
+   "id": "line2_ysolde_cash",
+   "kind": "speech",
+   "voice": "voice2_ysolde",
+   "text": "My reserves have arrived. Now you will see an army.",
+   "out": "assets/voice13/ysolde/cash",
+   "v": 1
+  },
+  {
+   "id": "line2_quill_cash",
+   "kind": "speech",
+   "voice": "voice2_quill",
+   "text": "A fine return on the investment. More men, at once!",
+   "out": "assets/voice13/quill/cash",
+   "v": 1
+  },
+  {
+   "id": "line2_oren_cash",
+   "kind": "speech",
+   "voice": "voice2_oren",
+   "text": "Reinforcements! Oh, this is going to be fun!",
+   "out": "assets/voice13/oren/cash",
+   "v": 1
+  },
+  {
+   "id": "line2_hask_cash",
+   "kind": "speech",
+   "voice": "voice2_hask",
+   "text": "More lads for the Bear! Ha!",
+   "out": "assets/voice13/hask/cash",
+   "v": 1
+  },
+  {
+   "id": "line2_imre_cash",
+   "kind": "speech",
+   "voice": "voice2_imre",
+   "text": "I have been saving these. Now they matter.",
+   "out": "assets/voice13/imre/cash",
    "v": 1
   }
  ]

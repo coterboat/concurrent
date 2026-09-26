@@ -203,6 +203,23 @@ static func theme() -> Theme:
 	return t
 
 
+static func says(name: String, verb: String) -> String:
+	## "Varek holds", but "You hold": the default human seat is called You
+	if name.strip_edges().to_lower() != "you":
+		return "%s %s" % [name, verb]
+	var irregular := {"is": "are", "has": "have", "does": "do", "was": "were"}
+	var v: String = verb
+	if irregular.has(v):
+		v = irregular[v]
+	elif v.ends_with("ches") or v.ends_with("shes") or v.ends_with("sses") or v.ends_with("xes") or v.ends_with("zes"):
+		v = v.substr(0, v.length() - 2)
+	elif v.ends_with("ies"):
+		v = v.substr(0, v.length() - 3) + "y"
+	elif v.ends_with("s"):
+		v = v.substr(0, v.length() - 1)
+	return "%s %s" % [name, v]
+
+
 static func plural(n: int, one: String, many: String = "") -> String:
 	return "%d %s" % [n, one if n == 1 else (many if many != "" else one + "s")]
 

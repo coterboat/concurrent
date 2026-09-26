@@ -3,7 +3,9 @@
 ## on the right. An army is counted in Risk pieces: a cannon for every 10, a horse for
 ## every 5, a man for the rest. When a loss can't come from the men, a horse falls and
 ## four men step up to make change (a cannon: a horse and four men).
-## Moves: march in, breathe, fire (or kneel and fire, then reload), charge, rear, cheer,
+## Moves: march in, breathe, fire (standing or from the knee: a real aiming pose, the
+## recoil, the flash and the smoke drawn here, so the musket always points at the enemy),
+## reload, charge, rear, cheer,
 ## topple when hit, turn and march away. Every sheet is a Ludo loop checked for seams
 ## (tools/ludo/pack_anims.py); falls are drawn in code so they can never clip or reset.
 extends Control
@@ -11,10 +13,13 @@ extends Control
 const Style := preload("res://game/core/style.gd")
 
 const FIG_H := 104.0 ## a front-rank soldier's height in pixels at scale 1 (x 1.75 on screen)
-const SIZE := {"inf": 0.86, "cav": 1.08, "gun": 0.78} ## on-screen height of each piece vs a man
+const SIZE := {"inf": 0.86, "cav": 1.02, "gun": 0.7} ## on-screen height of each piece vs a man
 const GAP := {"inf": 56.0, "cav": 84.0, "gun": 128.0} ## file spacing for each piece
 const FRONT := 120.0 ## half the no-man's-land between the lines
 const MAX_GUNS := 12
+## where the muzzle is on each aiming pose, from the feet, at scale 1 (facing right)
+const MUZZLE := {"soldier_aim": Vector2(91, -119), "soldier_kneel_aim": Vector2(82, -78)}
+const SHOT_AT := 0.06 ## seconds into the fire move when the musket goes off
 
 var armies: Array = [] ## [{pid, side, n, band: [d0, d1], fled: -1.0, flag_x}]
 var figs: Array = [] ## {army, type, pos, cur, scale, state, t, alive, order, phase, alpha, anim}
@@ -27,7 +32,7 @@ var _soft: GradientTexture2D ## a feathered disc for smoke
 
 func _ready() -> void:
 	mouse_filter = Control.MOUSE_FILTER_IGNORE
-	for n in ["soldier_idle", "soldier_fire", "soldier_march", "soldier_kneel", "soldier_reload", "soldier_charge", "soldier_cheer",
+	for n in ["soldier_idle", "soldier_aim", "soldier_kneel_aim", "soldier_fire", "soldier_march", "soldier_reload", "soldier_charge", "soldier_cheer",
 			"cavalry_idle", "cavalry_gallop", "cavalry_charge", "cavalry_rear", "cannon_idle", "cannon_fire", "cannon_reload", "flag_wave"]:
 		_anims[n] = _sheet("res://assets/battle/" + n)
 	if _anims["soldier_idle"].is_empty():
@@ -67,17 +72,17 @@ func setup(list: Array) -> void:
 	armies = []
 	figs = []
 	puffs = []
-	var lefts := 0
+	## several armies on one side share its ground in bands, front to back
+	var per_side := [0, 0]
 	for a in list:
-		if int(a["side"]) == 0:
-			lefts += 1
-	var li := 0
+		per_side[int(a["side"])] += 1
+	var seen := [0, 0]
 	for a in list:
 		var side: int = int(a["side"])
 		var band := [0.0, 1.0]
-		if side == 0 and lefts > 1:
-			band = [float(li) / lefts, float(li + 1) / lefts]
-			li += 1
+		if int(per_side[side]) > 1:
+			band = [float(seen[side]) / per_side[side], float(seen[side] + 1) / per_side[side]]
+		seen[side] += 1
 		armies.append({"pid": str(a["pid"]), "side": side, "n": int(a["n"]), "band": band, "fled": -1.0,
 			"flag_x": -160.0 if side == 0 else size.x + 160.0})
 	for i in armies.size():
@@ -104,29 +109,59 @@ func _spawn(ai: int, want: Dictionary, fresh: bool) -> void:
 
 
 func _form(ai: int, snap_y: bool) -> void:
-	## men in the front files, horse behind them, the guns at the rear
+	## Drawn up in formation. The foot stand in a line at the front of their ground, four
+	## abreast and rank behind rank; the horse wait behind the foot; and the guns are
+	## drawn up in a battery on the far side of the ground, three lanes deep. Foot and
+	## guns keep their own lanes, so nothing stands in front of a gun's muzzle. If the
+	## whole array won't fit its half of the field, it closes ranks.
 	var side: int = int(armies[ai]["side"])
 	var band: Array = armies[ai]["band"]
 	var mine: Array = _alive(ai)
-	mine.sort_custom(func(x, y): return ["inf", "cav", "gun"].find(x["type"]) < ["inf", "cav", "gun"].find(y["type"]) or (x["type"] == y["type"] and int(x["order"]) < int(y["order"])))
-	var n := mine.size()
-	var rows: int = clampi(int(ceil(sqrt(float(n) * 0.8))), 1, 4)
-	if float(band[1]) - float(band[0]) < 0.99:
-		rows = clampi(rows, 1, 2)
-	var x := FRONT + (40.0 if float(band[0]) > 0.01 else 0.0) ## the rear band stands a little back
-	var file := -1
-	for i in n:
-		var f: Dictionary = mine[i]
-		var row: int = i % rows
-		if row == 0:
-			file += 1
-			if i > 0:
-				x += GAP[mine[i - 1]["type"]]
-		var t: float = 0.0 if rows == 1 else float(row) / float(rows - 1)
-		var depth: float = lerpf(float(band[0]), float(band[1]), t * 0.85 + 0.075)
+	mine.sort_custom(func(x, y): return int(x["order"]) < int(y["order"]))
+	var inf: Array = mine.filter(func(f): return f["type"] == "inf")
+	var cav: Array = mine.filter(func(f): return f["type"] == "cav")
+	var gun: Array = mine.filter(func(f): return f["type"] == "gun")
+	var b0: float = float(band[0])
+	var b1: float = float(band[1])
+	## the near lanes for the foot and horse, the far lanes for the guns
+	var foot_band := [b0, b1]
+	var gun_band := [b0, b1]
+	if not gun.is_empty() and (not inf.is_empty() or not cav.is_empty()):
+		var cut: float = lerpf(b0, b1, 0.5)
+		foot_band = [b0, cut]
+		gun_band = [cut, b1]
+	var slots: Array = [] ## [figure, distance back from the front, depth]
+	var per_rank: int = 4 if foot_band[1] - foot_band[0] > 0.6 else 2
+	var x := 0.0
+	for i in inf.size():
+		var rank: int = i / per_rank
+		var k: int = mini(per_rank, inf.size() - rank * per_rank)
+		var lane: float = (float(i % per_rank) + 0.5) / float(k)
+		slots.append([inf[i], float(rank) * float(GAP["inf"]) * 0.85, lerpf(foot_band[0], foot_band[1], lane * 0.8 + 0.1)])
+	if not inf.is_empty():
+		x = float(GAP["inf"]) * (0.85 * float((inf.size() - 1) / per_rank) + 1.0)
+	for i in cav.size():
+		slots.append([cav[i], x + float(i) * float(GAP["cav"]), lerpf(foot_band[0], foot_band[1], 0.5)])
+	var per_col := 3 if gun_band[1] - gun_band[0] > 0.45 else 2
+	for i in gun.size():
+		var col: int = i / per_col
+		var k2: int = mini(per_col, gun.size() - col * per_col)
+		var lane2: float = (float(i % per_col) + 0.5) / float(k2)
+		slots.append([gun[i], 95.0 + float(col) * float(GAP["gun"]), lerpf(gun_band[0], gun_band[1], lane2 * 0.8 + 0.1)])
+	## close ranks if the array runs off its half of the field
+	var deepest := 0.0
+	for sl in slots:
+		deepest = maxf(deepest, float(sl[1]))
+	var room: float = maxf(80.0, size.x * 0.5 - FRONT - 90.0)
+	var squeeze: float = minf(1.0, room / maxf(1.0, deepest))
+	var front: float = FRONT + (40.0 if b0 > 0.01 else 0.0) ## the rear band stands a little back
+	for i in slots.size():
+		var f: Dictionary = slots[i][0]
+		var depth: float = float(slots[i][2])
 		var sc: float = 1.0 - depth * 0.3
 		var y: float = size.y * (0.97 - depth * 0.52)
-		var px: float = size.x * 0.5 - (x + (row % 2) * 22.0) * sc if side == 0 else size.x * 0.5 + (x + (row % 2) * 22.0) * sc
+		var dx: float = (front + float(slots[i][1]) * squeeze) * sc
+		var px: float = size.x * 0.5 - dx if side == 0 else size.x * 0.5 + dx
 		f["order"] = i
 		f["pos"] = Vector2(px, y)
 		f["scale"] = sc
@@ -190,16 +225,24 @@ func volley(ai: int) -> String:
 			break
 		match str(f["type"]):
 			"inf":
-				var kneel: bool = not _anims["soldier_kneel"].is_empty() and randf() < 0.35
-				_act(f, "fire", "soldier_kneel" if kneel else "soldier_fire", 1.0 if kneel else 0.85)
 				var dir2 := 1.0 if int(armies[ai]["side"]) == 0 else -1.0
-				puffs.append({"pos": f["cur"] + Vector2(dir2 * 40 * f["scale"], (-40 if kneel else -62) * f["scale"]), "t": -0.3 if not kneel else -0.45, "big": false, "seed": randf() * TAU})
+				if not _anims["soldier_aim"].is_empty():
+					## up to the shoulder (or down on one knee), fire, kick, and back to the stance
+					var pose: String = "soldier_kneel_aim" if randf() < 0.35 and not _anims["soldier_kneel_aim"].is_empty() else "soldier_aim"
+					_act(f, "fire", pose, randf_range(0.75, 0.95))
+					var mz: Vector2 = MUZZLE[pose] * float(f["scale"]) * float(SIZE["inf"]) / 0.86
+					puffs.append({"pos": f["cur"] + Vector2(dir2 * mz.x, mz.y), "t": -SHOT_AT, "big": false, "seed": randf() * TAU, "flash": true})
+				else:
+					_act(f, "fire", "soldier_fire", 0.85)
+					puffs.append({"pos": f["cur"] + Vector2(dir2 * 40 * f["scale"], -62 * f["scale"]), "t": -0.3, "big": false, "seed": randf() * TAU})
 				n += 1
 			"cav":
 				if randf() < 0.5:
 					_act(f, "charge", "cavalry_charge", 1.0)
-					sound = "hoofs"
+					sound = "cavalry"
 					n += 1
+	if sound == "volley" and n == 1:
+		sound = "shot" ## one man fires: one shot, not a volley
 	return sound
 
 
@@ -391,6 +434,23 @@ func _draw() -> void:
 			"fire", "charge", "cheer", "reload":
 				an = _a(str(f["anim"]), _idle_of(type))
 				var k: float = float(f["t"]) / maxf(0.1, float(f.get("dur", 1.0)))
+				if str(f["anim"]).ends_with("_aim"):
+					## the aim: snap up, fire, kick back, steady, and lower again
+					var t: float = float(f["t"])
+					var dur: float = float(f.get("dur", 0.9))
+					var into: float = clampf(t / 0.05, 0.0, 1.0)
+					var outof: float = clampf((dur - t) / 0.12, 0.0, 1.0)
+					var aim_a: float = minf(into, outof)
+					var dir3: float = -1.0 if flip else 1.0
+					var kick := 0.0
+					if t > SHOT_AT:
+						kick = exp(-(t - SHOT_AT) / 0.07)
+					var foot: Vector2 = f["cur"] + Vector2(-dir3 * 7.0 * kick * float(f["scale"]), 0)
+					if aim_a < 1.0:
+						var idle: Dictionary = _a("soldier_idle")
+						_draw_anim(idle, _pick(idle, int((_clock + float(f["phase"])) * 9.0), true), f["cur"], float(f["scale"]), flip, col, float(f["alpha"]) * (1.0 - aim_a), 0.0, float(SIZE[type]))
+					_draw_anim(an, 0, foot, float(f["scale"]), flip, col, float(f["alpha"]) * aim_a, -dir3 * 0.035 * kick, float(SIZE[type]))
+					continue
 				if f["state"] == "charge" and (str(f["anim"]).ends_with("charge")):
 					fi = _pick(an, int((_clock + float(f["phase"])) * 14.0), true)
 				else:
@@ -433,6 +493,15 @@ func _draw() -> void:
 			draw_texture_rect(_soft, Rect2(c + off - Vector2(rr, rr), Vector2(rr, rr) * 2.0), false, Color(0.9, 0.89, 0.85, a2 * (0.6 + 0.07 * k2)))
 		if t < (0.14 if big else 0.09):
 			draw_circle(p["pos"], 16.0 if big else 8.0, Color(1.0, 0.78, 0.3, 0.9 * (1.0 - t / (0.14 if big else 0.09))))
+		if bool(p.get("flash", false)) and t < 0.08:
+			## the musket's own flash: a hot star at the muzzle, never tinted
+			var ft: float = 1.0 - t / 0.08
+			var fr: float = 13.0 * (0.6 + 0.4 * ft)
+			for k3 in 5:
+				var ang: float = float(p.get("seed", 0.0)) + float(k3) * TAU / 5.0
+				draw_line(p["pos"], p["pos"] + Vector2.from_angle(ang) * fr * 1.6, Color(1.0, 0.85, 0.45, 0.8 * ft), 3.0, true)
+			draw_circle(p["pos"], fr * 0.7, Color(1.0, 0.95, 0.75, 0.95 * ft))
+			draw_circle(p["pos"], fr * 0.35, Color(1, 1, 1, ft))
 
 
 func _draw_anim(an: Dictionary, idx: int, foot: Vector2, sc: float, flip: bool, col: Color, alpha: float, tilt: float, mult: float) -> void:

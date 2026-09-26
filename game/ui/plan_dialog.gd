@@ -61,6 +61,7 @@ func _ready() -> void:
 	row.add_theme_constant_override("separation", 12)
 	row.add_child(Style.button("Use this plan", func():
 		Counsel.adopt(session, _sheet)
+		session.begin_orders() ## the plan places the recruits and writes the orders: show the orders
 		Audio.sfx("seal", -6.0)
 		queue_free(), 0, 20))
 	row.add_child(Style.button("Keep my own", func(): queue_free(), 0, 20))

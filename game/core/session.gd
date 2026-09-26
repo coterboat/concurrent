@@ -17,7 +17,7 @@ const Ai := preload("res://engine/ai.gd")
 const Telemetry := preload("res://engine/telemetry.gd")
 const Maneuver := preload("res://engine/maneuver.gd")
 
-enum Phase { NONE, OPENING, PASS, PLANNING, RESOLVING, CINEMA, RECAP, GAME_OVER, MANEUVER }
+enum Phase { NONE, OPENING, PASS, PLANNING, RESOLVING, CINEMA, RECAP, GAME_OVER, MANEUVER, DRAFT }
 
 static var SAVE_PATH := "user://savegame.json"
 const SAVE_VERSION := 1
@@ -57,9 +57,11 @@ var round_sheets: Array = [] ## this round's sheets while its battles are being 
 var live: Array = [] ## humans calling their own battles this round
 var pending: Dictionary = {} ## the battle call the round is waiting on (empty = none)
 var force_live := false ## tests: call battles live even when instant
-var moves := {} ## pid -> [{from, to, n}] being written in the reinforcement phase
+var moves := {} ## pid -> [{from, to, n}] being written in the regroup phase
 var maneuvers_log: Array = [] ## per resolved round: {pid: [moves]} made after its battles
-var move_ghosts: Array = [] ## the last reinforcement phase's marches, for the board
+var move_ghosts: Array = [] ## the last regroup phase's marches, for the board
+var draft := {} ## v1.4 lands claimed in turn: {throws, order, turns, i, quota, claims: [{pid, land}]}
+var plan_step := "reinforce" ## v1.5: each commander's planning in two steps: place the recruits, then write the orders
 
 
 # ================================================================ lifecycle
@@ -73,7 +75,8 @@ func new_game(p_config: Dictionary) -> void:
 	map = Types.MapDef.from_file(str(config["map"]))
 	_apply_length()
 	seats = config["seats"]
-	world = Setup.deal(map, _seat_list(), match_seed)
+	var drafting: bool = str(config.get("deal", "random")) == "draft"
+	world = Setup.draft_world(map, _seat_list(), match_seed) if drafting else Setup.deal(map, _seat_list(), match_seed)
 	## Neutral name in two-seat games
 	if world.players.has(Income.NEUTRAL_ID):
 		world.players[Income.NEUTRAL_ID].display_name = "Neutral"
@@ -94,17 +97,32 @@ func new_game(p_config: Dictionary) -> void:
 	drafts = {}
 	opening = {}
 	locked = {}
-	_start_window(Phase.OPENING)
+	draft = {}
+	if drafting:
+		_start_draft()
+	else:
+		_start_window(Phase.OPENING)
 
 
 func _apply_length() -> void:
 	map.battle = str(config.get("battle", "volleys"))
 	config["battle"] = map.battle ## saves must replay with the same dice
-	## v1.3 rules for new games: a reinforcement phase, and a deck of men, horses and cannon
+	## v1.3 rules for new games: a regroup phase, and a deck of men, horses and cannon
 	map.maneuvers = bool(config.get("maneuvers", true))
 	config["maneuvers"] = map.maneuvers
 	map.wild_cards = bool(config.get("wild_cards", false))
 	config["wild_cards"] = map.wild_cards
+	## v1.4 rules for new games: victors who meet over one prize fight it out all at once
+	map.scramble = bool(config.get("scramble", true))
+	config["scramble"] = map.scramble
+	## ...and nobody digs in deeper than three (v1.4 capped it at two)
+	map.dig_cap = int(config.get("dig_cap", 3))
+	config["dig_cap"] = map.dig_cap
+	## v1.5 rules: surges clash head-on and carry a count; the man left behind digs in
+	map.rules = int(config.get("rules", 15))
+	config["rules"] = map.rules
+	map.first_digs_in = bool(config.get("first_digs_in", false))
+	config["first_digs_in"] = map.first_digs_in
 	var base: int = Setup.rounds_for(map)
 	var mode: String = str(config.get("length", "standard"))
 	var k: float = float(LENGTHS.get(mode, 1.0))
@@ -189,6 +207,7 @@ func _start_window(kind: int) -> void:
 
 func _next_planner(kind: int) -> void:
 	planner = str(queue.pop_front())
+	plan_step = "reinforce"
 	time_left = float(config.get("timer", 0))
 	if living_humans().size() > 1 and not bool(config.get("open_sheets", false)):
 		pass_to = planner
@@ -278,7 +297,7 @@ func _resolve_maneuvers() -> void:
 	for pid in MapLib.living_player_ids(world):
 		if pid == Income.NEUTRAL_ID:
 			continue
-		by[pid] = locked[pid] if locked.has(pid) else Maneuver.plan(world, map, pid)
+		by[pid] = locked[pid] if locked.has(pid) else Maneuver.plan(world, map, pid, {} if is_human(pid) else Ai.profile_for(ai_of(pid)))
 	var evs: Array = Maneuver.apply(world, map, by)
 	while maneuvers_log.size() < rounds_log.size():
 		maneuvers_log.append({})
@@ -308,7 +327,16 @@ func _resolve_opening() -> void:
 		for t in place.keys():
 			var ts: Types.TerritoryState = world.get_territory(str(t))
 			if ts.owner == pid and int(place[t]) > 0:
-				events.append({"kind": Types.EVENT_PLACED, "playerId": pid, "terrId": str(t), "added": ts.armies - pre_world.get_territory(str(t)).armies, "armies": ts.armies, "overflow": 0})
+				events.append({"kind": Types.EVENT_PLACED, "playerId": pid, "terrId": str(t), "added": ts.armies + ts.garrison - pre_world.get_territory(str(t)).held(), "armies": ts.armies, "garrison": ts.garrison, "overflow": 0})
+	## v1.5: lands that got no recruits still dig in their first soldier; show it
+	var shown := {}
+	for e in events:
+		shown[str(e["terrId"])] = true
+	var ids: Array = Array(map.territory_ids())
+	for t in ids:
+		var ts2: Types.TerritoryState = world.get_territory(str(t))
+		if not shown.has(str(t)) and ts2.garrison > pre_world.get_territory(str(t)).garrison:
+			events.append({"kind": Types.EVENT_ENTRENCHED, "terrId": str(t), "garrison": ts2.garrison, "cap": Income.garrison_cap(world, map, str(t)), "converted": ts2.garrison - pre_world.get_territory(str(t)).garrison})
 	_snapshot_history(0)
 	save()
 	phase = Phase.CINEMA
@@ -334,7 +362,117 @@ func _resolve_round() -> void:
 	_run(true)
 
 
-# ================================================================ reinforcement phase
+# ================================================================ reinforcement, then orders (v1.5)
+
+func begin_orders() -> void:
+	## the recruits are placed: on to the orders (the sheet is the same; this is the screen)
+	if phase == Phase.PLANNING and plan_step != "orders":
+		plan_step = "orders"
+		changed.emit()
+
+
+func back_to_reinforce() -> void:
+	if phase == Phase.PLANNING and plan_step != "reinforce":
+		plan_step = "reinforce"
+		changed.emit()
+
+
+# ================================================================ the land draft (v1.4)
+
+func _start_draft() -> void:
+	var pids: Array = []
+	for s in seats:
+		pids.append(str(s["id"]))
+	var roll: Dictionary = Setup.order_roll(match_seed, pids)
+	var free := 0
+	for t in map.territory_ids():
+		if world.get_territory(str(t)).owner == Types.UNOCCUPIED:
+			free += 1
+	var quota: int = Setup.draft_quota(map, seats.size())
+	draft = {"throws": roll["throws"], "order": roll["order"], "turns": Setup.draft_turns(roll["order"], quota, free), "i": 0, "quota": quota, "claims": []}
+	_draft_planner()
+	phase = Phase.DRAFT
+	_emit_phase()
+	if instant:
+		while drafting():
+			ai_claim()
+
+
+func drafting() -> bool:
+	return phase == Phase.DRAFT and not draft.is_empty() and int(draft["i"]) < (draft["turns"] as Array).size()
+
+
+func draft_turn() -> String:
+	## whose claim it is ("" once the draft is done)
+	if draft.is_empty() or int(draft["i"]) >= (draft["turns"] as Array).size():
+		return ""
+	return str(draft["turns"][int(draft["i"])])
+
+
+func draft_left(pid: String) -> int:
+	var n := 0
+	for k in range(int(draft.get("i", 0)), (draft.get("turns", []) as Array).size()):
+		if str(draft["turns"][k]) == pid:
+			n += 1
+	return n
+
+
+func _draft_planner() -> void:
+	## the board's eyes: whoever is choosing, if they're at the table; else the first human
+	var t: String = draft_turn()
+	if t != "" and is_human(t):
+		planner = t
+	elif planner == "" or not is_human(planner):
+		var h: Array = living_humans()
+		planner = str(h[0]) if not h.is_empty() else ""
+
+
+func claim(id: String) -> String:
+	## the commander whose turn it is plants a flag on a free land
+	if not drafting():
+		return "The lands are all claimed."
+	var ts: Types.TerritoryState = world.get_territory(id)
+	if ts == null or ts.owner != Types.UNOCCUPIED:
+		return "%s is already taken — pick a free land." % hex_name(id)
+	var pid: String = draft_turn()
+	world.set_hex(id, pid, 1)
+	(draft["claims"] as Array).append({"pid": pid, "land": id})
+	draft["i"] = int(draft["i"]) + 1
+	if int(draft["i"]) >= (draft["turns"] as Array).size():
+		Setup.finish_draft(world, map, seats.size())
+		_draft_planner()
+		changed.emit()
+		_start_window(Phase.OPENING)
+		return ""
+	_draft_planner()
+	changed.emit()
+	return ""
+
+
+func draft_pick_for(pid: String) -> String:
+	## the land this commander's brain would claim now (the advisor's pick, for a human)
+	var picks := {}
+	for s in seats:
+		picks[str(s["id"])] = draft_left(str(s["id"]))
+	var rng: RefCounted = Rng.derive_stream(match_seed, 0, "draft|%d" % int(draft.get("i", 0)))
+	## a human's "pick for me" gets the chief of staff, who thinks like the hard commanders
+	var prof: Dictionary = Ai.profile_for(ai_of(pid)) if not is_human(pid) else {"search": true, "region": 1.25, "noise": 0.0}
+	var upcoming: Array = (draft["turns"] as Array).slice(int(draft.get("i", 0)) + 1)
+	return Ai.draft_pick(world, map, pid, rng, prof, picks, upcoming)
+
+
+func ai_claim() -> String:
+	## the commander whose turn it is claims by their own lights; returns the land
+	if not drafting():
+		return ""
+	var land: String = draft_pick_for(draft_turn())
+	if land == "":
+		return ""
+	claim(land)
+	return land
+
+
+# ================================================================ regroup phase
 
 func maneuver_world() -> Types.World:
 	## the planner's own marches drawn in (what the board shows while they write them)
@@ -371,7 +509,7 @@ func can_move_from(from_id: String, skip: int = -1) -> int:
 
 func add_move(from_id: String, to_id: String, n: int = -1) -> String:
 	if phase != Phase.MANEUVER:
-		return "Troops march in the reinforcement phase, after the battles."
+		return "Troops march in the regroup phase, after the battles."
 	var a: Types.TerritoryState = world.get_territory(from_id)
 	var b: Types.TerritoryState = world.get_territory(to_id)
 	if a == null or b == null or a.owner != planner or b.owner != planner:
@@ -415,7 +553,7 @@ func clear_moves() -> void:
 
 func advise_moves() -> void:
 	## the chief of staff's marches, adopted in one click
-	moves[planner] = Maneuver.plan(world, map, planner)
+	moves[planner] = Maneuver.plan(world, map, planner, {"search": true}) ## the chief of staff marches to strike
 	changed.emit()
 
 
@@ -564,6 +702,15 @@ func _tally(evs: Array) -> void:
 					stats[ap]["armies_lost"] += int(f.get("size", 0)) + int(f.get("reservesAdded", 0)) - int(f.get("left", 0))
 					if not held and int(f.get("left", 0)) > 0 and not bool(f.get("fellBack", false)):
 						stats[ap]["won"] += 1
+			Types.EVENT_SCRAMBLE:
+				for f in e.get("fronts", []):
+					var sp: String = str(f.get("playerId", ""))
+					if not stats.has(sp):
+						continue
+					stats[sp]["battles"] += 1
+					stats[sp]["armies_lost"] += int(f.get("size", 0)) - int(f.get("left", 0))
+					if sp == str(e.get("winnerId", "")):
+						stats[sp]["won"] += 1
 			Types.EVENT_CLASH, Types.EVENT_SPOILS:
 				var w: String = str(e["winnerId"])
 				for pid in [str(e["playerA"]), str(e["playerB"])]:
@@ -898,6 +1045,7 @@ func set_surge(i: int, target: String) -> String:
 			if (raw as Types.Packet).to_id == p.to_id:
 				(raw as Types.Packet).surge_to = ""
 		sheet().surges.erase(p.to_id)
+		sheet().surge_n.erase(p.to_id)
 		changed.emit()
 		return ""
 	if target == p.from_id or not map.is_adjacent(p.to_id, target):
@@ -914,6 +1062,30 @@ func set_surge(i: int, target: String) -> String:
 			q.surge_to = target
 	changed.emit()
 	return ""
+
+
+func surge_count(dest: String) -> int:
+	## v1.5: how many the surge from dest is ordered to push on with (0 = all but the one who stays)
+	return int(sheet().surge_n.get(dest, 0))
+
+
+func surge_most(dest: String) -> int:
+	## the most who could push on: everyone sent at dest, less the one who stays
+	var total := 0
+	for raw in sheet().packets:
+		if (raw as Types.Packet).to_id == dest:
+			total += (raw as Types.Packet).strength
+	return maxi(1, total - 1)
+
+
+func set_surge_count(dest: String, n: int) -> void:
+	if not sheet().surges.has(dest):
+		return
+	if n <= 0 or n >= surge_most(dest):
+		sheet().surge_n.erase(dest) ## all who can
+	else:
+		sheet().surge_n[dest] = n
+	changed.emit()
 
 
 func clamp_packets() -> void:
@@ -1118,8 +1290,12 @@ func load_save() -> bool:
 	map = Types.MapDef.from_file(str(config["map"]))
 	map.rounds = int(d.get("rounds", map.rounds))
 	map.battle = str(config.get("battle", "decisive"))
-	map.maneuvers = bool(config.get("maneuvers", false)) ## saves from before v1.3 had no reinforcement phase
+	map.maneuvers = bool(config.get("maneuvers", false)) ## saves from before v1.3 had no regroup phase
 	map.wild_cards = bool(config.get("wild_cards", true))
+	map.scramble = bool(config.get("scramble", false)) ## saves from before v1.4 fought spoils as a ladder of duels
+	map.dig_cap = int(config.get("dig_cap", 0)) ## ...and dug in up to 1 + neighbours
+	map.rules = int(config.get("rules", 0))
+	map.first_digs_in = bool(config.get("first_digs_in", false))
 	seats = config["seats"]
 	stats = {}
 	for s in seats:
@@ -1159,7 +1335,7 @@ func load_save() -> bool:
 		phase = Phase.GAME_OVER
 		_emit_phase()
 		return true
-	## saved between the battles and the marches: pick up in the reinforcement phase
+	## saved between the battles and the marches: pick up in the regroup phase
 	if map.maneuvers and not rounds_log.is_empty() and (maneuvers_log[-1] as Dictionary).is_empty():
 		_start_window(Phase.MANEUVER)
 	else:

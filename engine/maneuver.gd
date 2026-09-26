@@ -1,4 +1,4 @@
-## The reinforcement phase (v1.3): after the battles, every commander may march troops
+## The regroup phase (v1.3): after the battles, every commander may march troops
 ## between their own neighbouring lands. One land per army: only soldiers who were
 ## there when the phase began may leave, so nobody moves twice. Dug-in defenders never
 ## march, and a land with no dug-in defender keeps one soldier.
@@ -71,9 +71,12 @@ static func _sorted(moves: Array) -> Array:
 	return out
 
 
-static func plan(world: Types.World, map: Types.MapDef, pid: String) -> Array:
+static func plan(world: Types.World, map: Types.MapDef, pid: String, prof: Dictionary = {}) -> Array:
 	## An AI's moves: march spare soldiers from quiet lands toward the fighting, and
 	## from a well-held front to a neighbour that faces more than it can hold.
+	## v1.4, the hard commanders (prof.search) march to strike, not just to hold: the rear
+	## heads for the front that faces the richest, weakest prey, and a quiet front lends
+	## its spare men to the neighbour that will attack next round.
 	var mine: Array = Array(MapLib.player_territory_ids(world, pid))
 	mine.sort()
 	if mine.is_empty():
@@ -82,6 +85,10 @@ static func plan(world: Types.World, map: Types.MapDef, pid: String) -> Array:
 	var threat := {}
 	for t in mine:
 		threat[t] = _threat(world, map, pid, t)
+	var striker: bool = bool(prof.get("search", false))
+	var pull := {}
+	if striker:
+		pull = _pull(world, map, pid, mine, dist)
 	var moves: Array = []
 	var budget := {}
 	for t in mine:
@@ -102,7 +109,11 @@ static func plan(world: Types.World, map: Types.MapDef, pid: String) -> Array:
 			## a quiet land: everyone who can goes one step closer to the front
 			var best := ""
 			for n in friends:
-				if best == "" or int(dist.get(n, 99)) < int(dist.get(best, 99)) or (int(dist.get(n, 99)) == int(dist.get(best, 99)) and float(threat[n]) > float(threat[best])):
+				if striker:
+					## any step closer will do; go toward the best prey
+					if int(dist.get(n, 99)) < int(dist.get(t, 99)) and (best == "" or float(pull.get(n, 0.0)) > float(pull.get(best, 0.0))):
+						best = n
+				elif best == "" or int(dist.get(n, 99)) < int(dist.get(best, 99)) or (int(dist.get(n, 99)) == int(dist.get(best, 99)) and float(threat[n]) > float(threat[best])):
 					best = n
 			if best != "" and int(dist.get(best, 99)) < int(dist.get(t, 99)):
 				moves.append({"from": t, "to": best, "n": spare})
@@ -124,7 +135,66 @@ static func plan(world: Types.World, map: Types.MapDef, pid: String) -> Array:
 				worst = n
 		if worst != "" and worst_gap >= 2.0:
 			moves.append({"from": t, "to": worst, "n": mini(give, int(ceil(worst_gap)))})
+		elif striker:
+			## nobody next door is in trouble: mass on the front with the better prey
+			var host := ""
+			for n in friends:
+				if int(dist.get(n, 99)) != 0:
+					continue
+				if float(pull.get(n, 0.0)) > float(pull.get(t, 0.0)) * 1.6 + 0.4 and (host == "" or float(pull.get(n, 0.0)) > float(pull.get(host, 0.0))):
+					host = n
+			if host != "":
+				moves.append({"from": t, "to": host, "n": give})
 	return moves
+
+
+static func _prey(world: Types.World, map: Types.MapDef, pid: String, t: String) -> float:
+	## how good the best attack from this front looks: worth over the men in the way
+	var best := 0.0
+	for e in MapLib.neighbors(map, t):
+		var es: Types.TerritoryState = world.get_territory(e)
+		if es.owner == pid:
+			continue
+		var worth := 1.0
+		var td: Types.TerritoryDef = map.get_territory(e)
+		if td != null and td.region != "" and map.region_bonus.has(td.region):
+			var members := MapLib.region_members(map, td.region)
+			var have := 0
+			for m in members:
+				if world.get_territory(m).owner == pid:
+					have += 1
+			worth += float(map.region_bonus[td.region]) * float(have + 1) / float(members.size())
+			if es.owner != Types.UNOCCUPIED and MapLib.holds_region(world, map, es.owner, td.region):
+				worth += float(map.region_bonus[td.region]) ## break their bonus
+		if es.owner != Types.UNOCCUPIED and es.owner != "neutral":
+			var left: int = MapLib.player_territory_ids(world, es.owner).size()
+			if left <= 2:
+				worth += 3.0 + 0.5 * float(world.players[es.owner].cards.size()) ## finish them, take the chest
+		best = maxf(best, worth * 6.0 / float(es.held() + 2))
+	return best
+
+
+static func _pull(world: Types.World, map: Types.MapDef, pid: String, mine: Array, dist: Dictionary) -> Dictionary:
+	## every land's draw toward the fighting: the best prey reachable, fading with distance
+	var pull := {}
+	var queue: Array = []
+	for t in mine:
+		if int(dist.get(t, 99)) == 0:
+			pull[t] = _prey(world, map, pid, t)
+			queue.append(t)
+	var i := 0
+	while i < queue.size():
+		var t: String = queue[i]
+		i += 1
+		for n in MapLib.neighbors(map, t):
+			if world.get_territory(n).owner != pid:
+				continue
+			var v: float = float(pull[t]) * 0.8
+			if not pull.has(n) or v > float(pull[n]) + 0.001:
+				if int(dist.get(n, 99)) > 0:
+					pull[n] = maxf(float(pull.get(n, 0.0)), v)
+					queue.append(n)
+	return pull
 
 
 static func _threat(world: Types.World, map: Types.MapDef, pid: String, t: String) -> float:

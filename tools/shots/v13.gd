@@ -19,6 +19,7 @@ func run(probe) -> void:
 		Settings.data[k] = 0.0
 	Settings.data["battles"] = "mine"
 	Settings.data["roll_yourself"] = true
+	Settings.data["speed"] = "fast" ## v1.4 dice take their time: throw them quickly here
 	var main: Control = load("res://game/main.tscn").instantiate()
 	p.get_tree().root.add_child(main)
 	await p.frames(5)
@@ -76,8 +77,9 @@ func run(probe) -> void:
 	await snap("52_melee_march_in")
 	guard = 0
 	var calls := 0
+	var shots := 0
 	var shot_salvo := false
-	while th.visible and guard < 2400:
+	while th.visible and guard < 20000:
 		guard += 1
 		match str(th._state):
 			"ready":
@@ -93,7 +95,8 @@ func run(probe) -> void:
 					await snap("55_melee_result")
 				shot_salvo = true
 				th.press()
-		if str(th._state) == "rolling" and not shot_salvo and guard > 30 and guard % 97 == 0:
+		if str(th._state) == "rolling" and not shot_salvo and guard > 30 and guard % 97 == 0 and shots < 2:
+			shots += 1
 			await snap("53_melee_salvo")
 		await p.frames(1)
 	p.ok(calls >= 2, "both watching invaders made calls (%d)" % calls)

@@ -17,13 +17,13 @@ const Income := preload("res://engine/income.gd")
 
 
 ## seats: [{id, name, ai: "general"|"veteran"|"recruit"|commander id|"monkey"}]
-static func play(map: Types.MapDef, seats: Array, match_seed: int, max_rounds: int = 0) -> Dictionary:
+static func play(map: Types.MapDef, seats: Array, match_seed: int, max_rounds: int = 0, draft: bool = false) -> Dictionary:
 	if max_rounds > 0:
 		map.rounds = max_rounds
-	var world: Types.World = Setup.deal(map, seats, match_seed)
 	var brains := {}
 	for seat in seats:
 		brains[str(seat["id"])] = str(seat.get("ai", "veteran"))
+	var world: Types.World = draft_deal(map, seats, match_seed, brains) if draft else Setup.deal(map, seats, match_seed)
 	var violations := PackedStringArray()
 	var opening := {}
 	for pid in MapLib.living_player_ids(world):
@@ -77,12 +77,12 @@ static func play(map: Types.MapDef, seats: Array, match_seed: int, max_rounds: i
 		if got != expected:
 			violations.append("r%s army leak: expected %s got %s" % [world.round, expected, got])
 		world = result["world"]
-		## v1.3 reinforcement phase: everyone marches, then the next round
+		## v1.3 regroup phase: everyone marches, then the next round
 		if map.maneuvers and str(Telemetry.summarize_events(result["events"]).get("winner", "")) == "":
 			var by := {}
 			for pid in MapLib.living_player_ids(world):
 				if pid != Income.NEUTRAL_ID:
-					by[pid] = Maneuver.plan(world, map, pid)
+					by[pid] = Maneuver.plan(world, map, pid, {} if brains.get(pid, "") == "monkey" else Ai.profile_for(str(brains.get(pid, "veteran"))))
 			var before_moves: int = MapLib.sum_armies(world)
 			Maneuver.apply(world, map, by)
 			if MapLib.sum_armies(world) != before_moves:
@@ -120,3 +120,32 @@ static func play(map: Types.MapDef, seats: Array, match_seed: int, max_rounds: i
 		"brains": brains,
 		"planMs": float(plan_usec) / 1000.0 / float(maxi(1, plans)),
 	}
+
+
+static func draft_deal(map: Types.MapDef, seats: Array, match_seed: int, brains: Dictionary) -> Types.World:
+	## v1.4 lands claimed in turn: the order roll, then every seat's brain picks (as the session does)
+	var w: Types.World = Setup.draft_world(map, seats, match_seed)
+	var pids: Array = []
+	for s in seats:
+		pids.append(str(s["id"]))
+	var roll: Dictionary = Setup.order_roll(match_seed, pids)
+	var free := 0
+	for t in map.territory_ids():
+		if w.get_territory(str(t)).owner == Types.UNOCCUPIED:
+			free += 1
+	var turns: Array = Setup.draft_turns(roll["order"], Setup.draft_quota(map, seats.size()), free)
+	for i in turns.size():
+		var pid: String = str(turns[i])
+		var left := {}
+		for q in pids:
+			left[q] = 0
+		for k in range(i, turns.size()):
+			left[str(turns[k])] = int(left[str(turns[k])]) + 1
+		var rng: RefCounted = Rng.derive_stream(match_seed, 0, "draft|%d" % i)
+		var brain: String = str(brains.get(pid, "veteran"))
+		var land: String = Ai.draft_pick(w, map, pid, rng, Ai.profile_for("veteran" if brain == "monkey" else brain), left, turns.slice(i + 1))
+		if land == "":
+			break
+		w.set_hex(land, pid, 1)
+	Setup.finish_draft(w, map, seats.size())
+	return w

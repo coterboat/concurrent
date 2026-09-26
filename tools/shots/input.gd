@@ -27,20 +27,23 @@ func run(probe) -> void:
 	var b: Control = gs.board
 	var mine := MapLib.player_territory_ids(s.world, "red")
 	var t: String = mine[0]
+	## v1.5: placing is one click per recruit, in deployment and the reinforcement phase
 	await click(b, t)
-	p.ok(gs.selected == t, "left click selects %s" % t)
+	p.ok(gs.selected == t and s.placed_on(t) == 1, "left click selects %s and places one (%d)" % [t, s.placed_on(t)])
 	await click(b, t)
-	p.ok(s.placed_on(t) == 1, "second click places one (%d)" % s.placed_on(t))
+	p.ok(s.placed_on(t) == 2, "each click places another (%d)" % s.placed_on(t))
 	await click(b, t, MOUSE_BUTTON_RIGHT)
-	p.ok(s.placed_on(t) == 0, "right click takes it back")
-	await click(b, t)
-	await click(b, t)
+	p.ok(s.placed_on(t) == 1, "right click takes one back")
 	s.auto_deploy()
 	s.lock()
 	await p.frames(5)
 	gs.cinema.skip()
 	await p.frames(5)
-	p.ok(s.phase == Session.Phase.PLANNING, "round 1 planning")
+	p.ok(s.phase == Session.Phase.PLANNING and s.plan_step == "reinforce", "round 1 opens on the reinforcement phase")
+	s.auto_deploy()
+	gs.primary_action() ## the dial: ORDERS
+	await p.frames(3)
+	p.ok(s.plan_step == "orders", "the dial moves on to the orders phase")
 	## find an attack: own land with an enemy / empty neighbor and someone to send
 	var from := ""
 	var to := ""
