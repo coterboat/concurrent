@@ -8,12 +8,13 @@ const Setup := preload("res://engine/setup.gd")
 
 
 func _initialize() -> void:
-	var args := {"map": "known24", "n": "30", "seats": "general,veteran,recruit", "rounds": "0", "seed": "1000", "battle": "volleys", "moves": "1", "wild": "0", "scramble": "1", "deal": "random", "dig": "3", "rules": "15", "first": "0"}
+	var args := {"map": "known24", "n": "30", "seats": "general,veteran,recruit", "rounds": "0", "seed": "1000", "battle": "volleys", "moves": "1", "wild": "0", "scramble": "1", "deal": "random", "dig": "3", "rules": "16", "first": "0", "line": "5"}
 	for a in OS.get_cmdline_user_args():
 		var kv := a.split("=", true, 1)
 		if kv.size() == 2:
 			args[kv[0]] = kv[1]
 	var brains: PackedStringArray = str(args["seats"]).split(",")
+	load("res://engine/combat.gd").line_size = int(args["line"])
 	var n: int = int(args["n"])
 	var wins := {}
 	var rounds_total := 0
@@ -39,6 +40,7 @@ func _initialize() -> void:
 		map.dig_cap = int(args["dig"])
 		map.rules = int(args["rules"])
 		map.first_digs_in = str(args["first"]) == "1"
+		map.fire_line = int(args["line"]) > 0
 		var seats: Array = []
 		## rotate seats so no brain always sits in the same chair
 		for k in brains.size():

@@ -80,7 +80,7 @@ static func advice(s: Node) -> Array:
 		var who: String = "Nobody holds" if o == Types.UNOCCUPIED else "%s left only %d in" % [s.name_of(o), best_soft_n]
 		out.append(_item("soft_" + best_soft, "%s %s. A small force takes it." % [who, s.hex_name(best_soft)], "pleased", "", [best_soft], 45))
 	## 6. cards
-	if map.cards and s.sheet().cash_set.is_empty() and Cards.best_set(s.hand()).size() == 3:
+	if map.cards and s.sheet().cash_set.is_empty() and s.best_set().size() == 3:
 		out.append(_item("cards", "We hold a set of cards. Open the Cards and turn them in for %d more troops this round." % s.set_value_now(), "pleased", "cards", [], 55))
 	## 7. the clock
 	if s.is_last_round() and not s.conquest():

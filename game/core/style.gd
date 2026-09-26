@@ -82,7 +82,7 @@ static func portrait(name: String) -> Texture2D:
 
 
 static func card_tex(kind: String) -> Texture2D:
-	return tex("res://assets/cards/%s.webp" % kind)
+	return tex("res://assets/cards/%s.webp" % kind.get_slice("@", 0)) ## v1.6 cards name a land: "sun@ridge"
 
 
 static func flat(bg: Color, border: Color = Color(0, 0, 0, 0), bw: int = 0, radius: int = 6, pad: int = 10) -> StyleBoxFlat:
@@ -305,6 +305,10 @@ static func shape_points(shape: String, c: Vector2, r: float) -> PackedVector2Ar
 			for i in range(0, 8):
 				var t := 1.0 - float(i) / 8.0
 				pts.append(c + Vector2(-r * 0.9 * (1.0 - t), r * 0.1 + r * 1.0 * sin(t * PI / 2.0)))
+		"star":
+			for i in 10:
+				var a := i * PI / 5.0 - PI / 2.0
+				pts.append(c + Vector2(cos(a), sin(a)) * (r if i % 2 == 0 else r * 0.45))
 		_:
 			for i in 24:
 				var a := i * TAU / 24.0

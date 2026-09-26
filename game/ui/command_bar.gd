@@ -277,7 +277,7 @@ func refresh() -> void:
 			_tally_row.add_child(ap2)
 			_tally_row.add_child(Style.chip("Clear", func(): s.clear_placements(), Style.MUTED, 14))
 			if s.map.cards:
-				var ready2: bool = Cards.best_set(s.hand()).size() == 3
+				var ready2: bool = s.best_set().size() == 3
 				var label2 := "Cards (%d)" % s.hand().size()
 				if not s.sheet().cash_set.is_empty():
 					label2 = "Cards ✓ +%d" % s.set_value_now()
@@ -307,7 +307,7 @@ func refresh() -> void:
 			_tally_row.add_child(Style.chip("Review", func(): gs.open_drawer(), Style.CREAM, 14))
 			if s.map.cards:
 				## the hand opens on the table; a set glows when one is ready
-				var ready: bool = Cards.best_set(s.hand()).size() == 3
+				var ready: bool = s.best_set().size() == 3
 				var label := "Cards (%d)" % s.hand().size()
 				if not s.sheet().cash_set.is_empty():
 					label = "Cards ✓ +%d" % s.set_value_now()
@@ -366,10 +366,22 @@ func refresh() -> void:
 	queue_redraw()
 
 
-func bump_coin() -> void:
+func bump_coin(big: bool = false) -> void:
 	var tw := create_tween()
+	if big:
+		## fresh troops from a set: the coin swells and glows gold a few times
+		for k in 3:
+			tw.tween_property(_coin, "scale", Vector2(1.45, 1.45), 0.14).set_trans(Tween.TRANS_BACK)
+			tw.parallel().tween_property(_coin, "modulate", Color(1.6, 1.35, 0.7), 0.14)
+			tw.tween_property(_coin, "scale", Vector2.ONE, 0.18)
+			tw.parallel().tween_property(_coin, "modulate", Color.WHITE, 0.18)
+		return
 	tw.tween_property(_coin, "scale", Vector2(1.15, 1.15), 0.08)
 	tw.tween_property(_coin, "scale", Vector2.ONE, 0.12)
+
+
+func coin_center() -> Vector2:
+	return _coin.global_position + _coin.size * 0.5
 
 
 class _Coin extends Control:

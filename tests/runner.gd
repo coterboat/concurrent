@@ -19,6 +19,7 @@ const CallsTest = preload("res://tests/test_calls.gd")
 const V13Test = preload("res://tests/test_v13.gd")
 const V14Test = preload("res://tests/test_v14.gd")
 const V15Test = preload("res://tests/test_v15.gd")
+const V16Test = preload("res://tests/test_v16.gd")
 
 const KNIFE7 := "res://maps/knife7.json"
 
@@ -64,6 +65,8 @@ func _initialize() -> void:
 	V14Test.new().run(Callable(self, "_ok"), self)
 	_section("v1.5: surges, the dug-in man, reinforcement then orders")
 	V15Test.new().run(Callable(self, "_ok"), self)
+	_section("v1.6: the firing line, land cards, the report's hands")
+	V16Test.new().run(Callable(self, "_ok"), self)
 	_section("ai commanders")
 	AiTest.new().run(Callable(self, "_ok"))
 	print("")
@@ -75,6 +78,9 @@ func _initialize() -> void:
 
 func _section(name: String) -> void:
 	print("\n[%s]" % name)
+	## every section starts from the classic battle rules; a section that wants the v1.6
+	## firing line sets it (the resolve queue sets it from each map anyway)
+	load("res://engine/combat.gd").use_rules(null)
 
 
 func _ok(cond: bool, msg: String) -> void:

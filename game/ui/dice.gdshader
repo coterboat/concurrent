@@ -10,7 +10,8 @@ uniform vec4 body_col : source_color = vec4(0.95, 0.92, 0.84, 1.0);
 uniform vec4 pip_col : source_color = vec4(0.1, 0.07, 0.05, 1.0);
 uniform vec4 edge_col : source_color = vec4(0.78, 0.6, 0.3, 1.0);
 uniform vec4 glow_col : source_color = vec4(1.0, 0.8, 0.35, 1.0);
-uniform float edge_w = 0.0; // brass trim along the edges (0 none, 1 full)
+uniform float edge_w = 0.0; // trim along the edges (0 none, 1 full): brass, or v1.6 the commander's colour
+uniform float edge_metal = 0.9;
 uniform float body_metal = 0.0;
 uniform float body_rough = 0.5;
 uniform float pip_metal = 0.0;
@@ -92,7 +93,7 @@ void fragment() {
 	float mx = max(a.x, max(a.y, a.z));
 	float mn = min(a.x, min(a.y, a.z));
 	float mid = a.x + a.y + a.z - mx - mn;
-	float edge = smoothstep(0.33, 0.41, mid);
+	float edge = smoothstep(0.29, 0.39, mid);
 
 	vec3 body = body_col.rgb;
 	if (grain > 0.0) {
@@ -110,8 +111,8 @@ void fragment() {
 	if (edge_w > 0.0) {
 		float trim = edge * edge_w;
 		body = mix(body, edge_col.rgb, trim);
-		metal = mix(metal, 0.9, trim);
-		rough = mix(rough, 0.3, trim);
+		metal = mix(metal, edge_metal, trim);
+		rough = mix(rough, mix(0.45, 0.3, edge_metal), trim);
 	}
 
 	vec2 pc;

@@ -115,6 +115,12 @@ static func opening_placements(world: Types.World, map: Types.MapDef, pid: Strin
 # ---------------------------------------------------------------- sheet
 
 static func plan(world: Types.World, map: Types.MapDef, pid: String, rng: RefCounted, prof: Dictionary) -> Types.Sheet:
+	Combat.use_rules(map) ## the odds it plans by are the ones the battles are fought by
+	if Combat.line > 0:
+		## under the firing line every attack is a longer shot: the commanders accept a little
+		## less certainty rather than sit still (the arena: the hard AI keeps its edge)
+		prof = prof.duplicate()
+		prof["p_win"] = float(prof.get("p_win", 0.68)) - 0.07
 	var s: Types.Sheet
 	if bool(prof.get("search", false)):
 		s = _search(world, map, pid, rng, prof)
@@ -233,7 +239,10 @@ static func _heuristic(world: Types.World, map: Types.MapDef, pid: String, rng: 
 		return sheet
 
 	if map.cards:
-		var set: PackedStringArray = Cards.best_set(ps.cards)
+		var owned := {}
+		for t in MapLib.player_territory_ids(world, pid):
+			owned[t] = true
+		var set: PackedStringArray = Cards.best_set(ps.cards, owned)
 		if set.size() == 3:
 			sheet.cash_set = set
 
@@ -625,10 +634,11 @@ class Planner extends RefCounted:
 		return {"to": e, "froms": froms, "places": places, "strength": got, "def": d_eff, "p": p_win, "ev": ev, "surge": ""}
 
 	func _needed(d: int, p_want: float) -> int:
-		for a in range(1, d + 12):
+		var top: int = d + maxi(12, d / 2) ## under the v1.6 firing line a big stack needs a real margin
+		for a in range(1, top):
 			if Combat.capture_rate(a, d, map.battle) >= p_want:
 				return a
-		return d + 12
+		return top
 
 	func _commit(c: Dictionary) -> void:
 		for s in c["places"].keys():

@@ -95,12 +95,36 @@ func show_result() -> void:
 	row.add_child(right)
 	var rv := VBoxContainer.new()
 	right.add_child(rv)
-	rv.add_child(Style.label("Lands held, round by round", 24, Style.GOLD, "display"))
+	var ch_head := HBoxContainer.new()
+	ch_head.add_theme_constant_override("separation", 8)
+	var ch_title := Style.label("Lands held, round by round", 24, Style.GOLD, "display")
+	ch_title.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	ch_head.add_child(ch_title)
+	rv.add_child(ch_head)
 	var chart := _Chart.new()
 	chart.session = s
 	chart.size_flags_vertical = Control.SIZE_EXPAND_FILL
 	chart.custom_minimum_size = Vector2(0, 260)
+	## v1.6: the chart by lands, armies or score; card sets turned in are marked on it
+	var modes := [["terr", "Lands", "Lands held, round by round"], ["armies", "Armies", "Armies in the field, round by round"], ["score", "Score", "Score, round by round"]]
+	var chips: Array = []
+	for md in modes:
+		var mkey: String = md[0]
+		var chip := Style.chip(md[1], func():
+			chart.mode = mkey
+			ch_title.text = md[2]
+			for c2 in chips:
+				(c2 as Button).modulate = Color(1, 1, 1, 0.55)
+			chips[modes.find(md)].modulate = Color.WHITE
+			chart.queue_redraw()
+			Audio.sfx("click", -6.0), Style.CREAM, 14)
+		chip.modulate = Color.WHITE if mkey == "terr" else Color(1, 1, 1, 0.55)
+		chips.append(chip)
+		ch_head.add_child(chip)
 	rv.add_child(chart)
+	if not s.cash_log.is_empty():
+		var key := Style.label("▣ +N: a set of cards turned in, in the commander's colour", 13, Style.MUTED, "italic")
+		rv.add_child(key)
 
 	var btns := HBoxContainer.new()
 	btns.alignment = BoxContainer.ALIGNMENT_CENTER
@@ -116,6 +140,7 @@ func show_result() -> void:
 class _Chart extends Control:
 	const Style := preload("res://game/core/style.gd")
 	var session: Node
+	var mode := "terr" ## terr | armies | score
 
 	func _draw() -> void:
 		var h: Array = session.history
@@ -125,8 +150,9 @@ class _Chart extends Control:
 		var area := Rect2(pad, size - pad * 2)
 		var max_v := 1
 		for snap in h:
-			for pid in snap["terr"].keys():
-				max_v = maxi(max_v, int(snap["terr"][pid]))
+			var series: Dictionary = snap.get(mode, snap["terr"])
+			for pid in series.keys():
+				max_v = maxi(max_v, int(series[pid]))
 		var f := Style.font("body")
 		for k in 5:
 			var y: float = area.position.y + area.size.y * (1.0 - float(k) / 4.0)
@@ -137,7 +163,7 @@ class _Chart extends Control:
 			var pts := PackedVector2Array()
 			for i in h.size():
 				var x: float = area.position.x + area.size.x * float(i) / float(h.size() - 1)
-				var v: float = float(h[i]["terr"].get(pid, 0))
+				var v: float = float((h[i] as Dictionary).get(mode, h[i]["terr"]).get(pid, 0))
 				pts.append(Vector2(x, area.end.y - area.size.y * v / float(max_v)))
 			var col: Color = Style.seat_color(pid).lightened(0.2)
 			draw_polyline(pts, Color(0, 0, 0, 0.5), 6.0, true)
@@ -148,3 +174,25 @@ class _Chart extends Control:
 		for i in h.size():
 			var x2: float = area.position.x + area.size.x * float(i) / float(h.size() - 1)
 			draw_string(f, Vector2(x2 - 4, size.y), str(h[i]["round"]), HORIZONTAL_ALIGNMENT_LEFT, -1, 13, Style.MUTED)
+		## card sets turned in: a little card in the commander's colour on their line, with its worth
+		var stack := {}
+		for c in session.cash_log:
+			var idx := -1
+			for i in h.size():
+				if int(h[i]["round"]) == int(c["round"]):
+					idx = i
+			if idx < 0:
+				continue
+			var pid2: String = str(c["pid"])
+			var series2: Dictionary = (h[idx] as Dictionary).get(mode, h[idx]["terr"])
+			var x3: float = area.position.x + area.size.x * float(idx) / float(h.size() - 1)
+			var y3: float = area.end.y - area.size.y * float(series2.get(pid2, 0)) / float(max_v)
+			var k: int = int(stack.get(idx, 0))
+			stack[idx] = k + 1
+			var at := Vector2(x3 - 7, y3 - 30 - k * 22)
+			var col2: Color = Style.seat_color(pid2).lightened(0.2)
+			draw_rect(Rect2(at, Vector2(14, 19)), Color(0.08, 0.05, 0.03), true)
+			draw_rect(Rect2(at + Vector2(1.5, 1.5), Vector2(11, 16)), col2, true)
+			draw_rect(Rect2(at + Vector2(3.5, 3.5), Vector2(7, 12)), Color(0.97, 0.93, 0.82, 0.9), false, 1.2)
+			draw_string_outline(Style.font("bold"), at + Vector2(17, 15), "+%d" % int(c["value"]), HORIZONTAL_ALIGNMENT_LEFT, -1, 13, 4, Color(0, 0, 0, 0.85))
+			draw_string(Style.font("bold"), at + Vector2(17, 15), "+%d" % int(c["value"]), HORIZONTAL_ALIGNMENT_LEFT, -1, 13, col2)

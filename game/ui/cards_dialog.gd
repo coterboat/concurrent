@@ -1,5 +1,7 @@
-## Your campaign cards, laid out on the table: men, horses and cannon.
-## Pick three alike or one of each and turn them in for fresh troops this round.
+## Your campaign cards, laid out on the table: men, horses and cannon, each naming a land.
+## Pick three alike or one of each and turn them in for fresh troops this round; a card
+## naming a land you hold also puts a free soldier there (v1.6). Turning in sends the
+## cards flying off the table into your recruits, and the table closes.
 extends Control
 
 const Style := preload("res://game/core/style.gd")
@@ -11,6 +13,8 @@ const NAMES := {
 }
 
 signal closed
+signal turned(value: int, lands: Array, from: Array) ## a set went in: its worth, the free-soldier lands, where the cards flew from
+signal hover_land(id: String) ## a card is under the mouse: light its land on the map
 
 var session: Node
 var _picked: Array = [] ## indices into the hand
@@ -22,6 +26,7 @@ var _undo: Button
 
 
 static func card_name(kind: String) -> String:
+	kind = kind.get_slice("@", 0)
 	return str(NAMES.get(kind, kind.capitalize()))
 
 
@@ -75,7 +80,7 @@ func _ready() -> void:
 		_picked = []
 		_build(), Style.MUTED, 16)
 	act.add_child(_undo)
-	var rules := Style.label("Three alike, or one of each, turns in for fresh troops this round. Every set turned in by anyone raises the next: 4, 6, 8, 10, then 5 more each time. At five cards you draw no more.", 15, Style.MUTED)
+	var rules := Style.label("Three alike, or one of each, turns in for fresh troops this round. Every set turned in by anyone raises the next: 4, 6, 8, 10, then 5 more each time. Each card names a land: if you hold it when you turn the card in, a free soldier joins you there. At five cards you draw no more.", 15, Style.MUTED)
 	rules.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
 	rules.custom_minimum_size = Vector2(640, 0)
 	v.add_child(rules)
@@ -99,10 +104,16 @@ func _build() -> void:
 	var hand: PackedStringArray = session.hand()
 	var value: int = session.set_value_now()
 	_value.text = "A set is worth +%d troops right now" % value
+	var queued0: bool = session.sheet().cash_set.size() == 3
 	if hand.is_empty():
 		var none := Style.label("No cards yet. Take a land in a round to draw one.", 20, Style.PARCH, "italic")
 		_row.add_child(none)
-	for i in hand.size():
+	## laid out by kind, so the sets are easy to see
+	var order: Array = range(hand.size())
+	order.sort_custom(func(x, y): return str(hand[x]) < str(hand[y]))
+	for i in order:
+		if queued0 and _picked.has(i):
+			continue ## already turned in: off the table
 		_row.add_child(_card(i, str(hand[i])))
 	var picked: Array = []
 	for i in _picked:
@@ -113,7 +124,11 @@ func _build() -> void:
 	_turn_in.text = ("Turning in: +%d" % value) if queued else ("Turn in for +%d" % value)
 	_undo.visible = queued
 	if queued:
-		_status.text = "These three go in when you seal your orders. The troops are already in your reinforcements."
+		var bl: Array = session.card_bonus_lands()
+		var names: Array = []
+		for ln in bl:
+			names.append(session.hex_name(str(ln)))
+		_status.text = "Turned in: +%d recruits are waiting%s. Changed your mind? Keep my cards takes them back." % [value, (", and a free soldier on " + ", ".join(names)) if not names.is_empty() else ""]
 	elif picked.size() < 3:
 		_status.text = "Pick three cards: three alike, or one of each."
 	elif not is_set:
@@ -122,9 +137,12 @@ func _build() -> void:
 		_status.text = "A set! Turn them in."
 
 
-func _card(i: int, kind: String) -> Control:
+func _card(i: int, card: String) -> Control:
+	var kind: String = Cards.kind(card)
+	var ln: String = Cards.land(card)
 	var picked: bool = _picked.has(i)
 	var b := Button.new()
+	b.set_meta("card", card)
 	b.focus_mode = Control.FOCUS_NONE
 	b.custom_minimum_size = Vector2(170, 280)
 	b.toggle_mode = true
@@ -154,6 +172,20 @@ func _card(i: int, kind: String) -> Control:
 	l.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
 	l.mouse_filter = Control.MOUSE_FILTER_IGNORE
 	v.add_child(l)
+	if ln != "":
+		## the land this card names, and whether it would bring a free soldier
+		var mine: bool = session.world.get_territory(ln) != null and session.world.get_territory(ln).owner == session.planner
+		var nl := Style.label(session.hex_name(ln), 16, Style.PARCH, "bold")
+		nl.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+		nl.mouse_filter = Control.MOUSE_FILTER_IGNORE
+		v.add_child(nl)
+		var bl := Style.label("★ yours: +1 soldier there" if mine else "not yours", 13, Style.GOOD if mine else Style.MUTED, "italic")
+		bl.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+		bl.mouse_filter = Control.MOUSE_FILTER_IGNORE
+		v.add_child(bl)
+		b.mouse_entered.connect(func(): hover_land.emit(ln))
+		b.mouse_exited.connect(func(): hover_land.emit(""))
+		b.custom_minimum_size = Vector2(170, 318)
 	b.position.y = -14 if picked else 0
 	b.toggled.connect(func(on: bool):
 		if session.sheet().cash_set.size() == 3:
@@ -170,7 +202,7 @@ func _card(i: int, kind: String) -> Control:
 
 
 func _pick_best() -> void:
-	var best: PackedStringArray = Cards.best_set(session.hand())
+	var best: PackedStringArray = session.best_set()
 	if best.is_empty():
 		_status.text = "No set in this hand yet."
 		Audio.sfx("error")
@@ -199,10 +231,34 @@ func _turn() -> void:
 		Audio.sfx("error")
 		return
 	Audio.sfx("turn_in")
-	_build()
+	## the three cards leave the table, the table closes, the troops arrive
+	var from: Array = []
+	var flying: Array = []
+	var k := 0
+	for ch in _row.get_children():
+		if ch is Button and (ch as Button).button_pressed:
+			var btn: Button = ch
+			from.append(btn.global_position + btn.size * 0.5)
+			var ghost := TextureRect.new()
+			ghost.texture = Style.card_tex(str(btn.get_meta("card", cards[mini(k, cards.size() - 1)])))
+			ghost.expand_mode = TextureRect.EXPAND_IGNORE_SIZE
+			ghost.stretch_mode = TextureRect.STRETCH_KEEP_ASPECT_CENTERED
+			ghost.size = Vector2(btn.size.x - 16, btn.size.y * 0.72)
+			ghost.global_position = btn.global_position + Vector2(8, 8)
+			ghost.pivot_offset = ghost.size * 0.5
+			ghost.mouse_filter = Control.MOUSE_FILTER_IGNORE
+			get_parent().add_child(ghost)
+			flying.append(ghost)
+			btn.modulate.a = 0.0
+			k += 1
+	var value: int = session.set_value_now()
+	var lands: Array = session.card_bonus_lands()
+	turned.emit(value, lands, flying)
+	_close()
 
 
 func _close() -> void:
+	hover_land.emit("")
 	closed.emit()
 	queue_free()
 

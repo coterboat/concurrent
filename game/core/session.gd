@@ -43,6 +43,7 @@ var setup_dict: Dictionary = {}
 var rounds_log: Array = [] ## [[sheet dicts]]
 var hashes: Array = []
 var history: Array = [] ## [{round, terr: {pid: n}, score: {pid: n}}]
+var cash_log: Array = [] ## v1.6: every set turned in: [{round, pid, value, lands}], for the end-of-war chart
 var stats := {} ## pid -> {captures, walkins, lost_to_walkins, battles, won, killed, cards}
 var pre_world: Types.World
 var events: Array = []
@@ -86,6 +87,7 @@ func new_game(p_config: Dictionary) -> void:
 	move_ghosts = []
 	hashes = []
 	history = []
+	cash_log = []
 	stats = {}
 	for s in seats:
 		stats[s["id"]] = _blank_stats()
@@ -118,11 +120,15 @@ func _apply_length() -> void:
 	## ...and nobody digs in deeper than three (v1.4 capped it at two)
 	map.dig_cap = int(config.get("dig_cap", 3))
 	config["dig_cap"] = map.dig_cap
-	## v1.5 rules: surges clash head-on and carry a count; the man left behind digs in
-	map.rules = int(config.get("rules", 15))
+	## v1.5 rules: surges clash head-on and carry a count; v1.6: the firing line, fair ties,
+	## and campaign cards with a land on each
+	map.rules = int(config.get("rules", 16))
 	config["rules"] = map.rules
 	map.first_digs_in = bool(config.get("first_digs_in", false))
 	config["first_digs_in"] = map.first_digs_in
+	map.fire_line = bool(config.get("firing_line", true))
+	config["firing_line"] = map.fire_line
+	Combat.use_rules(map)
 	var base: int = Setup.rounds_for(map)
 	var mode: String = str(config.get("length", "standard"))
 	var k: float = float(LENGTHS.get(mode, 1.0))
@@ -636,13 +642,32 @@ func _absorb(sheets: Array, result: Dictionary) -> void:
 	var prev_round: int = world.round
 	world = result["world"]
 	hashes.append(Hash.world_hash(world))
+	## last round's marches, as they actually went (v1.6): a column beaten in a border clash
+	## never got there, and a surge only shows if it set off
+	var beaten := {}
+	var surged := {}
+	for e in events:
+		match str(e.get("kind", "")):
+			Types.EVENT_CLASH:
+				var wa: bool = str(e.get("winnerId", "")) == str(e.get("playerA", ""))
+				var lo: String = str(e.get("playerB", "")) if wa else str(e.get("playerA", ""))
+				var lo_to: String = str(e.get("hexA", "")) if wa else str(e.get("hexB", ""))
+				beaten[lo + "|" + lo_to] = true
+			Types.EVENT_SURGE:
+				surged[str(e.get("playerId", "")) + "|" + str(e.get("from", ""))] = true
 	ghosts = []
 	for s in sheets:
 		var sh: Types.Sheet = s
 		for p in sh.packets:
 			var pk: Types.Packet = p
-			ghosts.append({"from": pk.from_id, "to": pk.to_id, "strength": pk.strength, "owner": sh.player_id, "surgeTo": pk.surge_to})
+			if beaten.has(sh.player_id + "|" + pk.to_id):
+				continue
+			var sg: String = pk.surge_to if surged.has(sh.player_id + "|" + pk.to_id) else ""
+			ghosts.append({"from": pk.from_id, "to": pk.to_id, "strength": pk.strength, "owner": sh.player_id, "surgeTo": sg})
 	_tally(events)
+	for e in events:
+		if str(e.get("kind", "")) == Types.EVENT_SET_CASHED:
+			cash_log.append({"round": prev_round, "pid": str(e.get("playerId", "")), "value": int(e.get("value", 0)), "lands": e.get("lands", [])})
 	_snapshot_history(prev_round)
 	for e in events:
 		if str(e.get("kind", "")) == Types.EVENT_ROUND_ENDED:
@@ -1143,11 +1168,31 @@ func hand() -> PackedStringArray:
 	return world.players[planner].cards if world.players.has(planner) else PackedStringArray()
 
 
+func best_set() -> PackedStringArray:
+	## the planner's best set: v1.6 prefers cards naming lands they hold (a free soldier each)
+	var owned := {}
+	for t in MapLib.player_territory_ids(world, planner):
+		owned[t] = true
+	return Cards.best_set(hand(), owned)
+
+
+func card_bonus_lands() -> Array:
+	## the lands the set being turned in puts a free soldier on
+	var out: Array = []
+	if Validate.cash_value_of(world, map, sheet()) <= 0:
+		return out
+	for c in sheet().cash_set:
+		var ln: String = Cards.land(c)
+		if ln != "" and world.get_territory(ln) != null and world.get_territory(ln).owner == planner:
+			out.append(ln)
+	return out
+
+
 func toggle_cash() -> String:
 	var s: Types.Sheet = sheet()
 	if s.cash_set.size() > 0:
 		return set_cash(PackedStringArray())
-	var best: PackedStringArray = Cards.best_set(hand())
+	var best: PackedStringArray = best_set()
 	if best.is_empty():
 		return "You need three matching cards or one of each."
 	return set_cash(best)
@@ -1296,6 +1341,8 @@ func load_save() -> bool:
 	map.dig_cap = int(config.get("dig_cap", 0)) ## ...and dug in up to 1 + neighbours
 	map.rules = int(config.get("rules", 0))
 	map.first_digs_in = bool(config.get("first_digs_in", false))
+	map.fire_line = bool(config.get("firing_line", false)) ## saves from before v1.6: every man counts
+	Combat.use_rules(map)
 	seats = config["seats"]
 	stats = {}
 	for s in seats:
@@ -1307,6 +1354,7 @@ func load_save() -> bool:
 	move_ghosts = []
 	hashes = []
 	history = []
+	cash_log = []
 	winner = ""
 	watching = false
 	_snapshot_history(0)

@@ -9,6 +9,7 @@ const Combat := preload("res://engine/combat.gd")
 const DiceStage := preload("res://game/ui/dice_stage.gd")
 
 signal finished
+signal shown ## the map now shows a new moment of the report (the roster follows it)
 
 var session: Node
 var board: Control
@@ -303,10 +304,17 @@ func _build_beats() -> Array:
 			var cp: String = str(evs[k]["playerId"])
 			var kinds0: Array = []
 			for c in evs[k].get("cards", []):
-				kinds0.append({"sun": "Infantry", "moon": "Cavalry", "star": "Artillery", "wild": "Wild"}.get(str(c), str(c)))
+				kinds0.append(_card_label(str(c)))
+			var free0: Array = evs[k].get("lands", [])
+			var free_txt := ""
+			if not free0.is_empty():
+				var fn: Array = []
+				for ln in free0:
+					fn.append(_hex(str(ln)))
+				free_txt = " A free soldier joins them on %s." % ", ".join(fn)
 			out.append({"upto": k, "caption": "%s in a set of cards!" % Style.says(_name(cp), "turns"),
-				"sub": "%s — %d fresh troops join the colours." % [", ".join(kinds0), int(evs[k]["value"])],
-				"sound": "turn_in", "delay": 2.2, "cash": cp, "cash_value": int(evs[k]["value"]), "cards": evs[k].get("cards", [])})
+				"sub": "%s — %d fresh troops join the colours.%s" % [", ".join(kinds0), int(evs[k]["value"]), free_txt],
+				"sound": "turn_in", "delay": 2.4, "cash": cp, "cash_value": int(evs[k]["value"]), "cards": evs[k].get("cards", []), "cash_lands": free0})
 	if last_setup >= 0:
 		var sub := "%d armies placed" % placed
 		if moves > 0:
@@ -459,7 +467,7 @@ func _build_beats() -> Array:
 				var cc: Array = e["cards"]
 				var kinds: Array = []
 				for c in cc:
-					kinds.append({"sun": "Infantry", "moon": "Cavalry", "star": "Artillery", "wild": "Wild"}.get(str(c), str(c)))
+					kinds.append(_card_label(str(c)))
 				out.append({"upto": i, "caption": "%s %s's war chest" % [Style.says(_name(str(e["to"])), "seizes"), _name(str(e["from"]))],
 					"sub": "Every card they held changes hands: %s." % ", ".join(kinds), "sound": "", "delay": 2.8,
 					"cards_to": str(e["to"]), "cards_from": str(e["from"]), "cards": cc})
@@ -478,6 +486,13 @@ func _build_beats() -> Array:
 				out.append({"upto": i, "caption": "The dust settles", "sub": sub3.strip_edges(), "sound": "round", "delay": 1.3, "dig": true})
 		i += 1
 	return out
+
+
+func _card_label(c: String) -> String:
+	## "Infantry (Ridge)" for a v1.6 card, "Infantry" for an old one
+	var k: String = c.get_slice("@", 0)
+	var nm: String = str({"sun": "Infantry", "moon": "Cavalry", "star": "Artillery", "wild": "Wild"}.get(k, k))
+	return nm + ((" (%s)" % _hex(c.get_slice("@", 1))) if c.contains("@") else "")
 
 
 func _stage_of(kind: String, after_surge: bool) -> String:
@@ -588,6 +603,7 @@ func _show(b: Dictionary) -> void:
 		for e in _events:
 			if str(e["kind"]) == Types.EVENT_ENTRENCHED:
 				board.pulse_token(str(e["terrId"]), 0.7)
+	shown.emit()
 
 
 func _open_theater(first: Dictionary) -> void:
@@ -617,10 +633,12 @@ func _open_theater(first: Dictionary) -> void:
 		for g in grp:
 			if str(g.get("resolves", "")) != "":
 				_resolved[str(g["resolves"])] = true
+			_settle_arrows(g)
 		for o in board.orders:
 			o["alpha"] = 0.28 if _resolved.has(str(o["to"])) else 1.0
 		board.world = ViewEvents.apply_through(_pre, _events, int(lb["upto"]))
 		board.refresh()
+		shown.emit()
 		if skip_rest:
 			_theater_off = true
 		_wait = 0.4
@@ -681,7 +699,38 @@ func _start_fight(b: Dictionary) -> void:
 	board.refresh()
 
 
+func _settle_arrows(b: Dictionary) -> void:
+	## v1.6: a column that lost a border clash no longer marches: its arrow goes, and the
+	## winner's arrow carries only the men still standing
+	var ev: Dictionary = b.get("event", {})
+	if str(ev.get("kind", "")) != Types.EVENT_CLASH:
+		return
+	var wid: String = str(ev.get("winnerId", ""))
+	var a_pid: String = str(ev.get("playerA", ""))
+	var b_pid: String = str(ev.get("playerB", ""))
+	var ha: String = str(ev.get("hexA", ""))
+	var hb: String = str(ev.get("hexB", ""))
+	var loser: String = b_pid if wid == a_pid else a_pid
+	var loser_to: String = ha if loser == b_pid else hb
+	var win_to: String = hb if wid == a_pid else ha
+	var keep: Array = []
+	var win_done := false
+	for o in board.orders:
+		if str(o.get("owner", "")) == loser and str(o["to"]) == loser_to:
+			continue
+		if str(o.get("owner", "")) == wid and str(o["to"]) == win_to:
+			if win_done:
+				continue
+			win_done = true
+			o["strength"] = int(ev.get("winnerRemaining", o["strength"]))
+		keep.append(o)
+	board.orders = keep
+	board.refresh()
+
+
 func _reveal_result() -> void:
+	call_deferred("emit_signal", "shown")
+	_settle_arrows(_fight)
 	var b: Dictionary = _fight
 	if b.is_empty():
 		return

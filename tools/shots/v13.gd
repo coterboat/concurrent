@@ -157,12 +157,26 @@ func run(probe) -> void:
 		await p.frames(1)
 	guard = 0
 	var clash_shot := false
+	var clash_checked := false
 	while gs.cinema.visible and guard < 900:
 		guard += 1
 		if not gs.board.clash.is_empty() and not clash_shot:
 			clash_shot = true
 			await p.frames(10)
 			await snap("57_border_clash")
+		## v1.6: once the clash is decided, the loser's arrow is gone from the map
+		if clash_shot and gs.cinema._rolling <= 0.0 and gs.cinema._card.visible and not clash_checked:
+			clash_checked = true
+			await p.frames(4)
+			var bt: Dictionary = gs.cinema.beats[gs.cinema.index]
+			var ev: Dictionary = bt.get("event", {})
+			if str(ev.get("kind", "")) == "Clash":
+				var lo: String = str(ev["playerB"]) if str(ev["winnerId"]) == str(ev["playerA"]) else str(ev["playerA"])
+				var gone := true
+				for o in gs.board.orders:
+					if str(o.get("owner", "")) == lo and (str(o["to"]) == str(ev["hexA"]) or str(o["to"]) == str(ev["hexB"])):
+						gone = false
+				p.ok(gone, "the loser of the border clash no longer marches on the map (%s)" % lo)
 		elif not gs.cinema._waiting and gs.cinema._wait <= 0.0:
 			gs.cinema.advance()
 		await p.frames(1)

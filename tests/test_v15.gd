@@ -203,5 +203,5 @@ func _plan_steps(report: Callable, tree: SceneTree) -> void:
 	s.begin_orders()
 	s.lock()
 	report.call(s.planner == "blue" and s.plan_step == "reinforce", "the next commander starts on the reinforcement phase")
-	report.call(s.map.rules == 15 and s.map.dig_cap == 3, "new games play by v1.5 rules (dig-in up to 3)")
+	report.call(s.map.rules >= 15 and s.map.dig_cap == 3, "new games play by v1.5 rules or later (dig-in up to 3)")
 	s.queue_free()

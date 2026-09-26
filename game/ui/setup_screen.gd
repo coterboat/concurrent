@@ -18,6 +18,7 @@ var length := "standard"
 var timer := 0
 var battle := "volleys"
 var deal := "random"
+var odds := "line"
 
 var _map_cards := {}
 var _seat_box: VBoxContainer
@@ -95,6 +96,7 @@ func _ready() -> void:
 		length = val
 		_refresh()))
 	rv.add_child(_option_row("Battles", ["Roll by roll (volleys)", "One decisive roll"], ["volleys", "decisive"], battle, func(val): battle = val))
+	rv.add_child(_option_row("Battle odds", ["Firing line (five fire at once)", "Every man counts (v1.5)"], ["line", "classic"], odds, func(val): odds = val))
 	rv.add_child(_option_row("Lands", ["Dealt at random", "Claimed in turn (dice for order)"], ["random", "draft"], deal, func(val): deal = val))
 	rv.add_child(_option_row("Planning clock", ["Off", "90 seconds", "3 minutes"], [0, 90, 180], timer, func(val): timer = val))
 	_note = Style.label("", 17, Style.PARCH, "italic")
@@ -121,6 +123,7 @@ func _load_last() -> void:
 	timer = int(last.get("timer", 0))
 	battle = str(last.get("battle", "volleys"))
 	deal = str(last.get("deal", str(Settings.get_value("deal", "random"))))
+	odds = str(last.get("odds", "line"))
 	seats = []
 	## v1.2 gave the commanders imperial titles; saved setups keep up
 	var retitled := ["Marshal Varek", "Lady Ysolde", "Commander Imre", "Old Bear Hask", "The Quartermaster"]
@@ -324,9 +327,9 @@ func _start() -> void:
 			"ai": s["ai"] if s["kind"] == "ai" else "",
 			"portrait": "player" if s["kind"] == "human" else str(s["ai"]),
 		})
-	Settings.set_value("last_setup", {"map": map_path, "seats": seats, "length": length, "timer": timer, "battle": battle, "deal": deal, "name": human_name if human_name != "" else "You"})
+	Settings.set_value("last_setup", {"map": map_path, "seats": seats, "length": length, "timer": timer, "battle": battle, "deal": deal, "odds": odds, "name": human_name if human_name != "" else "You"})
 	Settings.set_value("deal", deal)
-	main.start_game({"map": map_path, "seats": cfg_seats, "length": length, "timer": timer, "battle": battle, "deal": deal, "tutorial": false})
+	main.start_game({"map": map_path, "seats": cfg_seats, "length": length, "timer": timer, "battle": battle, "deal": deal, "firing_line": odds == "line", "tutorial": false})
 
 
 class _Swatch extends Control:

@@ -199,7 +199,7 @@ func _cards() -> void:
 		t.tooltip_text = c.capitalize() + (" — matches anything" if c == "wild" else "")
 		row.add_child(t)
 	box.add_child(row)
-	var best: PackedStringArray = Cards.best_set(hand)
+	var best: PackedStringArray = session.best_set()
 	if cashing.size() > 0:
 		box.add_child(Style.chip("Trading a set for +%d armies  ·  undo" % session.set_value_now(), func():
 			session.toggle_cash()

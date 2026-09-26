@@ -16,6 +16,27 @@ const MODE_VOLLEYS := "volleys"
 const VOLLEY_DIE := 5 ## one pip is worth five armies in a volley
 
 const EXCHANGE := 3 ## volleys between battle calls
+
+## v1.6 the firing line (Amendment 17): at most LINE men of a side fire in any volley, so a
+## bigger army wins by staying power, not by winning every volley; and an even volley is
+## fired again instead of going to the attacker. Set per game from the map (use_rules): the
+## resolve queue, the AI and the table all read the same rule. Before v1.6: every man
+## counted and ties went to the attacker.
+const LINE := 5
+static var line := 0 ## 0 = every man fires (games from before v1.6)
+static var fair_ties := false
+static var line_size := LINE ## tuning only (the arena's line=): the size of the line use_rules sets
+
+
+static func use_rules(map) -> void:
+	var on: bool = map != null and bool(map.fire_line)
+	line = line_size if on else 0
+	fair_ties = on
+
+
+static func fire(n: int) -> int:
+	## the men of an army of n who fire in a volley
+	return mini(n, line) if line > 0 else n
 const CALL_PRESS := "p"
 const CALL_RESERVES := "r"
 const CALL_FALL_BACK := "f"
@@ -97,7 +118,7 @@ static func remaining_after_win(winner_size: int, loser_size: int) -> int:
 
 static func invasion(att_armies: int, def_armies: int, rng: RefCounted, mode: String = MODE_DECISIVE) -> FightResult:
 	if mode == MODE_VOLLEYS:
-		return _volleys(att_armies, def_armies, rng, false)
+		return _volleys(att_armies, def_armies, rng, fair_ties)
 	return _resolve(att_armies, def_armies, rng, false)
 
 
@@ -137,6 +158,9 @@ static func scramble(sizes: Array, rng: RefCounted) -> Dictionary:
 					continue
 				var wi: float = float(snap[i]) * float(snap[j]) / float(maxi(1, tot - int(snap[i])))
 				var wj: float = float(snap[j]) * float(snap[i]) / float(maxi(1, tot - int(snap[j])))
+				if line > 0: ## v1.6: at most a firing line against each foe
+					wi = minf(wi, float(line))
+					wj = minf(wj, float(line))
 				var di: int = rng.roll_d6()
 				var dj: int = rng.roll_d6()
 				var si: float = float(VOLLEY_DIE * di) + wi
@@ -174,11 +198,16 @@ static func volley_once(a: int, d: int, rng: RefCounted, reroll_ties: bool) -> D
 	## One volley, rolled exactly as _volleys rolls it (attacker die first).
 	var da: int = rng.roll_d6()
 	var db: int = rng.roll_d6()
-	var sa: int = VOLLEY_DIE * da + a
-	var sb: int = VOLLEY_DIE * db + d
-	if sa == sb and reroll_ties:
-		return {"a": da, "b": db, "sa": a, "sd": d, "w": ""}
-	return {"a": da, "b": db, "sa": a, "sd": d, "w": "a" if sa >= sb else "b"}
+	var sa: int = VOLLEY_DIE * da + fire(a)
+	var sb: int = VOLLEY_DIE * db + fire(d)
+	var r := {"a": da, "b": db, "sa": a, "sd": d, "w": ""}
+	if line > 0:
+		r["fa"] = fire(a)
+		r["fd"] = fire(d)
+	if sa == sb and (reroll_ties or fair_ties):
+		return r
+	r["w"] = "a" if sa >= sb else "b"
+	return r
 
 
 static func doctrine(stance: String, a: int, d: int, reserves: int, can_fall_back: bool) -> String:
@@ -239,14 +268,19 @@ static func _volleys(att: int, def: int, rng: RefCounted, reroll_ties: bool) -> 
 		guard += 1
 		var da: int = rng.roll_d6()
 		var db: int = rng.roll_d6()
-		var sa: int = VOLLEY_DIE * da + a
-		var sb: int = VOLLEY_DIE * db + d
+		var sa: int = VOLLEY_DIE * da + fire(a)
+		var sb: int = VOLLEY_DIE * db + fire(d)
+		var roll := {"a": da, "b": db, "sa": a, "sd": d, "w": ""}
+		if line > 0:
+			roll["fa"] = fire(a)
+			roll["fd"] = fire(d)
 		if sa == sb and reroll_ties:
 			result.rerolls += 1
-			result.rolls.append({"a": da, "b": db, "sa": a, "sd": d, "w": ""})
+			result.rolls.append(roll)
 			continue
 		var a_wins: bool = sa >= sb
-		result.rolls.append({"a": da, "b": db, "sa": a, "sd": d, "w": "a" if a_wins else "b"})
+		roll["w"] = "a" if a_wins else "b"
+		result.rolls.append(roll)
 		result.attacker_die = da
 		result.defender_die = db
 		result.attacker_total = sa
@@ -271,8 +305,8 @@ static func volley_step(a: int, d: int, attacker_ties: bool) -> float:
 	var ties := 0
 	for x in range(1, 7):
 		for y in range(1, 7):
-			var sa: int = VOLLEY_DIE * x + a
-			var sb: int = VOLLEY_DIE * y + d
+			var sa: int = VOLLEY_DIE * x + fire(a)
+			var sb: int = VOLLEY_DIE * y + fire(d)
 			if sa > sb:
 				wins += 1
 			elif sa == sb:
@@ -287,7 +321,7 @@ static func volley_capture_rate(att: int, def: int, attacker_ties: bool = true) 
 		return 1.0
 	if att <= 0:
 		return 0.0
-	var t: int = 1 if attacker_ties else 0
+	var t: int = 1 if attacker_ties and not fair_ties else 0
 	var key: int = _vkey(att, def, t)
 	if _volley_memo.has(key):
 		return _volley_memo[key]
@@ -307,14 +341,14 @@ static func volley_capture_rate(att: int, def: int, attacker_ties: bool = true) 
 			elif aa == 0:
 				v = 0.0
 			else:
-				var p: float = volley_step(aa, dd, attacker_ties)
+				var p: float = volley_step(aa, dd, t == 1)
 				v = p * float(_volley_memo.get(_vkey(aa, dd - 1, t), 1.0)) + (1.0 - p) * float(_volley_memo.get(_vkey(aa - 1, dd, t), 0.0))
 			_volley_memo[ck] = v
 	return float(_volley_memo.get(key, 0.0))
 
 
 static func _vkey(a: int, d: int, t: int) -> int:
-	return (a * 100000 + d) * 2 + t
+	return ((a * 100000 + d) * 2 + t) * 16 + line
 
 
 static func capture_rate(att: int, def: int, mode: String = MODE_DECISIVE) -> float:

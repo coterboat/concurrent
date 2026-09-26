@@ -28,6 +28,7 @@ var orders: Array = [] ## [{from, to, strength, owner, surge, kind: "attack"|"mo
 var flow := false ## columns on the move: marching chevrons run along the live arrows (the battle report)
 var ghosts: Array = [] ## last round's packets
 var placements := {} ## id -> queued reinforcements (viewer)
+var bonus := {} ## id -> free soldiers from the cards being turned in (v1.6), drawn as a gold star
 var show_ceiling := false
 var ceiling_mult := 1 ## deployment folds two capped passes into one
 var drag_from := ""
@@ -692,6 +693,12 @@ func _draw_token(ci: CanvasItem, id: String) -> void:
 		ci.draw_rect(Rect2(qp - Vector2(qw * 0.5 + 5, 11), Vector2(qw + 10, 20)), Color(0.12, 0.09, 0.03, 0.95))
 		ci.draw_rect(Rect2(qp - Vector2(qw * 0.5 + 5, 11), Vector2(qw + 10, 20)), Style.GOLD, false, 1.5)
 		ci.draw_string(f, qp + Vector2(-qw * 0.5, 5), qt, HORIZONTAL_ALIGNMENT_LEFT, -1, 15, Style.GOLD)
+	## a free soldier from a card naming this land: a gold star under the token
+	if bonus.has(id):
+		var bp: Vector2 = p + Vector2(r * 0.95, r * 0.55)
+		Style.draw_shape(ci, "star", bp, 11.0, Style.GOLD, Color(0.25, 0.15, 0.02), 1.5)
+		ci.draw_string_outline(f, bp + Vector2(10, 6), "+%d" % int(bonus[id]), HORIZONTAL_ALIGNMENT_LEFT, -1, 14, 4, Color(0.05, 0.03, 0.02, 0.9))
+		ci.draw_string(f, bp + Vector2(10, 6), "+%d" % int(bonus[id]), HORIZONTAL_ALIGNMENT_LEFT, -1, 14, Style.GOLD)
 	## enemy ceiling: the most this hex could hold after their hidden reinforcement
 	if show_ceiling and owner != viewer and owner != Types.UNOCCUPIED:
 		var ceiling: int = n + (Income.cap_of(world, map, id) * ceiling_mult if owner != "neutral" else 0)

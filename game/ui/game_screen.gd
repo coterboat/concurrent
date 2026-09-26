@@ -125,7 +125,12 @@ func _ready() -> void:
 	cinema = Cinema.new()
 	cinema.bottom_margin = BAR + 10
 	add_child(cinema)
-	cinema.finished.connect(func(): session.cinema_done())
+	cinema.finished.connect(func():
+		roster.view = null
+		session.cinema_done())
+	cinema.shown.connect(func():
+		roster.view = board.world
+		roster.refresh())
 	bar = CommandBar.new()
 	bar.session = session
 	bar.gs = self
@@ -255,6 +260,7 @@ func _on_phase(ph: int) -> void:
 			_show_sealing()
 		Session.Phase.CINEMA:
 			_cover.visible = false
+			roster.view = session.pre_world ## the counts start where the round began
 			select("")
 			if not bool(session.get_meta("opening_cinema", false)):
 				phase_banner("THE BATTLES", "Every order happens at once")
@@ -341,6 +347,10 @@ func _refresh() -> void:
 		var src: Dictionary = session.opening.get(session.planner, {}) if ph == Session.Phase.OPENING else session.sheet().placements
 		for k in src.keys():
 			board.placements[k] = int(src[k])
+		board.bonus = {}
+		if ph == Session.Phase.PLANNING:
+			for ln in session.card_bonus_lands():
+				board.bonus[ln] = int(board.bonus.get(ln, 0)) + 1
 		board.ghosts = (session.ghosts + session.move_ghosts) if ph == Session.Phase.PLANNING else []
 		board.orders = _my_arrows()
 		board.targets = _targets()
@@ -970,7 +980,53 @@ func open_cards() -> void:
 	var d: Control = load("res://game/ui/cards_dialog.gd").new()
 	d.session = session
 	d.closed.connect(func(): _refresh())
+	d.hover_land.connect(func(id: String):
+		## the land a card names lights up on the map behind the table
+		if id == "":
+			_refresh()
+		else:
+			board.targets = {id: true}
+			board.pulse_token(id, 0.6)
+			board.refresh())
+	d.turned.connect(_on_cards_turned)
 	add_child(d)
+
+
+func _on_cards_turned(value: int, lands: Array, flying: Array) -> void:
+	## the cards fly off the table into the recruits; then the new troops are waiting
+	if session.plan_step != "reinforce":
+		session.back_to_reinforce() ## fresh troops to place: back to the reinforcement phase
+	var to: Vector2 = bar.coin_center()
+	for k in flying.size():
+		var g: Control = flying[k]
+		var tw := g.create_tween()
+		tw.tween_interval(0.06 * k)
+		tw.tween_property(g, "global_position", to - g.size * 0.5, 0.55).set_trans(Tween.TRANS_CUBIC).set_ease(Tween.EASE_IN)
+		tw.parallel().tween_property(g, "scale", Vector2(0.15, 0.15), 0.55)
+		tw.parallel().tween_property(g, "rotation", randf_range(-0.8, 0.8), 0.55)
+		tw.tween_callback(g.queue_free)
+	get_tree().create_timer(0.62).timeout.connect(func():
+		Audio.sfx("cash", -3.0)
+		bar.bump_coin(true)
+		var l := Style.label("+%d recruits" % value, 34, Style.GOLD, "display")
+		l.add_theme_constant_override("outline_size", 8)
+		l.add_theme_color_override("font_outline_color", Color(0, 0, 0, 0.9))
+		l.mouse_filter = Control.MOUSE_FILTER_IGNORE
+		l.position = to + Vector2(-60, -110)
+		add_child(l)
+		var tw2 := l.create_tween()
+		tw2.tween_property(l, "position:y", l.position.y - 50.0, 1.4)
+		tw2.parallel().tween_property(l, "modulate:a", 0.0, 1.4).set_delay(0.6)
+		tw2.tween_callback(l.queue_free)
+		for ln in lands:
+			board.float_text(str(ln), "★ +1", Style.GOLD, 2.2, 28)
+			board.pulse_token(str(ln), 1.4)
+		bar.advisor.react("happy", "cash_us", 3.0)
+		var names: Array = []
+		for ln in lands:
+			names.append(session.hex_name(str(ln)))
+		log_line("Cards turned in: +%d recruits%s." % [value, (" and a free soldier on " + ", ".join(names)) if not names.is_empty() else ""], Style.GOLD)
+		_refresh())
 
 
 func open_drawer() -> void:
@@ -1033,6 +1089,9 @@ func _on_beat(b: Dictionary) -> void:
 			_say_once("surges", "alarm")
 	if b.has("cash"):
 		_show_cash(str(b["cash"]), b.get("cards", []), int(b.get("cash_value", 0)))
+		for ln in b.get("cash_lands", []):
+			board.float_text(str(ln), "★ +1", Style.GOLD, 2.2, 26)
+			board.pulse_token(str(ln), 1.2)
 
 
 # ================================================================ the land draft (v1.4)
@@ -1246,7 +1305,7 @@ func _show_cash(pid: String, cards: Array, value: int) -> void:
 		to_p = tf.global_position - global_position + tf.size * 0.5
 	for k in cards.size():
 		var tr := TextureRect.new()
-		tr.texture = Style.tex("res://assets/cards/%s.webp" % str(cards[k]))
+		tr.texture = Style.card_tex(str(cards[k]))
 		tr.expand_mode = TextureRect.EXPAND_IGNORE_SIZE
 		tr.stretch_mode = TextureRect.STRETCH_KEEP_ASPECT
 		tr.size = Vector2(90, 128)
@@ -1320,7 +1379,7 @@ func _fly_chest(from_pid: String, to_pid: String, cards: Array, from_p: Vector2)
 		to_p = tf.global_position - global_position + tf.size * 0.5
 	for k in cards.size():
 		var tr := TextureRect.new()
-		tr.texture = Style.tex("res://assets/cards/%s.webp" % str(cards[k]))
+		tr.texture = Style.card_tex(str(cards[k]))
 		tr.expand_mode = TextureRect.EXPAND_IGNORE_SIZE
 		tr.stretch_mode = TextureRect.STRETCH_KEEP_ASPECT
 		tr.size = Vector2(84, 120)
@@ -1641,6 +1700,12 @@ func _unhandled_input(event: InputEvent) -> void:
 		get_viewport().set_input_as_handled()
 	elif (event.keycode == KEY_ENTER or event.keycode == KEY_KP_ENTER) and order_card.visible:
 		edit_order("", "") ## OK: keep the order, close the card
+		get_viewport().set_input_as_handled()
+	elif (event.keycode == KEY_ENTER or event.keycode == KEY_KP_ENTER) and session.phase == Session.Phase.PLANNING and session.plan_step == "reinforce":
+		begin_orders() ## v1.6: Enter moves on from the recruits to the orders
+		get_viewport().set_input_as_handled()
+	elif event.keycode == KEY_C and session.phase == Session.Phase.PLANNING and session.map.cards:
+		open_cards() ## v1.6: C opens your cards
 		get_viewport().set_input_as_handled()
 	elif event.keycode == KEY_V and session.phase != Session.Phase.CINEMA:
 		toggle_view()

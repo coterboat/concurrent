@@ -2,6 +2,7 @@
 extends RefCounted
 
 const Types := preload("res://engine/types.gd")
+const Cards := preload("res://engine/cards.gd")
 const Combat := preload("res://engine/combat.gd")
 
 
@@ -116,6 +117,23 @@ static func apply(world: Types.World, event: Dictionary) -> void:
 			var ps: Types.PlayerState = world.players.get(str(event.get("playerId", "")), null)
 			if ps != null:
 				ps.alive = false
+		## v1.6: hands follow the report too, so the card counts along the top are always true
+		Types.EVENT_SET_CASHED:
+			var pc: Types.PlayerState = world.players.get(str(event.get("playerId", "")), null)
+			if pc != null:
+				pc.cards = Cards.without(pc.cards, PackedStringArray(event.get("cards", [])))
+		Types.EVENT_CARD_DRAWN:
+			var pd: Types.PlayerState = world.players.get(str(event.get("playerId", "")), null)
+			if pd != null:
+				pd.cards.append(str(event.get("card", "")))
+		Types.EVENT_CARDS_CAPTURED:
+			var pf: Types.PlayerState = world.players.get(str(event.get("from", "")), null)
+			var pt: Types.PlayerState = world.players.get(str(event.get("to", "")), null)
+			if pf != null:
+				pf.cards = PackedStringArray()
+			if pt != null:
+				for c in event.get("cards", []):
+					pt.cards.append(str(c))
 		Types.EVENT_ENTRENCHED:
 			var ts: Types.TerritoryState = world.get_territory(str(event.get("terrId", "")))
 			if ts != null:

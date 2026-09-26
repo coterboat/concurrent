@@ -94,7 +94,14 @@ static func cash_value_of(world: Types.World, map: Types.MapDef, sheet: Types.Sh
 
 
 static func _apply_placements_to(world: Types.World, map: Types.MapDef, sheet: Types.Sheet) -> void:
-	var income: int = Income.income_of(world, map, sheet.player_id) + cash_value_of(world, map, sheet)
+	var cashed: int = cash_value_of(world, map, sheet)
+	var income: int = Income.income_of(world, map, sheet.player_id) + cashed
+	if cashed > 0:
+		## v1.6: a turned-in card's free soldier on its land (as the resolve queue does)
+		for c in sheet.cash_set:
+			var lt: Types.TerritoryState = world.get_territory(Cards.land(c)) if Cards.land(c) != "" else null
+			if lt != null and lt.owner == sheet.player_id:
+				lt.armies += 1
 	var remaining := income
 	var keys: Array = sheet.placements.keys()
 	keys.sort()

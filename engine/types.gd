@@ -65,6 +65,7 @@ class MapDef extends RefCounted:
 	var scramble: bool = false ## v1.4 new games: true (spoils are one free-for-all, not a ladder of duels)
 	var dig_cap: int = 0 ## v1.4 new games: 2 (v1.5: 3) (no land digs in deeper); 0 = the old ceiling of 1 + neighbours
 	var rules: int = 0 ## v1.5 new games: 15 (surges clash head-on and carry a count)
+	var fire_line: bool = false ## v1.6 new games: at most five men fire in a volley, even volleys are fired again (setup: Battle odds)
 	var first_digs_in: bool = false ## the man left behind is locked in as a dug-in defender for good (tried in v1.5; off: it halved the conquests)
 
 	func territory_ids() -> PackedStringArray:

@@ -13,11 +13,13 @@ signal all_settled
 
 ## name, the smallest army that rolls it, and what the die is made of
 const TIERS := [
-	{"name": "Lone holdout", "min": 1, "size": 0.9, "body": Color(0.54, 0.35, 0.2), "pip": Color(0.16, 0.08, 0.04), "rough": 0.85, "grain": 1.0, "wear": 1.0, "sound": "dice_knock"},
-	{"name": "Company", "min": 3, "size": 1.0, "body": Color(0.91, 0.86, 0.74), "pip": Color(0.08, 0.06, 0.05), "rough": 0.55, "wear": 0.35, "sound": "dice_click"},
-	{"name": "Regiment", "min": 7, "size": 1.03, "body": Color(0.97, 0.94, 0.85), "pip": "seat", "rough": 0.3, "edge": 0.55, "sound": "dice_click"},
-	{"name": "Brigade", "min": 15, "size": 1.07, "body": "seat", "pip": Color(0.97, 0.93, 0.82), "rough": 0.22, "metal": 0.15, "edge": 1.0, "sound": "dice_click"},
-	{"name": "Grand army", "min": 30, "size": 1.13, "body": Color(0.98, 0.78, 0.36), "pip": "seat", "rough": 0.26, "metal": 0.85, "pip_glow": 0.9, "star": true, "edge": 0.0, "sound": "dice_clunk"},
+	## v1.6: every die wears its commander's colour (painted edges, stained wood, coloured
+	## pips or lacquer) and sits in a glow of that colour, so whose die is whose reads at a glance
+	{"name": "Lone holdout", "min": 1, "size": 0.9, "body": Color(0.54, 0.35, 0.2), "stain": 0.4, "pip": Color(0.16, 0.08, 0.04), "rough": 0.85, "grain": 1.0, "wear": 1.0, "edge": 0.75, "sound": "dice_knock"},
+	{"name": "Company", "min": 3, "size": 1.0, "body": Color(0.91, 0.86, 0.74), "pip": "seat_dark", "rough": 0.55, "wear": 0.35, "edge": 0.75, "sound": "dice_click"},
+	{"name": "Regiment", "min": 7, "size": 1.03, "body": Color(0.97, 0.94, 0.85), "pip": "seat", "rough": 0.3, "edge": 0.9, "sound": "dice_click"},
+	{"name": "Brigade", "min": 15, "size": 1.07, "body": "seat", "pip": Color(0.97, 0.93, 0.82), "rough": 0.22, "metal": 0.15, "edge": 1.0, "brass": true, "sound": "dice_click"},
+	{"name": "Grand army", "min": 30, "size": 1.13, "body": Color(0.98, 0.78, 0.36), "pip": "seat", "rough": 0.26, "metal": 0.85, "pip_glow": 0.9, "star": true, "edge": 0.8, "sound": "dice_clunk"},
 ]
 
 var board := true ## draw the tray (false: just the dice and their shadows, over anything)
@@ -234,6 +236,8 @@ func clear() -> void:
 	for d in _dice:
 		(d["node"] as Node).queue_free()
 		(d["shadow"] as Node).queue_free()
+		if d.has("halo"):
+			(d["halo"] as Node).queue_free()
 	_dice = []
 	_settled_sent = true
 	queue_redraw()
@@ -336,6 +340,19 @@ func _make(spec: Dictionary, i: int, rng: RandomNumberGenerator) -> Dictionary:
 	sm.albedo_color = Color(0, 0, 0, 0.5)
 	shadow.material_override = sm
 	_world.add_child(shadow)
+	## v1.6: a glow of the commander's colour on the felt under the die
+	var halo := MeshInstance3D.new()
+	var hm := PlaneMesh.new()
+	hm.size = Vector2(2.3, 2.3)
+	halo.mesh = hm
+	var hmat := StandardMaterial3D.new()
+	hmat.shading_mode = BaseMaterial3D.SHADING_MODE_UNSHADED
+	hmat.transparency = BaseMaterial3D.TRANSPARENCY_ALPHA
+	hmat.blend_mode = BaseMaterial3D.BLEND_MODE_ADD
+	hmat.albedo_texture = _blob_tex()
+	hmat.albedo_color = Color(tint.r, tint.g, tint.b, 0.0)
+	halo.material_override = hmat
+	_world.add_child(halo)
 	var to: Vector2 = spec.get("to", Vector2.ZERO)
 	var drop: bool = bool(spec.get("drop", false))
 	var h: float = 0.5 * s
@@ -359,7 +376,7 @@ func _make(spec: Dictionary, i: int, rng: RandomNumberGenerator) -> Dictionary:
 		v0 = Vector3(lv.x, vy, lv.y)
 	var q0 := Quaternion(Vector3(rng.randf_range(-1, 1), rng.randf_range(-1, 1), rng.randf_range(-1, 1)).normalized(), rng.randf_range(0.0, TAU))
 	var w0: Vector3 = Vector3(rng.randf_range(-1, 1), rng.randf_range(-1, 1), rng.randf_range(-1, 1)).normalized() * rng.randf_range(9.0, 17.0)
-	return {"node": node, "shadow": shadow, "mat": mat, "s": s, "h": h, "tier": tier, "sound": str(tdef["sound"]),
+	return {"node": node, "shadow": shadow, "halo": halo, "tint": tint, "mat": mat, "s": s, "h": h, "tier": tier, "sound": str(tdef["sound"]),
 		"value": clampi(int(spec.get("value", 1)), 1, 6), "E": to, "t0": float(spec.get("delay", 0.0)),
 		"p": p0, "v": v0, "q": q0, "w": w0, "asleep": false, "still": 0.0, "last_knock": -1.0,
 		"rec_p": [], "rec_q": [], "impacts": [], "next_impact": 0, "S": Quaternion.IDENTITY,
@@ -369,10 +386,18 @@ func _make(spec: Dictionary, i: int, rng: RandomNumberGenerator) -> Dictionary:
 func _dress(m: ShaderMaterial, t: Dictionary, tint: Color) -> void:
 	var seat_body: Color = tint.darkened(0.2)
 	var body: Color = seat_body if typeof(t["body"]) == TYPE_STRING else t["body"]
-	var pip: Color = tint.lightened(0.05) if typeof(t["pip"]) == TYPE_STRING else t["pip"]
+	if t.has("stain"):
+		body = body.lerp(tint.darkened(0.15), float(t["stain"])) ## wood stained in the commander's colour
+	var pip: Color
+	if typeof(t["pip"]) == TYPE_STRING:
+		pip = tint.darkened(0.3) if str(t["pip"]) == "seat_dark" else tint.lightened(0.05)
+	else:
+		pip = t["pip"]
 	m.set_shader_parameter("body_col", body)
 	m.set_shader_parameter("pip_col", pip)
-	m.set_shader_parameter("edge_col", Color(0.86, 0.68, 0.32))
+	var brass: bool = bool(t.get("brass", false))
+	m.set_shader_parameter("edge_col", Color(0.86, 0.68, 0.32) if brass else tint.lightened(0.08))
+	m.set_shader_parameter("edge_metal", 0.9 if brass else 0.15)
 	m.set_shader_parameter("glow_col", Color(1.0, 0.85, 0.45).lerp(tint.lightened(0.3), 0.35))
 	m.set_shader_parameter("edge_w", float(t.get("edge", 0.0)))
 	m.set_shader_parameter("body_metal", float(t.get("metal", 0.0)))
@@ -697,6 +722,13 @@ func _pose(d: Dictionary) -> void:
 	var sc: float = s * (1.0 + hgt * 0.12)
 	shadow.scale = Vector3(sc, 1, sc)
 	(shadow.material_override as StandardMaterial3D).albedo_color = Color(0, 0, 0, clampf(0.55 - hgt * 0.07, 0.12, 0.55))
+	if d.has("halo"):
+		var halo: MeshInstance3D = d["halo"]
+		halo.visible = shadow.visible
+		halo.position = Vector3(pos.x, 0.018, pos.z)
+		halo.scale = Vector3(s, 1, s)
+		var tint: Color = d["tint"]
+		(halo.material_override as StandardMaterial3D).albedo_color = Color(tint.r, tint.g, tint.b, clampf(0.7 - hgt * 0.25, 0.0, 0.7))
 	## knocks on the table, as the recording passes them
 	var ni: int = int(d["next_impact"])
 	var imps: Array = d["impacts"]

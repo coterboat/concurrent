@@ -6,6 +6,8 @@ extends HBoxContainer
 const Style := preload("res://game/core/style.gd")
 const Session := preload("res://game/core/session.gd")
 const LeaderFace := preload("res://game/ui/leader_face.gd")
+const MapLib := preload("res://engine/map.gd")
+const Income := preload("res://engine/income.gd")
 
 signal hovered(pid: String)
 
@@ -19,11 +21,21 @@ func _ready() -> void:
 	mouse_filter = Control.MOUSE_FILTER_PASS
 
 
+var view: RefCounted ## v1.6: the world the table is showing (the battle report's), for the card counts
+
+
 func refresh() -> void:
 	if session == null or session.world == null:
 		return
 	var s = session
 	var rows: Array = s.standings()
+	if view != null:
+		## during the battle report: lands and scores as the map shows them, not the final tally
+		for r in rows:
+			if view.players.has(r["id"]):
+				r["lands"] = MapLib.player_territory_ids(view, r["id"]).size()
+				r["score"] = Income.score_of(view, s.map, r["id"])
+				r["alive"] = view.players[r["id"]].alive and int(r["lands"]) > 0
 	var lead := -1
 	var leaders := 0
 	for r in rows:
@@ -48,7 +60,14 @@ func refresh() -> void:
 		(ui["score"] as Label).text = "%d" % r["score"] if r["alive"] else "—"
 		var bits := "%d lands" % r["lands"]
 		if s.map.cards and r["alive"]:
-			bits += " · %d card%s" % [r["cards"], "" if int(r["cards"]) == 1 else "s"]
+			var nc: int = int(r["cards"])
+			if view != null and view.players.has(r["id"]):
+				nc = view.players[r["id"]].cards.size() ## the report hasn't reached the draws yet
+			var turning := ""
+			if s.phase == Session.Phase.PLANNING and s.planner == r["id"] and not s.sheet().cash_set.is_empty():
+				nc -= s.sheet().cash_set.size()
+				turning = " (3 turned in)"
+			bits += " · %d card%s%s" % [nc, "" if nc == 1 else "s", turning]
 		if not r["alive"]:
 			bits = "fallen"
 		(ui["sub"] as Label).text = bits

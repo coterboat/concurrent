@@ -45,6 +45,7 @@ static func resolve_round(world: Types.World, map: Types.MapDef, sheets: Array, 
 	if errors.size() > 0:
 		return {"world": world, "events": [], "errors": errors}
 
+	Combat.use_rules(map)
 	var w: Types.World = world.clone()
 	var held := {}
 	for terr_id in world.territories.keys():
@@ -259,7 +260,23 @@ static func _apply_placements(w: Types.World, map: Types.MapDef, by_player: Dict
 			var ps: Types.PlayerState = w.players[pid]
 			ps.cards = Cards.without(ps.cards, sheet.cash_set)
 			cashed += 1
-			events.append(Events.set_cashed(pid, sheet.cash_set, bonus))
+			var cev: Dictionary = Events.set_cashed(pid, sheet.cash_set, bonus)
+			## v1.6: a card naming a land you hold puts a free soldier there
+			var free: Array = []
+			for c in sheet.cash_set:
+				var ln: String = Cards.land(c)
+				var lt: Types.TerritoryState = w.get_territory(ln) if ln != "" else null
+				if lt != null and lt.owner == pid:
+					lt.armies += 1
+					free.append(ln)
+			if not free.is_empty():
+				cev["lands"] = free
+			events.append(cev)
+			for ln in free:
+				var lt2: Types.TerritoryState = w.get_territory(str(ln))
+				var pev: Dictionary = Events.placed(pid, str(ln), 1, lt2.armies, 0)
+				pev["cardBonus"] = true
+				events.append(pev)
 		var remaining := income
 		var keys: Array = sheet.placements.keys()
 		keys.sort()
@@ -532,6 +549,20 @@ static func _melee(w: Types.World, map: Types.MapDef, dest: String, invaders: Ar
 				var share: float = float(d) * float(f["a"]) / float(tot)
 				var da: int = rng.roll_d6()
 				var db: int = rng.roll_d6()
+				if Combat.line > 0:
+					## v1.6: the defenders' whole firing line faces every front, and an even
+					## volley costs nobody (the same loss ratio as one combined attack)
+					var fa: int = Combat.fire(int(f["a"]))
+					var fd: int = Combat.fire(d)
+					var sa2: int = Combat.VOLLEY_DIE * da + fa
+					var sd2: int = Combat.VOLLEY_DIE * db + fd
+					var w2: String = "a" if sa2 > sd2 else ("b" if sd2 > sa2 else "")
+					salvo.append({"i": i, "a": da, "b": db, "sa": int(f["a"]), "sd": d, "fa": fa, "fd": fd, "w": w2})
+					if w2 == "a":
+						loss += 1
+					elif w2 == "b":
+						f["a"] = int(f["a"]) - 1
+					continue
 				var won: bool = float(Combat.VOLLEY_DIE * da + int(f["a"])) >= float(Combat.VOLLEY_DIE * db) + share
 				salvo.append({"i": i, "a": da, "b": db, "sa": int(f["a"]), "sd": snappedf(share, 0.1), "w": "a" if won else "b"})
 				if won:
@@ -556,7 +587,7 @@ static func _melee(w: Types.World, map: Types.MapDef, dest: String, invaders: Ar
 			var froms: PackedStringArray = _froms(t)
 			var reserves: int = 0 if bool(f["used"]) else reserves_available(w, t.owner, froms)
 			var refuge: String = refuge_for(w, map, t.owner, froms, dest)
-			var share_now: int = maxi(1, int(round(float(d) * float(f["a"]) / float(maxi(1, tot2)))))
+			var share_now: int = d if Combat.line > 0 else maxi(1, int(round(float(d) * float(f["a"]) / float(maxi(1, tot2)))))
 			var recorded: Array = (ctx["calls"].get(t.owner, {}) as Dictionary).get(f["key"], [])
 			var call := ""
 			if int(f["ci"]) < recorded.size():
@@ -896,11 +927,22 @@ static func _upkeep(w: Types.World, map: Types.MapDef, events: Array, held: Dict
 		else:
 			living.append(pid)
 	if map.cards:
+		var taken := {} ## v1.6: land cards in anyone's hand
+		if map.rules >= 16:
+			for q in w.players.keys():
+				for c in (w.players[q] as Types.PlayerState).cards:
+					if Cards.land(c) != "":
+						taken[Cards.land(c)] = true
 		for pid in living:
 			var ps: Types.PlayerState = w.players[pid]
 			if ps.cards.size() >= Cards.HAND_LIMIT or not _captured_any(w, held, str(pid)):
 				continue
-			var card: String = Cards.draw(match_seed, w.round, str(pid), map.territories.size(), map.wild_cards)
+			var card: String
+			if map.rules >= 16:
+				card = Cards.draw_land(match_seed, w.round, str(pid), Array(map.territory_ids()), taken)
+				taken[Cards.land(card)] = true
+			else:
+				card = Cards.draw(match_seed, w.round, str(pid), map.territories.size(), map.wild_cards)
 			ps.cards.append(card)
 			events.append(Events.card_drawn(str(pid), card))
 

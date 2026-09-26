@@ -30,13 +30,13 @@ Every round has four phases, each announced as it begins: **Reinforcement** (pla
 
 - **Reinforce.** Each round you get armies: one per three lands you hold (at least 3), plus a little for a big connected empire and a bonus for each whole region. A land can take at most 1 + (your neighboring lands). Unplaced armies are lost.
 - **Attack.** Send armies from your land at a neighbor. They leave home the moment orders are sealed. Every land keeps its garrison (the shield) at home; everyone else may march.
-- **Battles.** Roll by roll: each volley both sides score pips × 5 + men standing, and the lower score loses a man (ties go to the attacker). In your own battles you press ROLL and throw real dice onto the war table (a physics simulation: they tumble, bounce off the rails and knock into each other, and land on the engine's roll); every die's sum is written under it and a bar shows your odds from here. Bigger armies throw finer dice, from whittled wood to gold. A setup option switches to one decisive roll (armies + a die); both styles give the same odds.
+- **Battles.** Roll by roll: each volley both sides score pips × 5 + the men in their firing line (at most five), and the lower score loses a man; an even volley is fired again. A bigger army wins by staying power, not by winning every volley. In your own battles you press ROLL and throw real dice onto the war table (a physics simulation: they tumble, bounce off the rails and knock into each other, and land on the engine's roll); every die's sum is written under it and a bar shows your odds from here. Bigger armies throw finer dice, from whittled wood to gold. A setup option switches to one decisive roll (armies + a die); both styles give the same odds.
 - **Battle calls.** An assault runs in exchanges of three volleys. After each one the attacker calls it: **press on**, throw in the **reserves** still at home (once), or **fall back** and save the survivors. Watch your own battles and you make the calls. Otherwise your officers follow the standing order on the attack (officer's judgment, to the last man, all in, or fall back if it turns).
 - **Clashes, melees and scrambles.** Two lands attacking each other meet in the field first. Several commanders storming one land fight it at once: the defenders split their strength across the fronts. When the defenders fall, or several armies march into the same empty land, the victors fight it out all at once in a scramble; the last army standing takes it.
 - **Surge.** Drag on from the land you're attacking to the next one: if you take it, the men who took it (from every direction) push on, up to the number you choose. All surges happen at once, after every other battle; two surges running at each other's lands clash head-on.
 - **Regroup phase.** After the battles, everyone marches troops between their own neighbouring lands, one land per soldier, then the next round begins.
 - **Garrisons.** The gold shield on a land is its garrison, who never march: its dug-in defenders, or on a land with none yet the one man who must stay behind. The big number is exactly who can march. Every round you keep a land, one more man digs in, up to three.
-- **Cards** (bigger maps). Capturing earns a card: infantry, cavalry or artillery. Three alike or one of each turn in for 4, 6, 8, 10, then 5 more each time. Take a commander's last land and their whole hand is yours.
+- **Cards** (bigger maps). Capturing earns a card: infantry, cavalry or artillery, each naming a land. Three alike or one of each turn in for 4, 6, 8, 10, then 5 more each time, plus a free soldier on every named land you hold. Take a commander's last land and their whole hand is yours.
 - **The lands.** Dealt at random, or claimed in turn: every commander's die drops onto the map for the order, then everyone claims one land at a time.
 - **Winning.** After the last round, the highest score wins (lands + region bonuses). Holding 80% of the map, or being the last one standing, wins at once.
 
@@ -57,14 +57,14 @@ Every round has four phases, each announced as it begins: **Reinforcement** (pla
 | Do this | By |
 |---|---|
 | Select a land | Click it |
-| Reinforce (reinforcement phase) | Click one of your lands to add a recruit; right-click takes one back. The dial's **ORDERS** moves on |
+| Reinforce (reinforcement phase) | Click one of your lands to add a recruit; right-click takes one back. The dial's **ORDERS** (or Enter) moves on |
 | Attack (orders phase) | With your land selected, click an enemy neighbor, or drag from your land onto it |
 | Surge (orders phase) | Drag from the land you're attacking on to the next one (or **Surge onward…** on the order); click the surge arrow to choose how many |
 | March (regroup phase) | Drag from your land onto a neighbouring land of yours, or click one then the other; **Advisor's marches** plans them all |
 | Seal | **SEAL** on the dial (or ⌘↩) |
 | Zoom / pan | Mouse wheel or pinch / drag the sea or two-finger scroll; ⤢ shows the whole map |
 | Edit an attack or march | Click the number on its arrow; ✓ OK or Enter closes the card |
-| Cards | **Cards** in the command bar opens your hand |
+| Cards | **Cards** in the command bar (or C) opens your hand; each card names a land, and turning in a card for a land you hold puts a free soldier there |
 | Advisor's plan | The button in the dispatch panel drafts a whole sheet; adopt it or keep yours |
 | Map view | **View** coin or V: owner colours ↔ region colours |
 | Battle scene | Space / ROLL = throw the next exchange; at a call Space = press on, R = reserves, F = fall back; **? Dice** explains the scoring; Esc = skip the battles |

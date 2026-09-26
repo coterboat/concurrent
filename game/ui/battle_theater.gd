@@ -330,6 +330,10 @@ func play(p_session: Node, beats: Array, human_involved: bool) -> void:
 	Audio.ambience(true, "ambience_battle")
 	Audio.music("charge")
 	Audio.sfx("charge", -3.0)
+	## the scoring rules for this game's battles (the firing line is per game)
+	_help.queue_free()
+	_help = _dice_help()
+	add_child(_help)
 	## the first two times you watch, the scoring rules open beside the table on their own
 	_help.visible = false
 	var seen: int = int(Settings.get_value("dice_help_seen", 0))
@@ -530,6 +534,8 @@ func _next_engagement() -> void:
 		_score.text = "Every front throws at once: pips × 5 + its men, against pips × 5 + the defenders' share of the wall there."
 	elif _scramble:
 		_score.text = "Every army duels every other at once, its men split among its foes: pips × 5 + men. Last army standing takes it."
+	elif _volley_mode and Combat.line > 0:
+		_score.text = "Each volley: pips × 5 + the men firing (at most %d a side). The higher total wins; the loser loses a man; an even volley is fired again." % Combat.line
 	elif _volley_mode:
 		_score.text = "Each volley: pips × 5 + men standing, both sides. The higher total wins; the loser loses a man."
 	else:
@@ -757,12 +763,13 @@ func _pairs_of(r: Variant) -> Array:
 	elif _melee:
 		for v in r:
 			var fi: int = int(v["i"])
-			out.append({"lp": _front_pid(fi), "lv": int(v["a"]), "ln": int(v["sa"]), "lw": float(v["sa"]), "la": fi,
-				"rp": _b_pid, "rv": int(v["b"]), "rn": int(_left[_def()]), "rw": float(v["sd"]), "ra": _def(), "w": str(v.get("w", ""))})
+			out.append({"lp": _front_pid(fi), "lv": int(v["a"]), "ln": int(v["sa"]), "lw": float(v.get("fa", v["sa"])), "la": fi,
+				"rp": _b_pid, "rv": int(v["b"]), "rn": int(_left[_def()]), "rw": float(v.get("fd", v["sd"])), "ra": _def(), "w": str(v.get("w", ""))})
 	elif _volley_mode:
+		## v1.6: the men term is the firing line (fa/fd), at most five
 		for v in r:
-			out.append({"lp": _a_pid, "lv": int(v["a"]), "ln": int(v["sa"]), "lw": float(v["sa"]), "la": 0,
-				"rp": _b_pid, "rv": int(v["b"]), "rn": int(v["sd"]), "rw": float(v["sd"]), "ra": _def(), "w": str(v.get("w", ""))})
+			out.append({"lp": _a_pid, "lv": int(v["a"]), "ln": int(v["sa"]), "lw": float(v.get("fa", v["sa"])), "la": 0,
+				"rp": _b_pid, "rv": int(v["b"]), "rn": int(v["sd"]), "rw": float(v.get("fd", v["sd"])), "ra": _def(), "w": str(v.get("w", ""))})
 	else:
 		var bt: Dictionary = _beats[_bi]
 		var last: Dictionary = r[0]
@@ -912,7 +919,21 @@ func _update_odds() -> void:
 	var diff: int = a - d
 	var edge: String
 	var men := func(n: int) -> String: return Style.plural(n, "man", "men")
-	var tie_note: String = "  ·  ties go to the attacker" if ties and not _melee else ""
+	var tie_note: String = "  ·  ties go to the attacker" if ties and not _melee and not Combat.fair_ties else ""
+	var fa0: int = Combat.fire(a)
+	var fd0: int = Combat.fire(d)
+	if Combat.line > 0 and not _melee:
+		## v1.6: what the firing line means right now
+		if fa0 == fd0:
+			var deeper: String = who if a > d else (session.name_of(_b_pid) if _b_pid != "neutral" else "The garrison")
+			edge = "%s against %d: both fire a full line of %d, so every volley is even" % [men.call(a), d, fa0]
+			if a != d:
+				edge += "; %s %d more to lose" % [Style.says(deeper, "has"), absi(a - d)]
+		else:
+			var strong: String = who if fa0 > fd0 else (session.name_of(_b_pid) if _b_pid != "neutral" else "The garrison")
+			edge = "%s against %d: %d fire against %d, and %s every tied pip" % [men.call(a), d, maxi(fa0, fd0), mini(fa0, fd0), Style.says(strong, "wins")]
+		bar.show_odds(p, _a_pid, _b_pid, head, edge)
+		return
 	if _melee:
 		edge = "%d attackers on %d fronts against %d defenders, who must split themselves across every front" % [a, _fronts_up(), d]
 	elif diff == 0:
@@ -952,7 +973,8 @@ func _dice_help() -> PanelContainer:
 	v.add_theme_constant_override("separation", 6)
 	pc.add_child(v)
 	v.add_child(Style.label("HOW A THROW IS SCORED", 18, Style.GOLD, "display"))
-	var t := Style.label("Each side throws a die. Its pips count five men apiece; add the men still standing. The higher total wins the volley and the loser loses a man.\n\nSo every five men you bring is worth a whole pip on every throw — a big army wins most volleys even on a bad roll, and a lone holdout needs a miracle.", 14, Style.CREAM)
+	var rule_txt: String = "Each side throws a die. Its pips count five men apiece; add the men in the firing line, at most five a side. The higher total wins the volley and the loser loses a man; an even volley is fired again.\n\nA big army can't win every volley: only its front rank fires. It wins by staying power, able to lose men long after the other side is gone. Numbers still tell: a lone holdout firing one man against five needs a miracle." if Combat.line > 0 else "Each side throws a die. Its pips count five men apiece; add the men still standing. The higher total wins the volley and the loser loses a man.\n\nSo every five men you bring is worth a whole pip on every throw — a big army wins most volleys even on a bad roll, and a lone holdout needs a miracle."
+	var t := Style.label(rule_txt, 14, Style.CREAM)
 	t.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
 	t.custom_minimum_size = Vector2(360, 0)
 	v.add_child(t)

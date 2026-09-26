@@ -2,6 +2,117 @@
 
 The bible says amendments come with a dated entry and the test or band that justified them. Everything below has both.
 
+## v1.6 — 26 Sep 2026: the polish pass
+
+### Amendment 17: the firing line
+
+You asked whether attackers have too much edge ("7 having a huge advantage over 6"). They did, for two reasons:
+
+- **Ties went to the attacker.** That gave every even fight to the attacker, 58.7% at 12 against 12.
+- **Every man added to every volley's score.** So a bigger army won almost every volley, and a small lead compounded over a long fight: 25 against 20 was 98%.
+
+Now, for new games:
+
+> Each volley, both sides score pips × 5 + the men in their firing line: **at most five fire at once.** The higher total wins; the loser loses a man. **An even volley is fired again.**
+
+A big army no longer wins every volley. Its extra men are its staying power, the men it can lose after the other side runs out. Numbers still tell: two to one wins almost always, and a lone holdout firing one man against five needs a miracle.
+
+| Attackers v defenders | v1.5 | v1.6 |
+|---|---|---|
+| 6 v 6 | 58.3% | 50.0% |
+| 7 v 6 | 73.7% | 64.2% |
+| 9 v 6 | 90.8% | 83.6% |
+| 12 v 6 | 99.4% | 95.9% |
+| 12 v 12 | 58.7% | 50.0% |
+| 16 v 12 | 94.4% | 80.1% |
+| 25 v 20 | 97.8% | 78.7% |
+| 30 v 20 | 100.0% | 93.4% |
+
+**The candidates.** Tested exactly in `tools`-style Python before any game code was touched:
+- ties to the defender, as in Risk
+- a bigger pip
+- "bloody" volleys that kill both sides on a near tie
+- 2d6
+- firing lines of 5 to 10
+
+The firing line of five with refired ties was the flattest curve that still keeps two to one decisive. Ties to the defender made big even battles hopeless for the attacker (20 v 20: 19%), which would have turned the game into turtling.
+
+**Garrisons are untouched.** The cap stays at three, and the defence comes from the combat rule instead.
+
+**In a melee** the defenders' whole firing line faces every front, and an even volley costs nobody. A dogpile keeps the same loss ratio as one combined attack. `tests/test_v16.gd` checks a 6 + 6 on 8 (held 22%) against one attack of 12 (15%).
+
+**On the battlefield:**
+- The sums under the dice use the firing line.
+- The bar explains it: "14 men against 9: both fire a full line of 5, so every volley is even; Varek has 5 more to lose".
+- **? Dice** and How to Play explain the rule.
+
+**Choose it.** It's the default for new games. Setup → **Battle odds** can switch back to "Every man counts" (the v1.5 odds). Old saves keep the old combat. `Combat.use_rules(map)` sets the rule from the game's map for the resolve queue, the AI and the table alike.
+
+**What it does to a war.** Arena, same seeds:
+
+| | v1.5 | v1.6 |
+|---|---|---|
+| General vs two Veterans, Known World (coin flip 33%) | 47% | 40% |
+| General vs three Veterans, Wide World (coin flip 25%) | 40% | 40% |
+| Known World 3-seat wars won by conquest (before the last round) | 50% (34%) | 30% (20%) |
+| Wide World 4-seat wars won by conquest | 22/60 | 16/60 |
+| Walk-ins per game, Known World | 7.3 | 5.8 |
+
+- **Fewer conquests.** Stronger defence means fewer wars end in outright conquest. That's the trade for fairer fights.
+- **Bolder AI.** Under the firing line every attack is a longer shot. Left alone, the commanders sat still and the hard AI fell to 38%, so every commander now accepts 7 points less certainty before attacking.
+- **Line size.** Lines of 8 or 10 kept more conquests (37–40%) but fixed less of the steepness: 7 v 6 at 68%.
+
+### Campaign cards name a land
+
+Every land has one card of a fixed kind, dealt evenly over the map at the start of a war. Rules:
+- **Drawing.** A card already in someone's hand can't be drawn.
+- **Free soldiers.** Turning in a card whose land you hold puts **a free soldier there**, on top of the set's troops. The best set now picks the one that brings the most free soldiers, for you and for the AI.
+- **Marching.** The free soldier can march the same round.
+
+What you see:
+- **The table** shows each card's land and "★ yours: +1 soldier there". Hovering a card lights its land on the map.
+- **Turning in.** The three cards fly off the table into your recruit coin, the table closes, and the coin swells with +N. It takes you back to the reinforcement phase if you were writing orders. Each free soldier's land gets a gold star and a +1.
+- **In the report**, a turn-in shows which lands got a free soldier.
+- **The C key** opens your cards, and **Enter** moves on from the recruits to the orders. The cards are laid out by kind, so sets are easy to spot.
+
+### The numbers along the top are always true
+
+The roster's lands, scores and card counts now follow the battle report beat by beat, instead of jumping to the end of the round the moment the report starts. The hands follow too: the report's view of the world now applies turn-ins, draws and war chests. While you write orders, your own count takes away the cards you're turning in.
+
+### Dice in their commanders' colours
+
+Every tier now wears its commander's colour, and a glow of that colour sits under each die on the felt:
+
+| Tier | Colour |
+|---|---|
+| Wood | stained |
+| Bone | coloured pips and painted edges |
+| Ivory | coloured pips and painted edges |
+| Lacquer | the colour itself |
+| Gold | coloured edges and gem pips |
+
+### Arrows that tell the truth
+
+- **In the battle report,** a column beaten in a border clash loses its arrow the moment the clash is decided, and the winner's arrow shows only the men still standing.
+- **Next round's ghost arrows** leave out columns that never arrived and surges that never set off.
+
+### The end of the war
+
+The chart switches between **lands, armies and score**. Every set of cards turned in is marked on it: a little card in the commander's colour, on their line, at the round they turned it in, with its worth.
+
+### Tools and checks
+
+- **Tests.** `tests/test_v16.gd` has 16 checks. With them the suite is 456 checks, all passing. They cover:
+  - the firing-line odds, and battles fought matching the quoted odds (7 v 6: 63.9% won of 4,000 against 64.2% quoted)
+  - the melee loss ratio
+  - the land deck: even kinds, no duplicates, the best set, free soldiers, conservation, and the report's hands matching the world
+  - whole wars under v1.6 rules, replaying exactly
+  - each test section starts from the classic battle rules
+- **Probes.**
+  - `tools/shots/v16.gd`: the land cards, the flying turn-in, the roster's count, and the end-of-war chart.
+  - `tools/shots/v13.gd` now checks that the loser of a border clash loses its arrow.
+- **Arena.** New argument: `line=` sets the firing-line size (0 is off).
+
 ## v1.5 — 25 Sep 2026: the phases pass
 
 ### Dice with real physics
