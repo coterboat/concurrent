@@ -1,0 +1,311 @@
+{
+ "id": "ring26",
+ "name": "The Ring",
+ "cards": true,
+ "pools": {
+  "2": 26,
+  "3": 22,
+  "4": 18,
+  "5": 16
+ },
+ "minPlayers": 3,
+ "maxPlayers": 5,
+ "blurb": "Five realms around one crown. Every road to the middle goes through a gate, and the Throne at its heart is a fortress.",
+ "rounds": 10,
+ "startingPool": 18,
+ "dealEach": 3,
+ "pinNeutral": "thethrone",
+ "neutralArmies": 5,
+ "neutralLeftover": true,
+ "supply": true,
+ "fortBonus": 1,
+ "passCap": 6,
+ "regionNames": {
+  "thornwold": "The Thornwold",
+  "emberfen": "The Emberfen",
+  "saltmere": "The Saltmere",
+  "greyfell": "The Greyfell",
+  "windmoor": "The Windmoor",
+  "crown": "The Crown"
+ },
+ "regionBonus": {
+  "thornwold": 3,
+  "emberfen": 3,
+  "saltmere": 3,
+  "greyfell": 3,
+  "windmoor": 3,
+  "crown": 7
+ },
+ "regionTerrain": {
+  "thornwold": "forest",
+  "emberfen": "ash",
+  "saltmere": "coast",
+  "greyfell": "mountain",
+  "windmoor": "moor",
+  "crown": "grass"
+ },
+ "regionColors": {
+  "thornwold": "#6f9a5e",
+  "emberfen": "#b5643c",
+  "saltmere": "#5f97ad",
+  "greyfell": "#8b8fa0",
+  "windmoor": "#b09a5a",
+  "crown": "#c9a83f"
+ },
+ "territories": {
+  "ambermarch": {
+   "name": "Ambermarch",
+   "region": "crown",
+   "adjacent": [
+    "greygate",
+    "ivorymarch",
+    "jademarch",
+    "thethrone"
+   ]
+  },
+  "ashfield": {
+   "name": "Ashfield",
+   "region": "emberfen",
+   "adjacent": [
+    "cinderhow",
+    "emberwatch"
+   ]
+  },
+  "briarhold": {
+   "name": "Briarhold",
+   "region": "thornwold",
+   "adjacent": [
+    "oakmoot",
+    "thornwatch"
+   ]
+  },
+  "brinehold": {
+   "name": "Brinehold",
+   "region": "saltmere",
+   "adjacent": [
+    "kelpmoor",
+    "saltwatch"
+   ]
+  },
+  "cinderhow": {
+   "name": "Cinderhow",
+   "region": "emberfen",
+   "adjacent": [
+    "ashfield",
+    "embergate",
+    "saltwatch"
+   ]
+  },
+  "embergate": {
+   "name": "Ember Gate",
+   "region": "emberfen",
+   "adjacent": [
+    "cinderhow",
+    "emberwatch",
+    "silvermarch"
+   ],
+   "traits": [
+    "pass"
+   ]
+  },
+  "emberwatch": {
+   "name": "Emberwatch",
+   "region": "emberfen",
+   "adjacent": [
+    "ashfield",
+    "embergate",
+    "oakmoot"
+   ]
+  },
+  "fenmoor": {
+   "name": "Fenmoor",
+   "region": "windmoor",
+   "adjacent": [
+    "galehold",
+    "thornwatch",
+    "windgate"
+   ]
+  },
+  "galehold": {
+   "name": "Galehold",
+   "region": "windmoor",
+   "adjacent": [
+    "fenmoor",
+    "windwatch"
+   ]
+  },
+  "goldmarch": {
+   "name": "Goldmarch",
+   "region": "crown",
+   "adjacent": [
+    "jademarch",
+    "silvermarch",
+    "thethrone",
+    "thorngate"
+   ]
+  },
+  "greygate": {
+   "name": "Grey Gate",
+   "region": "greyfell",
+   "adjacent": [
+    "ambermarch",
+    "greywatch",
+    "slatemoor"
+   ],
+   "traits": [
+    "pass"
+   ]
+  },
+  "greywatch": {
+   "name": "Greywatch",
+   "region": "greyfell",
+   "adjacent": [
+    "greygate",
+    "kelpmoor",
+    "stonehold"
+   ]
+  },
+  "ivorymarch": {
+   "name": "Ivorymarch",
+   "region": "crown",
+   "adjacent": [
+    "ambermarch",
+    "saltgate",
+    "silvermarch",
+    "thethrone"
+   ]
+  },
+  "jademarch": {
+   "name": "Jademarch",
+   "region": "crown",
+   "adjacent": [
+    "ambermarch",
+    "goldmarch",
+    "thethrone",
+    "windgate"
+   ]
+  },
+  "kelpmoor": {
+   "name": "Kelpmoor",
+   "region": "saltmere",
+   "adjacent": [
+    "brinehold",
+    "greywatch",
+    "saltgate"
+   ]
+  },
+  "oakmoot": {
+   "name": "Oakmoot",
+   "region": "thornwold",
+   "adjacent": [
+    "briarhold",
+    "emberwatch",
+    "thorngate"
+   ]
+  },
+  "saltgate": {
+   "name": "Salt Gate",
+   "region": "saltmere",
+   "adjacent": [
+    "ivorymarch",
+    "kelpmoor",
+    "saltwatch"
+   ],
+   "traits": [
+    "pass"
+   ]
+  },
+  "saltwatch": {
+   "name": "Saltwatch",
+   "region": "saltmere",
+   "adjacent": [
+    "brinehold",
+    "cinderhow",
+    "saltgate"
+   ]
+  },
+  "silvermarch": {
+   "name": "Silvermarch",
+   "region": "crown",
+   "adjacent": [
+    "embergate",
+    "goldmarch",
+    "ivorymarch",
+    "thethrone"
+   ]
+  },
+  "slatemoor": {
+   "name": "Slatemoor",
+   "region": "greyfell",
+   "adjacent": [
+    "greygate",
+    "stonehold",
+    "windwatch"
+   ]
+  },
+  "stonehold": {
+   "name": "Stonehold",
+   "region": "greyfell",
+   "adjacent": [
+    "greywatch",
+    "slatemoor"
+   ]
+  },
+  "thethrone": {
+   "name": "The Throne",
+   "region": "crown",
+   "adjacent": [
+    "ambermarch",
+    "goldmarch",
+    "ivorymarch",
+    "jademarch",
+    "silvermarch"
+   ],
+   "traits": [
+    "fort"
+   ]
+  },
+  "thorngate": {
+   "name": "Thorn Gate",
+   "region": "thornwold",
+   "adjacent": [
+    "goldmarch",
+    "oakmoot",
+    "thornwatch"
+   ],
+   "traits": [
+    "pass"
+   ]
+  },
+  "thornwatch": {
+   "name": "Thornwatch",
+   "region": "thornwold",
+   "adjacent": [
+    "briarhold",
+    "fenmoor",
+    "thorngate"
+   ]
+  },
+  "windgate": {
+   "name": "Wind Gate",
+   "region": "windmoor",
+   "adjacent": [
+    "fenmoor",
+    "jademarch",
+    "windwatch"
+   ],
+   "traits": [
+    "pass"
+   ]
+  },
+  "windwatch": {
+   "name": "Windwatch",
+   "region": "windmoor",
+   "adjacent": [
+    "galehold",
+    "slatemoor",
+    "windgate"
+   ]
+  }
+ }
+}

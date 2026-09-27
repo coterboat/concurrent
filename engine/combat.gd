@@ -34,9 +34,11 @@ static func use_rules(map) -> void:
 	fair_ties = on
 
 
-static func fire(n: int) -> int:
-	## the men of an army of n who fire in a volley
-	return mini(n, line) if line > 0 else n
+static func fire(n: int, bonus: int = 0) -> int:
+	## The men of an army of n who fire in a volley. `bonus` is v1.7's fortress bonus:
+	## a fort's defenders fire a longer line. With no firing line (games before v1.6)
+	## every man fires already, so a fort adds nothing.
+	return mini(n, line + maxi(0, bonus)) if line > 0 else n
 const CALL_PRESS := "p"
 const CALL_RESERVES := "r"
 const CALL_FALL_BACK := "f"
@@ -116,9 +118,9 @@ static func remaining_after_win(winner_size: int, loser_size: int) -> int:
 	return maxi(1, winner_size - winner_loss(loser_size))
 
 
-static func invasion(att_armies: int, def_armies: int, rng: RefCounted, mode: String = MODE_DECISIVE) -> FightResult:
+static func invasion(att_armies: int, def_armies: int, rng: RefCounted, mode: String = MODE_DECISIVE, d_bonus: int = 0) -> FightResult:
 	if mode == MODE_VOLLEYS:
-		return _volleys(att_armies, def_armies, rng, fair_ties)
+		return _volleys(att_armies, def_armies, rng, fair_ties, d_bonus)
 	return _resolve(att_armies, def_armies, rng, false)
 
 
@@ -194,28 +196,28 @@ static func _standing(left: Array) -> int:
 	return n
 
 
-static func volley_once(a: int, d: int, rng: RefCounted, reroll_ties: bool) -> Dictionary:
+static func volley_once(a: int, d: int, rng: RefCounted, reroll_ties: bool, d_bonus: int = 0) -> Dictionary:
 	## One volley, rolled exactly as _volleys rolls it (attacker die first).
 	var da: int = rng.roll_d6()
 	var db: int = rng.roll_d6()
 	var sa: int = VOLLEY_DIE * da + fire(a)
-	var sb: int = VOLLEY_DIE * db + fire(d)
+	var sb: int = VOLLEY_DIE * db + fire(d, d_bonus)
 	var r := {"a": da, "b": db, "sa": a, "sd": d, "w": ""}
 	if line > 0:
 		r["fa"] = fire(a)
-		r["fd"] = fire(d)
+		r["fd"] = fire(d, d_bonus)
 	if sa == sb and (reroll_ties or fair_ties):
 		return r
 	r["w"] = "a" if sa >= sb else "b"
 	return r
 
 
-static func doctrine(stance: String, a: int, d: int, reserves: int, can_fall_back: bool) -> String:
+static func doctrine(stance: String, a: int, d: int, reserves: int, can_fall_back: bool, d_bonus: int = 0) -> String:
 	## What an officer does at a battle call with no commander watching.
 	## Pure: the same stance and numbers always give the same call.
 	if stance == STANCE_HOLD or stance == "" or (reserves <= 0 and not can_fall_back):
 		return CALL_PRESS
-	var p: float = volley_capture_rate(a, d, true)
+	var p: float = volley_capture_rate(a, d, true, d_bonus)
 	match stance:
 		STANCE_CAREFUL:
 			if can_fall_back and p < 0.3:
@@ -224,7 +226,7 @@ static func doctrine(stance: String, a: int, d: int, reserves: int, can_fall_bac
 			if reserves > 0 and p < 0.8:
 				return CALL_RESERVES
 		STANCE_JUDGMENT:
-			if reserves > 0 and p < 0.65 and volley_capture_rate(a + reserves, d, true) >= p + 0.15:
+			if reserves > 0 and p < 0.65 and volley_capture_rate(a + reserves, d, true, d_bonus) >= p + 0.15:
 				return CALL_RESERVES
 			if can_fall_back and p < 0.2:
 				return CALL_FALL_BACK
@@ -253,7 +255,7 @@ static func stance_help(stance: String) -> String:
 	return "Calls the reserves when they'd swing it; falls back when it's hopeless."
 
 
-static func _volleys(att: int, def: int, rng: RefCounted, reroll_ties: bool) -> FightResult:
+static func _volleys(att: int, def: int, rng: RefCounted, reroll_ties: bool, d_bonus: int = 0) -> FightResult:
 	## rolls: [{a, b, sa, sd, w}] — dice, sizes before the volley, and who won it ("a"/"b").
 	var result := FightResult.new()
 	result.attacker_size = att
@@ -269,11 +271,11 @@ static func _volleys(att: int, def: int, rng: RefCounted, reroll_ties: bool) -> 
 		var da: int = rng.roll_d6()
 		var db: int = rng.roll_d6()
 		var sa: int = VOLLEY_DIE * da + fire(a)
-		var sb: int = VOLLEY_DIE * db + fire(d)
+		var sb: int = VOLLEY_DIE * db + fire(d, d_bonus)
 		var roll := {"a": da, "b": db, "sa": a, "sd": d, "w": ""}
 		if line > 0:
 			roll["fa"] = fire(a)
-			roll["fd"] = fire(d)
+			roll["fd"] = fire(d, d_bonus)
 		if sa == sb and reroll_ties:
 			result.rerolls += 1
 			result.rolls.append(roll)
@@ -299,14 +301,14 @@ static func _volleys(att: int, def: int, rng: RefCounted, reroll_ties: bool) -> 
 static var _volley_memo := {}
 
 
-static func volley_step(a: int, d: int, attacker_ties: bool) -> float:
+static func volley_step(a: int, d: int, attacker_ties: bool, d_bonus: int = 0) -> float:
 	## P(attacker wins one volley): P(5X + a >= 5Y + d) with ties per the rule.
 	var wins := 0
 	var ties := 0
 	for x in range(1, 7):
 		for y in range(1, 7):
 			var sa: int = VOLLEY_DIE * x + fire(a)
-			var sb: int = VOLLEY_DIE * y + fire(d)
+			var sb: int = VOLLEY_DIE * y + fire(d, d_bonus)
 			if sa > sb:
 				wins += 1
 			elif sa == sb:
@@ -316,13 +318,13 @@ static func volley_step(a: int, d: int, attacker_ties: bool) -> float:
 	return float(wins) / float(36 - ties)
 
 
-static func volley_capture_rate(att: int, def: int, attacker_ties: bool = true) -> float:
+static func volley_capture_rate(att: int, def: int, attacker_ties: bool = true, d_bonus: int = 0) -> float:
 	if def <= 0:
 		return 1.0
 	if att <= 0:
 		return 0.0
 	var t: int = 1 if attacker_ties and not fair_ties else 0
-	var key: int = _vkey(att, def, t)
+	var key: int = _vkey(att, def, t, d_bonus)
 	if _volley_memo.has(key):
 		return _volley_memo[key]
 	## iterative DP over the grid so deep stacks cannot blow the call stack;
@@ -332,7 +334,7 @@ static func volley_capture_rate(att: int, def: int, attacker_ties: bool = true) 
 			var dd: int = s - aa
 			if dd < 0 or dd > def:
 				continue
-			var ck: int = _vkey(aa, dd, t)
+			var ck: int = _vkey(aa, dd, t, d_bonus)
 			if _volley_memo.has(ck):
 				continue
 			var v: float
@@ -341,23 +343,25 @@ static func volley_capture_rate(att: int, def: int, attacker_ties: bool = true) 
 			elif aa == 0:
 				v = 0.0
 			else:
-				var p: float = volley_step(aa, dd, t == 1)
-				v = p * float(_volley_memo.get(_vkey(aa, dd - 1, t), 1.0)) + (1.0 - p) * float(_volley_memo.get(_vkey(aa - 1, dd, t), 0.0))
+				var p: float = volley_step(aa, dd, t == 1, d_bonus)
+				v = p * float(_volley_memo.get(_vkey(aa, dd - 1, t, d_bonus), 1.0)) + (1.0 - p) * float(_volley_memo.get(_vkey(aa - 1, dd, t, d_bonus), 0.0))
 			_volley_memo[ck] = v
 	return float(_volley_memo.get(key, 0.0))
 
 
-static func _vkey(a: int, d: int, t: int) -> int:
-	return ((a * 100000 + d) * 2 + t) * 16 + line
+static func _vkey(a: int, d: int, t: int, d_bonus: int = 0) -> int:
+	## line and the fortress bonus get their own digits: before v1.7 this packed line into
+	## 16 slots, so an arena run with line >= 16 would have collided with another (a, d).
+	return (((a * 100000 + d) * 2 + t) * 64 + mini(line, 63)) * 16 + mini(maxi(0, d_bonus), 15)
 
 
-static func capture_rate(att: int, def: int, mode: String = MODE_DECISIVE) -> float:
+static func capture_rate(att: int, def: int, mode: String = MODE_DECISIVE, d_bonus: int = 0) -> float:
 	if def <= 0:
 		return 1.0
 	if att <= 0:
 		return 0.0
 	if mode == MODE_VOLLEYS:
-		return volley_capture_rate(att, def, true)
+		return volley_capture_rate(att, def, true, d_bonus)
 	return invasion_capture_rate(att, def)
 
 
@@ -374,8 +378,8 @@ static func invasion_capture_rate(att_armies: int, def_armies: int) -> float:
 	return float(invasion_wins_out_of_36(att_armies, def_armies)) / 36.0
 
 
-static func odds_word(att_armies: int, def_armies: int, mode: String = MODE_DECISIVE) -> String:
-	var p := capture_rate(att_armies, def_armies, mode)
+static func odds_word(att_armies: int, def_armies: int, mode: String = MODE_DECISIVE, d_bonus: int = 0) -> String:
+	var p := capture_rate(att_armies, def_armies, mode, d_bonus)
 	if p >= 0.95:
 		return ODDS_LOCK
 	if p >= 0.75:

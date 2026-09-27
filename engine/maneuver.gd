@@ -31,7 +31,8 @@ static func validate(world: Types.World, map: Types.MapDef, pid: String, moves: 
 		if a.owner != pid or b.owner != pid:
 			errors.append("move %s -> %s: both lands must be yours" % [from, to])
 			continue
-		if from == to or not MapLib.is_adjacent(map, from, to):
+		## v1.7: two of your own ports are joined by sea, so the march may go between them.
+		if from == to or not Array(MapLib.supply_links(world, map, from)).has(to):
 			errors.append("move %s -> %s: one land at a time" % [from, to])
 			continue
 		if n < 1:

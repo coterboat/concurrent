@@ -8,7 +8,7 @@ const Setup := preload("res://engine/setup.gd")
 
 
 func _initialize() -> void:
-	var args := {"map": "known24", "n": "30", "seats": "general,veteran,recruit", "rounds": "0", "seed": "1000", "battle": "volleys", "moves": "1", "wild": "0", "scramble": "1", "deal": "random", "dig": "3", "rules": "16", "first": "0", "line": "5"}
+	var args := {"map": "known24", "n": "30", "seats": "general,veteran,recruit", "rounds": "0", "seed": "1000", "battle": "volleys", "moves": "1", "wild": "0", "scramble": "1", "deal": "random", "dig": "3", "rules": "16", "first": "0", "line": "5", "supply": "map", "traits": "map"}
 	for a in OS.get_cmdline_user_args():
 		var kv := a.split("=", true, 1)
 		if kv.size() == 2:
@@ -41,6 +41,13 @@ func _initialize() -> void:
 		map.rules = int(args["rules"])
 		map.first_digs_in = str(args["first"]) == "1"
 		map.fire_line = int(args["line"]) > 0
+		## v1.7 A/B switches: "map" keeps what the map file asks for, 0/1 forces it off/on,
+		## so a rule can be measured against the very same seeds without a second map file.
+		if str(args["supply"]) != "map":
+			map.supply = str(args["supply"]) == "1"
+		if str(args["traits"]) == "0":
+			for tid in map.territory_ids():
+				(map.get_territory(tid) as Types.TerritoryDef).traits = PackedStringArray()
 		var seats: Array = []
 		## rotate seats so no brain always sits in the same chair
 		for k in brains.size():

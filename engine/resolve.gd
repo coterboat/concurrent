@@ -130,8 +130,9 @@ static func refuge_for(w: Types.World, map: Types.MapDef, owner: String, froms: 
 static func _invade(w: Types.World, map: Types.MapDef, t: Transit, dest: String, key: String, match_seed: int, ctx: Dictionary) -> RefCounted:
 	var ts: Types.TerritoryState = w.get_territory(dest)
 	var rng: RefCounted = Rng.derive_stream(match_seed, w.round, key)
+	var fortify: int = MapLib.defender_line_bonus(map, dest) ## v1.7: a fortress fires a longer line
 	if map.battle != Combat.MODE_VOLLEYS:
-		return Combat.invasion(t.strength, ts.held(), rng, map.battle)
+		return Combat.invasion(t.strength, ts.held(), rng, map.battle, fortify)
 	var fight = Combat.FightResult.new()
 	fight.attacker_size = t.strength
 	fight.defender_size = ts.held()
@@ -142,15 +143,25 @@ static func _invade(w: Types.World, map: Types.MapDef, t: Transit, dest: String,
 	var ci := 0
 	var used_reserves := false
 	var froms: PackedStringArray = _froms(t)
-	while a > 0 and d > 0:
+	var guard := 0
+	while a > 0 and d > 0 and guard < 4000:
 		var n := 0
-		while n < Combat.EXCHANGE and a > 0 and d > 0:
-			var r: Dictionary = Combat.volley_once(a, d, rng, false)
+		while n < Combat.EXCHANGE and a > 0 and d > 0 and guard < 4000:
+			guard += 1
+			var r: Dictionary = Combat.volley_once(a, d, rng, false, fortify)
 			fight.rolls.append(r)
 			fight.attacker_die = int(r["a"])
 			fight.defender_die = int(r["b"])
-			fight.attacker_total = Combat.VOLLEY_DIE * int(r["a"]) + a
-			fight.defender_total = Combat.VOLLEY_DIE * int(r["b"]) + d
+			fight.attacker_total = Combat.VOLLEY_DIE * int(r["a"]) + Combat.fire(a)
+			fight.defender_total = Combat.VOLLEY_DIE * int(r["b"]) + Combat.fire(d, fortify)
+			## Amendment 18: an even volley is fired again. It costs nobody and it is not one
+			## of the exchange's three. Before v1.7 the queue gave every even volley to the
+			## defender, so a fought battle ran at 41.7% a volley where the sheet, the
+			## advisor and the AI all quoted 50% — and a fortress changed nothing at all,
+			## because its extra man only ever turned a tie into the same lost volley.
+			if str(r["w"]) == "":
+				fight.rerolls += 1
+				continue
 			if str(r["w"]) == "a":
 				d -= 1
 			else:
@@ -174,7 +185,7 @@ static func _invade(w: Types.World, map: Types.MapDef, t: Transit, dest: String,
 				"refuge": refuge, "stance": stance, "call": fight.calls.size(), "rolls": fight.rolls.size()}
 			return fight
 		else:
-			call = Combat.doctrine(stance, a, d, reserves, refuge != "")
+			call = Combat.doctrine(stance, a, d, reserves, refuge != "", fortify)
 		if call == Combat.CALL_RESERVES and reserves <= 0:
 			call = Combat.CALL_PRESS
 		if call == Combat.CALL_FALL_BACK and refuge == "":
@@ -526,6 +537,7 @@ static func _melee(w: Types.World, map: Types.MapDef, dest: String, invaders: Ar
 	var d0: int = ts.held()
 	var d: int = d0
 	var rng: RefCounted = Rng.derive_stream(match_seed, w.round, "melee|" + tag + dest)
+	var fortify: int = MapLib.defender_line_bonus(map, dest) ## v1.7: a fortress fires a longer line on every front
 	var fronts: Array = []
 	for t in invaders:
 		fronts.append({"t": t, "a": t.strength, "size": t.strength, "key": "invasion|%s%s|%s|%s" % [tag, dest, t.owner, t.from_id],
@@ -553,7 +565,7 @@ static func _melee(w: Types.World, map: Types.MapDef, dest: String, invaders: Ar
 					## v1.6: the defenders' whole firing line faces every front, and an even
 					## volley costs nobody (the same loss ratio as one combined attack)
 					var fa: int = Combat.fire(int(f["a"]))
-					var fd: int = Combat.fire(d)
+					var fd: int = Combat.fire(d, fortify)
 					var sa2: int = Combat.VOLLEY_DIE * da + fa
 					var sd2: int = Combat.VOLLEY_DIE * db + fd
 					var w2: String = "a" if sa2 > sd2 else ("b" if sd2 > sa2 else "")
@@ -601,7 +613,7 @@ static func _melee(w: Types.World, map: Types.MapDef, dest: String, invaders: Ar
 				pending = true
 				break
 			else:
-				call = Combat.doctrine(str(f["stance"]), int(f["a"]), share_now, reserves, refuge != "")
+				call = Combat.doctrine(str(f["stance"]), int(f["a"]), share_now, reserves, refuge != "", fortify)
 			if call == Combat.CALL_RESERVES and reserves <= 0:
 				call = Combat.CALL_PRESS
 			if call == Combat.CALL_FALL_BACK and refuge == "":

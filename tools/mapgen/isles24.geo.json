@@ -1,0 +1,359 @@
+{
+ "width": 2600,
+ "height": 1800,
+ "seed": 47,
+ "radius": 200,
+ "gap": 22,
+ "warp": {
+  "amp": 52,
+  "scale": 0.004
+ },
+ "coast": {
+  "amp": 0.42,
+  "scale": 0.0052
+ },
+ "territories": {
+  "vanetor": {
+   "pts": [
+    [
+     360,
+     330
+    ],
+    [
+     300,
+     420
+    ]
+   ],
+   "r": 195
+  },
+  "vanefell": {
+   "pts": [
+    [
+     330,
+     700
+    ]
+   ],
+   "r": 190
+  },
+  "vaneholt": {
+   "pts": [
+    [
+     640,
+     520
+    ],
+    [
+     600,
+     600
+    ]
+   ],
+   "r": 195
+  },
+  "vanehead": {
+   "pts": [
+    [
+     330,
+     1060
+    ]
+   ],
+   "r": 190
+  },
+  "vanemoor": {
+   "pts": [
+    [
+     640,
+     890
+    ]
+   ],
+   "r": 190
+  },
+  "vanewick": {
+   "pts": [
+    [
+     660,
+     1230
+    ]
+   ],
+   "r": 185
+  },
+  "vanestrand": {
+   "pts": [
+    [
+     370,
+     1420
+    ]
+   ],
+   "r": 180
+  },
+  "kestrelcrag": {
+   "pts": [
+    [
+     1180,
+     300
+    ]
+   ],
+   "r": 175
+  },
+  "kestrelmere": {
+   "pts": [
+    [
+     1500,
+     250
+    ]
+   ],
+   "r": 175
+  },
+  "kestrelhowe": {
+   "pts": [
+    [
+     1810,
+     300
+    ]
+   ],
+   "r": 175
+  },
+  "kestreldown": {
+   "pts": [
+    [
+     1500,
+     540
+    ]
+   ],
+   "r": 175
+  },
+  "kestrelport": {
+   "pts": [
+    [
+     1180,
+     570
+    ]
+   ],
+   "r": 175
+  },
+  "reachrock": {
+   "pts": [
+    [
+     1170,
+     930
+    ]
+   ],
+   "r": 125
+  },
+  "gannetrock": {
+   "pts": [
+    [
+     1480,
+     870
+    ]
+   ],
+   "r": 120
+  },
+  "thecompass": {
+   "pts": [
+    [
+     1330,
+     1130
+    ]
+   ],
+   "r": 130
+  },
+  "sealstone": {
+   "pts": [
+    [
+     1650,
+     1130
+    ]
+   ],
+   "r": 120
+  },
+  "brokenspar": {
+   "pts": [
+    [
+     1830,
+     880
+    ]
+   ],
+   "r": 120
+  },
+  "morrowfen": {
+   "pts": [
+    [
+     1060,
+     1500
+    ]
+   ],
+   "r": 185
+  },
+  "morrowhill": {
+   "pts": [
+    [
+     1370,
+     1560
+    ]
+   ],
+   "r": 185
+  },
+  "morrowgate": {
+   "pts": [
+    [
+     1660,
+     1480
+    ]
+   ],
+   "r": 185
+  },
+  "morrowquay": {
+   "pts": [
+    [
+     1230,
+     1290
+    ]
+   ],
+   "r": 170
+  },
+  "thalewood": {
+   "pts": [
+    [
+     2210,
+     620
+    ]
+   ],
+   "r": 185
+  },
+  "thalecliff": {
+   "pts": [
+    [
+     2280,
+     960
+    ]
+   ],
+   "r": 185
+  },
+  "thaleharbour": {
+   "pts": [
+    [
+     2050,
+     1250
+    ]
+   ],
+   "r": 180
+  }
+ },
+ "adjacency": "derive",
+ "lanes": [
+  [
+   "vanewick",
+   "reachrock"
+  ],
+  [
+   "vanestrand",
+   "morrowquay"
+  ],
+  [
+   "kestrelport",
+   "reachrock"
+  ],
+  [
+   "kestrelport",
+   "gannetrock"
+  ],
+  [
+   "reachrock",
+   "gannetrock"
+  ],
+  [
+   "gannetrock",
+   "thecompass"
+  ],
+  [
+   "thecompass",
+   "sealstone"
+  ],
+  [
+   "gannetrock",
+   "brokenspar"
+  ],
+  [
+   "sealstone",
+   "brokenspar"
+  ],
+  [
+   "reachrock",
+   "thecompass"
+  ],
+  [
+   "thecompass",
+   "morrowquay"
+  ],
+  [
+   "sealstone",
+   "morrowquay"
+  ],
+  [
+   "brokenspar",
+   "thaleharbour"
+  ],
+  [
+   "sealstone",
+   "thaleharbour"
+  ]
+ ],
+ "islands": [
+  "reachrock",
+  "gannetrock",
+  "thecompass",
+  "sealstone",
+  "brokenspar"
+ ],
+ "separateRegions": [
+  [
+   "vane",
+   "kestrel",
+   []
+  ],
+  [
+   "vane",
+   "reach",
+   []
+  ],
+  [
+   "vane",
+   "morrow",
+   []
+  ],
+  [
+   "vane",
+   "thale",
+   []
+  ],
+  [
+   "kestrel",
+   "reach",
+   []
+  ],
+  [
+   "kestrel",
+   "morrow",
+   []
+  ],
+  [
+   "kestrel",
+   "thale",
+   []
+  ],
+  [
+   "reach",
+   "morrow",
+   []
+  ],
+  [
+   "reach",
+   "thale",
+   []
+  ],
+  [
+   "morrow",
+   "thale",
+   []
+  ]
+ ]
+}

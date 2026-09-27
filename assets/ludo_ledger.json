@@ -661,6 +661,276 @@
   "url": "https://storage.googleapis.com/ludo-assets/api/695d7c8cfc0ae4a3b32ecb6d5895d059.png",
   "v": 2
  },
+ "face_you_corsair_angry": {
+  "credits": 0.5,
+  "endpoint": "/assets/image/edit",
+  "file": "assets/portraits/you_corsair_angry.png",
+  "id": "face_you_corsair_angry",
+  "job": "56f82672-7dde-4aaa-8c73-ec79de860e2b",
+  "params": {
+   "augment_prompt": true,
+   "image": "https://storage.googleapis.com/ludo-assets/api/8572e95272ed6c642d2cb179fb2bacac.png",
+   "n": 1,
+   "prompt": "Same person, same framing, same outfit and painting style, plain white background, now furious and roaring a battle cry, brow furrowed, teeth bared"
+  },
+  "url": "https://storage.googleapis.com/ludo-assets/api/6a7e0e9b8ff07cac3fa81a849844554c.png",
+  "v": 1
+ },
+ "face_you_corsair_defeated": {
+  "credits": 0.5,
+  "endpoint": "/assets/image/edit",
+  "file": "assets/portraits/you_corsair_defeated.png",
+  "id": "face_you_corsair_defeated",
+  "job": "9ceb3b16-a6c2-484e-97c0-73804da72a2b",
+  "params": {
+   "augment_prompt": true,
+   "image": "https://storage.googleapis.com/ludo-assets/api/8572e95272ed6c642d2cb179fb2bacac.png",
+   "n": 1,
+   "prompt": "Same person, same framing, same outfit and painting style, plain white background, now defeated and exhausted, head bowed, soot on the face and a small cut on the cheek, eyes downcast"
+  },
+  "url": "https://storage.googleapis.com/ludo-assets/api/8623b65c26ef32ea0fc6626da6bb95b1.png",
+  "v": 1
+ },
+ "face_you_corsair_triumphant": {
+  "credits": 0.5,
+  "endpoint": "/assets/image/edit",
+  "file": "assets/portraits/you_corsair_triumphant.png",
+  "id": "face_you_corsair_triumphant",
+  "job": "41e6e991-af2f-4b53-95f0-7a61304dc0d8",
+  "params": {
+   "augment_prompt": true,
+   "image": "https://storage.googleapis.com/ludo-assets/api/8572e95272ed6c642d2cb179fb2bacac.png",
+   "n": 1,
+   "prompt": "Same person, same framing, same outfit and painting style, plain white background, now laughing triumphantly with chin raised, eyes blazing with victory"
+  },
+  "url": "https://storage.googleapis.com/ludo-assets/api/15e503076039541e78ab283858a84180.png",
+  "v": 1
+ },
+ "face_you_grenadier_angry": {
+  "credits": 0.5,
+  "endpoint": "/assets/image/edit",
+  "file": "assets/portraits/you_grenadier_angry.png",
+  "id": "face_you_grenadier_angry",
+  "job": "009ab437-12ab-427b-b6e4-899df35c2bf9",
+  "params": {
+   "augment_prompt": true,
+   "image": "https://storage.googleapis.com/ludo-assets/api/24c9f77ed92add986655fd31817eb994.png",
+   "n": 1,
+   "prompt": "Same person, same framing, same outfit and painting style, plain white background, now furious and roaring a battle cry, brow furrowed, teeth bared"
+  },
+  "url": "https://storage.googleapis.com/ludo-assets/api/d7be3e2a0a3a34466d3e23711d05f1d1.png",
+  "v": 1
+ },
+ "face_you_grenadier_defeated": {
+  "credits": 0.5,
+  "endpoint": "/assets/image/edit",
+  "file": "assets/portraits/you_grenadier_defeated.png",
+  "id": "face_you_grenadier_defeated",
+  "job": "25c63d0c-64f1-4d9e-a7a3-3de204a86ee9",
+  "params": {
+   "augment_prompt": true,
+   "image": "https://storage.googleapis.com/ludo-assets/api/24c9f77ed92add986655fd31817eb994.png",
+   "n": 1,
+   "prompt": "Same person, same framing, same outfit and painting style, plain white background, now defeated and exhausted, head bowed, soot on the face and a small cut on the cheek, eyes downcast"
+  },
+  "url": "https://storage.googleapis.com/ludo-assets/api/4dd11b35291b28534c52ef8cf33c4ce9.png",
+  "v": 1
+ },
+ "face_you_grenadier_triumphant": {
+  "credits": 0.5,
+  "endpoint": "/assets/image/edit",
+  "file": "assets/portraits/you_grenadier_triumphant.png",
+  "id": "face_you_grenadier_triumphant",
+  "job": "8ca2141c-4f09-4b2c-a7dd-d82700bfce91",
+  "params": {
+   "augment_prompt": true,
+   "image": "https://storage.googleapis.com/ludo-assets/api/24c9f77ed92add986655fd31817eb994.png",
+   "n": 1,
+   "prompt": "Same person, same framing, same outfit and painting style, plain white background, now laughing triumphantly with chin raised, eyes blazing with victory"
+  },
+  "url": "https://storage.googleapis.com/ludo-assets/api/4defa892a99527ed181133d9ab6e33f7.png",
+  "v": 1
+ },
+ "face_you_ironduke_angry": {
+  "credits": 0.5,
+  "endpoint": "/assets/image/edit",
+  "file": "assets/portraits/you_ironduke_angry.png",
+  "id": "face_you_ironduke_angry",
+  "job": "3a2a9209-48e5-4333-a5b6-ec4bd04b2166",
+  "params": {
+   "augment_prompt": true,
+   "image": "https://storage.googleapis.com/ludo-assets/api/7c45799431816376c8b47fe421738231.png",
+   "n": 1,
+   "prompt": "Same person, same framing, same outfit and painting style, plain white background, now furious and roaring a battle cry, brow furrowed, teeth bared"
+  },
+  "url": "https://storage.googleapis.com/ludo-assets/api/62eb68d14a098b764a0b26b07dbd9da7.png",
+  "v": 1
+ },
+ "face_you_ironduke_defeated": {
+  "credits": 0.5,
+  "endpoint": "/assets/image/edit",
+  "file": "assets/portraits/you_ironduke_defeated.png",
+  "id": "face_you_ironduke_defeated",
+  "job": "941c9d71-9703-4da7-b750-305b6ae1abb9",
+  "params": {
+   "augment_prompt": true,
+   "image": "https://storage.googleapis.com/ludo-assets/api/7c45799431816376c8b47fe421738231.png",
+   "n": 1,
+   "prompt": "Same person, same framing, same outfit and painting style, plain white background, now defeated and exhausted, head bowed, soot on the face and a small cut on the cheek, eyes downcast"
+  },
+  "url": "https://storage.googleapis.com/ludo-assets/api/009b08e0ba32d393f299bd1dd4ce15e7.png",
+  "v": 1
+ },
+ "face_you_ironduke_triumphant": {
+  "credits": 0.5,
+  "endpoint": "/assets/image/edit",
+  "file": "assets/portraits/you_ironduke_triumphant.png",
+  "id": "face_you_ironduke_triumphant",
+  "job": "55554009-8608-43f3-88ac-e0bef65c2878",
+  "params": {
+   "augment_prompt": true,
+   "image": "https://storage.googleapis.com/ludo-assets/api/7c45799431816376c8b47fe421738231.png",
+   "n": 1,
+   "prompt": "Same person, same framing, same outfit and painting style, plain white background, now laughing triumphantly with chin raised, eyes blazing with victory"
+  },
+  "url": "https://storage.googleapis.com/ludo-assets/api/956218faca451b617f6aa8db48a901c2.png",
+  "v": 1
+ },
+ "face_you_lioness_angry": {
+  "credits": 0.5,
+  "endpoint": "/assets/image/edit",
+  "file": "assets/portraits/you_lioness_angry.png",
+  "id": "face_you_lioness_angry",
+  "job": "bb6fe991-1f12-47ca-baa3-c5618f5b18bd",
+  "params": {
+   "augment_prompt": true,
+   "image": "https://storage.googleapis.com/ludo-assets/api/25ba48bf107e06ebd342f2fd64d00aaf.png",
+   "n": 1,
+   "prompt": "Same person, same framing, same outfit and painting style, plain white background, now furious and roaring a battle cry, brow furrowed, teeth bared"
+  },
+  "url": "https://storage.googleapis.com/ludo-assets/api/08deee7d95416444c04633e5228fe53c.png",
+  "v": 1
+ },
+ "face_you_lioness_defeated": {
+  "credits": 0.5,
+  "endpoint": "/assets/image/edit",
+  "file": "assets/portraits/you_lioness_defeated.png",
+  "id": "face_you_lioness_defeated",
+  "job": "e72f722d-f0ce-4d24-90c9-f6c05080ce8e",
+  "params": {
+   "augment_prompt": true,
+   "image": "https://storage.googleapis.com/ludo-assets/api/25ba48bf107e06ebd342f2fd64d00aaf.png",
+   "n": 1,
+   "prompt": "Same person, same framing, same outfit and painting style, plain white background, now defeated and exhausted, head bowed, soot on the face and a small cut on the cheek, eyes downcast"
+  },
+  "url": "https://storage.googleapis.com/ludo-assets/api/e4d6c85ff8f359ec99248965e313978b.png",
+  "v": 1
+ },
+ "face_you_lioness_triumphant": {
+  "credits": 0.5,
+  "endpoint": "/assets/image/edit",
+  "file": "assets/portraits/you_lioness_triumphant.png",
+  "id": "face_you_lioness_triumphant",
+  "job": "053f38d9-cd5e-4a8e-a8cb-73251e351e64",
+  "params": {
+   "augment_prompt": true,
+   "image": "https://storage.googleapis.com/ludo-assets/api/25ba48bf107e06ebd342f2fd64d00aaf.png",
+   "n": 1,
+   "prompt": "Same person, same framing, same outfit and painting style, plain white background, now laughing triumphantly with her chin raised and a fierce delighted grin. Ordinary daylight, no fire, no flames, no sparks, no glowing eyes, no magical effects."
+  },
+  "url": "https://storage.googleapis.com/ludo-assets/api/0d359e5480204bbda0e5e92c6834baf7.png",
+  "v": 2
+ },
+ "face_you_rajah_angry": {
+  "credits": 0.5,
+  "endpoint": "/assets/image/edit",
+  "file": "assets/portraits/you_rajah_angry.png",
+  "id": "face_you_rajah_angry",
+  "job": "f24c6a88-0fc4-48db-9571-dc288a178863",
+  "params": {
+   "augment_prompt": true,
+   "image": "https://storage.googleapis.com/ludo-assets/api/64a8b14db395926d5549a67099f664ed.png",
+   "n": 1,
+   "prompt": "Same person, same framing, same outfit and painting style, plain white background, now furious and roaring a battle cry, brow furrowed, teeth bared"
+  },
+  "url": "https://storage.googleapis.com/ludo-assets/api/119d2a7ac23a2227d97b5cbe2762711d.png",
+  "v": 1
+ },
+ "face_you_rajah_defeated": {
+  "credits": 0.5,
+  "endpoint": "/assets/image/edit",
+  "file": "assets/portraits/you_rajah_defeated.png",
+  "id": "face_you_rajah_defeated",
+  "job": "212ae3eb-ff18-45ff-bb0c-2e7ed176f7b7",
+  "params": {
+   "augment_prompt": true,
+   "image": "https://storage.googleapis.com/ludo-assets/api/64a8b14db395926d5549a67099f664ed.png",
+   "n": 1,
+   "prompt": "Same person, same framing, same outfit and painting style, plain white background, now defeated and exhausted, head bowed, soot on the face and a small cut on the cheek, eyes downcast"
+  },
+  "url": "https://storage.googleapis.com/ludo-assets/api/89bc748e8b8ea3222d785617cc5be5d1.png",
+  "v": 1
+ },
+ "face_you_rajah_triumphant": {
+  "credits": 0.5,
+  "endpoint": "/assets/image/edit",
+  "file": "assets/portraits/you_rajah_triumphant.png",
+  "id": "face_you_rajah_triumphant",
+  "job": "e92dbf6a-3528-4263-9a8c-0d62eccf200c",
+  "params": {
+   "augment_prompt": true,
+   "image": "https://storage.googleapis.com/ludo-assets/api/64a8b14db395926d5549a67099f664ed.png",
+   "n": 1,
+   "prompt": "Same person, same framing, same outfit and painting style, plain white background, now laughing triumphantly with his chin raised and a broad delighted grin. Ordinary daylight, no fire, no flames, no sparks, no glowing eyes, no magical effects."
+  },
+  "url": "https://storage.googleapis.com/ludo-assets/api/f466f27353ae3e5144268cf2e4e6e8a4.png",
+  "v": 2
+ },
+ "face_you_scholar_angry": {
+  "credits": 0.5,
+  "endpoint": "/assets/image/edit",
+  "file": "assets/portraits/you_scholar_angry.png",
+  "id": "face_you_scholar_angry",
+  "job": "0c5d3206-04c1-45a6-b9ad-f031cefac02a",
+  "params": {
+   "augment_prompt": true,
+   "image": "https://storage.googleapis.com/ludo-assets/api/dc6b1c0d5cd0bb14612df436b87f8c13.png",
+   "n": 1,
+   "prompt": "Same person, same framing, same outfit and painting style, plain white background, now furious and roaring a battle cry, brow furrowed, teeth bared"
+  },
+  "url": "https://storage.googleapis.com/ludo-assets/api/8941dcfaa7159818e91f9897c4bc20e0.png",
+  "v": 1
+ },
+ "face_you_scholar_defeated": {
+  "credits": 0.5,
+  "endpoint": "/assets/image/edit",
+  "file": "assets/portraits/you_scholar_defeated.png",
+  "id": "face_you_scholar_defeated",
+  "job": "fa74505d-0277-4eaa-995d-72438aae309c",
+  "params": {
+   "augment_prompt": true,
+   "image": "https://storage.googleapis.com/ludo-assets/api/dc6b1c0d5cd0bb14612df436b87f8c13.png",
+   "n": 1,
+   "prompt": "Same person, same framing, same outfit and painting style, plain white background, now defeated and exhausted, head bowed, soot on the face and a small cut on the cheek, eyes downcast"
+  },
+  "url": "https://storage.googleapis.com/ludo-assets/api/c8239436370fe19c06499504cbd8e758.png",
+  "v": 1
+ },
+ "face_you_scholar_triumphant": {
+  "credits": 0.5,
+  "endpoint": "/assets/image/edit",
+  "file": "assets/portraits/you_scholar_triumphant.png",
+  "id": "face_you_scholar_triumphant",
+  "job": "d9643b5e-d100-48cc-a01d-df234219e957",
+  "params": {
+   "augment_prompt": true,
+   "image": "https://storage.googleapis.com/ludo-assets/api/dc6b1c0d5cd0bb14612df436b87f8c13.png",
+   "n": 1,
+   "prompt": "Same person, same framing, same outfit and painting style, plain white background, now laughing triumphantly with chin raised, eyes blazing with victory"
+  },
+  "url": "https://storage.googleapis.com/ludo-assets/api/79d26c2254deb58662c70ff6704cb257.png",
+  "v": 1
+ },
  "face_ysolde_angry": {
   "credits": 0.5,
   "endpoint": "/assets/image/edit",
@@ -1226,6 +1496,24 @@
   },
   "url": "https://storage.googleapis.com/ludo-assets/api/1ba85f957adfa760988b409dc4aa56ef.png"
  },
+ "icon_fort": {
+  "credits": 0.5,
+  "endpoint": "/assets/image",
+  "file": "assets/icons/fort.png",
+  "id": "icon_fort",
+  "job": "ff0de302-f34a-464a-bb33-51c701962dac",
+  "params": {
+   "art_style": "Digital Painting",
+   "aspect_ratio": "ar_1_1",
+   "augment_prompt": true,
+   "image_type": "icon",
+   "n": 1,
+   "perspective": "Any perspective",
+   "prompt": "Squat star-fort bastion with a pennant, stone ramparts, fortress emblem, bold dark outline, isolated on plain white background. Grand imperial oil painting in the tradition of 18th-century history painting and Age of Sail maritime art, rich glazes, dramatic golden light and deep shadow, palette of imperial crimson, royal navy blue, burnished gold, ivory and gunpowder grey, heroic and triumphant, no text, no letters, no watermark"
+  },
+  "url": "https://storage.googleapis.com/ludo-assets/api/811519cb3109eaafa1a8b444337d429d.png",
+  "v": 1
+ },
  "icon_gear": {
   "credits": 0.5,
   "endpoint": "/assets/image",
@@ -1293,6 +1581,42 @@
    "prompt": "Marching boot with a curved arrow emblem, bold dark outline, isolated on plain white background. Hand-painted board game art, visible brush strokes, palette of deep navy, parchment cream, crimson red and antique gold, candlelit war-room mood, no text, no letters, no watermark"
   },
   "url": "https://storage.googleapis.com/ludo-assets/api/c9f567d70eb34d7362b183ef90522ed8.png"
+ },
+ "icon_pass": {
+  "credits": 0.5,
+  "endpoint": "/assets/image",
+  "file": "assets/icons/pass.png",
+  "id": "icon_pass",
+  "job": "b86be853-8ae1-48e6-9b64-5b334c13e28a",
+  "params": {
+   "art_style": "Digital Painting",
+   "aspect_ratio": "ar_1_1",
+   "augment_prompt": true,
+   "image_type": "icon",
+   "n": 1,
+   "perspective": "Any perspective",
+   "prompt": "Narrow mountain defile between two steep crags with a track winding through, chokepoint emblem, bold dark outline, isolated on plain white background. Grand imperial oil painting in the tradition of 18th-century history painting and Age of Sail maritime art, rich glazes, dramatic golden light and deep shadow, palette of imperial crimson, royal navy blue, burnished gold, ivory and gunpowder grey, heroic and triumphant, no text, no letters, no watermark"
+  },
+  "url": "https://storage.googleapis.com/ludo-assets/api/e328b4a52c2c56470dabbbc062687496.png",
+  "v": 1
+ },
+ "icon_port": {
+  "credits": 0.5,
+  "endpoint": "/assets/image",
+  "file": "assets/icons/port.png",
+  "id": "icon_port",
+  "job": "a564eaef-0eaa-41b4-9f16-37deb9e35c6b",
+  "params": {
+   "art_style": "Digital Painting",
+   "aspect_ratio": "ar_1_1",
+   "augment_prompt": true,
+   "image_type": "icon",
+   "n": 1,
+   "perspective": "Any perspective",
+   "prompt": "Ship's anchor crossed with a mooring rope before a small quay, harbour emblem, bold dark outline, isolated on plain white background. Grand imperial oil painting in the tradition of 18th-century history painting and Age of Sail maritime art, rich glazes, dramatic golden light and deep shadow, palette of imperial crimson, royal navy blue, burnished gold, ivory and gunpowder grey, heroic and triumphant, no text, no letters, no watermark"
+  },
+  "url": "https://storage.googleapis.com/ludo-assets/api/7383c19bd47501173232c8f4bc99ab04.png",
+  "v": 1
  },
  "icon_reinforce": {
   "credits": 0.5,
@@ -1378,6 +1702,24 @@
    "prompt": "Broken banner pole with a torn flag, defeat emblem, bold dark outline, isolated on plain white background. Hand-painted board game art, visible brush strokes, palette of deep navy, parchment cream, crimson red and antique gold, candlelit war-room mood, no text, no letters, no watermark"
   },
   "url": "https://storage.googleapis.com/ludo-assets/api/ba3e2e083ff88d1dd03b1f2114f33e46.png"
+ },
+ "icon_supply": {
+  "credits": 0.5,
+  "endpoint": "/assets/image",
+  "file": "assets/icons/supply.png",
+  "id": "icon_supply",
+  "job": "48c2ee19-f731-4c25-be73-d0bbb641ace5",
+  "params": {
+   "art_style": "Digital Painting",
+   "aspect_ratio": "ar_1_1",
+   "augment_prompt": true,
+   "image_type": "icon",
+   "n": 1,
+   "perspective": "Any perspective",
+   "prompt": "Ox-drawn supply wagon stacked with barrels and crates, baggage train emblem, bold dark outline, isolated on plain white background. Grand imperial oil painting in the tradition of 18th-century history painting and Age of Sail maritime art, rich glazes, dramatic golden light and deep shadow, palette of imperial crimson, royal navy blue, burnished gold, ivory and gunpowder grey, heroic and triumphant, no text, no letters, no watermark"
+  },
+  "url": "https://storage.googleapis.com/ludo-assets/api/ab25e5d7efd061c8cb2828038f640565.png",
+  "v": 1
  },
  "line2_hask_attack": {
   "credits": 1,
@@ -3734,6 +4076,132 @@
   "url": "https://storage.googleapis.com/ludo-assets/api/38cfe90528915454b7ecbdcb1f1bf580.webp",
   "v": 1
  },
+ "loop_you_corsair_idle": {
+  "credits": 4,
+  "endpoint": "/assets/sprite/animate",
+  "file": "assets/raw/loops/you_corsair_idle.webp",
+  "id": "loop_you_corsair_idle",
+  "job": "43289e6f-65b3-43cb-88b0-3d7301617e3f",
+  "params": {
+   "crop": false,
+   "duration": 2,
+   "final_image": "https://storage.googleapis.com/ludo-assets/api/8572e95272ed6c642d2cb179fb2bacac.png",
+   "frame_size": -9,
+   "frames": 16,
+   "image_type": "portrait",
+   "initial_image": "https://storage.googleapis.com/ludo-assets/api/8572e95272ed6c642d2cb179fb2bacac.png",
+   "loop": false,
+   "model": "forge",
+   "motion_prompt": "breathes slowly and blinks, subtle idle motion, head nearly still"
+  },
+  "url": "https://storage.googleapis.com/ludo-assets/api/8f1fb4e01a27c36f21ca7e2f830e134a.webp",
+  "v": 1
+ },
+ "loop_you_grenadier_idle": {
+  "credits": 4,
+  "endpoint": "/assets/sprite/animate",
+  "file": "assets/raw/loops/you_grenadier_idle.webp",
+  "id": "loop_you_grenadier_idle",
+  "job": "51b14eda-c398-45d7-a886-24b1c662ebd8",
+  "params": {
+   "crop": false,
+   "duration": 2,
+   "final_image": "https://storage.googleapis.com/ludo-assets/api/24c9f77ed92add986655fd31817eb994.png",
+   "frame_size": -9,
+   "frames": 16,
+   "image_type": "portrait",
+   "initial_image": "https://storage.googleapis.com/ludo-assets/api/24c9f77ed92add986655fd31817eb994.png",
+   "loop": false,
+   "model": "forge",
+   "motion_prompt": "breathes slowly and blinks, subtle idle motion, head nearly still"
+  },
+  "url": "https://storage.googleapis.com/ludo-assets/api/37107f95716d6762ac97c01a2c4e83b0.webp",
+  "v": 1
+ },
+ "loop_you_ironduke_idle": {
+  "credits": 4,
+  "endpoint": "/assets/sprite/animate",
+  "file": "assets/raw/loops/you_ironduke_idle.webp",
+  "id": "loop_you_ironduke_idle",
+  "job": "bf4d52a0-fa75-4121-b171-6331a8d2d154",
+  "params": {
+   "crop": false,
+   "duration": 2,
+   "final_image": "https://storage.googleapis.com/ludo-assets/api/7c45799431816376c8b47fe421738231.png",
+   "frame_size": -9,
+   "frames": 16,
+   "image_type": "portrait",
+   "initial_image": "https://storage.googleapis.com/ludo-assets/api/7c45799431816376c8b47fe421738231.png",
+   "loop": false,
+   "model": "forge",
+   "motion_prompt": "breathes slowly and blinks, subtle idle motion, head nearly still"
+  },
+  "url": "https://storage.googleapis.com/ludo-assets/api/c0f538329f1a8db6b51d53b6faa6f0cc.webp",
+  "v": 1
+ },
+ "loop_you_lioness_idle": {
+  "credits": 4,
+  "endpoint": "/assets/sprite/animate",
+  "file": "assets/raw/loops/you_lioness_idle.webp",
+  "id": "loop_you_lioness_idle",
+  "job": "5ce6c473-ddf5-4261-9abc-561714aea8a4",
+  "params": {
+   "crop": false,
+   "duration": 2,
+   "final_image": "https://storage.googleapis.com/ludo-assets/api/fb3a77fdf690b12be4be12d193f98f31.png",
+   "frame_size": -9,
+   "frames": 16,
+   "image_type": "portrait",
+   "initial_image": "https://storage.googleapis.com/ludo-assets/api/fb3a77fdf690b12be4be12d193f98f31.png",
+   "loop": false,
+   "model": "forge",
+   "motion_prompt": "breathes slowly and blinks, subtle idle motion, head nearly still"
+  },
+  "url": "https://storage.googleapis.com/ludo-assets/api/dfe4bf3a8d2f1f38675ab8344f4c20aa.webp",
+  "v": 1
+ },
+ "loop_you_rajah_idle": {
+  "credits": 4,
+  "endpoint": "/assets/sprite/animate",
+  "file": "assets/raw/loops/you_rajah_idle.webp",
+  "id": "loop_you_rajah_idle",
+  "job": "729465ad-9f80-40bb-96b3-7a600bd3cfac",
+  "params": {
+   "crop": false,
+   "duration": 2,
+   "final_image": "https://storage.googleapis.com/ludo-assets/api/64a8b14db395926d5549a67099f664ed.png",
+   "frame_size": -9,
+   "frames": 16,
+   "image_type": "portrait",
+   "initial_image": "https://storage.googleapis.com/ludo-assets/api/64a8b14db395926d5549a67099f664ed.png",
+   "loop": false,
+   "model": "forge",
+   "motion_prompt": "breathes slowly and blinks, subtle idle motion, head nearly still"
+  },
+  "url": "https://storage.googleapis.com/ludo-assets/api/dcdd337f071f4c2c33c202e5fc117ee5.webp",
+  "v": 1
+ },
+ "loop_you_scholar_idle": {
+  "credits": 4,
+  "endpoint": "/assets/sprite/animate",
+  "file": "assets/raw/loops/you_scholar_idle.webp",
+  "id": "loop_you_scholar_idle",
+  "job": "2b790fdf-1be7-4a35-bc93-b62fcbc02578",
+  "params": {
+   "crop": false,
+   "duration": 2,
+   "final_image": "https://storage.googleapis.com/ludo-assets/api/dc6b1c0d5cd0bb14612df436b87f8c13.png",
+   "frame_size": -9,
+   "frames": 16,
+   "image_type": "portrait",
+   "initial_image": "https://storage.googleapis.com/ludo-assets/api/dc6b1c0d5cd0bb14612df436b87f8c13.png",
+   "loop": false,
+   "model": "forge",
+   "motion_prompt": "breathes slowly and blinks, subtle idle motion, head nearly still"
+  },
+  "url": "https://storage.googleapis.com/ludo-assets/api/657f4e8a93f0baff2749c09be9c9ec74.webp",
+  "v": 1
+ },
  "loop_ysolde_idle": {
   "credits": 4,
   "endpoint": "/assets/sprite/animate",
@@ -4085,6 +4553,102 @@
   },
   "url": "https://storage.googleapis.com/ludo-assets/api/a9027d4ef178453a99c5ff77c44a7693.png",
   "v": 2
+ },
+ "portrait_you_corsair": {
+  "credits": 0.5,
+  "endpoint": "/assets/image/style",
+  "file": "assets/portraits/you_corsair.png",
+  "id": "portrait_you_corsair",
+  "job": "43e10678-5da0-4825-89ef-4ecd2e69d82d",
+  "params": {
+   "augment_prompt": true,
+   "image_type": "portrait",
+   "n": 1,
+   "prompt": "Bust portrait of a weathered dark-skinned naval commander in his forties, close-cropped greying beard, gold hoop earring, navy blue coat with heavy gold cuffs open at the throat, sunburnt and wry. Head and shoulders centered with space around them, isolated on a plain white background.",
+   "style_image": "https://storage.googleapis.com/ludo-assets/api/9696d6a65b23ddb1bc5c9d6efbcea934.png"
+  },
+  "url": "https://storage.googleapis.com/ludo-assets/api/8572e95272ed6c642d2cb179fb2bacac.png",
+  "v": 1
+ },
+ "portrait_you_grenadier": {
+  "credits": 0.5,
+  "endpoint": "/assets/image/style",
+  "file": "assets/portraits/you_grenadier.png",
+  "id": "portrait_you_grenadier",
+  "job": "1f3c4447-2d90-45c6-90b2-af54187a5278",
+  "params": {
+   "augment_prompt": true,
+   "image_type": "portrait",
+   "n": 1,
+   "prompt": "Bust portrait of a big bluff bearded soldier risen from the ranks, broken nose, towering bearskin grenadier cap, scarlet coat straining at the shoulders, powder-burned and grinning. Head and shoulders centered with space around them, isolated on a plain white background.",
+   "style_image": "https://storage.googleapis.com/ludo-assets/api/9696d6a65b23ddb1bc5c9d6efbcea934.png"
+  },
+  "url": "https://storage.googleapis.com/ludo-assets/api/24c9f77ed92add986655fd31817eb994.png",
+  "v": 1
+ },
+ "portrait_you_ironduke": {
+  "credits": 0.5,
+  "endpoint": "/assets/image/style",
+  "file": "assets/portraits/you_ironduke.png",
+  "id": "portrait_you_ironduke",
+  "job": "3c6bbc23-20c6-4fae-80d6-a6797b19c846",
+  "params": {
+   "augment_prompt": true,
+   "image_type": "portrait",
+   "n": 1,
+   "prompt": "Bust portrait of a lean hawk-faced duke in his fifties, silver hair swept back, one white scar across the jaw, high-collared imperial crimson coat heavy with gold braid and a sash of office, cold and imperious. Head and shoulders centered with space around them, isolated on a plain white background.",
+   "style_image": "https://storage.googleapis.com/ludo-assets/api/9696d6a65b23ddb1bc5c9d6efbcea934.png"
+  },
+  "url": "https://storage.googleapis.com/ludo-assets/api/7c45799431816376c8b47fe421738231.png",
+  "v": 1
+ },
+ "portrait_you_lioness": {
+  "credits": 0.5,
+  "endpoint": "/assets/image/style",
+  "file": "assets/portraits/you_lioness.png",
+  "id": "portrait_you_lioness",
+  "job": "f4809067-8eaf-4d15-80fe-fbb55437cd83",
+  "params": {
+   "augment_prompt": true,
+   "image_type": "portrait",
+   "n": 1,
+   "prompt": "Bust portrait of a woman commander in her thirties, auburn hair bound back under a plumed campaign hat, a healed burn scar on one cheek, practical field greatcoat with a colonel's epaulettes, steady and unflinching. Head and shoulders centered with space around them, isolated on a plain flat white background, nothing else in the frame.",
+   "style_image": "https://storage.googleapis.com/ludo-assets/api/9696d6a65b23ddb1bc5c9d6efbcea934.png"
+  },
+  "url": "https://storage.googleapis.com/ludo-assets/api/25ba48bf107e06ebd342f2fd64d00aaf.png",
+  "v": 2
+ },
+ "portrait_you_rajah": {
+  "credits": 0.5,
+  "endpoint": "/assets/image/style",
+  "file": "assets/portraits/you_rajah.png",
+  "id": "portrait_you_rajah",
+  "job": "bae43fca-e0ec-4d52-a8d4-fd9750537477",
+  "params": {
+   "augment_prompt": true,
+   "image_type": "portrait",
+   "n": 1,
+   "prompt": "Bust portrait of a regal older commander with a proud grey moustache, a plumed and jewelled helm-turban, deep green coat richly embroidered with gold thread and a ruby clasp, serene and commanding. Head and shoulders centered with space around them, isolated on a plain white background.",
+   "style_image": "https://storage.googleapis.com/ludo-assets/api/9696d6a65b23ddb1bc5c9d6efbcea934.png"
+  },
+  "url": "https://storage.googleapis.com/ludo-assets/api/64a8b14db395926d5549a67099f664ed.png",
+  "v": 1
+ },
+ "portrait_you_scholar": {
+  "credits": 0.5,
+  "endpoint": "/assets/image/style",
+  "file": "assets/portraits/you_scholar.png",
+  "id": "portrait_you_scholar",
+  "job": "26a2ad1a-7362-48e3-a6cb-54825bf24175",
+  "params": {
+   "augment_prompt": true,
+   "image_type": "portrait",
+   "n": 1,
+   "prompt": "Bust portrait of a slight bespectacled strategist in his forties, ink-stained fingers, plain dark staff-officer coat with a single decoration, a rolled map under one arm, watchful and precise. Head and shoulders centered with space around them, isolated on a plain white background.",
+   "style_image": "https://storage.googleapis.com/ludo-assets/api/9696d6a65b23ddb1bc5c9d6efbcea934.png"
+  },
+  "url": "https://storage.googleapis.com/ludo-assets/api/dc6b1c0d5cd0bb14612df436b87f8c13.png",
+  "v": 1
  },
  "portrait_ysolde": {
   "credits": 0.5,

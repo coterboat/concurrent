@@ -13,6 +13,15 @@ static func income_of(world: Types.World, map: Types.MapDef, player_id: String, 
 	if player_id == NEUTRAL_ID or player_id == Types.UNOCCUPIED:
 		return 0
 	var terrs := MapLib.player_territory_ids(world, player_id)
+	if map != null and map.supply:
+		## v1.7: only the lands still joined to your main body pay. A land cut off from it
+		## still fights and still holds, but it feeds nobody.
+		var fed: Dictionary = MapLib.supplied_ids(world, map, player_id)
+		var kept: Array = []
+		for t in terrs:
+			if fed.has(str(t)):
+				kept.append(str(t))
+		terrs = PackedStringArray(kept)
 	var from_count: int = maxi(INCOME_FLOOR, terrs.size() / 3)
 	var from_bloc: int = connected_bloc(world, map, player_id) / 6
 	return from_count + from_bloc + region_bonus_of(world, map, player_id) + cashed_set
@@ -21,6 +30,9 @@ static func income_of(world: Types.World, map: Types.MapDef, player_id: String, 
 static func cap_of(world: Types.World, map: Types.MapDef, terr_id: String) -> int:
 	var ts: Types.TerritoryState = world.get_territory(terr_id)
 	if ts == null or ts.owner == Types.UNOCCUPIED:
+		return 0
+	## v1.7: no recruits reach a land the baggage train cannot. It still defends itself.
+	if map != null and map.supply and not MapLib.in_supply(world, map, terr_id):
 		return 0
 	return 1 + MapLib.friendly_neighbor_count(world, map, terr_id)
 
@@ -40,6 +52,10 @@ static func garrison_cap(world: Types.World, map: Types.MapDef, terr_id: String)
 	## 60% of every man on the board by mid-game, and they slowed the late war to a crawl.
 	if map.dig_cap > 0:
 		n = mini(n, map.dig_cap)
+	## v1.7: a fortress takes one more man dug in than open ground. Applied after the cap,
+	## so the fort is the one place that goes deeper — that is the whole point of it.
+	if t != null and t.has_trait("fort"):
+		n += 1
 	return n
 
 

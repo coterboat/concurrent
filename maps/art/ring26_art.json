@@ -1,0 +1,548 @@
+{
+ "id": "ring26",
+ "width": 2700,
+ "height": 2700,
+ "order": [
+  "ambermarch",
+  "ashfield",
+  "briarhold",
+  "brinehold",
+  "cinderhow",
+  "embergate",
+  "emberwatch",
+  "fenmoor",
+  "galehold",
+  "goldmarch",
+  "greygate",
+  "greywatch",
+  "ivorymarch",
+  "jademarch",
+  "kelpmoor",
+  "oakmoot",
+  "saltgate",
+  "saltwatch",
+  "silvermarch",
+  "slatemoor",
+  "stonehold",
+  "thethrone",
+  "thorngate",
+  "thornwatch",
+  "windgate",
+  "windwatch"
+ ],
+ "anchors": {
+  "ambermarch": {
+   "x": 1186,
+   "y": 1626,
+   "depth": 153.7,
+   "area": 99043,
+   "bbox": [
+    992,
+    1423,
+    1355,
+    1820
+   ]
+  },
+  "ashfield": {
+   "x": 2342,
+   "y": 1004,
+   "depth": 162.4,
+   "area": 304321,
+   "bbox": [
+    2090,
+    527,
+    2599,
+    1517
+   ]
+  },
+  "briarhold": {
+   "x": 1348,
+   "y": 320,
+   "depth": 170.2,
+   "area": 286568,
+   "bbox": [
+    842,
+    84,
+    1823,
+    545
+   ]
+  },
+  "brinehold": {
+   "x": 1958,
+   "y": 2194,
+   "depth": 187.4,
+   "area": 291158,
+   "bbox": [
+    1541,
+    1877,
+    2392,
+    2539
+   ]
+  },
+  "cinderhow": {
+   "x": 2206,
+   "y": 1446,
+   "depth": 128.2,
+   "area": 107388,
+   "bbox": [
+    1995,
+    1228,
+    2439,
+    1650
+   ]
+  },
+  "embergate": {
+   "x": 1942,
+   "y": 1140,
+   "depth": 152.1,
+   "area": 116408,
+   "bbox": [
+    1736,
+    952,
+    2124,
+    1375
+   ]
+  },
+  "emberwatch": {
+   "x": 1974,
+   "y": 768,
+   "depth": 124.3,
+   "area": 105768,
+   "bbox": [
+    1785,
+    544,
+    2136,
+    986
+   ]
+  },
+  "fenmoor": {
+   "x": 726,
+   "y": 756,
+   "depth": 130.8,
+   "area": 108967,
+   "bbox": [
+    571,
+    512,
+    906,
+    988
+   ]
+  },
+  "galehold": {
+   "x": 366,
+   "y": 1032,
+   "depth": 182.6,
+   "area": 287850,
+   "bbox": [
+    103,
+    569,
+    613,
+    1499
+   ]
+  },
+  "goldmarch": {
+   "x": 1354,
+   "y": 1026,
+   "depth": 158.2,
+   "area": 109963,
+   "bbox": [
+    1149,
+    863,
+    1584,
+    1190
+   ]
+  },
+  "greygate": {
+   "x": 968,
+   "y": 1862,
+   "depth": 162.2,
+   "area": 122250,
+   "bbox": [
+    781,
+    1657,
+    1202,
+    2060
+   ]
+  },
+  "greywatch": {
+   "x": 1192,
+   "y": 2192,
+   "depth": 138.6,
+   "area": 109624,
+   "bbox": [
+    974,
+    1986,
+    1350,
+    2432
+   ]
+  },
+  "ivorymarch": {
+   "x": 1546,
+   "y": 1614,
+   "depth": 147.6,
+   "area": 112347,
+   "bbox": [
+    1351,
+    1420,
+    1772,
+    1848
+   ]
+  },
+  "jademarch": {
+   "x": 1034,
+   "y": 1246,
+   "depth": 145.9,
+   "area": 123111,
+   "bbox": [
+    840,
+    987,
+    1224,
+    1468
+   ]
+  },
+  "kelpmoor": {
+   "x": 1512,
+   "y": 2174,
+   "depth": 137.4,
+   "area": 108385,
+   "bbox": [
+    1346,
+    1972,
+    1731,
+    2428
+   ]
+  },
+  "oakmoot": {
+   "x": 1712,
+   "y": 584,
+   "depth": 139.1,
+   "area": 108282,
+   "bbox": [
+    1474,
+    390,
+    1921,
+    787
+   ]
+  },
+  "saltgate": {
+   "x": 1718,
+   "y": 1868,
+   "depth": 156,
+   "area": 124920,
+   "bbox": [
+    1477,
+    1655,
+    1907,
+    2073
+   ]
+  },
+  "saltwatch": {
+   "x": 2094,
+   "y": 1772,
+   "depth": 135.4,
+   "area": 113040,
+   "bbox": [
+    1885,
+    1599,
+    2352,
+    1936
+   ]
+  },
+  "silvermarch": {
+   "x": 1666,
+   "y": 1248,
+   "depth": 140.2,
+   "area": 124441,
+   "bbox": [
+    1471,
+    990,
+    1841,
+    1487
+   ]
+  },
+  "slatemoor": {
+   "x": 596,
+   "y": 1758,
+   "depth": 125.8,
+   "area": 115970,
+   "bbox": [
+    345,
+    1583,
+    809,
+    1941
+   ]
+  },
+  "stonehold": {
+   "x": 738,
+   "y": 2192,
+   "depth": 190.2,
+   "area": 305541,
+   "bbox": [
+    348,
+    1854,
+    1174,
+    2525
+   ]
+  },
+  "thethrone": {
+   "x": 1348,
+   "y": 1350,
+   "depth": 157.9,
+   "area": 98824,
+   "bbox": [
+    1152,
+    1183,
+    1539,
+    1553
+   ]
+  },
+  "thorngate": {
+   "x": 1344,
+   "y": 706,
+   "depth": 156,
+   "area": 118442,
+   "bbox": [
+    1123,
+    510,
+    1578,
+    869
+   ]
+  },
+  "thornwatch": {
+   "x": 984,
+   "y": 574,
+   "depth": 137.2,
+   "area": 111413,
+   "bbox": [
+    747,
+    368,
+    1227,
+    769
+   ]
+  },
+  "windgate": {
+   "x": 742,
+   "y": 1162,
+   "depth": 155,
+   "area": 127071,
+   "bbox": [
+    543,
+    966,
+    957,
+    1409
+   ]
+  },
+  "windwatch": {
+   "x": 504,
+   "y": 1450,
+   "depth": 127.1,
+   "area": 101402,
+   "bbox": [
+    249,
+    1223,
+    717,
+    1618
+   ]
+  }
+ },
+ "lanes": [
+  {
+   "a": "cinderhow",
+   "b": "saltwatch",
+   "ax": 2258,
+   "ay": 1644,
+   "bx": 2234,
+   "by": 1668,
+   "length": 34
+  }
+ ],
+ "regions": {
+  "crown": {
+   "x": 1538,
+   "y": 1100,
+   "room": 166
+  },
+  "emberfen": {
+   "x": 2162,
+   "y": 650,
+   "room": 205
+  },
+  "greyfell": {
+   "x": 590,
+   "y": 2024,
+   "room": 205
+  },
+  "saltmere": {
+   "x": 2108,
+   "y": 2018,
+   "room": 205
+  },
+  "thornwold": {
+   "x": 1070,
+   "y": 392,
+   "room": 216
+  },
+  "windmoor": {
+   "x": 458,
+   "y": 848,
+   "room": 205
+  }
+ },
+ "landAdjacency": [
+  [
+   "ambermarch",
+   "jademarch"
+  ],
+  [
+   "ambermarch",
+   "thethrone"
+  ],
+  [
+   "ambermarch",
+   "ivorymarch"
+  ],
+  [
+   "ambermarch",
+   "greygate"
+  ],
+  [
+   "ashfield",
+   "emberwatch"
+  ],
+  [
+   "ashfield",
+   "cinderhow"
+  ],
+  [
+   "briarhold",
+   "thornwatch"
+  ],
+  [
+   "briarhold",
+   "oakmoot"
+  ],
+  [
+   "brinehold",
+   "saltwatch"
+  ],
+  [
+   "brinehold",
+   "kelpmoor"
+  ],
+  [
+   "cinderhow",
+   "embergate"
+  ],
+  [
+   "embergate",
+   "emberwatch"
+  ],
+  [
+   "embergate",
+   "silvermarch"
+  ],
+  [
+   "emberwatch",
+   "oakmoot"
+  ],
+  [
+   "fenmoor",
+   "thornwatch"
+  ],
+  [
+   "fenmoor",
+   "galehold"
+  ],
+  [
+   "fenmoor",
+   "windgate"
+  ],
+  [
+   "galehold",
+   "windwatch"
+  ],
+  [
+   "goldmarch",
+   "thorngate"
+  ],
+  [
+   "goldmarch",
+   "silvermarch"
+  ],
+  [
+   "goldmarch",
+   "jademarch"
+  ],
+  [
+   "goldmarch",
+   "thethrone"
+  ],
+  [
+   "greygate",
+   "slatemoor"
+  ],
+  [
+   "greygate",
+   "greywatch"
+  ],
+  [
+   "greywatch",
+   "stonehold"
+  ],
+  [
+   "greywatch",
+   "kelpmoor"
+  ],
+  [
+   "ivorymarch",
+   "silvermarch"
+  ],
+  [
+   "ivorymarch",
+   "thethrone"
+  ],
+  [
+   "ivorymarch",
+   "saltgate"
+  ],
+  [
+   "jademarch",
+   "windgate"
+  ],
+  [
+   "jademarch",
+   "thethrone"
+  ],
+  [
+   "kelpmoor",
+   "saltgate"
+  ],
+  [
+   "oakmoot",
+   "thorngate"
+  ],
+  [
+   "saltgate",
+   "saltwatch"
+  ],
+  [
+   "silvermarch",
+   "thethrone"
+  ],
+  [
+   "slatemoor",
+   "windwatch"
+  ],
+  [
+   "slatemoor",
+   "stonehold"
+  ],
+  [
+   "thorngate",
+   "thornwatch"
+  ],
+  [
+   "windgate",
+   "windwatch"
+  ]
+ ]
+}

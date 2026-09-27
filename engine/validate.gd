@@ -60,7 +60,7 @@ static func _validate_regroup(world: Types.World, map: Types.MapDef, sheet: Type
 	if from_ts.owner != sheet.player_id or to_ts.owner != sheet.player_id:
 		errors.append("regroup must be friendly to friendly")
 		return
-	if not MapLib.is_adjacent(map, r.from_id, r.to_id):
+	if not Array(MapLib.supply_links(world, map, r.from_id)).has(r.to_id):
 		errors.append("regroup requires adjacent hexes")
 		return
 	if r.from_id == r.to_id:
@@ -148,6 +148,11 @@ static func _validate_packets(world: Types.World, map: Types.MapDef, sheet: Type
 			continue
 		if to_ts.owner == sheet.player_id:
 			errors.append("%s cannot attack a friendly hex" % tag)
+			continue
+		## v1.7: only so many can come through a pass at once, however many you have.
+		var col: int = MapLib.column_cap(map, p.to_id)
+		if col > 0 and p.strength > col:
+			errors.append("%s only %s can storm %s at once" % [tag, col, p.to_id])
 			continue
 		if p.surge_to != "":
 			if p.surge_to == p.from_id:

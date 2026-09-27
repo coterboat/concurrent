@@ -6,7 +6,20 @@ const Setup := preload("res://engine/setup.gd")
 const Ai := preload("res://engine/ai.gd")
 const Board := preload("res://game/board/map_board.gd")
 
-const MAPS := ["res://maps/knife7.json", "res://maps/known24.json", "res://maps/world30.json"]
+## v1.7: the faces a human seat may wear. "player" is the old faceless silhouette, kept
+## first so anyone who liked being nobody in particular still can be.
+const FACES := ["player", "you_ironduke", "you_corsair", "you_lioness", "you_scholar", "you_rajah", "you_grenadier"]
+const FACE_NAMES := {
+	"player": "An anonymous commander",
+	"you_ironduke": "The Iron Duke",
+	"you_corsair": "The Corsair",
+	"you_lioness": "The Lioness",
+	"you_scholar": "The Scholar",
+	"you_rajah": "The Rajah",
+	"you_grenadier": "The Grenadier",
+}
+
+const MAPS := ["res://maps/knife7.json", "res://maps/narrow14.json", "res://maps/known24.json", "res://maps/world30.json"]
 const AI_ORDER := ["oren", "hask", "quill", "varek", "imre", "ysolde"]
 const LEVEL_WORD := {"recruit": "Easy", "veteran": "Medium", "general": "Hard"}
 
@@ -250,15 +263,28 @@ func _seat_row(i: int) -> Control:
 	sw.pid = sid
 	sw.custom_minimum_size = Vector2(40, 44)
 	row.add_child(sw)
-	var pic := TextureRect.new()
+	var face: String = str(s.get("portrait", "player"))
+	if s["kind"] == "human" and not FACES.has(face):
+		face = "player"
+	var pic := TextureButton.new()
 	pic.custom_minimum_size = Vector2(44, 44)
-	pic.expand_mode = TextureRect.EXPAND_IGNORE_SIZE
-	pic.stretch_mode = TextureRect.STRETCH_KEEP_ASPECT_COVERED
-	pic.texture = Style.portrait("player" if s["kind"] == "human" else str(s["ai"]))
+	pic.ignore_texture_size = true
+	pic.stretch_mode = TextureButton.STRETCH_KEEP_ASPECT_CENTERED
+	pic.texture_normal = Style.portrait(face if s["kind"] == "human" else str(s["ai"]))
+	if s["kind"] == "human":
+		pic.tooltip_text = "%s — click to choose another face" % FACE_NAMES.get(face, "Your commander")
+		pic.mouse_default_cursor_shape = Control.CURSOR_POINTING_HAND
+		pic.pressed.connect(func():
+			Audio.sfx("click")
+			s["portrait"] = FACES[(FACES.find(face) + 1) % FACES.size()]
+			_refresh())
+	else:
+		pic.disabled = true
+		pic.tooltip_text = str(Ai.COMMANDERS.get(s["ai"], {}).get("blurb", ""))
 	row.add_child(pic)
 	var name_edit := LineEdit.new()
 	name_edit.text = str(s["name"])
-	name_edit.custom_minimum_size = Vector2(190, 44)
+	name_edit.custom_minimum_size = Vector2(232, 44)
 	name_edit.max_length = 18
 	name_edit.editable = s["kind"] == "human"
 	name_edit.text_changed.connect(func(t): s["name"] = t)
@@ -276,6 +302,8 @@ func _seat_row(i: int) -> Control:
 		if idx == 0:
 			s["kind"] = "human"
 			s["ai"] = ""
+			if not FACES.has(str(s.get("portrait", ""))):
+				s["portrait"] = "player"
 			s["name"] = "Player %d" % (i + 1) if i > 0 else "You"
 		else:
 			var a: String = AI_ORDER[idx - 1]
@@ -325,7 +353,7 @@ func _start() -> void:
 			"name": nm,
 			"kind": s["kind"],
 			"ai": s["ai"] if s["kind"] == "ai" else "",
-			"portrait": "player" if s["kind"] == "human" else str(s["ai"]),
+			"portrait": str(s.get("portrait", "player")) if s["kind"] == "human" else str(s["ai"]),
 		})
 	Settings.set_value("last_setup", {"map": map_path, "seats": seats, "length": length, "timer": timer, "battle": battle, "deal": deal, "odds": odds, "name": human_name if human_name != "" else "You"})
 	Settings.set_value("deal", deal)

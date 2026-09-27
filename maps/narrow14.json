@@ -1,0 +1,187 @@
+{
+ "id": "narrow14",
+ "name": "The Narrow Sea",
+ "cards": true,
+ "pools": {
+  "2": 20
+ },
+ "minPlayers": 2,
+ "maxPlayers": 2,
+ "blurb": "Two realms either side of a narrow sea. Three ways over: the bridge, the spit and the island. Both gates are fortresses.",
+ "rounds": 8,
+ "startingPool": 20,
+ "dealEach": 3,
+ "pinNeutral": "thebeacon",
+ "neutralArmies": 4,
+ "neutralLeftover": true,
+ "supply": true,
+ "fortBonus": 1,
+ "passCap": 6,
+ "regionNames": {
+  "frostmarch": "The Frostmarch",
+  "sunmarch": "The Sunmarch",
+  "narrows": "The Narrows"
+ },
+ "regionBonus": {
+  "frostmarch": 3,
+  "sunmarch": 3,
+  "narrows": 4
+ },
+ "regionTerrain": {
+  "frostmarch": "snow",
+  "sunmarch": "grass",
+  "narrows": "coast"
+ },
+ "regionColors": {
+  "frostmarch": "#7fa6c9",
+  "sunmarch": "#c9a15a",
+  "narrows": "#8fae86"
+ },
+ "territories": {
+  "almsfield": {
+   "name": "Almsfield",
+   "region": "sunmarch",
+   "adjacent": [
+    "olivegrove",
+    "southgate",
+    "warmharbor"
+   ]
+  },
+  "bridgehead": {
+   "name": "The Bridge",
+   "region": "narrows",
+   "adjacent": [
+    "northgate",
+    "southgate",
+    "thebeacon"
+   ],
+   "traits": [
+    "pass"
+   ]
+  },
+  "coldharbor": {
+   "name": "Coldharbor",
+   "region": "frostmarch",
+   "adjacent": [
+    "elkwood",
+    "gullrock",
+    "hallow",
+    "northgate"
+   ],
+   "traits": [
+    "port"
+   ]
+  },
+  "elkwood": {
+   "name": "Elkwood",
+   "region": "frostmarch",
+   "adjacent": [
+    "coldharbor",
+    "hallow"
+   ]
+  },
+  "gullrock": {
+   "name": "Gullrock",
+   "region": "narrows",
+   "adjacent": [
+    "coldharbor",
+    "warmharbor"
+   ],
+   "traits": [
+    "port"
+   ]
+  },
+  "hallow": {
+   "name": "The Hallow",
+   "region": "frostmarch",
+   "adjacent": [
+    "coldharbor",
+    "elkwood",
+    "northgate"
+   ]
+  },
+  "northgate": {
+   "name": "Northgate",
+   "region": "frostmarch",
+   "adjacent": [
+    "bridgehead",
+    "coldharbor",
+    "hallow",
+    "stonewatch"
+   ],
+   "traits": [
+    "fort"
+   ]
+  },
+  "olivegrove": {
+   "name": "Olive Grove",
+   "region": "sunmarch",
+   "adjacent": [
+    "almsfield",
+    "warmharbor"
+   ]
+  },
+  "redhill": {
+   "name": "Redhill",
+   "region": "sunmarch",
+   "adjacent": [
+    "southgate",
+    "thespit"
+   ]
+  },
+  "southgate": {
+   "name": "Southgate",
+   "region": "sunmarch",
+   "adjacent": [
+    "almsfield",
+    "bridgehead",
+    "redhill",
+    "warmharbor"
+   ],
+   "traits": [
+    "fort"
+   ]
+  },
+  "stonewatch": {
+   "name": "Stonewatch",
+   "region": "frostmarch",
+   "adjacent": [
+    "northgate",
+    "thespit"
+   ]
+  },
+  "thebeacon": {
+   "name": "The Beacon",
+   "region": "narrows",
+   "adjacent": [
+    "bridgehead",
+    "thespit"
+   ]
+  },
+  "thespit": {
+   "name": "The Spit",
+   "region": "narrows",
+   "adjacent": [
+    "redhill",
+    "stonewatch",
+    "thebeacon"
+   ],
+   "traits": [
+    "pass"
+   ]
+  },
+  "warmharbor": {
+   "name": "Warmharbor",
+   "region": "sunmarch",
+   "adjacent": [
+    "almsfield",
+    "gullrock",
+    "olivegrove",
+    "southgate"
+   ],
+   "traits": [
+    "port"
+   ]
+  }
+ }
+}

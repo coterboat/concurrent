@@ -36,6 +36,10 @@ class TerritoryDef extends RefCounted:
 	var display_name: String = ""
 	var region: String = ""
 	var adjacent: PackedStringArray = PackedStringArray()
+	var traits: PackedStringArray = PackedStringArray() ## v1.7: "fort", "port", "pass"
+
+	func has_trait(t: String) -> bool:
+		return Array(traits).has(t)
 
 
 class MapDef extends RefCounted:
@@ -67,6 +71,13 @@ class MapDef extends RefCounted:
 	var rules: int = 0 ## v1.5 new games: 15 (surges clash head-on and carry a count)
 	var fire_line: bool = false ## v1.6 new games: at most five men fire in a volley, even volleys are fired again (setup: Battle odds)
 	var first_digs_in: bool = false ## the man left behind is locked in as a dug-in defender for good (tried in v1.5; off: it halved the conquests)
+	## v1.7 land traits and supply. Off unless the map asks for them, so the first three
+	## maps play exactly as they did in v1.6 and old saves are untouched.
+	## A pip is worth five men, so a line of six through nine all score the same against a
+	## line of five: one is the whole effect, and the tenth man would be the next step.
+	var fort_bonus: int = 1 ## extra men in a fortress's defending line (and +1 to its dig-in cap)
+	var pass_cap: int = 6 ## most men in one attacking column into a pass (0 = no cap)
+	var supply: bool = false ## lands cut off from your main bloc pay no income and take no recruits
 
 	func territory_ids() -> PackedStringArray:
 		var ids: Array = territories.keys()
@@ -114,6 +125,10 @@ class MapDef extends RefCounted:
 				if typeof(adj) == TYPE_ARRAY:
 					for n in adj:
 						t.adjacent.append(str(n))
+				var tr: Variant = raw.get("traits", [])
+				if typeof(tr) == TYPE_ARRAY:
+					for n in tr:
+						t.traits.append(str(n))
 				m.territories[t.id] = t
 		var bonuses: Variant = data.get("regionBonus", {})
 		if typeof(bonuses) == TYPE_DICTIONARY:
@@ -151,6 +166,9 @@ class MapDef extends RefCounted:
 		if typeof(pools) == TYPE_DICTIONARY:
 			for k in pools.keys():
 				m.pools[int(str(k))] = int(pools[k])
+		m.fort_bonus = int(data.get("fortBonus", 1))
+		m.pass_cap = int(data.get("passCap", 6))
+		m.supply = bool(data.get("supply", false))
 		return m
 
 

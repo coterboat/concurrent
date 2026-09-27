@@ -3446,6 +3446,360 @@
    "text": "I have been saving these. Now they matter.",
    "out": "assets/voice13/imre/cash",
    "v": 1
+  },
+  {
+   "id": "portrait_you_ironduke",
+   "kind": "styled",
+   "type": "portrait",
+   "style_from": "portrait_advisor",
+   "cutout": true,
+   "prompt": "Bust portrait of a lean hawk-faced duke in his fifties, silver hair swept back, one white scar across the jaw, high-collared imperial crimson coat heavy with gold braid and a sash of office, cold and imperious. Head and shoulders centered with space around them, isolated on a plain white background.",
+   "out": "assets/portraits/you_ironduke",
+   "v": 1
+  },
+  {
+   "id": "face_you_ironduke_triumphant",
+   "kind": "edit",
+   "from": "portrait_you_ironduke",
+   "cutout": true,
+   "prompt": "Same person, same framing, same outfit and painting style, plain white background, now laughing triumphantly with chin raised, eyes blazing with victory",
+   "out": "assets/portraits/you_ironduke_triumphant",
+   "v": 1
+  },
+  {
+   "id": "face_you_ironduke_angry",
+   "kind": "edit",
+   "from": "portrait_you_ironduke",
+   "cutout": true,
+   "prompt": "Same person, same framing, same outfit and painting style, plain white background, now furious and roaring a battle cry, brow furrowed, teeth bared",
+   "out": "assets/portraits/you_ironduke_angry",
+   "v": 1
+  },
+  {
+   "id": "face_you_ironduke_defeated",
+   "kind": "edit",
+   "from": "portrait_you_ironduke",
+   "cutout": true,
+   "prompt": "Same person, same framing, same outfit and painting style, plain white background, now defeated and exhausted, head bowed, soot on the face and a small cut on the cheek, eyes downcast",
+   "out": "assets/portraits/you_ironduke_defeated",
+   "v": 1
+  },
+  {
+   "id": "loop_you_ironduke_idle",
+   "kind": "animate",
+   "from": "portrait_you_ironduke",
+   "prompt": "breathes slowly and blinks, subtle idle motion, head nearly still",
+   "image_type": "portrait",
+   "final_same": true,
+   "model": "forge",
+   "duration": 2,
+   "frames": 16,
+   "frame_size": -9,
+   "loop": false,
+   "crop": false,
+   "out": "assets/raw/loops/you_ironduke_idle",
+   "v": 1
+  },
+  {
+   "id": "portrait_you_corsair",
+   "kind": "styled",
+   "type": "portrait",
+   "style_from": "portrait_advisor",
+   "cutout": true,
+   "prompt": "Bust portrait of a weathered dark-skinned naval commander in his forties, close-cropped greying beard, gold hoop earring, navy blue coat with heavy gold cuffs open at the throat, sunburnt and wry. Head and shoulders centered with space around them, isolated on a plain white background.",
+   "out": "assets/portraits/you_corsair",
+   "v": 1
+  },
+  {
+   "id": "face_you_corsair_triumphant",
+   "kind": "edit",
+   "from": "portrait_you_corsair",
+   "cutout": true,
+   "prompt": "Same person, same framing, same outfit and painting style, plain white background, now laughing triumphantly with chin raised, eyes blazing with victory",
+   "out": "assets/portraits/you_corsair_triumphant",
+   "v": 1
+  },
+  {
+   "id": "face_you_corsair_angry",
+   "kind": "edit",
+   "from": "portrait_you_corsair",
+   "cutout": true,
+   "prompt": "Same person, same framing, same outfit and painting style, plain white background, now furious and roaring a battle cry, brow furrowed, teeth bared",
+   "out": "assets/portraits/you_corsair_angry",
+   "v": 1
+  },
+  {
+   "id": "face_you_corsair_defeated",
+   "kind": "edit",
+   "from": "portrait_you_corsair",
+   "cutout": true,
+   "prompt": "Same person, same framing, same outfit and painting style, plain white background, now defeated and exhausted, head bowed, soot on the face and a small cut on the cheek, eyes downcast",
+   "out": "assets/portraits/you_corsair_defeated",
+   "v": 1
+  },
+  {
+   "id": "loop_you_corsair_idle",
+   "kind": "animate",
+   "from": "portrait_you_corsair",
+   "prompt": "breathes slowly and blinks, subtle idle motion, head nearly still",
+   "image_type": "portrait",
+   "final_same": true,
+   "model": "forge",
+   "duration": 2,
+   "frames": 16,
+   "frame_size": -9,
+   "loop": false,
+   "crop": false,
+   "out": "assets/raw/loops/you_corsair_idle",
+   "v": 1
+  },
+  {
+   "id": "portrait_you_lioness",
+   "kind": "styled",
+   "type": "portrait",
+   "style_from": "portrait_advisor",
+   "cutout": true,
+   "prompt": "Bust portrait of a woman commander in her thirties, auburn hair bound back under a plumed campaign hat, a healed burn scar on one cheek, practical field greatcoat with a colonel's epaulettes, steady and unflinching. Head and shoulders centered with space around them, isolated on a plain flat white background, nothing else in the frame.",
+   "out": "assets/portraits/you_lioness",
+   "v": 2
+  },
+  {
+   "id": "face_you_lioness_triumphant",
+   "kind": "edit",
+   "from": "portrait_you_lioness",
+   "cutout": true,
+   "prompt": "Same person, same framing, same outfit and painting style, plain white background, now laughing triumphantly with her chin raised and a fierce delighted grin. Ordinary daylight, no fire, no flames, no sparks, no glowing eyes, no magical effects.",
+   "out": "assets/portraits/you_lioness_triumphant",
+   "v": 2
+  },
+  {
+   "id": "face_you_lioness_angry",
+   "kind": "edit",
+   "from": "portrait_you_lioness",
+   "cutout": true,
+   "prompt": "Same person, same framing, same outfit and painting style, plain white background, now furious and roaring a battle cry, brow furrowed, teeth bared",
+   "out": "assets/portraits/you_lioness_angry",
+   "v": 1
+  },
+  {
+   "id": "face_you_lioness_defeated",
+   "kind": "edit",
+   "from": "portrait_you_lioness",
+   "cutout": true,
+   "prompt": "Same person, same framing, same outfit and painting style, plain white background, now defeated and exhausted, head bowed, soot on the face and a small cut on the cheek, eyes downcast",
+   "out": "assets/portraits/you_lioness_defeated",
+   "v": 1
+  },
+  {
+   "id": "loop_you_lioness_idle",
+   "kind": "animate",
+   "from": "portrait_you_lioness",
+   "prompt": "breathes slowly and blinks, subtle idle motion, head nearly still",
+   "image_type": "portrait",
+   "final_same": true,
+   "model": "forge",
+   "duration": 2,
+   "frames": 16,
+   "frame_size": -9,
+   "loop": false,
+   "crop": false,
+   "out": "assets/raw/loops/you_lioness_idle",
+   "v": 1
+  },
+  {
+   "id": "portrait_you_scholar",
+   "kind": "styled",
+   "type": "portrait",
+   "style_from": "portrait_advisor",
+   "cutout": true,
+   "prompt": "Bust portrait of a slight bespectacled strategist in his forties, ink-stained fingers, plain dark staff-officer coat with a single decoration, a rolled map under one arm, watchful and precise. Head and shoulders centered with space around them, isolated on a plain white background.",
+   "out": "assets/portraits/you_scholar",
+   "v": 1
+  },
+  {
+   "id": "face_you_scholar_triumphant",
+   "kind": "edit",
+   "from": "portrait_you_scholar",
+   "cutout": true,
+   "prompt": "Same person, same framing, same outfit and painting style, plain white background, now laughing triumphantly with chin raised, eyes blazing with victory",
+   "out": "assets/portraits/you_scholar_triumphant",
+   "v": 1
+  },
+  {
+   "id": "face_you_scholar_angry",
+   "kind": "edit",
+   "from": "portrait_you_scholar",
+   "cutout": true,
+   "prompt": "Same person, same framing, same outfit and painting style, plain white background, now furious and roaring a battle cry, brow furrowed, teeth bared",
+   "out": "assets/portraits/you_scholar_angry",
+   "v": 1
+  },
+  {
+   "id": "face_you_scholar_defeated",
+   "kind": "edit",
+   "from": "portrait_you_scholar",
+   "cutout": true,
+   "prompt": "Same person, same framing, same outfit and painting style, plain white background, now defeated and exhausted, head bowed, soot on the face and a small cut on the cheek, eyes downcast",
+   "out": "assets/portraits/you_scholar_defeated",
+   "v": 1
+  },
+  {
+   "id": "loop_you_scholar_idle",
+   "kind": "animate",
+   "from": "portrait_you_scholar",
+   "prompt": "breathes slowly and blinks, subtle idle motion, head nearly still",
+   "image_type": "portrait",
+   "final_same": true,
+   "model": "forge",
+   "duration": 2,
+   "frames": 16,
+   "frame_size": -9,
+   "loop": false,
+   "crop": false,
+   "out": "assets/raw/loops/you_scholar_idle",
+   "v": 1
+  },
+  {
+   "id": "portrait_you_rajah",
+   "kind": "styled",
+   "type": "portrait",
+   "style_from": "portrait_advisor",
+   "cutout": true,
+   "prompt": "Bust portrait of a regal older commander with a proud grey moustache, a plumed and jewelled helm-turban, deep green coat richly embroidered with gold thread and a ruby clasp, serene and commanding. Head and shoulders centered with space around them, isolated on a plain white background.",
+   "out": "assets/portraits/you_rajah",
+   "v": 1
+  },
+  {
+   "id": "face_you_rajah_triumphant",
+   "kind": "edit",
+   "from": "portrait_you_rajah",
+   "cutout": true,
+   "prompt": "Same person, same framing, same outfit and painting style, plain white background, now laughing triumphantly with his chin raised and a broad delighted grin. Ordinary daylight, no fire, no flames, no sparks, no glowing eyes, no magical effects.",
+   "out": "assets/portraits/you_rajah_triumphant",
+   "v": 2
+  },
+  {
+   "id": "face_you_rajah_angry",
+   "kind": "edit",
+   "from": "portrait_you_rajah",
+   "cutout": true,
+   "prompt": "Same person, same framing, same outfit and painting style, plain white background, now furious and roaring a battle cry, brow furrowed, teeth bared",
+   "out": "assets/portraits/you_rajah_angry",
+   "v": 1
+  },
+  {
+   "id": "face_you_rajah_defeated",
+   "kind": "edit",
+   "from": "portrait_you_rajah",
+   "cutout": true,
+   "prompt": "Same person, same framing, same outfit and painting style, plain white background, now defeated and exhausted, head bowed, soot on the face and a small cut on the cheek, eyes downcast",
+   "out": "assets/portraits/you_rajah_defeated",
+   "v": 1
+  },
+  {
+   "id": "loop_you_rajah_idle",
+   "kind": "animate",
+   "from": "portrait_you_rajah",
+   "prompt": "breathes slowly and blinks, subtle idle motion, head nearly still",
+   "image_type": "portrait",
+   "final_same": true,
+   "model": "forge",
+   "duration": 2,
+   "frames": 16,
+   "frame_size": -9,
+   "loop": false,
+   "crop": false,
+   "out": "assets/raw/loops/you_rajah_idle",
+   "v": 1
+  },
+  {
+   "id": "portrait_you_grenadier",
+   "kind": "styled",
+   "type": "portrait",
+   "style_from": "portrait_advisor",
+   "cutout": true,
+   "prompt": "Bust portrait of a big bluff bearded soldier risen from the ranks, broken nose, towering bearskin grenadier cap, scarlet coat straining at the shoulders, powder-burned and grinning. Head and shoulders centered with space around them, isolated on a plain white background.",
+   "out": "assets/portraits/you_grenadier",
+   "v": 1
+  },
+  {
+   "id": "face_you_grenadier_triumphant",
+   "kind": "edit",
+   "from": "portrait_you_grenadier",
+   "cutout": true,
+   "prompt": "Same person, same framing, same outfit and painting style, plain white background, now laughing triumphantly with chin raised, eyes blazing with victory",
+   "out": "assets/portraits/you_grenadier_triumphant",
+   "v": 1
+  },
+  {
+   "id": "face_you_grenadier_angry",
+   "kind": "edit",
+   "from": "portrait_you_grenadier",
+   "cutout": true,
+   "prompt": "Same person, same framing, same outfit and painting style, plain white background, now furious and roaring a battle cry, brow furrowed, teeth bared",
+   "out": "assets/portraits/you_grenadier_angry",
+   "v": 1
+  },
+  {
+   "id": "face_you_grenadier_defeated",
+   "kind": "edit",
+   "from": "portrait_you_grenadier",
+   "cutout": true,
+   "prompt": "Same person, same framing, same outfit and painting style, plain white background, now defeated and exhausted, head bowed, soot on the face and a small cut on the cheek, eyes downcast",
+   "out": "assets/portraits/you_grenadier_defeated",
+   "v": 1
+  },
+  {
+   "id": "loop_you_grenadier_idle",
+   "kind": "animate",
+   "from": "portrait_you_grenadier",
+   "prompt": "breathes slowly and blinks, subtle idle motion, head nearly still",
+   "image_type": "portrait",
+   "final_same": true,
+   "model": "forge",
+   "duration": 2,
+   "frames": 16,
+   "frame_size": -9,
+   "loop": false,
+   "crop": false,
+   "out": "assets/raw/loops/you_grenadier_idle",
+   "v": 1
+  },
+  {
+   "id": "icon_fort",
+   "kind": "image",
+   "type": "icon",
+   "cutout": true,
+   "out": "assets/icons/fort",
+   "prompt": "Squat star-fort bastion with a pennant, stone ramparts, fortress emblem, bold dark outline, isolated on plain white background",
+   "v": 1
+  },
+  {
+   "id": "icon_port",
+   "kind": "image",
+   "type": "icon",
+   "cutout": true,
+   "out": "assets/icons/port",
+   "prompt": "Ship's anchor crossed with a mooring rope before a small quay, harbour emblem, bold dark outline, isolated on plain white background",
+   "v": 1
+  },
+  {
+   "id": "icon_pass",
+   "kind": "image",
+   "type": "icon",
+   "cutout": true,
+   "out": "assets/icons/pass",
+   "prompt": "Narrow mountain defile between two steep crags with a track winding through, chokepoint emblem, bold dark outline, isolated on plain white background",
+   "v": 1
+  },
+  {
+   "id": "icon_supply",
+   "kind": "image",
+   "type": "icon",
+   "cutout": true,
+   "out": "assets/icons/supply",
+   "prompt": "Ox-drawn supply wagon stacked with barrels and crates, baggage train emblem, bold dark outline, isolated on plain white background",
+   "v": 1
   }
  ]
 }
