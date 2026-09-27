@@ -20,3 +20,5 @@ assets/ludo_ledger.json.lock
 assets/ludo_ledger.json.tmp
 # Ludo animation masters (4096px sheets): re-downloadable from the URLs in assets/ludo_ledger.json
 assets/raw/
+review/*/
+!review/.gdignore

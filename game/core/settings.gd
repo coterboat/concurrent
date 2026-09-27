@@ -21,10 +21,11 @@ var data := {
 	"last_setup": {},
 	"seen_tutorial": false,
 	"commander_voices": "new", ## new (v1.3/1.4 second take, the default since v1.4) | classic
-	"deal": "random", ## random | draft: how new games hand out the lands (also chosen on the setup screen)
+	"deal": "random", ## (v1.4–1.7) how new games handed out the lands; v1.8 moved it into the setup screen's Rules
 	"dice_help_seen": 0, ## the battlefield opens "How a throw is scored" by itself the first two times
 	"stance": "judgment",
 	"calls_seen": 0,
+	"motion": "all", ## v1.9: all (cutscenes and living paintings) | paintings (no cutscenes) | off (stills)
 }
 
 

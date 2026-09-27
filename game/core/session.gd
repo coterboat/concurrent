@@ -16,6 +16,7 @@ const Hash := preload("res://engine/hash.gd")
 const Ai := preload("res://engine/ai.gd")
 const Telemetry := preload("res://engine/telemetry.gd")
 const Maneuver := preload("res://engine/maneuver.gd")
+const Capitals := preload("res://engine/capitals.gd")
 
 enum Phase { NONE, OPENING, PASS, PLANNING, RESOLVING, CINEMA, RECAP, GAME_OVER, MANEUVER, DRAFT }
 
@@ -38,12 +39,14 @@ var pass_to: String = ""
 var queue: Array = [] ## humans still to plan this window
 var drafts := {} ## pid -> Sheet
 var opening := {} ## pid -> {terr: n}
+var opening_capital := {} ## v1.8: pid -> the land a commander named their capital at deployment
 var locked := {} ## pid -> Sheet (or opening dict)
 var setup_dict: Dictionary = {}
 var rounds_log: Array = [] ## [[sheet dicts]]
 var hashes: Array = []
 var history: Array = [] ## [{round, terr: {pid: n}, score: {pid: n}}]
 var cash_log: Array = [] ## v1.6: every set turned in: [{round, pid, value, lands}], for the end-of-war chart
+var capital_log: Array = [] ## v1.9: every capital taken: [{round, pid (who lost it), by, land}], for the chart
 var stats := {} ## pid -> {captures, walkins, lost_to_walkins, battles, won, killed, cards}
 var pre_world: Types.World
 var events: Array = []
@@ -88,6 +91,7 @@ func new_game(p_config: Dictionary) -> void:
 	hashes = []
 	history = []
 	cash_log = []
+	capital_log = []
 	stats = {}
 	for s in seats:
 		stats[s["id"]] = _blank_stats()
@@ -98,12 +102,29 @@ func new_game(p_config: Dictionary) -> void:
 	watching = false
 	drafts = {}
 	opening = {}
+	opening_capital = {}
 	locked = {}
 	draft = {}
 	if drafting:
 		_start_draft()
 	else:
 		_start_window(Phase.OPENING)
+
+
+func _apply_rules(fresh: bool) -> void:
+	## v1.8 the table's rules (game/core/rules.gd). A save from before v1.8 has none of these
+	## keys and plays exactly as it did: surges on, the map's own features and cards, no levée.
+	map.levee = int(config.get("levee", 3 if fresh else 0))
+	map.surges = bool(config.get("surges", true))
+	if config.has("cards"):
+		map.cards = map.cards and bool(config["cards"])
+	if not bool(config.get("terrain", true)):
+		map.supply = false
+		for tid in map.territory_ids():
+			(map.get_territory(tid) as Types.TerritoryDef).traits = PackedStringArray()
+	if fresh:
+		config["levee"] = map.levee
+		config["surges"] = map.surges
 
 
 func _apply_length() -> void:
@@ -123,12 +144,18 @@ func _apply_length() -> void:
 	## v1.5 rules: surges clash head-on and carry a count; v1.6: the firing line, fair ties,
 	## and campaign cards with a land on each; v1.7: an even volley is fired again in every
 	## battle actually fought, and a pass holds to its column of six, surges and reserves too
-	map.rules = int(config.get("rules", 17))
+	map.rules = int(config.get("rules", 18))
 	config["rules"] = map.rules
 	map.first_digs_in = bool(config.get("first_digs_in", false))
 	config["first_digs_in"] = map.first_digs_in
 	map.fire_line = bool(config.get("firing_line", true))
 	config["firing_line"] = map.fire_line
+	## v1.8: every commander keeps a capital (setup: Capitals), and Fortune keeps a ledger
+	map.capitals = bool(config.get("capitals", true))
+	config["capitals"] = map.capitals
+	map.fortune = bool(config.get("fortune", true))
+	config["fortune"] = map.fortune
+	_apply_rules(true)
 	Combat.use_rules(map)
 	var base: int = Setup.rounds_for(map)
 	var mode: String = str(config.get("length", "standard"))
@@ -147,7 +174,8 @@ func _seat_list() -> Array:
 
 
 func _blank_stats() -> Dictionary:
-	return {"captures": 0, "walkins": 0, "walked": 0, "battles": 0, "won": 0, "armies_lost": 0, "kills": 0, "sets": 0}
+	return {"captures": 0, "walkins": 0, "walked": 0, "battles": 0, "won": 0, "armies_lost": 0, "kills": 0, "sets": 0,
+		"luck_n": 0, "luck_odds": 0.0, "luck_won": 0} ## v1.8: battles against the odds quoted when they began
 
 
 func seat(pid: String) -> Dictionary:
@@ -194,6 +222,8 @@ func conquest() -> bool:
 func _start_window(kind: int) -> void:
 	drafts = {}
 	opening = {}
+	if kind == Phase.OPENING:
+		opening_capital = {}
 	locked = {}
 	error_text = ""
 	queue = living_humans()
@@ -326,9 +356,10 @@ func _resolve_opening() -> void:
 			var rng: RefCounted = Rng.derive_stream(match_seed, 0, "open|" + pid)
 			placements[pid] = Ai.opening_placements(world, map, pid, rng, Ai.profile_for(ai_of(pid)))
 	pre_world = world.clone()
-	Setup.apply_opening(world, map, placements)
+	var cap_events: Array = []
+	Setup.apply_opening(world, map, placements, opening_capital, cap_events)
 	setup_dict = world.to_dict()
-	events = []
+	events = cap_events.duplicate() ## v1.8: the crowns go up first, as the armies deploy
 	for pid in placements.keys():
 		var place: Dictionary = placements[pid]
 		for t in place.keys():
@@ -338,7 +369,8 @@ func _resolve_opening() -> void:
 	## v1.5: lands that got no recruits still dig in their first soldier; show it
 	var shown := {}
 	for e in events:
-		shown[str(e["terrId"])] = true
+		if str(e["kind"]) == Types.EVENT_PLACED:
+			shown[str(e["terrId"])] = true
 	var ids: Array = Array(map.territory_ids())
 	for t in ids:
 		var ts2: Types.TerritoryState = world.get_territory(str(t))
@@ -443,6 +475,7 @@ func claim(id: String) -> String:
 		return "%s is already taken — pick a free land." % hex_name(id)
 	var pid: String = draft_turn()
 	world.set_hex(id, pid, 1)
+	Capitals.claimed(world, map, pid, id) ## v1.8: your first claim is your capital
 	(draft["claims"] as Array).append({"pid": pid, "land": id})
 	draft["i"] = int(draft["i"]) + 1
 	if int(draft["i"]) >= (draft["turns"] as Array).size():
@@ -612,13 +645,20 @@ func answer(call: String) -> void:
 	## The attacker's live call at the paused battle: record it on their sheet, go on.
 	if pending.is_empty():
 		return
-	var pid: String = str(pending["attacker"])
+	## v1.8: at a Fortune pause the chooser may be the defender; and for an attacker whose
+	## battle goes on, one plate answers both (Fortune declined, then the call made)
+	var pid: String = str(pending.get("chooser", pending["attacker"]))
+	var add: Array = [call]
+	if bool(pending.get("fortune", false)) and call != Combat.CALL_FORTUNE:
+		add = [Combat.CALL_STAND]
+		if str(pending.get("side", "")) == "a" and not bool(pending.get("ended", false)) and call != Combat.CALL_STAND:
+			add.append(call)
 	for raw in round_sheets:
 		var sh: Types.Sheet = raw
 		if sh.player_id == pid:
 			var key: String = str(pending["key"])
 			var list: Array = sh.calls.get(key, [])
-			list.append(call)
+			list.append_array(add)
 			sh.calls[key] = list
 	_run(false)
 
@@ -634,6 +674,8 @@ func officer_call() -> String:
 	## What the sealed standing order says for the paused battle.
 	if pending.is_empty():
 		return Combat.CALL_PRESS
+	if bool(pending.get("fortune", false)) and (str(pending.get("side", "")) == "d" or bool(pending.get("ended", false))):
+		return Combat.CALL_STAND ## officers never spend a commander's favours
 	return Combat.doctrine(str(pending.get("stance", "")), int(pending["a"]), int(pending["d"]), int(pending["reserves"]), str(pending["refuge"]) != "")
 
 
@@ -641,6 +683,7 @@ func _absorb(sheets: Array, result: Dictionary) -> void:
 	## Shared by live play and save replay.
 	events = result["events"]
 	var prev_round: int = world.round
+	var before: Types.World = world
 	world = result["world"]
 	hashes.append(Hash.world_hash(world))
 	## last round's marches, as they actually went (v1.6): a column beaten in a border clash
@@ -666,14 +709,70 @@ func _absorb(sheets: Array, result: Dictionary) -> void:
 			var sg: String = pk.surge_to if surged.has(sh.player_id + "|" + pk.to_id) else ""
 			ghosts.append({"from": pk.from_id, "to": pk.to_id, "strength": pk.strength, "owner": sh.player_id, "surgeTo": sg})
 	_tally(events)
+	_luck(events, before)
 	for e in events:
 		if str(e.get("kind", "")) == Types.EVENT_SET_CASHED:
 			cash_log.append({"round": prev_round, "pid": str(e.get("playerId", "")), "value": int(e.get("value", 0)), "lands": e.get("lands", [])})
+		elif str(e.get("kind", "")) == Types.EVENT_CAPITAL_TAKEN:
+			capital_log.append({"round": prev_round, "pid": str(e.get("playerId", "")), "by": str(e.get("by", "")), "land": str(e.get("terrId", ""))})
 	_snapshot_history(prev_round)
 	for e in events:
 		if str(e.get("kind", "")) == Types.EVENT_ROUND_ENDED:
 			winner = str(e.get("winner", ""))
 			early = bool(e.get("early", false))
+
+
+func _luck(evs: Array, before: Types.World) -> void:
+	## v1.8 the luck ledger: every one-on-one battle, won or lost, against the odds quoted as
+	## it began. A commander who wins what the odds said breaks even; the dice owe the rest.
+	## (Retreats are left out: falling back is a choice, not a roll.)
+	for e in evs:
+		var k: String = str(e.get("kind", ""))
+		if k == Types.EVENT_INVASION and e.has("luck"):
+			## v1.9: the dice's swing measured exchange by exchange (a battle abandoned halfway
+			## counts for the exchanges that were fought; the choice to leave does not)
+			_luck_swing(str(e["attackerId"]), float(e["luck"]) / 100.0)
+			_luck_swing(str(e["defenderId"]), -float(e["luck"]) / 100.0)
+		elif k == Types.EVENT_INVASION and not bool(e.get("fellBack", false)):
+			var a: String = str(e["attackerId"])
+			var d: String = str(e["defenderId"])
+			var p: float = Combat.capture_rate(int(e["attackerSize"]), int(e["defenderSize"]), map.battle, MapLib.defender_bonus(before, map, str(e.get("to", ""))))
+			var won: bool = bool(e["attackerWon"])
+			_luck_add(a, p, won)
+			_luck_add(d, 1.0 - p, not won)
+		elif k == Types.EVENT_CLASH:
+			var pa: float = Combat.volley_capture_rate(int(e["sizeA"]), int(e["sizeB"]), true) if map.battle == Combat.MODE_VOLLEYS else Combat.capture_rate(int(e["sizeA"]), int(e["sizeB"]), map.battle)
+			var wa: bool = str(e["winnerId"]) == str(e["playerA"])
+			_luck_add(str(e["playerA"]), pa, wa)
+			_luck_add(str(e["playerB"]), 1.0 - pa, not wa)
+
+
+func _luck_add(pid: String, p: float, won: bool) -> void:
+	if not stats.has(pid):
+		return
+	var st: Dictionary = stats[pid]
+	st["luck_n"] = int(st.get("luck_n", 0)) + 1
+	st["luck_odds"] = float(st.get("luck_odds", 0.0)) + p
+	st["luck_won"] = int(st.get("luck_won", 0)) + (1 if won else 0)
+
+
+func _luck_swing(pid: String, sw: float) -> void:
+	if not stats.has(pid):
+		return
+	var st: Dictionary = stats[pid]
+	st["luck_n2"] = int(st.get("luck_n2", 0)) + 1
+	st["luck_sw"] = float(st.get("luck_sw", 0.0)) + sw
+
+
+func luck_of(pid: String) -> Dictionary:
+	## {n, expected, won, swing, measured}: swing > 0 the dice were kind, < 0 they owed you.
+	## measured: battles weighed exchange by exchange (v1.9), the rest by their outcome.
+	var st: Dictionary = stats.get(pid, {})
+	var n: int = int(st.get("luck_n", 0))
+	var ex: float = float(st.get("luck_odds", 0.0))
+	var wn: int = int(st.get("luck_won", 0))
+	var n2: int = int(st.get("luck_n2", 0))
+	return {"n": n + n2, "expected": ex, "won": wn, "swing": float(wn) - ex + float(st.get("luck_sw", 0.0)), "measured": n2}
 
 
 func _tally(evs: Array) -> void:
@@ -979,6 +1078,45 @@ func max_send(from_id: String, skip_packet: int = -1) -> int:
 	return maxi(0, n - (0 if ts.garrison >= 1 else 1))
 
 
+func capital_choosable() -> bool:
+	## v1.8: may the planner name their capital now? At deployment after a random deal (a
+	## draft's first claim already is one), or the round after their capital fell.
+	if not map.capitals or planner == "" or not world.players.has(planner):
+		return false
+	var ps: Types.PlayerState = world.players[planner]
+	if phase == Phase.OPENING:
+		return ps.capital == ""
+	return phase == Phase.PLANNING and ps.capital_free
+
+
+func capital_shown(pid: String) -> String:
+	## the capital the board shows for pid: the planner's own choice while they make it
+	if not map.capitals or not world.players.has(pid):
+		return ""
+	var ps: Types.PlayerState = world.players[pid]
+	if phase == Phase.OPENING and ps.capital == "":
+		if pid != planner:
+			return "" ## the others' choices are sealed until deployment ends
+		return str(opening_capital.get(pid, Capitals.auto_pick(world, map, pid)))
+	if phase == Phase.PLANNING and pid == planner and ps.capital_free and sheet().capital != "":
+		return sheet().capital
+	return MapLib.capital_of(world, map, pid)
+
+
+func set_capital(id: String) -> String:
+	if not capital_choosable():
+		return "Your capital stands where it is."
+	var ts: Types.TerritoryState = world.get_territory(id)
+	if ts == null or ts.owner != planner:
+		return "Your capital must be one of your own lands."
+	if phase == Phase.OPENING:
+		opening_capital[planner] = id
+	else:
+		sheet().capital = id if id != MapLib.capital_of(world, map, planner) else ""
+	changed.emit()
+	return ""
+
+
 func max_attack(from_id: String, to_id: String, skip_packet: int = -1) -> int:
 	## max_send, and v1.7: no more than a pass's column may storm it from any one land
 	var mx: int = max_send(from_id, skip_packet)
@@ -1077,6 +1215,8 @@ func remove_packet(i: int) -> void:
 func set_surge(i: int, target: String) -> String:
 	if i < 0 or i >= sheet().packets.size():
 		return ""
+	if target != "" and not map.surges:
+		return "Surges are off in this war (Rules on the setup screen)."
 	var p: Types.Packet = sheet().packets[i]
 	if target == "":
 		for raw in sheet().packets:
@@ -1244,7 +1384,7 @@ func set_value_now() -> int:
 func odds(att: int, def: int, to_id: String = "") -> Dictionary:
 	## v1.7: a fortress fires a longer line, so the sheet must quote the fort's odds, not
 	## open-ground odds. Passing the land is how the card tells the truth about it.
-	var bonus: int = MapLib.defender_line_bonus(map, to_id) if to_id != "" else 0
+	var bonus: int = MapLib.defender_bonus(world, map, to_id) if to_id != "" else 0
 	var p: float = 1.0 if def <= 0 else Combat.capture_rate(att, def, map.battle, bonus)
 	var word := "certain"
 	if def > 0:
@@ -1362,6 +1502,9 @@ func load_save() -> bool:
 	map.rules = int(config.get("rules", 0))
 	map.first_digs_in = bool(config.get("first_digs_in", false))
 	map.fire_line = bool(config.get("firing_line", false)) ## saves from before v1.6: every man counts
+	map.capitals = bool(config.get("capitals", false)) ## saves from before v1.8 had no capitals
+	map.fortune = bool(config.get("fortune", false)) ## ...and no Fortune
+	_apply_rules(false)
 	Combat.use_rules(map)
 	seats = config["seats"]
 	stats = {}
@@ -1375,6 +1518,7 @@ func load_save() -> bool:
 	hashes = []
 	history = []
 	cash_log = []
+	capital_log = []
 	winner = ""
 	watching = false
 	_snapshot_history(0)

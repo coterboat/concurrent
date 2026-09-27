@@ -3,6 +3,8 @@
 ##   godot --headless --path . -s tools/sheet_tool.gd -- shrink <sheet> <cols> <rows> <frame_px> <out.webp> [frames] [drop_last]
 ##   godot --headless --path . -s tools/sheet_tool.gd -- pad <in.png> <out.png> <w> <h> <cx> <baseline> [sprite_h]
 ##   godot --headless --path . -s tools/sheet_tool.gd -- montage <out.png> <cell_px> <cols> <img>...
+##   godot --headless --path . -s tools/sheet_tool.gd -- probe <sheet> <cols> <rows> <frames> [ref.png]
+##     (per frame: bbox, rightmost opaque point, difference to a reference frame)
 ## check prints, per frame: alpha bounding box, whether content touches the frame edge
 ## (clipping), the centroid drift from frame 0 (jitter) and the mean difference to the
 ## previous frame; then the loop seam (last frame vs first). A loop is clean when the
@@ -25,6 +27,8 @@ func _init() -> void:
 			quit(_pad(a[1], a[2], int(a[3]), int(a[4]), float(a[5]), float(a[6]), int(a[7]) if a.size() > 7 else 0))
 		"montage":
 			quit(_montage(a[1], int(a[2]), int(a[3]), a.slice(4)))
+		"probe":
+			quit(_probe(a[1], int(a[2]), int(a[3]), int(a[4]), a[5] if a.size() > 5 else ""))
 		_:
 			print("unknown command ", a[0])
 			quit(2)
@@ -182,6 +186,45 @@ func _pad(inp: String, out: String, w: int, h: int, cx: float, baseline: float, 
 	var err: int = canvas.save_png(outp)
 	print("padded %s -> %s (%dx%d, sprite %s at %d,%d)" % [inp, out, w, h, str(spr.get_size()), x, y])
 	return err
+
+
+func _probe(path: String, cols: int, rows: int, n: int, ref_path: String) -> int:
+	## Per frame, machine-readable: the alpha bbox, the rightmost opaque point (a muzzle, when
+	## the figure faces right) and the difference to a reference frame (e.g. the aim keyframe).
+	##   PROBE <i> <x0> <y0> <x1> <y1> <tip_x> <tip_y> <diff_to_ref>
+	var img := _load(path)
+	if img == null:
+		return 1
+	var ref: Image = _load(ref_path) if ref_path != "" else null
+	var fr := _frames(img, cols, rows, n)
+	for i in fr.size():
+		var f: Image = fr[i]
+		var w := f.get_width()
+		var h := f.get_height()
+		var minx := w
+		var miny := h
+		var maxx := -1
+		var maxy := -1
+		for y in range(0, h, 2):
+			for x in range(0, w, 2):
+				if f.get_pixel(x, y).a > 0.35:
+					minx = mini(minx, x)
+					miny = mini(miny, y)
+					maxx = maxi(maxx, x)
+					maxy = maxi(maxy, y)
+		var ty := 0.0
+		var tn := 0
+		if maxx >= 0:
+			for y in range(miny, maxy + 1):
+				for x in range(maxi(0, maxx - 6), maxx + 1):
+					if f.get_pixel(x, y).a > 0.35:
+						ty += y
+						tn += 1
+		var d := -1.0
+		if ref != null and ref.get_size() == f.get_size():
+			d = _diff(f, ref)
+		print("PROBE %d %d %d %d %d %d %.1f %.3f" % [i, minx, miny, maxx, maxy, maxx, ty / maxf(1.0, tn), d])
+	return 0
 
 
 func _montage(out: String, cell: int, cols: int, paths: PackedStringArray) -> int:

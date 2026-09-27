@@ -2,6 +2,336 @@
 
 The bible says amendments come with a dated entry and the test or band that justified them. Everything below has both.
 
+## v1.9 — 27 Sep 2026: Fortune comes back, the chest is divided, the table gets dressed
+
+New games play **rules 18**. Saves from v1.8 (rules 17) replay exactly as they were played.
+
+### Fortune comes back (rules 18)
+
+The complaint: "Fortune doesn't seem to come back after the first time each player uses it."
+It was right, for two reasons.
+
+- **The ledger only ever ran one way for attackers.** v1.8 weighed a battle's outcome against
+  the odds it began with, but skipped every battle the attacker fell back from. The fights
+  that went badly (the ones you retreat from) were never booked, while every fight that
+  went well was booked as luck. Using Fortune made it worse: the rethrow that saved a battle
+  was then counted as the dice being kind.
+- **The bar was too high.** A favour cost three-quarters of a battle's bad luck, with a
+  lucky streak remembered down to −1.5 battles. In the arena a commander earned about
+  **0.6 favours in a whole war**, so most never saw one again.
+
+The fix:
+
+- **Luck is measured exchange by exchange.** Every invasion now carries `luck`: the sum,
+  over the exchanges that stood, of how much each one moved the attacker's chances
+  (`capture_rate` after it, less before). Reserves and falling back are choices, not luck,
+  and don't count. An exchange Fortune threw away never happened, so it doesn't count
+  either. A battle pressed to the end comes to exactly its outcome less its odds (checked in
+  `tests/test_v19.gd`), and across many battles the swing averages to zero.
+- **The bar is half a battle** (`Fortune.BATTLE_18 = 50`), and a lucky streak is held against
+  you only a little (`FLOOR_18 = −20`).
+
+Arena, 4 commanders, lands claimed in turn, levée on:
+
+| | v1.8 ledger | v1.9 ledger |
+|---|---|---|
+| Known World (40 wars): favours earned per commander per war | 0.63 | **1.55** |
+| Wide World (30 wars, 5 commanders) | 0.68 | **1.83** |
+| battles a favour was spent in, won by the spender | 45–47% | 48–49% |
+| hard commander's wins, Known World | 9 of 40 | 11 of 40 |
+
+Settings tried on the same seeds (Known World, per commander per war): 60/−60 → 1.01,
+50/−50 → 1.29, 60/0 → 1.48, 45/−20 → 1.70, 40/−40 → 1.70, 50/0 → 1.84. We chose
+50/−20: a favour or two back per war, not a rethrow every battle.
+
+**Seeing it.**
+
+- **On the roster**, every commander's favours show as gold stars beside their name, and
+  the next empty star fills with gold from the bottom as the dice owe them. Hover it for the
+  numbers.
+- **In a battle**, each side's stars sit under its dice.
+  - They glow when that commander can call on Fortune right now.
+  - They dim to "called on Fortune" once used this battle.
+  - An AI holding one reads "may call on Fortune".
+- **The Fortune button** wears the star.
+- **Calling on her** plays her own chime, and a favour banked plays a softer one.
+
+### A war chest divided (rules 18)
+
+When several commanders take a fallen commander's last lands in the same round (they all
+fell at once), the chest no longer goes to whoever happened to be last in the queue.
+
+- Each taker throws a die, and the cards are shared out **in proportion to the throws**. The
+  highest thrower takes what's left over, and the cards are drawn by lot.
+- A lone taker still gets it all.
+- The report throws the dice on the map, in each victor's colour, then flies each share
+  across.
+- Tests: every card handed out, the higher throw never getting fewer cards, conservation,
+  the report agreeing, and replays.
+
+### The table
+
+- **Card troops on the map fade.** The gold "+1" star on a land a card is paying for now
+  pops in, pulses and fades after about four seconds. It only ever meant "the troops
+  appeared here".
+- **The dice tray is dressed** in generated seamless baize, mahogany and brass. The
+  rails have a rounded top and a brass inlay, the corner posts have finials, and the lamp
+  pools light on the cloth. Each texture's own grain becomes a normal map at run time.
+- **Score plates.** Each duel's totals now sit on a brass plate hung on the front rail
+  ("25 vs 30", the winner's number in their colour, an even volley reads "even"). They
+  replace the "2×5+5=15" labels that sat on top of the dice. Hover a plate for the working.
+- **Painted pieces on the table.** A hand-painted tin miniature stands beside the tray for
+  each side, on a plinth in its colour (generated 3D models, `assets/models`). It's the Risk
+  piece the army is worth (a cannon for ten, a horse for five, a man), and it changes as the
+  men fall. When the battle ends, the winner's piece becomes the colour-bearer and the
+  loser's topples.
+- The roll seal's label shrinks to fit ("PRESS ON", "LET IT STAND" no longer spill off it).
+- **Capitals on the final chart.** Every capital taken is marked on the lands chart: a
+  crown on the line of the commander who lost it, ringed in the captor's colour.
+
+### The battlefield
+
+- **Moves keyframed through our own poses.** The volley, the volley from the knee, the
+  charge, the cheer, the reload, the cannon firing and the cavalry charge were made with
+  Ludo's keyframe animation. It starts from our stand pose, passes through our exact aim
+  pose, and ends back at the stand, so the figures stay on-model.
+  - The raise is hurried, so the shot lands with the dice.
+  - The lowering plays at its own pace.
+- **The Guard.** An army of fifteen or more (a Brigade's dice) fields grenadiers in
+  bearskins and cuirassiers in helmets and breastplates. They idle, march, volley and charge
+  in their own dress: Ludo re-skinned our own sheets, so the motion is the same. The dress is
+  used only when the whole set is on disk, so nobody swaps hats mid-volley.
+- **A real fall.** A man hit falls backward and lies flat (keyframed to a generated
+  "fallen" pose). Before, the standing figure was toppled in code.
+- **Painted smoke, blasts and dust**, untinted and separate from the figures: musket smoke
+  from the muzzle, a cannon's blast, dust kicked up where a man falls, a gun blown apart.
+- **A capital burns.** Take a capital and the city burns behind its fallen defenders, and on
+  the map behind its token.
+- The Hydra **talk loops** (35 frames, real mouth shapes, a blink) replace the old
+  mouth-flaps for the advisor and all six commanders, each at its own frame rate.
+- Fortune's stars sit under each commander's dice in battle, and the order card says who
+  holds favours before you attack.
+
+### Films
+
+- **Living paintings.** The title, victory and defeat screens are generated films that
+  loop seamlessly over their paintings, with their own room tone
+  (`game/ui/living_painting.gd`).
+- **Cutscenes** at a war's big moments (`game/ui/cutscene.gd`):
+  - the war beginning;
+  - a capital taken or lost;
+  - a rival wiped out;
+  - victory and defeat.
+
+  Each plays once a war, the battle report waits for it, and any key skips. They carry
+  music and effects but no speech: the advisor speaks over them in his own voice.
+- Settings → **Films** picks cutscenes and living paintings, living paintings only, or
+  stills.
+- **Music follows the war.** When a rival's army at least as big as your capital's
+  garrison sits next door, the planning music turns to *besieged*. In the last rounds, or
+  when someone is near a conquest, it's *endgame*. The victory screen alternates its fanfare
+  with a sung march, and defeat with a lament.
+
+### Tools
+
+- **The review table finishes the job.** Finish review (F) shows the counts and runs the
+  batch's own actions from the page, with a live log: Install accepted, and Redo rejected
+  (which asks first, since it spends credits). It plays video, loops it, and measures the loop
+  seam. Details in `tools/review/README.md`.
+- `ludo.py` gained keyframes, motion transfer, sheet edits, video (image, references,
+  upscale), 3D models, audio remixes and Hydra. The v1.9 production run
+  (`tools/ludo/v19_content.py`, seven review batches) cost **376.9 credits**, leaving
+  7,338.5. The breakdown by group, and what worked and failed, is in
+  `docs/LUDO_CAPABILITIES.md`.
+- `CLAUDE.md` holds the working rules and gotchas; `docs/ASSETS.md` covers the asset
+  pipeline and every format the code reads.
+- The arena takes `levee=`, `fbar=` and `ffloor=`, and reports favours per commander.
+
+## v1.8 — 27 Sep 2026: capitals, Fortune, and the war we balance around
+
+### Capitals
+
+Every commander keeps a seat of government, marked with a crown on its token.
+
+- **Choosing it.** After a random deal you name yours at deployment: the advisor pencils
+  one in (deep in your own lands) and "Make this our capital" on any land's card moves it.
+  The others' choices stay sealed until deployment ends. When the lands are claimed in
+  turn, your first claim is your capital.
+- **What it does.** It pays the treasury, **+2 recruits a round** while you hold it. It is a
+  fortress: its defenders fire a line of six and one more man may dig in (a fortified
+  capital is no stronger than either: a pip is five men, so one is the whole effect). On
+  supply maps the road home runs to your capital.
+- **When it falls.** The captor plunders it: **half the fallen commander's cards** (rounded
+  up, drawn by lot) and **3 fresh troops** raised in the city on the spot. The court flees at
+  once to the fallen commander's strongest land, and in their next reinforcement phase
+  they may move it anywhere they hold (the AI keeps the one it was given).
+- **In the report** a capital's fall is its own beat, "X's capital falls!", with a tolling
+  bell and cannon; then "The court flees to Y".
+- Setup → **Capitals** turns it off. Saves from before v1.8 have none and replay untouched;
+  a world without capitals serializes and hashes exactly as before.
+
+Measured (arena, seed 3000, the AI planner valuing enemy capitals and guarding its own):
+
+| | without | with capitals |
+|---|---|---|
+| Known World, hard commander's wins (180 wars) | 39% | 34% |
+| Known World, wars won outright before the last round (of 180) | 32 | 25 |
+| The Ring, hard commander's wins (40) | 30% | 35% |
+| The Thousand Isles, hard commander's wins (30) | 27% | 33% |
+| capitals falling per war (Ring / Isles / Marches) | — | 4.0 / 3.7 / 1.2 |
+
+A little less blitz and a lot more drama: about four capitals change hands in a
+four- or five-handed war.
+
+### Fortune: bad luck banks a throw-again
+
+The dice keep no memory, but Fortune keeps a ledger. Every assault a commander fights is
+weighed against the odds quoted as it began (the same sum as the luck column), in hundredths
+of a battle; each time the dice have cost you **three-quarters of a battle's worth**, she owes
+you a favour, ✦. Everyone starts with one and holds at most three; the count is beside every
+name in the roster (hover for how close the next one is).
+
+**Spend it in a battle you are watching.** After an exchange that went badly for you — it
+ended the battle, or cost you two more men than it cost them — the call plate offers
+**✦ Fortune (T)**: that exchange never happened, the fallen stand again, and the dice fly
+once more. Once a battle for each side, attacker *or* defender (defenders are asked only
+when it applies). The plate says what the exchange cost you ("69% → 39%").
+
+Rules that keep it from being bullshit:
+
+- **Your favours are only ever spent by you.** Skip the battle, or let it auto-roll, and they
+  stay in your pocket. (The sheet carries `fortune_auto` only for AI commanders.)
+- **It can only undo a disaster of your own**, never target a good exchange of theirs.
+- **The AI follows the same limits** and spends by doctrine: only when the exchange swung a
+  battle worth having (a quarter or better) by a fifth of its chances.
+- Everyone's ✦ is visible, and Fortune paying out is its own beat in the report.
+
+Engine: the choice is a battle call (`F` spend, `n` let it stand) recorded on the sheet, so
+a save replays it exactly; the defender's choices go on the defender's sheet. Arena (Known
+World, 30 wars): about 1.5 favours earned and 3.5 spent a war; the side that spent one won
+the battle 56–59% of the time — a real swing, not a guarantee.
+
+### The rules, and the war we balance around
+
+The setup screen's five rule rows became one **Rules** row: **Standard**, **Recruit**,
+**Classic**, or **Custom**, with **Customize…** opening every rule with what it does written
+beside it. The table's rules are saved with the game (`game/core/rules.gd`).
+
+| | Standard (the full war) | Recruit (a first war) | Classic (Risk II) |
+|---|---|---|---|
+| lands | claimed in turn | dealt | dealt |
+| capitals | yes | — | — |
+| Fortune | yes | yes | — |
+| levée en masse | yes | yes | — |
+| battle odds | firing line | firing line | every man counts |
+| surges | yes | — | yes |
+| fortresses, passes, ports, supply | yes | — | — |
+| regroup phase, cards | yes | yes | yes |
+
+**Why Standard is Standard.** The arena learned to measure fun, not just who wins: lead
+changes, wins from behind, how close the finish was, upsets. Known World, general v two
+veterans, 60 wars each, one rule changed at a time:
+
+| | Standard | lands dealt | no capitals | no Fortune | v1.7 rules | classic odds |
+|---|---|---|---|---|---|---|
+| wars won outright before the last round | **2** | 12 | 11 | 10 | 10 | 17 |
+| lead changes a war | **1.6** | 1.4 | 1.2 | 1.1 | 0.9 | 1.1 |
+| won from behind | **18%** | 10% | 6% | 5% | 6% | 11% |
+| finishes within 3 points | **27%** | 20% | 13% | 19% | 12% | 15% |
+| the hard commander's wins | 43% | 38% | 42% | 33% | 47% | 40% |
+
+Capitals and Fortune each add drama; **claiming the lands in turn is the biggest lever of
+all** — wars stop ending in early knockouts and turn into close fights that swing. On the
+Thousand Isles it doubles the lead changes (1.5 → 3.3 a war) and wins from behind go from
+16% to 43%, because a random deal on a supply map scattered everyone's lands.
+
+**Levée en masse** (new): a recruit for every three lands you trail the leader by, up to four a
+round. A gentle hand for whoever is losing. It is the most debatable rule in Standard, so the
+evidence: the Wide World's outright conquests fall from 13 in 40 wars to 2, the Ring's
+finishes within 3 points go from 5 of 28 to 10 of 29, and the hard commander's share is
+unchanged everywhere (the Known World is a wash). Wars go the distance and finish close;
+skill still wins.
+
+### The Marches: a duel is a duel
+
+Asked to make the duel last: it can't be done with the dials. Every variant ended 34–39 of
+40 wars in conquest, usually by round six — starting with 6 or 9 lands instead of 3,
+stronger neutrals, a bigger opening pool, needing 90% or 100% of the map (elimination: still
+37 of 40, by round seven), and the levée at full strength. Two commanders with nobody else at
+the table snowball; whoever gets ahead rolls the other up. The Marches stays the short,
+brutal duel. Maps may now ask for a different domination share (`"dominate"`), which it
+turned out this one doesn't need.
+
+### Generation, explored
+
+`docs/LUDO_CAPABILITIES.md` inventories what Ludo can make (36 tools; CONCURRENT used 10),
+with costs and 25 sample generations (86.5 credits) in the review batch `ludo_explore`.
+The best finds: keyframe animation for the tin soldiers (stand → aim → fire → shoulder arms
+on the same base figure the game tints), image-to-video "living paintings" for the title
+and victory screens, portraits that speak their line (Hydra), and untinted smoke sheets.
+The account balance is **6,759 credits** (the ledger undercounts: background removals were
+never recorded).
+
+### The spoils are no longer yours to roll
+
+Defend a land alone against two commanders, lose, and the victors then fought over it in
+a scramble — with you pressing ROLL for their dice. The battle screen decided "you roll"
+once for the whole field. Now you roll only while you have men standing on it: once
+you're out, their dice roll themselves, and when nothing left on that field is yours the
+screen closes and the map shows who took the spoils. (Probe: `v18`.)
+
+### A war that talks back
+
+**260 new voice lines.** Every line may now have takes: `lines.json` holds a list, take 1 is
+`<key>.mp3` and take n `<key>_v<n>.mp3`. Takes are dealt from a shuffled bag, so none
+repeats until the rest have been heard, never twice in a row, and only takes with a voice
+are ever shown, so subtitles always match the audio.
+
+- The **advisor** gains 92: new takes of everything he says every round (the seal, the
+  reveal, the orders, the regroup, every battle call), and lines that were written in v1.2
+  but never wired to anything (a land taken, a garrison that held, a land lost, the lead
+  taken, falling behind, a crushing exchange).
+- **When the dice mock the odds, he says so.** Win a battle you were likely to lose, or lose
+  one you were very likely to win, and you hear about it ("Blast those dice! That was a
+  certainty on paper."). One man left standing gets its own line too.
+- **The six commanders** gain 28 each: new takes of attack, win, lose, walk-in, retreat,
+  reserves, claim and cash; lines for taking and losing a capital; and **taunts** — when the
+  orders open, a commander marching on you may have a word for you.
+- Only the upsets always speak; the everyday verdicts speak six times in ten, so the
+  advisor never becomes a metronome.
+
+### Review before it ships: `tools/review`
+
+Generated assets now go through a review queue before they reach the game. The 260 new
+takes were generated into `review/v18_voices/`, and none is in the game until it has been
+accepted:
+
+    python3 tools/review/review.py serve --open     # listen, accept, reject, fix the words
+    python3 tools/ludo/v18_content.py --install     # accepted takes go into the game (and get imported)
+    python3 tools/ludo/v18_content.py --regen       # rejected takes are re-rolled (new words kept)
+
+The tool is general: any batch of audio or images with a `batch.json` (see
+`tools/review/README.md`).
+
+### The luck ledger
+
+The end-of-war standings gain a **Luck** column: every one-on-one battle (assaults and
+border clashes; retreats are a choice, not a roll) against the odds quoted when it began.
++2 means the dice handed you two battles you should have lost; the tooltip gives the
+numbers ("Won 14 of 22; the odds said 16.3"). Not a rule change: a way to settle the
+argument.
+
+### Also
+
+- The capital's crown, the Capitals rules page (with new art), and the setup option.
+- A falling capital has its own sound (a tolling bell under cannon fire).
+- `tools/arena.gd`: `capitals=` (default on) and a "capitals fell per game" line.
+- `tools/review`'s demo batch speaks real words now (the Mac's own voices), not tone babble.
+- 21 Fortune voice lines in their own review batch, `v18b_voices` (`tools/ludo/v18b_content.py`).
+- The arena's new lines: `capitals`, `fortune`, and `drama` (lead changes, wins from behind,
+  upsets, finishing margin).
+- 567 checks; probes v13–v18 clean.
+
 ## v1.7 — 26 Sep 2026: the fresh pass
 
 A pass over the whole game with fresh eyes: the rules re-derived from scratch and checked

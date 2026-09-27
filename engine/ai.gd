@@ -126,6 +126,9 @@ static func plan(world: Types.World, map: Types.MapDef, pid: String, rng: RefCou
 		## 11, the hard commander 47% against 47%), with odds that now tell the truth.
 		prof = prof.duplicate()
 		prof["p_win"] = float(prof.get("p_win", 0.68)) - 0.07
+	if not map.surges and bool(prof.get("surge", false)):
+		prof = prof.duplicate()
+		prof["surge"] = false ## v1.8: a war played without surges
 	var s: Types.Sheet
 	if bool(prof.get("search", false)):
 		s = _search(world, map, pid, rng, prof)
@@ -139,6 +142,7 @@ static func stamp(sheet: Types.Sheet, prof: Dictionary) -> Types.Sheet:
 	var st: String = str(prof.get("stance", "judgment"))
 	for raw in sheet.packets:
 		(raw as Types.Packet).stance = st
+	sheet.fortune_auto = true ## v1.8: its officers call on Fortune by doctrine
 	return sheet
 
 
@@ -442,6 +446,9 @@ class Planner extends RefCounted:
 		var td: Types.TerritoryDef = map.get_territory(t)
 		if td != null and td.region != "" and MapLib.holds_region(w, map, pid, td.region):
 			v += float(map.region_bonus.get(td.region, 0)) * float(prof.get("region", 1.0))
+		if MapLib.capital_of(w, map, pid) == t:
+			## v1.8: the treasury, and the half of our hand a captor would carry off
+			v += 2.5 + 0.35 * float(w.players[pid].cards.size())
 		return v
 
 	func loss_risk(t: String, defense: int) -> float:
@@ -449,7 +456,7 @@ class Planner extends RefCounted:
 		if th < 1.0:
 			return 0.0
 		var d: int = maxi(0, defense)
-		var p_hit: float = 1.0 if d == 0 else Combat.capture_rate(int(round(th)), d, map.battle, MapLib.defender_line_bonus(map, t))
+		var p_hit: float = 1.0 if d == 0 else Combat.capture_rate(int(round(th)), d, map.battle, MapLib.defender_bonus(w, map, t))
 		var tempt: float = clampf(th / float(d + 1), 0.3, 1.6)
 		return float(prof.get("caution", 0.3)) * tempt * p_hit
 
@@ -537,6 +544,9 @@ class Planner extends RefCounted:
 				v += bonus * float(have + 1) / float(members.size()) * 0.45 * rw
 			if is_foe(o) and MapLib.holds_region(w, map, o, td.region):
 				v += bonus * 1.2 * rw
+		if is_foe(o) and MapLib.is_capital(w, map, e):
+			## v1.8: their treasury stops, we plunder half their hand and levy three in the city
+			v += 2.0 + 0.4 * float((w.players[o].cards.size() + 1) / 2)
 		if is_foe(o):
 			var left: int = MapLib.player_territory_ids(w, o).size()
 			if left <= 2:
@@ -630,7 +640,7 @@ class Planner extends RefCounted:
 			if int(x[2]) != int(y[2]):
 				return int(x[2]) < int(y[2])
 			return int(x[1]) > int(y[1]))
-		var fort: int = MapLib.defender_line_bonus(map, e)
+		var fort: int = MapLib.defender_bonus(w, map, e)
 		var need := 1
 		if d_eff > 0:
 			need = _needed(d_eff, p_want, fort)
@@ -722,7 +732,7 @@ class Planner extends RefCounted:
 				var push: int = left - 1
 				if MapLib.column_cap(map, n) > 0:
 					push = mini(push, MapLib.column_cap(map, n)) ## a surge into a pass is a column of six too
-				var p: float = 1.0 if d == 0 else Combat.capture_rate(push, d, map.battle, MapLib.defender_line_bonus(map, n))
+				var p: float = 1.0 if d == 0 else Combat.capture_rate(push, d, map.battle, MapLib.defender_bonus(w, map, n))
 				if p < 0.62:
 					continue
 				var score: float = p * target_value(n, targeted)

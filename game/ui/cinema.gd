@@ -463,11 +463,60 @@ func _build_beats() -> Array:
 				out.append({"upto": i, "caption": "%s on!" % Style.says(_name(str(e["playerId"])), "surges"), "sub": "%d push on from %s into %s." % [int(e["strength"]), _hex(str(e["from"])), _hex(str(e["to"]))], "sound": "surge", "sound2": "hoofs", "delay": 1.6, "focus": [str(e["from"]), str(e["to"])], "surge_arrow": sp})
 			Types.EVENT_PLAYER_ELIMINATED:
 				out.append({"upto": i, "caption": "%s wiped out" % Style.says(_name(str(e["playerId"])), "is"), "sub": "Their banners fall.", "sound": "eliminated", "delay": 2.4, "eliminated": str(e["playerId"])})
+			Types.EVENT_CAPITAL_TAKEN:
+				## v1.8: a capital falls: the plunder, the levy, and where the court flees to
+				var fell: String = str(e["terrId"])
+				var by: String = str(e["by"])
+				var loot: Array = e.get("cards", [])
+				var sub4 := ""
+				if int(e.get("levy", 0)) > 0:
+					sub4 = "%s raises %d fresh troops in the city" % [_name(by), int(e["levy"])]
+					sub4 += (" and carries off %d of %s's cards." % [loot.size(), _name(str(e["playerId"]))]) if not loot.is_empty() else "."
+				var up4 := i
+				if i + 1 < n and bool((evs[i + 1] as Dictionary).get("capitalLevy", false)):
+					up4 = i + 1 ## the levy shows with the fall
+				out.append({"upto": up4, "caption": "%s's capital falls!" % _name(str(e["playerId"])), "sub": sub4, "sound": "capital_fall", "delay": 2.6,
+					"focus": [fell], "flash": fell, "flash_text": "CAPITAL TAKEN", "capital_taken": str(e["playerId"]), "capital_by": by})
+				i = up4
+			Types.EVENT_FORTUNE:
+				## v1.8: the dice have been cruel to someone: Fortune pays what she owes
+				var fp: String = str(e["playerId"])
+				out.append({"upto": i, "caption": "Fortune owes %s a favour" % _name(fp), "sub": "The dice have been cruel. ✦ %d in hand: after an exchange that goes badly, throw it again." % int(e.get("fortune", 1)),
+					"sound": "fortune_gained" if Audio.has_sfx("fortune_gained") else "war_chest", "delay": 1.8, "fortune_to": fp})
+			Types.EVENT_CAPITAL_FOUNDED:
+				if str(e.get("why", "")) == "fallen":
+					out.append({"upto": i, "caption": "The court flees to %s" % _hex(str(e["terrId"])), "sub": "%s's new capital. They may move it in their next reinforcement phase." % _name(str(e["playerId"])),
+						"sound": "", "delay": 1.6, "focus": [str(e["terrId"])], "flash": str(e["terrId"]), "flash_text": "NEW CAPITAL"})
 			Types.EVENT_CARDS_CAPTURED:
+				if bool(e.get("plunder", false)):
+					i += 1
+					continue ## told with the capital's fall
 				var cc: Array = e["cards"]
 				var kinds: Array = []
 				for c in cc:
 					kinds.append(_card_label(str(c)))
+				if e.has("split"):
+					## v1.9: several took the fallen commander's last lands at once: the dice divide the chest
+					var sp: Dictionary = e["split"]
+					var order: Array = sp.get("order", [])
+					if not order.is_empty() and str(order[0]) == str(e["to"]):
+						var parts: Array = []
+						var throws: Array = []
+						for q in order:
+							var got: int = int((sp["shares"] as Dictionary).get(q, 0))
+							parts.append("%s throws %d: %s" % [_name(str(q)), int((sp["rolls"] as Dictionary).get(q, 0)), ("%d card%s" % [got, "" if got == 1 else "s"]) if got > 0 else "nothing"])
+							throws.append({"pid": str(q), "value": int((sp["rolls"] as Dictionary).get(q, 0))})
+						out.append({"upto": i, "caption": "%s's war chest is divided" % _name(str(e["from"])),
+							"sub": "Their last lands fell to %d commanders at once, so the dice share out the %d cards. %s." % [order.size(), int(sp.get("of", 0)), "; ".join(parts)],
+							"sound": "dice_click", "delay": 4.2, "split_throws": throws})
+					if cc.is_empty():
+						i += 1
+						continue
+					out.append({"upto": i, "caption": "%s %s" % [Style.says(_name(str(e["to"])), "takes"), "%d of the cards" % cc.size()],
+						"sub": ", ".join(kinds) + ".", "sound": "", "delay": 1.8,
+						"cards_to": str(e["to"]), "cards_from": str(e["from"]), "cards": cc})
+					i += 1
+					continue
 				out.append({"upto": i, "caption": "%s %s's war chest" % [Style.says(_name(str(e["to"])), "seizes"), _name(str(e["from"]))],
 					"sub": "Every card they held changes hands: %s." % ", ".join(kinds), "sound": "", "delay": 2.8,
 					"cards_to": str(e["to"]), "cards_from": str(e["from"]), "cards": cc})
@@ -501,7 +550,7 @@ func _stage_of(kind: String, after_surge: bool) -> String:
 			return "surge" if after_surge else "clash"
 		Types.EVENT_INVASION, Types.EVENT_MELEE, Types.EVENT_SCRAMBLE, Types.EVENT_SPOILS, Types.EVENT_OCCUPIED:
 			return "surge" if after_surge else "assault"
-		Types.EVENT_PLAYER_ELIMINATED, Types.EVENT_CARDS_CAPTURED:
+		Types.EVENT_PLAYER_ELIMINATED, Types.EVENT_CARDS_CAPTURED, Types.EVENT_CAPITAL_TAKEN, Types.EVENT_FORTUNE:
 			return "reckoning"
 	return ""
 
@@ -659,6 +708,7 @@ func _open_theater(first: Dictionary) -> void:
 	var tw: Tween = board.swoop_to(focus if not focus.is_empty() else [land], 2.8, 0.8)
 	var go := func():
 		if _waiting and _active:
+			theater.set("view", board.world) ## v1.9: Fortune's counts as these fights begin
 			theater.play(session, group, human)
 	if tw != null:
 		tw.finished.connect(go, CONNECT_ONE_SHOT)

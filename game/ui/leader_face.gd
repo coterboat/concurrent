@@ -327,7 +327,7 @@ class _FaceView extends Control:
 		if _sheet != null:
 			var order: Array = _meta.get("order", [])
 			var n: int = order.size() if not order.is_empty() else int(_meta.get("frames", 1))
-			var at: int = int(_t * FPS) % n
+			var at: int = int(_t * float(_meta.get("fps", FPS))) % n
 			_old_tex = _sheet
 			_old_src = _frame(int(order[at]) if not order.is_empty() else at)
 			_old_size = Vector2(float(_meta["fw"]), float(_meta["fh"]))
@@ -373,7 +373,7 @@ class _FaceView extends Control:
 		if _sheet != null:
 			var order: Array = _meta.get("order", [])
 			var n: int = order.size() if not order.is_empty() else int(_meta.get("frames", 1))
-			var ft: float = _t * FPS
+			var ft: float = _t * float(_meta.get("fps", FPS)) ## v1.9: a loop may carry its own rate (the Hydra talk loops)
 			var i: int = int(ft) % n
 			var j: int = (i + 1) % n
 			var k: float = ft - floorf(ft)

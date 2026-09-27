@@ -17,6 +17,8 @@ const Events := preload("res://engine/events.gd")
 const MapLib := preload("res://engine/map.gd")
 const Setup := preload("res://engine/setup.gd")
 const Cards := preload("res://engine/cards.gd")
+const Capitals := preload("res://engine/capitals.gd")
+const Fortune := preload("res://engine/fortune.gd")
 
 
 class Transit extends RefCounted:
@@ -52,6 +54,7 @@ static func resolve_round(world: Types.World, map: Types.MapDef, sheets: Array, 
 		held[str(terr_id)] = world.get_territory(str(terr_id)).owner
 	var events: Array = []
 	var ctx := _context(by_player, live)
+	Capitals.apply_moves(w, map, by_player, events) ## v1.8: a capital moved the round after it fell
 	_apply_regroups(w, map, by_player, events)
 	_apply_placements(w, map, by_player, events)
 	var transits: Array = _vacate(w, map, by_player, events)
@@ -65,6 +68,8 @@ static func resolve_round(world: Types.World, map: Types.MapDef, sheets: Array, 
 	if not (ctx["pending"] as Dictionary).is_empty():
 		return {"world": w, "events": events, "errors": PackedStringArray(), "pending": ctx["pending"]}
 	_entrench(w, map, held, events)
+	Capitals.upkeep(w, map, events, match_seed) ## v1.8: fallen capitals are plundered and named anew
+	Fortune.upkeep(world, w, map, events) ## v1.8: Fortune pays the favours she owes
 	_upkeep(w, map, events, held, match_seed)
 	return {"world": w, "events": events, "errors": PackedStringArray()}
 
@@ -72,9 +77,12 @@ static func resolve_round(world: Types.World, map: Types.MapDef, sheets: Array, 
 static func _context(by_player: Dictionary, live: Array) -> Dictionary:
 	var calls := {}
 	var stances := {}
+	var auto := {}
 	for pid in by_player.keys():
 		var sheet: Types.Sheet = by_player[pid]
 		calls[pid] = sheet.calls
+		if sheet.fortune_auto:
+			auto[pid] = true
 		var st := {}
 		for raw in sheet.packets:
 			var p: Types.Packet = raw
@@ -83,7 +91,7 @@ static func _context(by_player: Dictionary, live: Array) -> Dictionary:
 	var lv := {}
 	for pid in live:
 		lv[str(pid)] = true
-	return {"calls": calls, "stances": stances, "live": lv, "pending": {}}
+	return {"calls": calls, "stances": stances, "live": lv, "pending": {}, "auto": auto}
 
 
 static func _stance_of(ctx: Dictionary, t: Transit, dest: String) -> String:
@@ -139,7 +147,7 @@ static func refuge_for(w: Types.World, map: Types.MapDef, owner: String, froms: 
 static func _invade(w: Types.World, map: Types.MapDef, t: Transit, dest: String, key: String, match_seed: int, ctx: Dictionary) -> RefCounted:
 	var ts: Types.TerritoryState = w.get_territory(dest)
 	var rng: RefCounted = Rng.derive_stream(match_seed, w.round, key)
-	var fortify: int = MapLib.defender_line_bonus(map, dest) ## v1.7: a fortress fires a longer line
+	var fortify: int = MapLib.defender_bonus(w, map, dest) ## v1.7: a fortress fires a longer line (v1.8: a capital too)
 	if map.battle != Combat.MODE_VOLLEYS:
 		return Combat.invasion(t.strength, ts.held(), rng, map.battle, fortify)
 	var fight = Combat.FightResult.new()
@@ -152,8 +160,17 @@ static func _invade(w: Types.World, map: Types.MapDef, t: Transit, dest: String,
 	var ci := 0
 	var used_reserves := false
 	var froms: PackedStringArray = _froms(t)
+	var def_owner: String = ts.owner
+	var def_recorded: Array = (ctx["calls"].get(def_owner, {}) as Dictionary).get(key, [])
+	var dci := 0
+	var fortuned := {} ## v1.8: "a"/"d" once that side has called on Fortune in this battle
+	var luck_on: bool = map.rules >= 18
+	fight.luck_kept = luck_on
 	var guard := 0
 	while a > 0 and d > 0 and guard < 4000:
+		var a0: int = a
+		var d0: int = d
+		var r0: int = fight.rolls.size()
 		var n := 0
 		while n < Combat.EXCHANGE and a > 0 and d > 0 and guard < 4000:
 			guard += 1
@@ -180,6 +197,51 @@ static func _invade(w: Types.World, map: Types.MapDef, t: Transit, dest: String,
 			else:
 				a -= 1
 			n += 1
+		## v1.8 Fortune: a disastrous exchange may be thrown again, once a battle for each side
+		if map.fortune:
+			var side: String = Fortune.bad_for(a0, d0, a, d)
+			var chooser: String = t.owner if side == "a" else def_owner
+			if side != "" and not fortuned.has(side) and Fortune.held(w, chooser) > 0:
+				var dec := ""
+				if side == "a" and ci < recorded.size():
+					dec = str(recorded[ci])
+					ci += 1
+				elif side == "d" and dci < def_recorded.size():
+					dec = str(def_recorded[dci])
+					dci += 1
+				elif (ctx["live"] as Dictionary).has(chooser):
+					fight.pending = true
+					fight.attacker_left = a
+					fight.winner_remaining = d
+					var pend := {"key": key, "attacker": t.owner, "defender": def_owner, "to": dest, "from": t.from_id,
+						"a": a, "d": d, "a0": a0, "d0": d0, "stance": stance, "call": fight.calls.size(), "rolls": fight.rolls.size(),
+						"fortune": true, "chooser": chooser, "side": side, "ended": a <= 0 or d <= 0,
+						"fortunes": Fortune.held(w, chooser), "reserves": 0, "reserveFrom": [], "refuge": ""}
+					if side == "a" and a > 0 and d > 0:
+						## the attacker's call comes straight after: ask both on one plate
+						var res0: int = 0 if used_reserves else reserves_available(w, t.owner, froms)
+						var room0: int = _column_room(map, dest, froms, a)
+						pend["reserves"] = mini(res0, room0) if room0 >= 0 else res0
+						pend["reserveFrom"] = _reserve_sources(w, t.owner, froms)
+						pend["refuge"] = refuge_for(w, map, t.owner, froms, dest)
+					ctx["pending"] = pend
+					return fight
+				elif (ctx["auto"] as Dictionary).has(chooser):
+					dec = Combat.CALL_FORTUNE if Fortune.doctrine(side, a0, d0, a, d, fortify, map.battle) else Combat.CALL_STAND
+				else:
+					dec = Combat.CALL_STAND ## a commander's favours are theirs to spend: never behind their back
+				if dec == Combat.CALL_FORTUNE:
+					fortuned[side] = true
+					(w.players[chooser] as Types.PlayerState).fortune -= 1
+					fight.calls.append({"at": fight.rolls.size(), "call": Combat.CALL_FORTUNE, "by": chooser, "side": side, "from": r0, "a": a0, "d": d0})
+					a = a0
+					d = d0
+					continue
+		if luck_on:
+			## v1.9: the dice's share of the battle, measured one exchange at a time. What the
+			## commander chose (reserves, falling back) and an exchange Fortune threw away are
+			## not luck; every exchange that stands is, even in a battle abandoned halfway.
+			fight.luck += Combat.capture_rate(a, d, map.battle, fortify) - Combat.capture_rate(a0, d0, map.battle, fortify)
 		if a <= 0 or d <= 0:
 			break
 		## the call
@@ -475,7 +537,7 @@ static func _merge_same_owner(transits: Array) -> Array:
 
 static func _resolve_destinations(w: Types.World, map: Types.MapDef, transits: Array, match_seed: int, events: Array, surge_book: Dictionary, ctx: Dictionary = {}) -> void:
 	if ctx.is_empty():
-		ctx = {"calls": {}, "stances": {}, "live": {}, "pending": {}}
+		ctx = {"calls": {}, "stances": {}, "live": {}, "pending": {}, "auto": {}}
 	var by_dest := {}
 	for t in transits:
 		if not by_dest.has(t.to_id):
@@ -555,7 +617,7 @@ static func _melee(w: Types.World, map: Types.MapDef, dest: String, invaders: Ar
 	var d0: int = ts.held()
 	var d: int = d0
 	var rng: RefCounted = Rng.derive_stream(match_seed, w.round, "melee|" + tag + dest)
-	var fortify: int = MapLib.defender_line_bonus(map, dest) ## v1.7: a fortress fires a longer line on every front
+	var fortify: int = MapLib.defender_bonus(w, map, dest) ## v1.7: a fortress fires a longer line on every front (v1.8: a capital too)
 	var fronts: Array = []
 	for t in invaders:
 		fronts.append({"t": t, "a": t.strength, "size": t.strength, "key": "invasion|%s%s|%s|%s" % [tag, dest, t.owner, t.from_id],
@@ -960,7 +1022,10 @@ static func _upkeep(w: Types.World, map: Types.MapDef, events: Array, held: Dict
 		if n == 0:
 			ps.alive = false
 			events.append(Events.player_eliminated(pid))
-			_hand_over_cards(w, events, held, str(pid))
+			if map.rules >= 18:
+				_divide_spoils(w, events, held, str(pid), match_seed)
+			else:
+				_hand_over_cards(w, events, held, str(pid))
 		else:
 			living.append(pid)
 	if map.cards:
@@ -1052,6 +1117,84 @@ static func _hand_over_cards(w: Types.World, events: Array, held: Dictionary, vi
 			to.cards.append(c)
 		events.append(Events.cards_captured(victim, taker, ps.cards))
 	ps.cards = PackedStringArray()
+
+
+static func _divide_spoils(w: Types.World, events: Array, held: Dictionary, victim: String, match_seed: int) -> void:
+	## v1.9 (rules 18): a war chest is divided among everyone who took the fallen commander's
+	## lands this round, since they all fell at once. Each taker throws a die, and the cards
+	## are shared out in proportion to the throws (the highest thrower first for what is
+	## left over). A lone taker gets it all, as before; a land only emptied takes nothing.
+	var ps: Types.PlayerState = w.players[victim]
+	if ps.cards.is_empty():
+		return
+	var takers: Array = []
+	for e in events:
+		if str(e.get("kind", "")) != Types.EVENT_OCCUPIED:
+			continue
+		var terr_id: String = str(e.get("terrId", ""))
+		var from_victim: bool = str(e.get("previousOwner", "")) == victim or (not e.has("previousOwner") and str(held.get(terr_id, "")) == victim)
+		var by: String = str(e.get("playerId", ""))
+		if from_victim and by != victim and by != Income.NEUTRAL_ID and w.players.has(by) and not takers.has(by):
+			takers.append(by)
+	if takers.is_empty():
+		ps.cards = PackedStringArray()
+		return
+	var hand: Array = Array(ps.cards)
+	ps.cards = PackedStringArray()
+	if takers.size() == 1:
+		var to: Types.PlayerState = w.players[takers[0]]
+		for c in hand:
+			to.cards.append(c)
+		events.append(Events.cards_captured(victim, str(takers[0]), PackedStringArray(hand)))
+		return
+	takers.sort()
+	var rng: RefCounted = Rng.derive_stream(match_seed, w.round, "spoils|cards|" + victim)
+	var rolls := {}
+	var tiebreak := {}
+	var total := 0
+	for pid in takers:
+		rolls[pid] = rng.roll_d6()
+		tiebreak[pid] = rng.roll_d6()
+		total += int(rolls[pid])
+	## the order of the throws: the highest first (a tie is thrown off again)
+	var order: Array = takers.duplicate()
+	order.sort_custom(func(x, y):
+		if int(rolls[x]) != int(rolls[y]):
+			return int(rolls[x]) > int(rolls[y])
+		if int(tiebreak[x]) != int(tiebreak[y]):
+			return int(tiebreak[x]) > int(tiebreak[y])
+		return str(x) < str(y))
+	## shares in proportion to the throws; the cards left over go down the order
+	var shares := {}
+	var given := 0
+	for pid in order:
+		shares[pid] = int(hand.size() * int(rolls[pid]) / total)
+		given += int(shares[pid])
+	var k := 0
+	while given < hand.size():
+		shares[order[k % order.size()]] = int(shares[order[k % order.size()]]) + 1
+		given += 1
+		k += 1
+	## which cards: drawn by lot from the hand, the highest thrower drawing first
+	for i in range(hand.size() - 1, 0, -1):
+		var j: int = rng.rand_index(i + 1)
+		var tmp = hand[i]
+		hand[i] = hand[j]
+		hand[j] = tmp
+	var split := {"rolls": rolls, "shares": shares, "order": order, "of": hand.size()}
+	var at := 0
+	for pid in order:
+		var n: int = int(shares[pid])
+		var got := PackedStringArray()
+		for q in n:
+			got.append(str(hand[at]))
+			at += 1
+		var to: Types.PlayerState = w.players[pid]
+		for c in got:
+			to.cards.append(c)
+		var ev: Dictionary = Events.cards_captured(victim, str(pid), got)
+		ev["split"] = split
+		events.append(ev)
 
 
 static func _better(a: Array, b: Array) -> bool:

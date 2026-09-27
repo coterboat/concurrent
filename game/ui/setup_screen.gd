@@ -5,6 +5,7 @@ const Types := preload("res://engine/types.gd")
 const Setup := preload("res://engine/setup.gd")
 const Ai := preload("res://engine/ai.gd")
 const Board := preload("res://game/board/map_board.gd")
+const Rules := preload("res://game/core/rules.gd")
 
 ## v1.7: the faces a human seat may wear. "player" is the old faceless silhouette, kept
 ## first so anyone who liked being nobody in particular still can be.
@@ -30,9 +31,10 @@ var map_path := "res://maps/known24.json"
 var seats: Array = []
 var length := "standard"
 var timer := 0
-var battle := "volleys"
-var deal := "random"
-var odds := "line"
+var rules: Dictionary = Rules.values_of("standard") ## v1.8: the table's rules (game/core/rules.gd)
+var _rules_pick: OptionButton
+var _rules_line: Label
+var _custom: Control
 
 var _map_cards := {}
 var _seat_box: VBoxContainer
@@ -124,9 +126,31 @@ func _ready() -> void:
 	rv.add_child(_option_row("Game length", ["Short", "Standard", "Long", "Conquest (no round limit)"], ["short", "standard", "long", "conquest"], length, func(val):
 		length = val
 		_refresh()))
-	rv.add_child(_option_row("Battles", ["Roll by roll (volleys)", "One decisive roll"], ["volleys", "decisive"], battle, func(val): battle = val))
-	rv.add_child(_option_row("Battle odds", ["Firing line (five fire at once)", "Every man counts (v1.5)"], ["line", "classic"], odds, func(val): odds = val))
-	rv.add_child(_option_row("Lands", ["Dealt at random", "Claimed in turn (dice for order)"], ["random", "draft"], deal, func(val): deal = val))
+	## v1.8: one row for the rules — a preset, or your own mix
+	var rrow := HBoxContainer.new()
+	rrow.add_theme_constant_override("separation", 12)
+	var rl := Style.label("Rules", 19, Style.CREAM, "bold")
+	rl.custom_minimum_size = Vector2(170, 0)
+	rrow.add_child(rl)
+	_rules_pick = OptionButton.new()
+	_rules_pick.custom_minimum_size = Vector2(300, 34)
+	for pk in Rules.PRESET_ORDER + ["custom"]:
+		_rules_pick.add_item(str(Rules.PRESET_NAMES[pk]))
+	_rules_pick.item_selected.connect(func(idx):
+		Audio.sfx("click")
+		var order: Array = Rules.PRESET_ORDER + ["custom"]
+		if str(order[idx]) == "custom":
+			_open_custom()
+		else:
+			rules = Rules.values_of(str(order[idx]))
+		_refresh_rules())
+	rrow.add_child(_rules_pick)
+	rrow.add_child(Style.chip("Customize…", func(): _open_custom(), Style.PARCH, 15))
+	rv.add_child(rrow)
+	_rules_line = Style.label("", 14, Style.MUTED, "italic")
+	_rules_line.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
+	rv.add_child(_rules_line)
+	_refresh_rules()
 	rv.add_child(_option_row("Planning clock", ["Off", "90 seconds", "3 minutes"], [0, 90, 180], timer, func(val): timer = val))
 	_note = Style.label("", 17, Style.PARCH, "italic")
 	_note.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
@@ -151,9 +175,13 @@ func _load_last() -> void:
 		map_path = "res://maps/known24.json"
 	length = str(last.get("length", "standard"))
 	timer = int(last.get("timer", 0))
-	battle = str(last.get("battle", "volleys"))
-	deal = str(last.get("deal", str(Settings.get_value("deal", "random"))))
-	odds = str(last.get("odds", "line"))
+	## v1.8: the rules as last played (setups saved before v1.8 start on Standard)
+	var lr: Variant = last.get("rules", {})
+	rules = Rules.values_of("standard")
+	if typeof(lr) == TYPE_DICTIONARY:
+		for k in (lr as Dictionary).keys():
+			if rules.has(k):
+				rules[k] = lr[k]
 	seats = []
 	## v1.2 gave the commanders imperial titles; saved setups keep up
 	var retitled := ["Marshal Varek", "Lady Ysolde", "Commander Imre", "Old Bear Hask", "The Quartermaster"]
@@ -341,11 +369,11 @@ func _seat_row(i: int) -> Control:
 func _option_row(title: String, labels: Array, values: Array, current, cb: Callable) -> Control:
 	var h := HBoxContainer.new()
 	h.add_theme_constant_override("separation", 12)
-	var l := Style.label(title, 20, Style.CREAM, "bold")
+	var l := Style.label(title, 19, Style.CREAM, "bold")
 	l.custom_minimum_size = Vector2(170, 0)
 	h.add_child(l)
 	var o := OptionButton.new()
-	o.custom_minimum_size = Vector2(300, 40)
+	o.custom_minimum_size = Vector2(300, 34) ## six options and five commanders fit a 900-high window
 	for x in labels:
 		o.add_item(x)
 	o.selected = maxi(0, values.find(current))
@@ -373,9 +401,79 @@ func _start() -> void:
 			"ai": s["ai"] if s["kind"] == "ai" else "",
 			"portrait": str(s.get("portrait", "player")) if s["kind"] == "human" else str(s["ai"]),
 		})
-	Settings.set_value("last_setup", {"map": map_path, "seats": seats, "length": length, "timer": timer, "battle": battle, "deal": deal, "odds": odds, "name": human_name if human_name != "" else "You"})
-	Settings.set_value("deal", deal)
-	main.start_game({"map": map_path, "seats": cfg_seats, "length": length, "timer": timer, "battle": battle, "deal": deal, "firing_line": odds == "line", "tutorial": false})
+	Settings.set_value("last_setup", {"map": map_path, "seats": seats, "length": length, "timer": timer, "rules": rules, "name": human_name if human_name != "" else "You"})
+	var cfg := {"map": map_path, "seats": cfg_seats, "length": length, "timer": timer, "tutorial": false, "preset": Rules.preset_of(rules)}
+	for k in rules.keys():
+		cfg[k] = rules[k]
+	main.start_game(cfg)
+
+
+func _refresh_rules() -> void:
+	var pk: String = Rules.preset_of(rules)
+	var order: Array = Rules.PRESET_ORDER + ["custom"]
+	_rules_pick.select(order.find(pk))
+	_rules_line.text = Rules.summary(rules)
+
+
+func _open_custom() -> void:
+	## every rule on one card; change any and the preset becomes Custom (unless it matches one)
+	if _custom != null and is_instance_valid(_custom):
+		_custom.queue_free()
+	var shade := ColorRect.new()
+	shade.color = Color(0, 0, 0, 0.55)
+	shade.set_anchors_and_offsets_preset(PRESET_FULL_RECT)
+	shade.mouse_filter = Control.MOUSE_FILTER_STOP
+	add_child(shade)
+	_custom = shade
+	var panel := PanelContainer.new()
+	panel.add_theme_stylebox_override("panel", Style.panel_box(18))
+	panel.set_anchors_and_offsets_preset(PRESET_CENTER)
+	panel.custom_minimum_size = Vector2(1180, 0)
+	panel.grow_horizontal = Control.GROW_DIRECTION_BOTH
+	panel.grow_vertical = Control.GROW_DIRECTION_BOTH
+	shade.add_child(panel)
+	var v := VBoxContainer.new()
+	v.add_theme_constant_override("separation", 8)
+	panel.add_child(v)
+	v.add_child(Style.label("The rules of this war", 26, Style.GOLD, "display"))
+	var hint := Style.label("Standard is the war we balance around. Change anything you like.", 15, Style.PARCH, "italic")
+	hint.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
+	v.add_child(hint)
+	for r in Rules.RULES:
+		var id: String = str(r["id"])
+		var labels: Array = []
+		var values: Array = []
+		for c in r["choices"]:
+			values.append(c[0])
+			labels.append(str(c[1]))
+		var row: Control = _option_row(str(r["name"]), labels, values, rules.get(id, values[0]), func(val):
+			rules[id] = val
+			_refresh_rules())
+		row.tooltip_text = str(r["help"])
+		for c in row.get_children():
+			(c as Control).tooltip_text = str(r["help"])
+		## what the rule does, beside it: nobody should have to hover to learn the game
+		var help := Style.label(str(r["help"]), 13, Style.MUTED, "italic")
+		help.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
+		help.custom_minimum_size = Vector2(380, 0)
+		help.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+		row.add_child(help)
+		v.add_child(row)
+	var btns := HBoxContainer.new()
+	btns.add_theme_constant_override("separation", 12)
+	var std := Style.chip("Back to Standard", func():
+		rules = Rules.values_of("standard")
+		_refresh_rules()
+		_open_custom(), Style.PARCH, 15)
+	std.size_flags_vertical = Control.SIZE_SHRINK_CENTER
+	btns.add_child(std)
+	var sp := Control.new()
+	sp.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	btns.add_child(sp)
+	btns.add_child(Style.button("Done", func():
+		shade.queue_free()
+		_custom = null, 160, 20))
+	v.add_child(btns)
 
 
 class _Swatch extends Control:

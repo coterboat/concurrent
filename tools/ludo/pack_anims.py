@@ -15,6 +15,11 @@ Soldiers: 384 px frames on the shared padded canvas, plus a frame order:
           down); the theater topples the standing figure in code instead
 Every sheet is checked (sheet_tool.gd check) and its seam printed.
 
+v1.9 keyframe sheets (assets/raw/v19/battle/*_kf.webp, from animateSpriteKeyframes) pack
+the same way, played straight through (they start and end on a held pose), with "fps".
+A v1.9 master in assets/raw/v19/loops/ (the Hydra talk loops) wins over the old one of
+the same name in assets/raw/loops/, and its json gets "fps" too.
+
 assets/raw is not in git (37 MB of masters). `--fetch` re-downloads any missing
 master from the spritesheet URL recorded in assets/ludo_ledger.json first.
 """
@@ -64,30 +69,64 @@ def fetch():
         print("fetched", a["id"])
 
 
+def pack_loop(raw, out):
+    """A portrait loop: 256 px frames, the duplicate last frame dropped, ping-pong if the
+    seam is still the biggest step. Returns the check report."""
+    m = meta_of(raw)
+    report = tool("check", raw, str(m["cols"]), str(m["rows"]), str(m["frames"]))
+    print(report)
+    print(tool("shrink", raw, str(m["cols"]), str(m["rows"]), "256", out, str(m["frames"]), "drop_last"))
+    ## if coming round from the last kept frame to the first is a bigger step than
+    ## any step inside the loop, play it back and forth instead: then there is no seam
+    mx = float(re.search(r"max_step ([0-9.]+)", report).group(1))
+    seam = float(re.search(r"seam\(prev->first\) ([0-9.]+)", report).group(1))
+    n = int(m["frames"]) - 1
+    if seam > mx:
+        patch(out, order=list(range(0, n)) + list(range(n - 2, 0, -1)))
+        print("  -> ping-pong (seam %.2f > max step %.2f)" % (seam, mx))
+    if m.get("duration"):
+        patch(out, fps=round(int(m["frames"]) / float(m["duration"]), 3))
+    return report
+
+
+## (name, frame order or None, anchor x, baseline, figure height / canvas height)
+INF = (0.55, 0.92, 450.0 / 768.0)
+CAV = (0.55, 0.92, 500.0 / 768.0)
+GUN = (0.45, 0.92, 300.0 / 768.0)
+## v1.9 keyframe moves: raw master in assets/raw/v19/battle/, played straight through
+BATTLE19 = [
+    ("soldier_volley_kf", INF), ("soldier_kneel_volley_kf", INF), ("soldier_charge_kf", INF),
+    ("soldier_cheer_kf", INF), ("soldier_reload_kf", INF), ("soldier_fall_kf", INF),
+    ("cannon_fire_kf", GUN), ("cavalry_charge_kf", CAV),
+    ("grenadier_volley_kf", INF), ("grenadier_charge_kf", INF), ("cuirassier_charge_kf", CAV),
+]
+
+
+def pack_sheet(raw, out, anchor, order=None, px=384):
+    """A battle sheet on the shared padded canvas: 384 px frames plus anchor, fill and fps."""
+    m = meta_of(raw)
+    report = tool("check", raw, str(m["cols"]), str(m["rows"]), str(m["frames"]))
+    print(report)
+    print(tool("shrink", raw, str(m["cols"]), str(m["rows"]), str(px), out, str(m["frames"])))
+    extra = {"ax": anchor[0], "ay": anchor[1], "fill": anchor[2]}
+    if order:
+        extra["order"] = order
+    if m.get("duration"):
+        extra["fps"] = round(int(m["frames"]) / float(m["duration"]), 3)
+    patch(out, **extra)
+    return report
+
+
 def main():
     import sys
     if "--fetch" in sys.argv:
         fetch()
     os.makedirs(os.path.join(ROOT, "assets/portraits/loops"), exist_ok=True)
-    for raw in sorted(glob.glob(os.path.join(ROOT, "assets/raw/loops/*.webp"))):
-        m = meta_of(raw)
-        name = os.path.basename(raw)
-        out = "assets/portraits/loops/" + name
-        report = tool("check", raw, str(m["cols"]), str(m["rows"]), str(m["frames"]))
-        print(report)
-        print(tool("shrink", raw, str(m["cols"]), str(m["rows"]), "256", out, str(m["frames"]), "drop_last"))
-        ## if coming round from the last kept frame to the first is a bigger step than
-        ## any step inside the loop, play it back and forth instead: then there is no seam
-        mx = float(re.search(r"max_step ([0-9.]+)", report).group(1))
-        seam = float(re.search(r"seam\(prev->first\) ([0-9.]+)", report).group(1))
-        n = int(m["frames"]) - 1
-        if seam > mx:
-            patch(out, order=list(range(0, n)) + list(range(n - 2, 0, -1)))
-            print("  -> ping-pong (seam %.2f > max step %.2f)" % (seam, mx))
-    ## (name, frame order or None, anchor x, baseline, figure height / canvas height)
-    inf = (0.55, 0.92, 450.0 / 768.0)
-    cav = (0.55, 0.92, 500.0 / 768.0)
-    gun = (0.45, 0.92, 300.0 / 768.0)
+    raws = {os.path.basename(r): r for r in glob.glob(os.path.join(ROOT, "assets/raw/loops/*.webp"))}
+    raws.update({os.path.basename(r): r for r in glob.glob(os.path.join(ROOT, "assets/raw/v19/loops/*.webp"))})
+    for name in sorted(raws):
+        pack_loop(raws[name], "assets/portraits/loops/" + name)
+    inf, cav, gun = INF, CAV, GUN
     ping = list(range(0, 16)) + list(range(14, 0, -1))
     battle = [
         ("soldier_idle", ping, inf),
@@ -135,6 +174,10 @@ def main():
                 extra["order"] = ping
                 print("  -> ping-pong (seam %.2f > max step %.2f)" % (seam, mx))
         patch(out, **extra)
+    for name, anchor in BATTLE19:
+        raw = os.path.join(ROOT, "assets/raw/v19/battle/%s.webp" % name)
+        if os.path.exists(raw):
+            pack_sheet(raw, "assets/battle/%s.webp" % name, anchor)
 
 
 if __name__ == "__main__":

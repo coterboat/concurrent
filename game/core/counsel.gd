@@ -23,6 +23,15 @@ static func advice(s: Node) -> Array:
 	var pid: String = s.planner
 	var w: Types.World = s.world
 	var map: Types.MapDef = s.map
+	if s.phase == Session.Phase.OPENING and s.capital_choosable():
+		var cap: String = s.capital_shown(pid)
+		if s.opening_capital.has(pid):
+			out.append(_item("capital", "%s will be our capital: two recruits a round, and it fights like a fortress. Choose 'Make this our capital' on another of our lands to change your mind before you seal." % s.hex_name(cap), "neutral", "", [cap], 45))
+		else:
+			out.append(_item("capital", "Name our capital, Commander. I have pencilled in %s, deep in our lands. Select any of our lands and choose 'Make this our capital' to move it. It pays two recruits a round and fights like a fortress." % s.hex_name(cap), "neutral", "capital_choose", [cap], 60))
+	if s.phase == Session.Phase.PLANNING and s.capital_choosable():
+		var cap2: String = s.capital_shown(pid)
+		out.append(_item("capital_fell", "Our capital has fallen. The court has fled to %s. Keep it there, or select another of our lands and make it the capital: this round only." % s.hex_name(cap2), "alarmed", "capital_move", [cap2], 92))
 	if s.phase == Session.Phase.OPENING:
 		out.append(_item("deploy", "Place your starting armies: click one of your lands to add one (right-click takes one back). Put strength where enemies touch you — and on lands that could complete a region.", "neutral", "deploy", [], 50))
 		return out
@@ -161,7 +170,7 @@ static func explain(s: Node, sheet: Types.Sheet) -> Array:
 	for to in by_target.keys():
 		var info: Dictionary = by_target[to]
 		var d: int = s.world.get_territory(to).held()
-		var word: String = Combat.odds_word(int(info["n"]), maxi(1, d), s.map.battle, MapLib.defender_line_bonus(s.map, str(to))) if d > 0 else "certain"
+		var word: String = Combat.odds_word(int(info["n"]), maxi(1, d), s.map.battle, MapLib.defender_bonus(s.world, s.map, str(to))) if d > 0 else "certain"
 		var txt := "Attack %s with %d from %s — %s." % [s.hex_name(to), info["n"], " and ".join(info["from"]), word]
 		if str(info["surge"]) != "":
 			txt += " If it falls, surge on into %s." % s.hex_name(str(info["surge"]))

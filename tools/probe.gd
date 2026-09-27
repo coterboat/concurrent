@@ -16,6 +16,7 @@ func _ready() -> void:
 	load("res://game/core/session.gd").SAVE_PATH = "user://probe_savegame.json"
 	## ...and out of the player's settings: probes mute audio, and must never save that
 	Settings.persist = false
+	Settings.data["motion"] = "paintings" ## v1.9: no cutscenes over the older probes' screenshots (v19 turns them on)
 	_parse_args()
 	if _script_path == "":
 		push_error("probe: --script=res://... is required")

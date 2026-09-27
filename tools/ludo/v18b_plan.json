@@ -1,0 +1,149 @@
+[
+[
+"advisor",
+"fortune_us",
+0,
+"fortune_us",
+"Fortune, favour us now! Throw again!"
+],
+[
+"advisor",
+"fortune_us",
+1,
+"fortune_us_v2",
+"Once more, lads! Fortune is with us!"
+],
+[
+"advisor",
+"fortune_us",
+2,
+"fortune_us_v3",
+"That never happened, Commander. Throw again!"
+],
+[
+"advisor",
+"fortune_them",
+0,
+"fortune_them",
+"They have called on Fortune. The cheek of it."
+],
+[
+"advisor",
+"fortune_them",
+1,
+"fortune_them_v2",
+"Fortune favours them. For now."
+],
+[
+"advisor",
+"fortune_them",
+2,
+"fortune_them_v3",
+"They have bought themselves another throw. Steady, Commander."
+],
+[
+"advisor",
+"fortune_gained",
+0,
+"fortune_gained",
+"Fortune owes us one, Commander. The dice have been cruel."
+],
+[
+"advisor",
+"fortune_gained",
+1,
+"fortune_gained_v2",
+"The dice have robbed us once too often. Fortune is in our debt."
+],
+[
+"advisor",
+"fortune_gained",
+2,
+"fortune_gained_v3",
+"A favour banked. Spend it when the dice turn on us."
+],
+[
+"varek",
+"fortune",
+0,
+"fortune",
+"Again. Properly, this time."
+],
+[
+"varek",
+"fortune",
+1,
+"fortune_v2",
+"Fortune owes me. I am collecting."
+],
+[
+"ysolde",
+"fortune",
+0,
+"fortune",
+"No. We do that again."
+],
+[
+"ysolde",
+"fortune",
+1,
+"fortune_v2",
+"Fortune serves me, like everyone else."
+],
+[
+"quill",
+"fortune",
+0,
+"fortune",
+"I would like a refund, please!"
+],
+[
+"quill",
+"fortune",
+1,
+"fortune_v2",
+"A clerical error! Again!"
+],
+[
+"oren",
+"fortune",
+0,
+"fortune",
+"Do-over! That one did not count!"
+],
+[
+"oren",
+"fortune",
+1,
+"fortune_v2",
+"Fortune loves a dashing cavalryman!"
+],
+[
+"hask",
+"fortune",
+0,
+"fortune",
+"Throw the bones again, lads! Ha!"
+],
+[
+"hask",
+"fortune",
+1,
+"fortune_v2",
+"The sea owes the Bear a better wind!"
+],
+[
+"imre",
+"fortune",
+0,
+"fortune",
+"Recalculating."
+],
+[
+"imre",
+"fortune",
+1,
+"fortune_v2",
+"That result was noise. Again."
+]
+]

@@ -26,6 +26,9 @@ const EVENT_SET_CASHED := "SetCashed"
 const EVENT_CARDS_CAPTURED := "CardsCaptured"
 const EVENT_MELEE := "Melee" ## v1.3: several invaders storm one land at once
 const EVENT_MANEUVERED := "Maneuvered" ## v1.3: a move in the regroup phase
+const EVENT_CAPITAL_TAKEN := "CapitalTaken" ## v1.8: a commander's capital fell (the captor plunders it)
+const EVENT_CAPITAL_FOUNDED := "CapitalFounded"
+const EVENT_FORTUNE := "FortuneGained" ## v1.8: Fortune pays a favour she owes (engine/fortune.gd) ## v1.8: a capital named (at deployment, or anew after a fall)
 const EVENT_SCRAMBLE := "Scramble" ## v1.4: three or more (or two) armies of different commanders fight for one prize at once
 
 const UNOCCUPIED := ""
@@ -78,6 +81,11 @@ class MapDef extends RefCounted:
 	var fort_bonus: int = 1 ## extra men in a fortress's defending line (and +1 to its dig-in cap)
 	var pass_cap: int = 6 ## most men in one attacking column into a pass (0 = no cap)
 	var supply: bool = false ## lands cut off from your main bloc pay no income and take no recruits
+	var dominate: float = 0.0 ## v1.8: share of the map that wins at once (0 = the usual four-fifths)
+	var levee: int = 0 ## v1.8 levée en masse: a recruit for every this-many lands you trail the leader by (0 = off)
+	var surges: bool = true ## v1.8: false = no surge orders (setup: Rules → Surges)
+	var capitals: bool = false ## v1.8 new games: every commander keeps a capital (setup: Capitals)
+	var fortune: bool = false ## v1.8 new games: bad luck banks favours that throw a bad exchange again (setup: Fortune)
 
 	func territory_ids() -> PackedStringArray:
 		var ids: Array = territories.keys()
@@ -169,6 +177,8 @@ class MapDef extends RefCounted:
 		m.fort_bonus = int(data.get("fortBonus", 1))
 		m.pass_cap = int(data.get("passCap", 6))
 		m.supply = bool(data.get("supply", false))
+		m.dominate = float(data.get("dominate", 0.0))
+		m.levee = int(data.get("levee", 0))
 		return m
 
 
@@ -201,14 +211,28 @@ class PlayerState extends RefCounted:
 	var color: String = ""
 	var cards: PackedStringArray = PackedStringArray()
 	var alive: bool = true
+	var capital: String = "" ## v1.8: the seat of government ("" = none, or capitals are off)
+	var capital_free: bool = false ## v1.8: it fell last round; a new one may be chosen this round
+	var fortune: int = 0 ## v1.8: favours in hand (✦)
+	var fortune_meter: int = 0 ## v1.8: Fortune's ledger, in hundredths of a battle (100 owes a favour)
 
 	func to_dict() -> Dictionary:
-		return {
+		var d := {
 			"name": display_name,
 			"color": color,
 			"cards": Array(cards),
 			"alive": alive,
 		}
+		## only when set, so worlds from before v1.8 hash exactly as they did
+		if capital != "":
+			d["capital"] = capital
+		if capital_free:
+			d["capitalFree"] = true
+		if fortune != 0:
+			d["fortune"] = fortune
+		if fortune_meter != 0:
+			d["fortuneMeter"] = fortune_meter
+		return d
 
 	func clone() -> PlayerState:
 		var p := PlayerState.new()
@@ -217,6 +241,10 @@ class PlayerState extends RefCounted:
 		p.color = color
 		p.cards = cards.duplicate()
 		p.alive = alive
+		p.capital = capital
+		p.capital_free = capital_free
+		p.fortune = fortune
+		p.fortune_meter = fortune_meter
 		return p
 
 
@@ -311,6 +339,10 @@ class World extends RefCounted:
 						for c in cards:
 							ps.cards.append(str(c))
 					ps.alive = bool(raw.get("alive", true))
+					ps.capital = str(raw.get("capital", ""))
+					ps.capital_free = bool(raw.get("capitalFree", false))
+					ps.fortune = int(raw.get("fortune", 0))
+					ps.fortune_meter = int(raw.get("fortuneMeter", 0))
 				w.players[str(pid)] = ps
 		return w
 
@@ -378,6 +410,8 @@ class Sheet extends RefCounted:
 	var calls: Dictionary = {} ## battle key -> Array of calls made live ("p" press, "r" reserves, "f" fall back)
 	var surges: Dictionary = {} ## v1.3: land being attacked -> land to surge into (the whole force that takes it)
 	var surge_n: Dictionary = {} ## v1.5: land being attacked -> most men to push on (absent = all but the one who stays)
+	var capital: String = "" ## v1.8: a new capital, chosen the round after the old one fell
+	var fortune_auto: bool = false ## v1.8: officers may call on Fortune by doctrine (AI sheets); a human's favours are theirs to spend
 
 	func to_dict() -> Dictionary:
 		var place := {}
@@ -397,6 +431,10 @@ class Sheet extends RefCounted:
 			d["regroup"] = regroup.to_dict()
 		if cash_set.size() > 0:
 			d["cashSet"] = Array(cash_set)
+		if capital != "":
+			d["capital"] = capital
+		if fortune_auto:
+			d["fortuneAuto"] = true
 		if not surges.is_empty():
 			var sg := {}
 			var sk: Array = surges.keys()
@@ -442,6 +480,8 @@ class Sheet extends RefCounted:
 		if typeof(surges_raw) == TYPE_DICTIONARY:
 			for k in surges_raw.keys():
 				s.surges[str(k)] = str(surges_raw[k])
+		s.capital = str(data.get("capital", ""))
+		s.fortune_auto = bool(data.get("fortuneAuto", false))
 		var sn_raw: Variant = data.get("surgeN", {})
 		if typeof(sn_raw) == TYPE_DICTIONARY:
 			for k in sn_raw.keys():

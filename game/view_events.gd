@@ -50,6 +50,12 @@ static func apply(world: Types.World, event: Dictionary) -> void:
 				var os: Types.TerritoryState = world.get_territory(str(r.get("from", "")))
 				if os != null:
 					os.armies = int(r.get("left", os.armies))
+			## v1.8: a favour spent is gone from the hand
+			for c in event.get("calls", []):
+				if str(c.get("call", "")) == Combat.CALL_FORTUNE:
+					var fp: Types.PlayerState = world.players.get(str(c.get("by", "")), null)
+					if fp != null:
+						fp.fortune = maxi(0, fp.fortune - 1)
 			if bool(event.get("pending", false)):
 				return
 			if bool(event.get("fellBack", false)):
@@ -126,13 +132,26 @@ static func apply(world: Types.World, event: Dictionary) -> void:
 			var pd: Types.PlayerState = world.players.get(str(event.get("playerId", "")), null)
 			if pd != null:
 				pd.cards.append(str(event.get("card", "")))
+		Types.EVENT_FORTUNE:
+			var pf2: Types.PlayerState = world.players.get(str(event.get("playerId", "")), null)
+			if pf2 != null:
+				pf2.fortune = int(event.get("fortune", pf2.fortune))
+		Types.EVENT_CAPITAL_FOUNDED:
+			## v1.8: the crown moves when the report reaches it
+			var pc: Types.PlayerState = world.players.get(str(event.get("playerId", "")), null)
+			if pc != null:
+				pc.capital = str(event.get("terrId", ""))
+				pc.capital_free = str(event.get("why", "")) == "fallen"
 		Types.EVENT_CARDS_CAPTURED:
 			var pf: Types.PlayerState = world.players.get(str(event.get("from", "")), null)
 			var pt: Types.PlayerState = world.players.get(str(event.get("to", "")), null)
-			if pf != null:
-				pf.cards = PackedStringArray()
-			if pt != null:
-				for c in event.get("cards", []):
+			## exactly the cards named: all of them for a war chest, half for a plundered capital
+			for c in event.get("cards", []):
+				if pf != null:
+					var at: int = Array(pf.cards).find(str(c))
+					if at >= 0:
+						pf.cards.remove_at(at)
+				if pt != null:
 					pt.cards.append(str(c))
 		Types.EVENT_ENTRENCHED:
 			var ts: Types.TerritoryState = world.get_territory(str(event.get("terrId", "")))

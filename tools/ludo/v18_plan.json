@@ -1,0 +1,1822 @@
+[
+[
+"advisor",
+"sealed",
+1,
+"sealed_v2",
+"Sealed and sent. No taking it back now, Commander."
+],
+[
+"advisor",
+"sealed",
+2,
+"sealed_v3",
+"The couriers are riding. Whatever happens next, we chose it."
+],
+[
+"advisor",
+"sealed",
+3,
+"sealed_v4",
+"Signed, sealed, and out of our hands. I do love this part."
+],
+[
+"advisor",
+"sealed",
+4,
+"sealed_v5",
+"There. Our orders are in. Now we wait for the others to show their hand."
+],
+[
+"advisor",
+"reveal",
+1,
+"reveal_v2",
+"And there they go! Every column on the map, all at once."
+],
+[
+"advisor",
+"reveal",
+2,
+"reveal_v3",
+"The orders are open. Let us see who guessed right."
+],
+[
+"advisor",
+"reveal",
+3,
+"reveal_v4",
+"Look at them all. Half of those arrows are aimed at somebody's mistake."
+],
+[
+"advisor",
+"reveal",
+4,
+"reveal_v5",
+"Everyone moves at once. Somebody is about to have a very bad afternoon."
+],
+[
+"advisor",
+"orders",
+1,
+"orders_v2",
+"The recruits are in position. Now choose our targets."
+],
+[
+"advisor",
+"orders",
+2,
+"orders_v3",
+"The men are ready. Point them at something worth taking."
+],
+[
+"advisor",
+"orders",
+3,
+"orders_v4",
+"Placements done. Now the interesting part. Who do we hit?"
+],
+[
+"advisor",
+"reinforce",
+1,
+"reinforce_v2",
+"New recruits have arrived. Put them where the enemy can see them."
+],
+[
+"advisor",
+"reinforce",
+2,
+"reinforce_v3",
+"More men for the cause. Strengthen the border, not the barracks."
+],
+[
+"advisor",
+"unplaced",
+1,
+"unplaced_v2",
+"Commander, there are still men standing on the docks. Place them, or lose them."
+],
+[
+"advisor",
+"unplaced",
+2,
+"unplaced_v3",
+"Some of our recruits have no orders yet. Unplaced troops go home at the seal."
+],
+[
+"advisor",
+"maneuver",
+1,
+"maneuver_v2",
+"The guns have gone quiet. Shift the men forward while we can."
+],
+[
+"advisor",
+"maneuver",
+2,
+"maneuver_v3",
+"A moment's peace. Use it. March the reserves up to the border."
+],
+[
+"advisor",
+"maneuver",
+3,
+"maneuver_v4",
+"Regroup, Commander. Idle soldiers in the rear win nothing."
+],
+[
+"advisor",
+"surges",
+1,
+"surges_v2",
+"The breakthroughs charge on! Hold on to your hat."
+],
+[
+"advisor",
+"surges",
+2,
+"surges_v3",
+"Here come the surges, all at once. Steady now."
+],
+[
+"advisor",
+"opening_good",
+1,
+"opening_good_v2",
+"A fine start! They are wavering, Commander."
+],
+[
+"advisor",
+"opening_good",
+2,
+"opening_good_v3",
+"Their line is buckling. Keep at them!"
+],
+[
+"advisor",
+"opening_good",
+3,
+"opening_good_v4",
+"Good shooting! The day is ours if we hold our nerve."
+],
+[
+"advisor",
+"opening_bad",
+1,
+"opening_bad_v2",
+"That went poorly. Cut our losses, or double down?"
+],
+[
+"advisor",
+"opening_bad",
+2,
+"opening_bad_v3",
+"They are giving as good as they get. Your call, Commander."
+],
+[
+"advisor",
+"opening_bad",
+3,
+"opening_bad_v4",
+"An ugly start. The dice are not with us yet."
+],
+[
+"advisor",
+"cut_off",
+1,
+"cut_off_v2",
+"Nowhere to fall back to, Commander. It is this field or nothing."
+],
+[
+"advisor",
+"cut_off",
+2,
+"cut_off_v3",
+"No retreat from here. The men know it. So do I."
+],
+[
+"advisor",
+"press",
+1,
+"press_v2",
+"Forward! Do not give them a moment to breathe!"
+],
+[
+"advisor",
+"press",
+2,
+"press_v3",
+"At them again, lads!"
+],
+[
+"advisor",
+"press",
+3,
+"press_v4",
+"Press on! We have them now."
+],
+[
+"advisor",
+"retreat",
+1,
+"retreat_v2",
+"Pull them back, Commander. Live to fight another round."
+],
+[
+"advisor",
+"retreat",
+2,
+"retreat_v3",
+"Fall back in good order. There is no shame in it."
+],
+[
+"advisor",
+"reserves",
+1,
+"reserves_v2",
+"Bring up the reserves! Throw them in!"
+],
+[
+"advisor",
+"reserves",
+2,
+"reserves_v3",
+"Every man we have, Commander. Now is the moment."
+],
+[
+"advisor",
+"melee",
+1,
+"melee_v2",
+"Three armies, one field. Chaos, Commander. Glorious chaos."
+],
+[
+"advisor",
+"melee",
+2,
+"melee_v3",
+"Everyone has come to the same party. Keep your head down."
+],
+[
+"advisor",
+"scramble",
+1,
+"scramble_v2",
+"The garrison is gone, and now the wolves turn on each other!"
+],
+[
+"advisor",
+"scramble",
+2,
+"scramble_v3",
+"Nobody holds it yet. Now the victors fight for the spoils!"
+],
+[
+"advisor",
+"walkin_us",
+1,
+"walkin_us_v2",
+"They left the door open and we walked right in. Splendid!"
+],
+[
+"advisor",
+"walkin_us",
+2,
+"walkin_us_v3",
+"Not a soul defending it. Thank you kindly."
+],
+[
+"advisor",
+"walkin_us",
+3,
+"walkin_us_v4",
+"Empty! Oh, that is careless of them. Ours now."
+],
+[
+"advisor",
+"walkin_them",
+1,
+"walkin_them_v2",
+"Confound it! We left the door open, and they walked right in."
+],
+[
+"advisor",
+"walkin_them",
+2,
+"walkin_them_v3",
+"They strolled into an empty land of ours. Lesson learned, I hope."
+],
+[
+"advisor",
+"walkin_them",
+3,
+"walkin_them_v4",
+"An empty land is an invitation, Commander. They accepted."
+],
+[
+"advisor",
+"cash_us",
+1,
+"cash_us_v2",
+"The cards are in. Fresh troops, courtesy of the war office."
+],
+[
+"advisor",
+"cash_us",
+2,
+"cash_us_v3",
+"Cashed in! Call up the regiments."
+],
+[
+"advisor",
+"cash_them",
+1,
+"cash_them_v2",
+"They have cashed in their cards. Mind the border, Commander."
+],
+[
+"advisor",
+"cash_them",
+2,
+"cash_them_v3",
+"Fresh troops for the enemy. Brace yourself."
+],
+[
+"advisor",
+"enemy_out",
+1,
+"enemy_out_v2",
+"Another banner falls. The table grows smaller."
+],
+[
+"advisor",
+"enemy_out",
+2,
+"enemy_out_v3",
+"One rival down. The rest will be nervous now."
+],
+[
+"advisor",
+"cards_seized",
+1,
+"cards_seized_v2",
+"Their war chest is ours! Every last card."
+],
+[
+"advisor",
+"capture",
+1,
+"capture_v2",
+"It is ours! Raise the colours!"
+],
+[
+"advisor",
+"capture",
+2,
+"capture_v3",
+"Taken! Well fought, Commander."
+],
+[
+"advisor",
+"capture",
+3,
+"capture_v4",
+"The flag goes up. Another one for the map."
+],
+[
+"advisor",
+"capture",
+4,
+"capture_v5",
+"We have it! The men will drink well tonight."
+],
+[
+"advisor",
+"hold",
+1,
+"hold_v2",
+"They came, they bled, they went home. We hold!"
+],
+[
+"advisor",
+"hold",
+2,
+"hold_v3",
+"The line held, Commander. Good men, those."
+],
+[
+"advisor",
+"hold",
+3,
+"hold_v4",
+"Repulsed! Send them home with their tails between their legs."
+],
+[
+"advisor",
+"lost_land",
+1,
+"lost_land_v2",
+"We have lost it, Commander. A bitter blow."
+],
+[
+"advisor",
+"lost_land",
+2,
+"lost_land_v3",
+"The land has fallen. We will be back for it."
+],
+[
+"advisor",
+"lost_land",
+3,
+"lost_land_v4",
+"Gone. Mark it on the map, and mark who took it."
+],
+[
+"advisor",
+"upset_win",
+0,
+"upset_win",
+"Against all odds! I will not pretend I expected that."
+],
+[
+"advisor",
+"upset_win",
+1,
+"upset_win_v2",
+"Well, I never! The dice owed us one."
+],
+[
+"advisor",
+"upset_win",
+2,
+"upset_win_v3",
+"That should not have worked. It worked! Marvellous!"
+],
+[
+"advisor",
+"upset_win",
+3,
+"upset_win_v4",
+"A miracle, Commander. Do not get used to it."
+],
+[
+"advisor",
+"upset_loss",
+0,
+"upset_loss",
+"Impossible! We had them beaten three times over!"
+],
+[
+"advisor",
+"upset_loss",
+1,
+"upset_loss_v2",
+"Of all the rotten luck. Those odds were ours."
+],
+[
+"advisor",
+"upset_loss",
+2,
+"upset_loss_v3",
+"Blast those dice! That was a certainty on paper."
+],
+[
+"advisor",
+"upset_loss",
+3,
+"upset_loss_v4",
+"Sometimes the dice simply hate us, Commander. Today is one of those days."
+],
+[
+"advisor",
+"upset_loss",
+4,
+"upset_loss_v5",
+"Well. That was an outrage. Remember it, and move on."
+],
+[
+"advisor",
+"close_win",
+0,
+"close_win",
+"Taken with a single man standing. Close, Commander. Far too close."
+],
+[
+"advisor",
+"close_win",
+1,
+"close_win_v2",
+"One man left, and the land is ours. Give that fellow a medal."
+],
+[
+"advisor",
+"close_hold",
+0,
+"close_hold",
+"One soldier left on the walls, and he held! Remarkable."
+],
+[
+"advisor",
+"close_hold",
+1,
+"close_hold_v2",
+"By the skin of our teeth, Commander. But we hold."
+],
+[
+"advisor",
+"good_roll",
+1,
+"good_roll_v2",
+"A cracking volley!"
+],
+[
+"advisor",
+"good_roll",
+2,
+"good_roll_v3",
+"Right on target!"
+],
+[
+"advisor",
+"bad_roll",
+1,
+"bad_roll_v2",
+"Blast!"
+],
+[
+"advisor",
+"bad_roll",
+2,
+"bad_roll_v3",
+"Dreadful shooting."
+],
+[
+"advisor",
+"bad_roll",
+3,
+"bad_roll_v4",
+"Oh, come on!"
+],
+[
+"advisor",
+"leader",
+1,
+"leader_v2",
+"We are out in front, Commander. Expect company."
+],
+[
+"advisor",
+"behind",
+1,
+"behind_v2",
+"The others are pulling ahead. We need land, and quickly."
+],
+[
+"advisor",
+"capital_choose",
+0,
+"capital_choose",
+"Choose our capital, Commander. Somewhere safe, somewhere central. It pays well, and it fights hard."
+],
+[
+"advisor",
+"capital_choose",
+1,
+"capital_choose_v2",
+"Every empire needs a seat of government. Pick ours wisely."
+],
+[
+"advisor",
+"capital_move",
+0,
+"capital_move",
+"The court has fled, Commander. Name a new capital, or leave it where it landed."
+],
+[
+"advisor",
+"capital_move",
+1,
+"capital_move_v2",
+"Our government has moved in rather a hurry. Choose a proper home for it."
+],
+[
+"advisor",
+"capital_taken",
+0,
+"capital_taken",
+"Their capital is ours! Plunder the treasury!"
+],
+[
+"advisor",
+"capital_taken",
+1,
+"capital_taken_v2",
+"We have taken their seat of government! Half their cards, and a city full of recruits."
+],
+[
+"advisor",
+"capital_taken",
+2,
+"capital_taken_v3",
+"Their crown has fallen! Loot the vaults, lads!"
+],
+[
+"advisor",
+"capital_lost",
+0,
+"capital_lost",
+"Our capital has fallen! The treasury is plundered."
+],
+[
+"advisor",
+"capital_lost",
+1,
+"capital_lost_v2",
+"They have taken the capital, Commander. The court is fleeing."
+],
+[
+"advisor",
+"capital_lost",
+2,
+"capital_lost_v3",
+"A black day. Our capital is in enemy hands."
+],
+[
+"varek",
+"attack",
+1,
+"attack_v2",
+"Forward. Steady ranks."
+],
+[
+"varek",
+"attack",
+2,
+"attack_v3",
+"Take the ground. Hold it."
+],
+[
+"varek",
+"attack",
+3,
+"attack_v4",
+"Advance, and do not stop until it is ours."
+],
+[
+"varek",
+"win",
+1,
+"win_v2",
+"Of course."
+],
+[
+"varek",
+"win",
+2,
+"win_v3",
+"The ground is ours. Next."
+],
+[
+"varek",
+"win",
+3,
+"win_v4",
+"They broke. They always break."
+],
+[
+"varek",
+"lose",
+1,
+"lose_v2",
+"Noted."
+],
+[
+"varek",
+"lose",
+2,
+"lose_v3",
+"A costly lesson. For them, eventually."
+],
+[
+"varek",
+"lose",
+3,
+"lose_v4",
+"Bury the dead. We go again."
+],
+[
+"varek",
+"walkin",
+1,
+"walkin_v2",
+"An open gate is an invitation. I accepted."
+],
+[
+"varek",
+"walkin",
+2,
+"walkin_v3",
+"You forgot to leave a guard. I did not forget to notice."
+],
+[
+"varek",
+"retreat",
+1,
+"retreat_v2",
+"Withdraw in good order. Discipline."
+],
+[
+"varek",
+"retreat",
+2,
+"retreat_v3",
+"Enough. Pull them back."
+],
+[
+"varek",
+"reserves",
+1,
+"reserves_v2",
+"Commit the reserve. Finish it."
+],
+[
+"varek",
+"reserves",
+2,
+"reserves_v3",
+"Every man forward. Now."
+],
+[
+"varek",
+"cash",
+1,
+"cash_v2",
+"The war office sends its compliments. And its regiments."
+],
+[
+"varek",
+"claim",
+1,
+"claim_v2",
+"Here. We build from here."
+],
+[
+"varek",
+"claim",
+2,
+"claim_v3",
+"A sound position. Mine."
+],
+[
+"varek",
+"capital_took",
+0,
+"capital_took",
+"Your capital is mine. Your treasury too."
+],
+[
+"varek",
+"capital_took",
+1,
+"capital_took_v2",
+"The seat of your government now flies my colours."
+],
+[
+"varek",
+"capital_took",
+2,
+"capital_took_v3",
+"A capital is only stone. You should have held it."
+],
+[
+"varek",
+"capital_lost",
+0,
+"capital_lost",
+"They have taken my capital. They will not keep it."
+],
+[
+"varek",
+"capital_lost",
+1,
+"capital_lost_v2",
+"The capital falls. The war does not."
+],
+[
+"varek",
+"capital_lost",
+2,
+"capital_lost_v3",
+"Move the court. We fight on."
+],
+[
+"varek",
+"taunt",
+0,
+"taunt",
+"I see your border, Commander. It is thin."
+],
+[
+"varek",
+"taunt",
+1,
+"taunt_v2",
+"My columns are marching. I would dig in, if I were you."
+],
+[
+"varek",
+"taunt",
+2,
+"taunt_v3",
+"You have something of mine. I am coming to collect it."
+],
+[
+"varek",
+"taunt",
+3,
+"taunt_v4",
+"Brace yourself. This one will hurt."
+],
+[
+"ysolde",
+"attack",
+1,
+"attack_v2",
+"March. And do not come back without it."
+],
+[
+"ysolde",
+"attack",
+2,
+"attack_v3",
+"Crush them. Quickly."
+],
+[
+"ysolde",
+"attack",
+3,
+"attack_v4",
+"Take it. I dislike waiting."
+],
+[
+"ysolde",
+"win",
+1,
+"win_v2",
+"As it should be."
+],
+[
+"ysolde",
+"win",
+2,
+"win_v3",
+"They were never going to hold."
+],
+[
+"ysolde",
+"win",
+3,
+"win_v4",
+"Another province for the Viceroy."
+],
+[
+"ysolde",
+"lose",
+1,
+"lose_v2",
+"Unacceptable."
+],
+[
+"ysolde",
+"lose",
+2,
+"lose_v3",
+"Someone will answer for this."
+],
+[
+"ysolde",
+"lose",
+3,
+"lose_v4",
+"You have made an enemy today, Commander."
+],
+[
+"ysolde",
+"walkin",
+1,
+"walkin_v2",
+"You left it undefended. How generous."
+],
+[
+"ysolde",
+"walkin",
+2,
+"walkin_v3",
+"An empty province. How very careless."
+],
+[
+"ysolde",
+"retreat",
+1,
+"retreat_v2",
+"Fall back. I will remember this field."
+],
+[
+"ysolde",
+"retreat",
+2,
+"retreat_v3",
+"Withdraw. We choose the next battle."
+],
+[
+"ysolde",
+"reserves",
+1,
+"reserves_v2",
+"Send the guard. All of it."
+],
+[
+"ysolde",
+"reserves",
+2,
+"reserves_v3",
+"Reinforce. I do not accept defeat."
+],
+[
+"ysolde",
+"cash",
+1,
+"cash_v2",
+"The treasury is open. Raise the regiments."
+],
+[
+"ysolde",
+"claim",
+1,
+"claim_v2",
+"This one is mine. Mark it."
+],
+[
+"ysolde",
+"claim",
+2,
+"claim_v3",
+"I will have this province."
+],
+[
+"ysolde",
+"capital_took",
+0,
+"capital_took",
+"Your capital kneels to me now."
+],
+[
+"ysolde",
+"capital_took",
+1,
+"capital_took_v2",
+"Your court has fled. Your treasury has not."
+],
+[
+"ysolde",
+"capital_took",
+2,
+"capital_took_v3",
+"A pretty city. I will rename it."
+],
+[
+"ysolde",
+"capital_lost",
+0,
+"capital_lost",
+"They dare to sit in my capital?"
+],
+[
+"ysolde",
+"capital_lost",
+1,
+"capital_lost_v2",
+"My court moves. My army does not forget."
+],
+[
+"ysolde",
+"capital_lost",
+2,
+"capital_lost_v3",
+"You have taken my capital. Now I will take everything."
+],
+[
+"ysolde",
+"taunt",
+0,
+"taunt",
+"Your border is weak, Commander. I can see it from here."
+],
+[
+"ysolde",
+"taunt",
+1,
+"taunt_v2",
+"In my country, we do not knock."
+],
+[
+"ysolde",
+"taunt",
+2,
+"taunt_v3",
+"Look east, Commander. Winter is coming for you."
+],
+[
+"ysolde",
+"taunt",
+3,
+"taunt_v4",
+"I hope you enjoyed that land. You will not keep it."
+],
+[
+"quill",
+"attack",
+1,
+"attack_v2",
+"Right, lads. Go and repossess it."
+],
+[
+"quill",
+"attack",
+2,
+"attack_v3",
+"Hostile takeover, gentlemen!"
+],
+[
+"quill",
+"attack",
+3,
+"attack_v4",
+"There is money in that valley. Fetch it."
+],
+[
+"quill",
+"win",
+1,
+"win_v2",
+"Ka-ching!"
+],
+[
+"quill",
+"win",
+2,
+"win_v3",
+"A very tidy margin."
+],
+[
+"quill",
+"win",
+3,
+"win_v4",
+"Add it to the ledger!"
+],
+[
+"quill",
+"lose",
+1,
+"lose_v2",
+"Ooh, that is a write-off."
+],
+[
+"quill",
+"lose",
+2,
+"lose_v3",
+"Well, that was a poor investment."
+],
+[
+"quill",
+"lose",
+3,
+"lose_v4",
+"Losses, losses. Most disappointing."
+],
+[
+"quill",
+"walkin",
+1,
+"walkin_v2",
+"Unattended property? Mine, by right of possession."
+],
+[
+"quill",
+"walkin",
+2,
+"walkin_v3",
+"Nobody minding the shop? Lovely."
+],
+[
+"quill",
+"retreat",
+1,
+"retreat_v2",
+"Pull out, lads. The market has turned."
+],
+[
+"quill",
+"retreat",
+2,
+"retreat_v3",
+"Sell! Sell! Back to the ships!"
+],
+[
+"quill",
+"reserves",
+1,
+"reserves_v2",
+"Throw in the capital! All of it!"
+],
+[
+"quill",
+"reserves",
+2,
+"reserves_v3",
+"Double down, gentlemen!"
+],
+[
+"quill",
+"cash",
+1,
+"cash_v2",
+"Cashing in my chips. With interest."
+],
+[
+"quill",
+"claim",
+1,
+"claim_v2",
+"Prime real estate. I will take it."
+],
+[
+"quill",
+"claim",
+2,
+"claim_v3",
+"Location, location, location."
+],
+[
+"quill",
+"capital_took",
+0,
+"capital_took",
+"Your treasury? Consider it audited."
+],
+[
+"quill",
+"capital_took",
+1,
+"capital_took_v2",
+"What a lovely capital. And such generous vaults!"
+],
+[
+"quill",
+"capital_took",
+2,
+"capital_took_v3",
+"The Company thanks you for your contribution."
+],
+[
+"quill",
+"capital_lost",
+0,
+"capital_lost",
+"My counting house! Somebody stop them!"
+],
+[
+"quill",
+"capital_lost",
+1,
+"capital_lost_v2",
+"They have robbed the treasury! Pack the ledgers, we are moving."
+],
+[
+"quill",
+"capital_lost",
+2,
+"capital_lost_v3",
+"A temporary cash flow problem. Temporary!"
+],
+[
+"quill",
+"taunt",
+0,
+"taunt",
+"Nothing personal, Commander. Just business."
+],
+[
+"quill",
+"taunt",
+1,
+"taunt_v2",
+"I have made you an offer you cannot refuse. My army."
+],
+[
+"quill",
+"taunt",
+2,
+"taunt_v3",
+"Your lands are under new management. Mine."
+],
+[
+"quill",
+"taunt",
+3,
+"taunt_v4",
+"Let us call it a merger, shall we?"
+],
+[
+"oren",
+"attack",
+1,
+"attack_v2",
+"Tally ho! After them!"
+],
+[
+"oren",
+"attack",
+2,
+"attack_v3",
+"Right! Swords out! Charge!"
+],
+[
+"oren",
+"attack",
+3,
+"attack_v4",
+"Come on, boys! Last one there buys the drinks!"
+],
+[
+"oren",
+"win",
+1,
+"win_v2",
+"Ha! Easy!"
+],
+[
+"oren",
+"win",
+2,
+"win_v3",
+"Did you see that? Did everyone see that?"
+],
+[
+"oren",
+"win",
+3,
+"win_v4",
+"Magnificent! I am magnificent!"
+],
+[
+"oren",
+"lose",
+1,
+"lose_v2",
+"Oh, bother."
+],
+[
+"oren",
+"lose",
+2,
+"lose_v3",
+"That is, hm. That is not ideal."
+],
+[
+"oren",
+"lose",
+3,
+"lose_v4",
+"Not fair! They cheated! Probably."
+],
+[
+"oren",
+"walkin",
+1,
+"walkin_v2",
+"Oh, it is empty! Mine, mine, mine!"
+],
+[
+"oren",
+"walkin",
+2,
+"walkin_v3",
+"Nobody there? Brilliant!"
+],
+[
+"oren",
+"retreat",
+1,
+"retreat_v2",
+"Back! Back! Regroup! Look dashing!"
+],
+[
+"oren",
+"retreat",
+2,
+"retreat_v3",
+"Strategic withdrawal! It is a real thing!"
+],
+[
+"oren",
+"reserves",
+1,
+"reserves_v2",
+"Send everyone! Even the cooks!"
+],
+[
+"oren",
+"reserves",
+2,
+"reserves_v3",
+"Bring the whole regiment!"
+],
+[
+"oren",
+"cash",
+1,
+"cash_v2",
+"More soldiers! This is the best day ever!"
+],
+[
+"oren",
+"claim",
+1,
+"claim_v2",
+"That one looks fun!"
+],
+[
+"oren",
+"claim",
+2,
+"claim_v3",
+"I want that one! Dibs!"
+],
+[
+"oren",
+"capital_took",
+0,
+"capital_took",
+"I took your capital! Wait until I write home!"
+],
+[
+"oren",
+"capital_took",
+1,
+"capital_took_v2",
+"Your capital! Is it mine? It is mine!"
+],
+[
+"oren",
+"capital_took",
+2,
+"capital_took_v3",
+"Ha! A whole capital! With a palace!"
+],
+[
+"oren",
+"capital_lost",
+0,
+"capital_lost",
+"My capital! Oh, Mother is going to be furious."
+],
+[
+"oren",
+"capital_lost",
+1,
+"capital_lost_v2",
+"They took my capital? I was using that!"
+],
+[
+"oren",
+"capital_lost",
+2,
+"capital_lost_v3",
+"Right. New capital. Nobody panic. I am not panicking."
+],
+[
+"oren",
+"taunt",
+0,
+"taunt",
+"Hello, neighbour! Coming through!"
+],
+[
+"oren",
+"taunt",
+1,
+"taunt_v2",
+"Ready or not, here I come!"
+],
+[
+"oren",
+"taunt",
+2,
+"taunt_v3",
+"You look like you need a good charge, Commander!"
+],
+[
+"oren",
+"taunt",
+3,
+"taunt_v4",
+"I have a very fast horse, and it is pointed at you!"
+],
+[
+"hask",
+"attack",
+1,
+"attack_v2",
+"Board them, lads! Ha!"
+],
+[
+"hask",
+"attack",
+2,
+"attack_v3",
+"Give them the broadside!"
+],
+[
+"hask",
+"attack",
+3,
+"attack_v4",
+"Up and at them! The Bear is hungry!"
+],
+[
+"hask",
+"win",
+1,
+"win_v2",
+"Ha ha! Too easy!"
+],
+[
+"hask",
+"win",
+2,
+"win_v3",
+"Sunk! Like a stone!"
+],
+[
+"hask",
+"win",
+3,
+"win_v4",
+"That is how the Bear does it!"
+],
+[
+"hask",
+"lose",
+1,
+"lose_v2",
+"Argh! Lucky shot!"
+],
+[
+"hask",
+"lose",
+2,
+"lose_v3",
+"Bah! They will pay for that one!"
+],
+[
+"hask",
+"lose",
+3,
+"lose_v4",
+"Grr. Patch the hull and go again."
+],
+[
+"hask",
+"walkin",
+1,
+"walkin_v2",
+"Ha! Nobody on deck? I will take her!"
+],
+[
+"hask",
+"walkin",
+2,
+"walkin_v3",
+"Empty? The Bear says thank you!"
+],
+[
+"hask",
+"retreat",
+1,
+"retreat_v2",
+"Hard about! Back to the ships!"
+],
+[
+"hask",
+"retreat",
+2,
+"retreat_v3",
+"Fall back, lads! Live to plunder another day!"
+],
+[
+"hask",
+"reserves",
+1,
+"reserves_v2",
+"All hands! Everybody in!"
+],
+[
+"hask",
+"reserves",
+2,
+"reserves_v3",
+"Send the whole fleet! Ha!"
+],
+[
+"hask",
+"cash",
+1,
+"cash_v2",
+"Fresh crew for the Bear! Ha ha!"
+],
+[
+"hask",
+"claim",
+1,
+"claim_v2",
+"That harbour looks good. Mine!"
+],
+[
+"hask",
+"claim",
+2,
+"claim_v3",
+"Drop anchor there, lads!"
+],
+[
+"hask",
+"capital_took",
+0,
+"capital_took",
+"Your capital! Loot the treasury, lads! Ha ha!"
+],
+[
+"hask",
+"capital_took",
+1,
+"capital_took_v2",
+"The Bear sits on your throne now!"
+],
+[
+"hask",
+"capital_took",
+2,
+"capital_took_v3",
+"What a prize! Hoist my colours!"
+],
+[
+"hask",
+"capital_lost",
+0,
+"capital_lost",
+"They have taken my capital! Argh! To arms!"
+],
+[
+"hask",
+"capital_lost",
+1,
+"capital_lost_v2",
+"My hall! My beer! They will pay!"
+],
+[
+"hask",
+"capital_lost",
+2,
+"capital_lost_v3",
+"Bah! A capital is just a building. The Bear is still here!"
+],
+[
+"hask",
+"taunt",
+0,
+"taunt",
+"I am coming for you, little general! Ha!"
+],
+[
+"hask",
+"taunt",
+1,
+"taunt_v2",
+"Hide your ships and lock your doors!"
+],
+[
+"hask",
+"taunt",
+2,
+"taunt_v3",
+"The Bear smells your border, and it smells weak!"
+],
+[
+"hask",
+"taunt",
+3,
+"taunt_v4",
+"Run! Or do not. It is more fun if you do not!"
+],
+[
+"imre",
+"attack",
+1,
+"attack_v2",
+"Execute."
+],
+[
+"imre",
+"attack",
+2,
+"attack_v3",
+"As predicted. Proceed."
+],
+[
+"imre",
+"attack",
+3,
+"attack_v4",
+"They are exactly where I expected. Strike."
+],
+[
+"imre",
+"win",
+1,
+"win_v2",
+"Precisely."
+],
+[
+"imre",
+"win",
+2,
+"win_v3",
+"Of course it did."
+],
+[
+"imre",
+"win",
+3,
+"win_v4",
+"The numbers never lie."
+],
+[
+"imre",
+"lose",
+1,
+"lose_v2",
+"Unexpected. Noted."
+],
+[
+"imre",
+"lose",
+2,
+"lose_v3",
+"A variance. It will even out."
+],
+[
+"imre",
+"lose",
+3,
+"lose_v4",
+"Hm. You have my attention."
+],
+[
+"imre",
+"walkin",
+1,
+"walkin_v2",
+"You left it open. I noticed."
+],
+[
+"imre",
+"walkin",
+2,
+"walkin_v3",
+"Empty. I had counted on that."
+],
+[
+"imre",
+"retreat",
+1,
+"retreat_v2",
+"The odds have shifted. Withdraw."
+],
+[
+"imre",
+"retreat",
+2,
+"retreat_v3",
+"Preserve the fleet. Fall back."
+],
+[
+"imre",
+"reserves",
+1,
+"reserves_v2",
+"Now. The reserve."
+],
+[
+"imre",
+"reserves",
+2,
+"reserves_v3",
+"All of it. The margin matters."
+],
+[
+"imre",
+"cash",
+1,
+"cash_v2",
+"Exactly the right moment. Deploy."
+],
+[
+"imre",
+"claim",
+1,
+"claim_v2",
+"This one. It connects everything."
+],
+[
+"imre",
+"claim",
+2,
+"claim_v3",
+"That land. I have my reasons."
+],
+[
+"imre",
+"capital_took",
+0,
+"capital_took",
+"Your capital. I have had it marked since round one."
+],
+[
+"imre",
+"capital_took",
+1,
+"capital_took_v2",
+"The seat of your power. Now the seat of mine."
+],
+[
+"imre",
+"capital_took",
+2,
+"capital_took_v3",
+"Your treasury was poorly defended. I corrected that."
+],
+[
+"imre",
+"capital_lost",
+0,
+"capital_lost",
+"My capital has fallen. Irritating."
+],
+[
+"imre",
+"capital_lost",
+1,
+"capital_lost_v2",
+"A setback. The court relocates. The plan continues."
+],
+[
+"imre",
+"capital_lost",
+2,
+"capital_lost_v3",
+"Well played. It will not happen twice."
+],
+[
+"imre",
+"taunt",
+0,
+"taunt",
+"I have already seen your next move, Commander."
+],
+[
+"imre",
+"taunt",
+1,
+"taunt_v2",
+"You are predictable. That is not a compliment."
+],
+[
+"imre",
+"taunt",
+2,
+"taunt_v3",
+"I found your weakest border."
+],
+[
+"imre",
+"taunt",
+3,
+"taunt_v4",
+"Check."
+]
+]

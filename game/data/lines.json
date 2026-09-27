@@ -12,126 +12,629 @@
   "advisor": {
    "welcome": "Welcome to the war table, Commander. The world is wide, the maps are blank, and every inch of it is ours for the taking.",
    "deploy": "Plant our flag and pour in the troops. Spread too thin and the vultures will pick us apart.",
-   "reinforce": "Fresh regiments off the boats, Commander. Send them where the fighting is.",
+   "reinforce": [
+    "Fresh regiments off the boats, Commander. Send them where the fighting is.",
+    "New recruits have arrived. Put them where the enemy can see them.",
+    "More men for the cause. Strengthen the border, not the barracks."
+   ],
    "attack_hint": "Select one of our lands, then click the enemy you mean to crush.",
    "vacate_warn": "Careful. March them all out and that land stands empty. Any jackal next door could stroll right in.",
-   "unplaced": "We have regiments idling on the docks. Unplaced men go home, and I will not have it.",
-   "sealed": "Orders sealed. Now we see who flinches.",
-   "reveal": "There it is. Every army on the map, marching at once. Glorious.",
-   "walkin_us": "A walk-in! They left the gates wide open and we marched straight through. Plant the flag!",
-   "walkin_them": "Blast! They walked straight into a land we left empty.",
-   "capture": "Another land for the empire!",
-   "hold": "Our garrison held. Let them break their teeth on our walls.",
-   "lost_land": "We have lost ground there, Commander. We will take it back with interest.",
+   "unplaced": [
+    "We have regiments idling on the docks. Unplaced men go home, and I will not have it.",
+    "Commander, there are still men standing on the docks. Place them, or lose them.",
+    "Some of our recruits have no orders yet. Unplaced troops go home at the seal."
+   ],
+   "sealed": [
+    "Orders sealed. Now we see who flinches.",
+    "Sealed and sent. No taking it back now, Commander.",
+    "The couriers are riding. Whatever happens next, we chose it.",
+    "Signed, sealed, and out of our hands. I do love this part.",
+    "There. Our orders are in. Now we wait for the others to show their hand."
+   ],
+   "reveal": [
+    "There it is. Every army on the map, marching at once. Glorious.",
+    "And there they go! Every column on the map, all at once.",
+    "The orders are open. Let us see who guessed right.",
+    "Look at them all. Half of those arrows are aimed at somebody's mistake.",
+    "Everyone moves at once. Somebody is about to have a very bad afternoon."
+   ],
+   "walkin_us": [
+    "A walk-in! They left the gates wide open and we marched straight through. Plant the flag!",
+    "They left the door open and we walked right in. Splendid!",
+    "Not a soul defending it. Thank you kindly.",
+    "Empty! Oh, that is careless of them. Ours now."
+   ],
+   "walkin_them": [
+    "Blast! They walked straight into a land we left empty.",
+    "Confound it! We left the door open, and they walked right in.",
+    "They strolled into an empty land of ours. Lesson learned, I hope.",
+    "An empty land is an invitation, Commander. They accepted."
+   ],
+   "capture": [
+    "Another land for the empire!",
+    "It is ours! Raise the colours!",
+    "Taken! Well fought, Commander.",
+    "The flag goes up. Another one for the map.",
+    "We have it! The men will drink well tonight."
+   ],
+   "hold": [
+    "Our garrison held. Let them break their teeth on our walls.",
+    "They came, they bled, they went home. We hold!",
+    "The line held, Commander. Good men, those.",
+    "Repulsed! Send them home with their tails between their legs."
+   ],
+   "lost_land": [
+    "We have lost ground there, Commander. We will take it back with interest.",
+    "We have lost it, Commander. A bitter blow.",
+    "The land has fallen. We will be back for it.",
+    "Gone. Mark it on the map, and mark who took it."
+   ],
    "region": "The whole region flies our colours. Its riches will swell our ranks every round.",
    "cards": "We hold a matching set of cards. Cash them in and call up the regiments.",
    "final": "Final round, Commander! Only land counts now. Throw in everything. Leave nothing in the barracks.",
-   "leader": "We lead the war. Every crown at this table wants our head. Let them come.",
-   "behind": "We are falling behind. Fortune favours the bold, Commander. Attack!",
-   "enemy_out": "One less rival for the throne. Their lands are ripe for the taking.",
+   "leader": [
+    "We lead the war. Every crown at this table wants our head. Let them come.",
+    "We are out in front, Commander. Expect company."
+   ],
+   "behind": [
+    "We are falling behind. Fortune favours the bold, Commander. Attack!",
+    "The others are pulling ahead. We need land, and quickly."
+   ],
+   "enemy_out": [
+    "One less rival for the throne. Their lands are ripe for the taking.",
+    "Another banner falls. The table grows smaller.",
+    "One rival down. The rest will be nervous now."
+   ],
    "defeat": "We are beaten, Commander. Even empires fall. But what a war it was.",
    "victory": "Victory! The world bows to you, Commander. Magnificent. Utterly magnificent.",
    "dug_in": "Lands we hold dig in. Dug-in troops never march, so they keep a land safe while the rest go conquering.",
    "surge": "A clean breakthrough! With men to spare, we can surge on to the next land.",
    "roll": "Roll the dice, Commander.",
-   "good_roll": "The dice love us today!",
-   "bad_roll": "Cursed luck!",
+   "good_roll": [
+    "The dice love us today!",
+    "A cracking volley!",
+    "Right on target!"
+   ],
+   "bad_roll": [
+    "Cursed luck!",
+    "Blast!",
+    "Dreadful shooting.",
+    "Oh, come on!"
+   ],
    "plan": "Here is what I would do, Commander.",
-   "press": "They are breaking! Press the attack!",
-   "retreat": "Sound the retreat! Save the men for another day.",
-   "reserves": "Send in the reserves! Every last man!",
-   "cut_off": "We are cut off, Commander. There is no retreat. Fight or die.",
-   "opening_bad": "A bloody opening. Fall back now and save the men, or press on and pray.",
-   "opening_good": "A glorious opening! One more push and the land is ours.",
-   "maneuver": "The dust has settled, Commander. March the men up to the front before the next assault.",
-   "melee": "A melee, Commander! Every army piling in at once. Steady on every front!",
+   "press": [
+    "They are breaking! Press the attack!",
+    "Forward! Do not give them a moment to breathe!",
+    "At them again, lads!",
+    "Press on! We have them now."
+   ],
+   "retreat": [
+    "Sound the retreat! Save the men for another day.",
+    "Pull them back, Commander. Live to fight another round.",
+    "Fall back in good order. There is no shame in it."
+   ],
+   "reserves": [
+    "Send in the reserves! Every last man!",
+    "Bring up the reserves! Throw them in!",
+    "Every man we have, Commander. Now is the moment."
+   ],
+   "cut_off": [
+    "We are cut off, Commander. There is no retreat. Fight or die.",
+    "Nowhere to fall back to, Commander. It is this field or nothing.",
+    "No retreat from here. The men know it. So do I."
+   ],
+   "opening_bad": [
+    "A bloody opening. Fall back now and save the men, or press on and pray.",
+    "That went poorly. Cut our losses, or double down?",
+    "They are giving as good as they get. Your call, Commander.",
+    "An ugly start. The dice are not with us yet."
+   ],
+   "opening_good": [
+    "A glorious opening! One more push and the land is ours.",
+    "A fine start! They are wavering, Commander.",
+    "Their line is buckling. Keep at them!",
+    "Good shooting! The day is ours if we hold our nerve."
+   ],
+   "maneuver": [
+    "The dust has settled, Commander. March the men up to the front before the next assault.",
+    "The guns have gone quiet. Shift the men forward while we can.",
+    "A moment's peace. Use it. March the reserves up to the border.",
+    "Regroup, Commander. Idle soldiers in the rear win nothing."
+   ],
+   "melee": [
+    "A melee, Commander! Every army piling in at once. Steady on every front!",
+    "Three armies, one field. Chaos, Commander. Glorious chaos.",
+    "Everyone has come to the same party. Keep your head down."
+   ],
    "draft_roll": "Every commander throws a die. The highest roll claims first, and so on round the table.",
    "draft_first": "Fortune smiles, Commander. We choose first. Take the land that matters most.",
    "draft_pick": "Our pick, Commander. Claim a land.",
-   "cards_seized": "Their war chest is ours, Commander. Every card they held now fights for us.",
-   "scramble": "The defenders are finished. Now the victors turn on each other. Every man for himself!",
-   "cash_us": "Cards turned in, Commander. Fresh regiments are marching to the front.",
-   "cash_them": "They have turned in their cards. Expect a flood of fresh troops across the border.",
-   "orders": "The troops are placed, Commander. Now, where do we strike?",
-   "surges": "Now the breakthroughs. Every surge charges on at once!"
+   "cards_seized": [
+    "Their war chest is ours, Commander. Every card they held now fights for us.",
+    "Their war chest is ours! Every last card."
+   ],
+   "scramble": [
+    "The defenders are finished. Now the victors turn on each other. Every man for himself!",
+    "The garrison is gone, and now the wolves turn on each other!",
+    "Nobody holds it yet. Now the victors fight for the spoils!"
+   ],
+   "cash_us": [
+    "Cards turned in, Commander. Fresh regiments are marching to the front.",
+    "The cards are in. Fresh troops, courtesy of the war office.",
+    "Cashed in! Call up the regiments."
+   ],
+   "cash_them": [
+    "They have turned in their cards. Expect a flood of fresh troops across the border.",
+    "They have cashed in their cards. Mind the border, Commander.",
+    "Fresh troops for the enemy. Brace yourself."
+   ],
+   "orders": [
+    "The troops are placed, Commander. Now, where do we strike?",
+    "The recruits are in position. Now choose our targets.",
+    "The men are ready. Point them at something worth taking.",
+    "Placements done. Now the interesting part. Who do we hit?"
+   ],
+   "surges": [
+    "Now the breakthroughs. Every surge charges on at once!",
+    "The breakthroughs charge on! Hold on to your hat.",
+    "Here come the surges, all at once. Steady now."
+   ],
+   "upset_win": [
+    "Against all odds! I will not pretend I expected that.",
+    "Well, I never! The dice owed us one.",
+    "That should not have worked. It worked! Marvellous!",
+    "A miracle, Commander. Do not get used to it."
+   ],
+   "upset_loss": [
+    "Impossible! We had them beaten three times over!",
+    "Of all the rotten luck. Those odds were ours.",
+    "Blast those dice! That was a certainty on paper.",
+    "Sometimes the dice simply hate us, Commander. Today is one of those days.",
+    "Well. That was an outrage. Remember it, and move on."
+   ],
+   "close_win": [
+    "Taken with a single man standing. Close, Commander. Far too close.",
+    "One man left, and the land is ours. Give that fellow a medal."
+   ],
+   "close_hold": [
+    "One soldier left on the walls, and he held! Remarkable.",
+    "By the skin of our teeth, Commander. But we hold."
+   ],
+   "capital_choose": [
+    "Choose our capital, Commander. Somewhere safe, somewhere central. It pays well, and it fights hard.",
+    "Every empire needs a seat of government. Pick ours wisely."
+   ],
+   "capital_move": [
+    "The court has fled, Commander. Name a new capital, or leave it where it landed.",
+    "Our government has moved in rather a hurry. Choose a proper home for it."
+   ],
+   "capital_taken": [
+    "Their capital is ours! Plunder the treasury!",
+    "We have taken their seat of government! Half their cards, and a city full of recruits.",
+    "Their crown has fallen! Loot the vaults, lads!"
+   ],
+   "capital_lost": [
+    "Our capital has fallen! The treasury is plundered.",
+    "They have taken the capital, Commander. The court is fleeing.",
+    "A black day. Our capital is in enemy hands."
+   ],
+   "fortune_us": [
+    "Fortune, favour us now! Throw again!",
+    "Once more, lads! Fortune is with us!",
+    "That never happened, Commander. Throw again!"
+   ],
+   "fortune_them": [
+    "They have called on Fortune. The cheek of it.",
+    "Fortune favours them. For now.",
+    "They have bought themselves another throw. Steady, Commander."
+   ],
+   "fortune_gained": [
+    "Fortune owes us one, Commander. The dice have been cruel.",
+    "The dice have robbed us once too often. Fortune is in our debt.",
+    "A favour banked. Spend it when the dice turn on us."
+   ]
   },
   "varek": {
    "greet": "Grand Marshal Varek. I have buried a hundred generals. You will be a hundred and one.",
-   "attack": "Advance. Fix bayonets. No quarter.",
-   "win": "As expected.",
-   "lose": "A setback. They will pay for it in blood.",
-   "walkin": "You left it empty. I merely accepted the invitation.",
+   "attack": [
+    "Advance. Fix bayonets. No quarter.",
+    "Forward. Steady ranks.",
+    "Take the ground. Hold it.",
+    "Advance, and do not stop until it is ours."
+   ],
+   "win": [
+    "As expected.",
+    "Of course.",
+    "The ground is ours. Next.",
+    "They broke. They always break."
+   ],
+   "lose": [
+    "A setback. They will pay for it in blood.",
+    "Noted.",
+    "A costly lesson. For them, eventually.",
+    "Bury the dead. We go again."
+   ],
+   "walkin": [
+    "You left it empty. I merely accepted the invitation.",
+    "An open gate is an invitation. I accepted.",
+    "You forgot to leave a guard. I did not forget to notice."
+   ],
    "eliminated": "My war is over. Remember the old soldier.",
    "victory": "The world is mine. It always was.",
-   "retreat": "Fall back. Regroup. We return at dawn.",
-   "reserves": "Bring up the reserves. End this.",
-   "claim": "This ground is mine. Dig in.",
-   "cash": "Fresh regiments. Send them to the front."
+   "retreat": [
+    "Fall back. Regroup. We return at dawn.",
+    "Withdraw in good order. Discipline.",
+    "Enough. Pull them back."
+   ],
+   "reserves": [
+    "Bring up the reserves. End this.",
+    "Commit the reserve. Finish it.",
+    "Every man forward. Now."
+   ],
+   "claim": [
+    "This ground is mine. Dig in.",
+    "Here. We build from here.",
+    "A sound position. Mine."
+   ],
+   "cash": [
+    "Fresh regiments. Send them to the front.",
+    "The war office sends its compliments. And its regiments."
+   ],
+   "capital_took": [
+    "Your capital is mine. Your treasury too.",
+    "The seat of your government now flies my colours.",
+    "A capital is only stone. You should have held it."
+   ],
+   "capital_lost": [
+    "They have taken my capital. They will not keep it.",
+    "The capital falls. The war does not.",
+    "Move the court. We fight on."
+   ],
+   "taunt": [
+    "I see your border, Commander. It is thin.",
+    "My columns are marching. I would dig in, if I were you.",
+    "You have something of mine. I am coming to collect it.",
+    "Brace yourself. This one will hurt."
+   ],
+   "fortune": [
+    "Again. Properly, this time.",
+    "Fortune owes me. I am collecting."
+   ]
   },
   "ysolde": {
    "greet": "Viceroy Ysolde. Every land at this table will fly my banner. Guard your doors.",
-   "attack": "Take it. Leave nothing standing.",
-   "win": "Predictable.",
-   "lose": "You will pay for that. Dearly.",
-   "walkin": "An empty fort is an insult to its owner. I have corrected it.",
+   "attack": [
+    "Take it. Leave nothing standing.",
+    "March. And do not come back without it.",
+    "Crush them. Quickly.",
+    "Take it. I dislike waiting."
+   ],
+   "win": [
+    "Predictable.",
+    "As it should be.",
+    "They were never going to hold.",
+    "Another province for the Viceroy."
+   ],
+   "lose": [
+    "You will pay for that. Dearly.",
+    "Unacceptable.",
+    "Someone will answer for this.",
+    "You have made an enemy today, Commander."
+   ],
+   "walkin": [
+    "An empty fort is an insult to its owner. I have corrected it.",
+    "You left it undefended. How generous.",
+    "An empty province. How very careless."
+   ],
    "eliminated": "This is not the end of my house.",
    "victory": "Kneel. The empire is mine.",
-   "retreat": "Withdraw. For now.",
-   "reserves": "Send everything. I do not lose.",
-   "claim": "I will take this one. Remember who chose first.",
-   "cash": "My reserves have arrived. Now you will see an army."
+   "retreat": [
+    "Withdraw. For now.",
+    "Fall back. I will remember this field.",
+    "Withdraw. We choose the next battle."
+   ],
+   "reserves": [
+    "Send everything. I do not lose.",
+    "Send the guard. All of it.",
+    "Reinforce. I do not accept defeat."
+   ],
+   "claim": [
+    "I will take this one. Remember who chose first.",
+    "This one is mine. Mark it.",
+    "I will have this province."
+   ],
+   "cash": [
+    "My reserves have arrived. Now you will see an army.",
+    "The treasury is open. Raise the regiments."
+   ],
+   "capital_took": [
+    "Your capital kneels to me now.",
+    "Your court has fled. Your treasury has not.",
+    "A pretty city. I will rename it."
+   ],
+   "capital_lost": [
+    "They dare to sit in my capital?",
+    "My court moves. My army does not forget.",
+    "You have taken my capital. Now I will take everything."
+   ],
+   "taunt": [
+    "Your border is weak, Commander. I can see it from here.",
+    "In my country, we do not knock.",
+    "Look east, Commander. Winter is coming for you.",
+    "I hope you enjoyed that land. You will not keep it."
+   ],
+   "fortune": [
+    "No. We do that again.",
+    "Fortune serves me, like everyone else."
+   ]
   },
   "quill": {
    "greet": "Governor Quill, of the Company. Everything has its price, and I intend to buy the world.",
-   "attack": "An investment opportunity, lads. Go and collect.",
-   "win": "Profit!",
-   "lose": "Hm. That will cost me.",
-   "walkin": "Unguarded goods. Finders keepers.",
+   "attack": [
+    "An investment opportunity, lads. Go and collect.",
+    "Right, lads. Go and repossess it.",
+    "Hostile takeover, gentlemen!",
+    "There is money in that valley. Fetch it."
+   ],
+   "win": [
+    "Profit!",
+    "Ka-ching!",
+    "A very tidy margin.",
+    "Add it to the ledger!"
+   ],
+   "lose": [
+    "Hm. That will cost me.",
+    "Ooh, that is a write-off.",
+    "Well, that was a poor investment.",
+    "Losses, losses. Most disappointing."
+   ],
+   "walkin": [
+    "Unguarded goods. Finders keepers.",
+    "Unattended property? Mine, by right of possession.",
+    "Nobody minding the shop? Lovely."
+   ],
    "eliminated": "Bankrupt. Well, it was lovely doing business.",
    "victory": "Tally it up. The Company owns the lot.",
-   "retreat": "Cut our losses, lads. Back to the ships.",
-   "reserves": "Double the investment! Send the reserves!",
-   "claim": "A fine piece of property. I will take it.",
-   "cash": "A fine return on the investment. More men, at once!"
+   "retreat": [
+    "Cut our losses, lads. Back to the ships.",
+    "Pull out, lads. The market has turned.",
+    "Sell! Sell! Back to the ships!"
+   ],
+   "reserves": [
+    "Double the investment! Send the reserves!",
+    "Throw in the capital! All of it!",
+    "Double down, gentlemen!"
+   ],
+   "claim": [
+    "A fine piece of property. I will take it.",
+    "Prime real estate. I will take it.",
+    "Location, location, location."
+   ],
+   "cash": [
+    "A fine return on the investment. More men, at once!",
+    "Cashing in my chips. With interest."
+   ],
+   "capital_took": [
+    "Your treasury? Consider it audited.",
+    "What a lovely capital. And such generous vaults!",
+    "The Company thanks you for your contribution."
+   ],
+   "capital_lost": [
+    "My counting house! Somebody stop them!",
+    "They have robbed the treasury! Pack the ledgers, we are moving.",
+    "A temporary cash flow problem. Temporary!"
+   ],
+   "taunt": [
+    "Nothing personal, Commander. Just business.",
+    "I have made you an offer you cannot refuse. My army.",
+    "Your lands are under new management. Mine.",
+    "Let us call it a merger, shall we?"
+   ],
+   "fortune": [
+    "I would like a refund, please!",
+    "A clerical error! Again!"
+   ]
   },
   "oren": {
    "greet": "Captain Oren of the Hussars! First war, but I have a very fast horse!",
-   "attack": "Charge! For glory!",
-   "win": "Ha! Did you see that?",
-   "lose": "Wait, that was not supposed to happen!",
-   "walkin": "Nobody home? Do not mind if I do!",
+   "attack": [
+    "Charge! For glory!",
+    "Tally ho! After them!",
+    "Right! Swords out! Charge!",
+    "Come on, boys! Last one there buys the drinks!"
+   ],
+   "win": [
+    "Ha! Did you see that?",
+    "Ha! Easy!",
+    "Did you see that? Did everyone see that?",
+    "Magnificent! I am magnificent!"
+   ],
+   "lose": [
+    "Wait, that was not supposed to happen!",
+    "Oh, bother.",
+    "That is, hm. That is not ideal.",
+    "Not fair! They cheated! Probably."
+   ],
+   "walkin": [
+    "Nobody home? Do not mind if I do!",
+    "Oh, it is empty! Mine, mine, mine!",
+    "Nobody there? Brilliant!"
+   ],
    "eliminated": "I will be back. With more horses.",
    "victory": "I won? I won! Somebody tell my mother!",
-   "retreat": "Retreat! Tactical retreat! Very tactical!",
-   "reserves": "Everybody! Everybody charge!",
-   "claim": "Ooh, that one! I call that one!",
-   "cash": "Reinforcements! Oh, this is going to be fun!"
+   "retreat": [
+    "Retreat! Tactical retreat! Very tactical!",
+    "Back! Back! Regroup! Look dashing!",
+    "Strategic withdrawal! It is a real thing!"
+   ],
+   "reserves": [
+    "Everybody! Everybody charge!",
+    "Send everyone! Even the cooks!",
+    "Bring the whole regiment!"
+   ],
+   "claim": [
+    "Ooh, that one! I call that one!",
+    "That one looks fun!",
+    "I want that one! Dibs!"
+   ],
+   "cash": [
+    "Reinforcements! Oh, this is going to be fun!",
+    "More soldiers! This is the best day ever!"
+   ],
+   "capital_took": [
+    "I took your capital! Wait until I write home!",
+    "Your capital! Is it mine? It is mine!",
+    "Ha! A whole capital! With a palace!"
+   ],
+   "capital_lost": [
+    "My capital! Oh, Mother is going to be furious.",
+    "They took my capital? I was using that!",
+    "Right. New capital. Nobody panic. I am not panicking."
+   ],
+   "taunt": [
+    "Hello, neighbour! Coming through!",
+    "Ready or not, here I come!",
+    "You look like you need a good charge, Commander!",
+    "I have a very fast horse, and it is pointed at you!"
+   ],
+   "fortune": [
+    "Do-over! That one did not count!",
+    "Fortune loves a dashing cavalryman!"
+   ]
   },
   "hask": {
    "greet": "Commodore Hask, the Old Bear! Bring me your best, little general, and I will sink it!",
-   "attack": "Haaa! Break them! Burn their boats!",
-   "win": "Hah! Soft as butter!",
-   "lose": "Grr. Lucky blow.",
-   "walkin": "Empty? Then it is mine!",
+   "attack": [
+    "Haaa! Break them! Burn their boats!",
+    "Board them, lads! Ha!",
+    "Give them the broadside!",
+    "Up and at them! The Bear is hungry!"
+   ],
+   "win": [
+    "Hah! Soft as butter!",
+    "Ha ha! Too easy!",
+    "Sunk! Like a stone!",
+    "That is how the Bear does it!"
+   ],
+   "lose": [
+    "Grr. Lucky blow.",
+    "Argh! Lucky shot!",
+    "Bah! They will pay for that one!",
+    "Grr. Patch the hull and go again."
+   ],
+   "walkin": [
+    "Empty? Then it is mine!",
+    "Ha! Nobody on deck? I will take her!",
+    "Empty? The Bear says thank you!"
+   ],
    "eliminated": "Bah! Pour me a drink. I am done.",
    "victory": "The Bear rules land and sea! Ha ha ha!",
-   "retreat": "Back to the ships! I will be back for you!",
-   "reserves": "More! Send more! The Bear is hungry!",
-   "claim": "Ha! Plant my flag there, lads!",
-   "cash": "More lads for the Bear! Ha!"
+   "retreat": [
+    "Back to the ships! I will be back for you!",
+    "Hard about! Back to the ships!",
+    "Fall back, lads! Live to plunder another day!"
+   ],
+   "reserves": [
+    "More! Send more! The Bear is hungry!",
+    "All hands! Everybody in!",
+    "Send the whole fleet! Ha!"
+   ],
+   "claim": [
+    "Ha! Plant my flag there, lads!",
+    "That harbour looks good. Mine!",
+    "Drop anchor there, lads!"
+   ],
+   "cash": [
+    "More lads for the Bear! Ha!",
+    "Fresh crew for the Bear! Ha ha!"
+   ],
+   "capital_took": [
+    "Your capital! Loot the treasury, lads! Ha ha!",
+    "The Bear sits on your throne now!",
+    "What a prize! Hoist my colours!"
+   ],
+   "capital_lost": [
+    "They have taken my capital! Argh! To arms!",
+    "My hall! My beer! They will pay!",
+    "Bah! A capital is just a building. The Bear is still here!"
+   ],
+   "taunt": [
+    "I am coming for you, little general! Ha!",
+    "Hide your ships and lock your doors!",
+    "The Bear smells your border, and it smells weak!",
+    "Run! Or do not. It is more fun if you do not!"
+   ],
+   "fortune": [
+    "Throw the bones again, lads! Ha!",
+    "The sea owes the Bear a better wind!"
+   ]
   },
   "imre": {
    "greet": "Admiral Imre. I have already read your plan.",
-   "attack": "Exactly as planned. Proceed.",
-   "win": "Calculated.",
-   "lose": "Interesting. I will adjust.",
-   "walkin": "You moved. I did not. That was the whole trick.",
+   "attack": [
+    "Exactly as planned. Proceed.",
+    "Execute.",
+    "As predicted. Proceed.",
+    "They are exactly where I expected. Strike."
+   ],
+   "win": [
+    "Calculated.",
+    "Precisely.",
+    "Of course it did.",
+    "The numbers never lie."
+   ],
+   "lose": [
+    "Interesting. I will adjust.",
+    "Unexpected. Noted.",
+    "A variance. It will even out.",
+    "Hm. You have my attention."
+   ],
+   "walkin": [
+    "You moved. I did not. That was the whole trick.",
+    "You left it open. I noticed.",
+    "Empty. I had counted on that."
+   ],
    "eliminated": "Well played. I underestimated you.",
    "victory": "Checkmate.",
-   "retreat": "The odds have turned. We withdraw.",
-   "reserves": "Commit the reserve. Now.",
-   "claim": "That one. You were about to take it, were you not?",
-   "cash": "I have been saving these. Now they matter."
+   "retreat": [
+    "The odds have turned. We withdraw.",
+    "The odds have shifted. Withdraw.",
+    "Preserve the fleet. Fall back."
+   ],
+   "reserves": [
+    "Commit the reserve. Now.",
+    "Now. The reserve.",
+    "All of it. The margin matters."
+   ],
+   "claim": [
+    "That one. You were about to take it, were you not?",
+    "This one. It connects everything.",
+    "That land. I have my reasons."
+   ],
+   "cash": [
+    "I have been saving these. Now they matter.",
+    "Exactly the right moment. Deploy."
+   ],
+   "capital_took": [
+    "Your capital. I have had it marked since round one.",
+    "The seat of your power. Now the seat of mine.",
+    "Your treasury was poorly defended. I corrected that."
+   ],
+   "capital_lost": [
+    "My capital has fallen. Irritating.",
+    "A setback. The court relocates. The plan continues.",
+    "Well played. It will not happen twice."
+   ],
+   "taunt": [
+    "I have already seen your next move, Commander.",
+    "You are predictable. That is not a compliment.",
+    "I found your weakest border.",
+    "Check."
+   ],
+   "fortune": [
+    "Recalculating.",
+    "That result was noise. Again."
+   ]
   }
  }
 }

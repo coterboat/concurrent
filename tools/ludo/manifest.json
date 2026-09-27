@@ -3836,6 +3836,3300 @@
    "out": "assets/art/howto_supply",
    "v": 1,
    "prompt": "A stranded garrison on a bleak hill at dusk, thin and hungry, looking back down an empty road where no baggage waggons are coming, a broken supply cart in the foreground, cold desolate light"
+  },
+  {
+   "id": "line18_advisor_sealed_v2",
+   "kind": "speech",
+   "voice": "voice_advisor",
+   "text": "Sealed and sent. No taking it back now, Commander.",
+   "out": "review/v18_voices/advisor/sealed_v2",
+   "v": 1
+  },
+  {
+   "id": "line18_advisor_sealed_v3",
+   "kind": "speech",
+   "voice": "voice_advisor",
+   "text": "The couriers are riding. Whatever happens next, we chose it.",
+   "out": "review/v18_voices/advisor/sealed_v3",
+   "v": 1
+  },
+  {
+   "id": "line18_advisor_sealed_v4",
+   "kind": "speech",
+   "voice": "voice_advisor",
+   "text": "Signed, sealed, and out of our hands. I do love this part.",
+   "out": "review/v18_voices/advisor/sealed_v4",
+   "v": 1
+  },
+  {
+   "id": "line18_advisor_sealed_v5",
+   "kind": "speech",
+   "voice": "voice_advisor",
+   "text": "There. Our orders are in. Now we wait for the others to show their hand.",
+   "out": "review/v18_voices/advisor/sealed_v5",
+   "v": 1
+  },
+  {
+   "id": "line18_advisor_reveal_v2",
+   "kind": "speech",
+   "voice": "voice_advisor",
+   "text": "And there they go! Every column on the map, all at once.",
+   "out": "review/v18_voices/advisor/reveal_v2",
+   "v": 1
+  },
+  {
+   "id": "line18_advisor_reveal_v3",
+   "kind": "speech",
+   "voice": "voice_advisor",
+   "text": "The orders are open. Let us see who guessed right.",
+   "out": "review/v18_voices/advisor/reveal_v3",
+   "v": 1
+  },
+  {
+   "id": "line18_advisor_reveal_v4",
+   "kind": "speech",
+   "voice": "voice_advisor",
+   "text": "Look at them all. Half of those arrows are aimed at somebody's mistake.",
+   "out": "review/v18_voices/advisor/reveal_v4",
+   "v": 1
+  },
+  {
+   "id": "line18_advisor_reveal_v5",
+   "kind": "speech",
+   "voice": "voice_advisor",
+   "text": "Everyone moves at once. Somebody is about to have a very bad afternoon.",
+   "out": "review/v18_voices/advisor/reveal_v5",
+   "v": 1
+  },
+  {
+   "id": "line18_advisor_orders_v2",
+   "kind": "speech",
+   "voice": "voice_advisor",
+   "text": "The recruits are in position. Now choose our targets.",
+   "out": "review/v18_voices/advisor/orders_v2",
+   "v": 1
+  },
+  {
+   "id": "line18_advisor_orders_v3",
+   "kind": "speech",
+   "voice": "voice_advisor",
+   "text": "The men are ready. Point them at something worth taking.",
+   "out": "review/v18_voices/advisor/orders_v3",
+   "v": 1
+  },
+  {
+   "id": "line18_advisor_orders_v4",
+   "kind": "speech",
+   "voice": "voice_advisor",
+   "text": "Placements done. Now the interesting part. Who do we hit?",
+   "out": "review/v18_voices/advisor/orders_v4",
+   "v": 1
+  },
+  {
+   "id": "line18_advisor_reinforce_v2",
+   "kind": "speech",
+   "voice": "voice_advisor",
+   "text": "New recruits have arrived. Put them where the enemy can see them.",
+   "out": "review/v18_voices/advisor/reinforce_v2",
+   "v": 1
+  },
+  {
+   "id": "line18_advisor_reinforce_v3",
+   "kind": "speech",
+   "voice": "voice_advisor",
+   "text": "More men for the cause. Strengthen the border, not the barracks.",
+   "out": "review/v18_voices/advisor/reinforce_v3",
+   "v": 1
+  },
+  {
+   "id": "line18_advisor_unplaced_v2",
+   "kind": "speech",
+   "voice": "voice_advisor",
+   "text": "Commander, there are still men standing on the docks. Place them, or lose them.",
+   "out": "review/v18_voices/advisor/unplaced_v2",
+   "v": 1
+  },
+  {
+   "id": "line18_advisor_unplaced_v3",
+   "kind": "speech",
+   "voice": "voice_advisor",
+   "text": "Some of our recruits have no orders yet. Unplaced troops go home at the seal.",
+   "out": "review/v18_voices/advisor/unplaced_v3",
+   "v": 1
+  },
+  {
+   "id": "line18_advisor_maneuver_v2",
+   "kind": "speech",
+   "voice": "voice_advisor",
+   "text": "The guns have gone quiet. Shift the men forward while we can.",
+   "out": "review/v18_voices/advisor/maneuver_v2",
+   "v": 1
+  },
+  {
+   "id": "line18_advisor_maneuver_v3",
+   "kind": "speech",
+   "voice": "voice_advisor",
+   "text": "A moment's peace. Use it. March the reserves up to the border.",
+   "out": "review/v18_voices/advisor/maneuver_v3",
+   "v": 1
+  },
+  {
+   "id": "line18_advisor_maneuver_v4",
+   "kind": "speech",
+   "voice": "voice_advisor",
+   "text": "Regroup, Commander. Idle soldiers in the rear win nothing.",
+   "out": "review/v18_voices/advisor/maneuver_v4",
+   "v": 1
+  },
+  {
+   "id": "line18_advisor_surges_v2",
+   "kind": "speech",
+   "voice": "voice_advisor",
+   "text": "The breakthroughs charge on! Hold on to your hat.",
+   "out": "review/v18_voices/advisor/surges_v2",
+   "v": 1
+  },
+  {
+   "id": "line18_advisor_surges_v3",
+   "kind": "speech",
+   "voice": "voice_advisor",
+   "text": "Here come the surges, all at once. Steady now.",
+   "out": "review/v18_voices/advisor/surges_v3",
+   "v": 1
+  },
+  {
+   "id": "line18_advisor_opening_good_v2",
+   "kind": "speech",
+   "voice": "voice_advisor",
+   "text": "A fine start! They are wavering, Commander.",
+   "out": "review/v18_voices/advisor/opening_good_v2",
+   "v": 1
+  },
+  {
+   "id": "line18_advisor_opening_good_v3",
+   "kind": "speech",
+   "voice": "voice_advisor",
+   "text": "Their line is buckling. Keep at them!",
+   "out": "review/v18_voices/advisor/opening_good_v3",
+   "v": 1
+  },
+  {
+   "id": "line18_advisor_opening_good_v4",
+   "kind": "speech",
+   "voice": "voice_advisor",
+   "text": "Good shooting! The day is ours if we hold our nerve.",
+   "out": "review/v18_voices/advisor/opening_good_v4",
+   "v": 1
+  },
+  {
+   "id": "line18_advisor_opening_bad_v2",
+   "kind": "speech",
+   "voice": "voice_advisor",
+   "text": "That went poorly. Cut our losses, or double down?",
+   "out": "review/v18_voices/advisor/opening_bad_v2",
+   "v": 1
+  },
+  {
+   "id": "line18_advisor_opening_bad_v3",
+   "kind": "speech",
+   "voice": "voice_advisor",
+   "text": "They are giving as good as they get. Your call, Commander.",
+   "out": "review/v18_voices/advisor/opening_bad_v3",
+   "v": 1
+  },
+  {
+   "id": "line18_advisor_opening_bad_v4",
+   "kind": "speech",
+   "voice": "voice_advisor",
+   "text": "An ugly start. The dice are not with us yet.",
+   "out": "review/v18_voices/advisor/opening_bad_v4",
+   "v": 1
+  },
+  {
+   "id": "line18_advisor_cut_off_v2",
+   "kind": "speech",
+   "voice": "voice_advisor",
+   "text": "Nowhere to fall back to, Commander. It is this field or nothing.",
+   "out": "review/v18_voices/advisor/cut_off_v2",
+   "v": 1
+  },
+  {
+   "id": "line18_advisor_cut_off_v3",
+   "kind": "speech",
+   "voice": "voice_advisor",
+   "text": "No retreat from here. The men know it. So do I.",
+   "out": "review/v18_voices/advisor/cut_off_v3",
+   "v": 1
+  },
+  {
+   "id": "line18_advisor_press_v2",
+   "kind": "speech",
+   "voice": "voice_advisor",
+   "text": "Forward! Do not give them a moment to breathe!",
+   "out": "review/v18_voices/advisor/press_v2",
+   "v": 1
+  },
+  {
+   "id": "line18_advisor_press_v3",
+   "kind": "speech",
+   "voice": "voice_advisor",
+   "text": "At them again, lads!",
+   "out": "review/v18_voices/advisor/press_v3",
+   "v": 1
+  },
+  {
+   "id": "line18_advisor_press_v4",
+   "kind": "speech",
+   "voice": "voice_advisor",
+   "text": "Press on! We have them now.",
+   "out": "review/v18_voices/advisor/press_v4",
+   "v": 1
+  },
+  {
+   "id": "line18_advisor_retreat_v2",
+   "kind": "speech",
+   "voice": "voice_advisor",
+   "text": "Pull them back, Commander. Live to fight another round.",
+   "out": "review/v18_voices/advisor/retreat_v2",
+   "v": 1
+  },
+  {
+   "id": "line18_advisor_retreat_v3",
+   "kind": "speech",
+   "voice": "voice_advisor",
+   "text": "Fall back in good order. There is no shame in it.",
+   "out": "review/v18_voices/advisor/retreat_v3",
+   "v": 1
+  },
+  {
+   "id": "line18_advisor_reserves_v2",
+   "kind": "speech",
+   "voice": "voice_advisor",
+   "text": "Bring up the reserves! Throw them in!",
+   "out": "review/v18_voices/advisor/reserves_v2",
+   "v": 1
+  },
+  {
+   "id": "line18_advisor_reserves_v3",
+   "kind": "speech",
+   "voice": "voice_advisor",
+   "text": "Every man we have, Commander. Now is the moment.",
+   "out": "review/v18_voices/advisor/reserves_v3",
+   "v": 1
+  },
+  {
+   "id": "line18_advisor_melee_v2",
+   "kind": "speech",
+   "voice": "voice_advisor",
+   "text": "Three armies, one field. Chaos, Commander. Glorious chaos.",
+   "out": "review/v18_voices/advisor/melee_v2",
+   "v": 1
+  },
+  {
+   "id": "line18_advisor_melee_v3",
+   "kind": "speech",
+   "voice": "voice_advisor",
+   "text": "Everyone has come to the same party. Keep your head down.",
+   "out": "review/v18_voices/advisor/melee_v3",
+   "v": 1
+  },
+  {
+   "id": "line18_advisor_scramble_v2",
+   "kind": "speech",
+   "voice": "voice_advisor",
+   "text": "The garrison is gone, and now the wolves turn on each other!",
+   "out": "review/v18_voices/advisor/scramble_v2",
+   "v": 1
+  },
+  {
+   "id": "line18_advisor_scramble_v3",
+   "kind": "speech",
+   "voice": "voice_advisor",
+   "text": "Nobody holds it yet. Now the victors fight for the spoils!",
+   "out": "review/v18_voices/advisor/scramble_v3",
+   "v": 1
+  },
+  {
+   "id": "line18_advisor_walkin_us_v2",
+   "kind": "speech",
+   "voice": "voice_advisor",
+   "text": "They left the door open and we walked right in. Splendid!",
+   "out": "review/v18_voices/advisor/walkin_us_v2",
+   "v": 1
+  },
+  {
+   "id": "line18_advisor_walkin_us_v3",
+   "kind": "speech",
+   "voice": "voice_advisor",
+   "text": "Not a soul defending it. Thank you kindly.",
+   "out": "review/v18_voices/advisor/walkin_us_v3",
+   "v": 1
+  },
+  {
+   "id": "line18_advisor_walkin_us_v4",
+   "kind": "speech",
+   "voice": "voice_advisor",
+   "text": "Empty! Oh, that is careless of them. Ours now.",
+   "out": "review/v18_voices/advisor/walkin_us_v4",
+   "v": 1
+  },
+  {
+   "id": "line18_advisor_walkin_them_v2",
+   "kind": "speech",
+   "voice": "voice_advisor",
+   "text": "Confound it! We left the door open, and they walked right in.",
+   "out": "review/v18_voices/advisor/walkin_them_v2",
+   "v": 1
+  },
+  {
+   "id": "line18_advisor_walkin_them_v3",
+   "kind": "speech",
+   "voice": "voice_advisor",
+   "text": "They strolled into an empty land of ours. Lesson learned, I hope.",
+   "out": "review/v18_voices/advisor/walkin_them_v3",
+   "v": 1
+  },
+  {
+   "id": "line18_advisor_walkin_them_v4",
+   "kind": "speech",
+   "voice": "voice_advisor",
+   "text": "An empty land is an invitation, Commander. They accepted.",
+   "out": "review/v18_voices/advisor/walkin_them_v4",
+   "v": 1
+  },
+  {
+   "id": "line18_advisor_cash_us_v2",
+   "kind": "speech",
+   "voice": "voice_advisor",
+   "text": "The cards are in. Fresh troops, courtesy of the war office.",
+   "out": "review/v18_voices/advisor/cash_us_v2",
+   "v": 1
+  },
+  {
+   "id": "line18_advisor_cash_us_v3",
+   "kind": "speech",
+   "voice": "voice_advisor",
+   "text": "Cashed in! Call up the regiments.",
+   "out": "review/v18_voices/advisor/cash_us_v3",
+   "v": 1
+  },
+  {
+   "id": "line18_advisor_cash_them_v2",
+   "kind": "speech",
+   "voice": "voice_advisor",
+   "text": "They have cashed in their cards. Mind the border, Commander.",
+   "out": "review/v18_voices/advisor/cash_them_v2",
+   "v": 1
+  },
+  {
+   "id": "line18_advisor_cash_them_v3",
+   "kind": "speech",
+   "voice": "voice_advisor",
+   "text": "Fresh troops for the enemy. Brace yourself.",
+   "out": "review/v18_voices/advisor/cash_them_v3",
+   "v": 1
+  },
+  {
+   "id": "line18_advisor_enemy_out_v2",
+   "kind": "speech",
+   "voice": "voice_advisor",
+   "text": "Another banner falls. The table grows smaller.",
+   "out": "review/v18_voices/advisor/enemy_out_v2",
+   "v": 1
+  },
+  {
+   "id": "line18_advisor_enemy_out_v3",
+   "kind": "speech",
+   "voice": "voice_advisor",
+   "text": "One rival down. The rest will be nervous now.",
+   "out": "review/v18_voices/advisor/enemy_out_v3",
+   "v": 1
+  },
+  {
+   "id": "line18_advisor_cards_seized_v2",
+   "kind": "speech",
+   "voice": "voice_advisor",
+   "text": "Their war chest is ours! Every last card.",
+   "out": "review/v18_voices/advisor/cards_seized_v2",
+   "v": 1
+  },
+  {
+   "id": "line18_advisor_capture_v2",
+   "kind": "speech",
+   "voice": "voice_advisor",
+   "text": "It is ours! Raise the colours!",
+   "out": "review/v18_voices/advisor/capture_v2",
+   "v": 1
+  },
+  {
+   "id": "line18_advisor_capture_v3",
+   "kind": "speech",
+   "voice": "voice_advisor",
+   "text": "Taken! Well fought, Commander.",
+   "out": "review/v18_voices/advisor/capture_v3",
+   "v": 1
+  },
+  {
+   "id": "line18_advisor_capture_v4",
+   "kind": "speech",
+   "voice": "voice_advisor",
+   "text": "The flag goes up. Another one for the map.",
+   "out": "review/v18_voices/advisor/capture_v4",
+   "v": 1
+  },
+  {
+   "id": "line18_advisor_capture_v5",
+   "kind": "speech",
+   "voice": "voice_advisor",
+   "text": "We have it! The men will drink well tonight.",
+   "out": "review/v18_voices/advisor/capture_v5",
+   "v": 1
+  },
+  {
+   "id": "line18_advisor_hold_v2",
+   "kind": "speech",
+   "voice": "voice_advisor",
+   "text": "They came, they bled, they went home. We hold!",
+   "out": "review/v18_voices/advisor/hold_v2",
+   "v": 1
+  },
+  {
+   "id": "line18_advisor_hold_v3",
+   "kind": "speech",
+   "voice": "voice_advisor",
+   "text": "The line held, Commander. Good men, those.",
+   "out": "review/v18_voices/advisor/hold_v3",
+   "v": 1
+  },
+  {
+   "id": "line18_advisor_hold_v4",
+   "kind": "speech",
+   "voice": "voice_advisor",
+   "text": "Repulsed! Send them home with their tails between their legs.",
+   "out": "review/v18_voices/advisor/hold_v4",
+   "v": 1
+  },
+  {
+   "id": "line18_advisor_lost_land_v2",
+   "kind": "speech",
+   "voice": "voice_advisor",
+   "text": "We have lost it, Commander. A bitter blow.",
+   "out": "review/v18_voices/advisor/lost_land_v2",
+   "v": 1
+  },
+  {
+   "id": "line18_advisor_lost_land_v3",
+   "kind": "speech",
+   "voice": "voice_advisor",
+   "text": "The land has fallen. We will be back for it.",
+   "out": "review/v18_voices/advisor/lost_land_v3",
+   "v": 1
+  },
+  {
+   "id": "line18_advisor_lost_land_v4",
+   "kind": "speech",
+   "voice": "voice_advisor",
+   "text": "Gone. Mark it on the map, and mark who took it.",
+   "out": "review/v18_voices/advisor/lost_land_v4",
+   "v": 1
+  },
+  {
+   "id": "line18_advisor_upset_win",
+   "kind": "speech",
+   "voice": "voice_advisor",
+   "text": "Against all odds! I will not pretend I expected that.",
+   "out": "review/v18_voices/advisor/upset_win",
+   "v": 1
+  },
+  {
+   "id": "line18_advisor_upset_win_v2",
+   "kind": "speech",
+   "voice": "voice_advisor",
+   "text": "Well, I never! The dice owed us one.",
+   "out": "review/v18_voices/advisor/upset_win_v2",
+   "v": 1
+  },
+  {
+   "id": "line18_advisor_upset_win_v3",
+   "kind": "speech",
+   "voice": "voice_advisor",
+   "text": "That should not have worked. It worked! Marvellous!",
+   "out": "review/v18_voices/advisor/upset_win_v3",
+   "v": 1
+  },
+  {
+   "id": "line18_advisor_upset_win_v4",
+   "kind": "speech",
+   "voice": "voice_advisor",
+   "text": "A miracle, Commander. Do not get used to it.",
+   "out": "review/v18_voices/advisor/upset_win_v4",
+   "v": 1
+  },
+  {
+   "id": "line18_advisor_upset_loss",
+   "kind": "speech",
+   "voice": "voice_advisor",
+   "text": "Impossible! We had them beaten three times over!",
+   "out": "review/v18_voices/advisor/upset_loss",
+   "v": 1
+  },
+  {
+   "id": "line18_advisor_upset_loss_v2",
+   "kind": "speech",
+   "voice": "voice_advisor",
+   "text": "Of all the rotten luck. Those odds were ours.",
+   "out": "review/v18_voices/advisor/upset_loss_v2",
+   "v": 1
+  },
+  {
+   "id": "line18_advisor_upset_loss_v3",
+   "kind": "speech",
+   "voice": "voice_advisor",
+   "text": "Blast those dice! That was a certainty on paper.",
+   "out": "review/v18_voices/advisor/upset_loss_v3",
+   "v": 1
+  },
+  {
+   "id": "line18_advisor_upset_loss_v4",
+   "kind": "speech",
+   "voice": "voice_advisor",
+   "text": "Sometimes the dice simply hate us, Commander. Today is one of those days.",
+   "out": "review/v18_voices/advisor/upset_loss_v4",
+   "v": 1
+  },
+  {
+   "id": "line18_advisor_upset_loss_v5",
+   "kind": "speech",
+   "voice": "voice_advisor",
+   "text": "Well. That was an outrage. Remember it, and move on.",
+   "out": "review/v18_voices/advisor/upset_loss_v5",
+   "v": 1
+  },
+  {
+   "id": "line18_advisor_close_win",
+   "kind": "speech",
+   "voice": "voice_advisor",
+   "text": "Taken with a single man standing. Close, Commander. Far too close.",
+   "out": "review/v18_voices/advisor/close_win",
+   "v": 1
+  },
+  {
+   "id": "line18_advisor_close_win_v2",
+   "kind": "speech",
+   "voice": "voice_advisor",
+   "text": "One man left, and the land is ours. Give that fellow a medal.",
+   "out": "review/v18_voices/advisor/close_win_v2",
+   "v": 1
+  },
+  {
+   "id": "line18_advisor_close_hold",
+   "kind": "speech",
+   "voice": "voice_advisor",
+   "text": "One soldier left on the walls, and he held! Remarkable.",
+   "out": "review/v18_voices/advisor/close_hold",
+   "v": 1
+  },
+  {
+   "id": "line18_advisor_close_hold_v2",
+   "kind": "speech",
+   "voice": "voice_advisor",
+   "text": "By the skin of our teeth, Commander. But we hold.",
+   "out": "review/v18_voices/advisor/close_hold_v2",
+   "v": 1
+  },
+  {
+   "id": "line18_advisor_good_roll_v2",
+   "kind": "speech",
+   "voice": "voice_advisor",
+   "text": "A cracking volley!",
+   "out": "review/v18_voices/advisor/good_roll_v2",
+   "v": 1
+  },
+  {
+   "id": "line18_advisor_good_roll_v3",
+   "kind": "speech",
+   "voice": "voice_advisor",
+   "text": "Right on target!",
+   "out": "review/v18_voices/advisor/good_roll_v3",
+   "v": 1
+  },
+  {
+   "id": "line18_advisor_bad_roll_v2",
+   "kind": "speech",
+   "voice": "voice_advisor",
+   "text": "Blast!",
+   "out": "review/v18_voices/advisor/bad_roll_v2",
+   "v": 1
+  },
+  {
+   "id": "line18_advisor_bad_roll_v3",
+   "kind": "speech",
+   "voice": "voice_advisor",
+   "text": "Dreadful shooting.",
+   "out": "review/v18_voices/advisor/bad_roll_v3",
+   "v": 1
+  },
+  {
+   "id": "line18_advisor_bad_roll_v4",
+   "kind": "speech",
+   "voice": "voice_advisor",
+   "text": "Oh, come on!",
+   "out": "review/v18_voices/advisor/bad_roll_v4",
+   "v": 1
+  },
+  {
+   "id": "line18_advisor_leader_v2",
+   "kind": "speech",
+   "voice": "voice_advisor",
+   "text": "We are out in front, Commander. Expect company.",
+   "out": "review/v18_voices/advisor/leader_v2",
+   "v": 1
+  },
+  {
+   "id": "line18_advisor_behind_v2",
+   "kind": "speech",
+   "voice": "voice_advisor",
+   "text": "The others are pulling ahead. We need land, and quickly.",
+   "out": "review/v18_voices/advisor/behind_v2",
+   "v": 1
+  },
+  {
+   "id": "line18_advisor_capital_choose",
+   "kind": "speech",
+   "voice": "voice_advisor",
+   "text": "Choose our capital, Commander. Somewhere safe, somewhere central. It pays well, and it fights hard.",
+   "out": "review/v18_voices/advisor/capital_choose",
+   "v": 1
+  },
+  {
+   "id": "line18_advisor_capital_choose_v2",
+   "kind": "speech",
+   "voice": "voice_advisor",
+   "text": "Every empire needs a seat of government. Pick ours wisely.",
+   "out": "review/v18_voices/advisor/capital_choose_v2",
+   "v": 1
+  },
+  {
+   "id": "line18_advisor_capital_move",
+   "kind": "speech",
+   "voice": "voice_advisor",
+   "text": "The court has fled, Commander. Name a new capital, or leave it where it landed.",
+   "out": "review/v18_voices/advisor/capital_move",
+   "v": 1
+  },
+  {
+   "id": "line18_advisor_capital_move_v2",
+   "kind": "speech",
+   "voice": "voice_advisor",
+   "text": "Our government has moved in rather a hurry. Choose a proper home for it.",
+   "out": "review/v18_voices/advisor/capital_move_v2",
+   "v": 1
+  },
+  {
+   "id": "line18_advisor_capital_taken",
+   "kind": "speech",
+   "voice": "voice_advisor",
+   "text": "Their capital is ours! Plunder the treasury!",
+   "out": "review/v18_voices/advisor/capital_taken",
+   "v": 1
+  },
+  {
+   "id": "line18_advisor_capital_taken_v2",
+   "kind": "speech",
+   "voice": "voice_advisor",
+   "text": "We have taken their seat of government! Half their cards, and a city full of recruits.",
+   "out": "review/v18_voices/advisor/capital_taken_v2",
+   "v": 1
+  },
+  {
+   "id": "line18_advisor_capital_taken_v3",
+   "kind": "speech",
+   "voice": "voice_advisor",
+   "text": "Their crown has fallen! Loot the vaults, lads!",
+   "out": "review/v18_voices/advisor/capital_taken_v3",
+   "v": 1
+  },
+  {
+   "id": "line18_advisor_capital_lost",
+   "kind": "speech",
+   "voice": "voice_advisor",
+   "text": "Our capital has fallen! The treasury is plundered.",
+   "out": "review/v18_voices/advisor/capital_lost",
+   "v": 1
+  },
+  {
+   "id": "line18_advisor_capital_lost_v2",
+   "kind": "speech",
+   "voice": "voice_advisor",
+   "text": "They have taken the capital, Commander. The court is fleeing.",
+   "out": "review/v18_voices/advisor/capital_lost_v2",
+   "v": 1
+  },
+  {
+   "id": "line18_advisor_capital_lost_v3",
+   "kind": "speech",
+   "voice": "voice_advisor",
+   "text": "A black day. Our capital is in enemy hands.",
+   "out": "review/v18_voices/advisor/capital_lost_v3",
+   "v": 1
+  },
+  {
+   "id": "line18_varek_attack_v2",
+   "kind": "speech",
+   "voice": "voice2_varek",
+   "text": "Forward. Steady ranks.",
+   "out": "review/v18_voices/varek/attack_v2",
+   "v": 1
+  },
+  {
+   "id": "line18_varek_attack_v3",
+   "kind": "speech",
+   "voice": "voice2_varek",
+   "text": "Take the ground. Hold it.",
+   "out": "review/v18_voices/varek/attack_v3",
+   "v": 1
+  },
+  {
+   "id": "line18_varek_attack_v4",
+   "kind": "speech",
+   "voice": "voice2_varek",
+   "text": "Advance, and do not stop until it is ours.",
+   "out": "review/v18_voices/varek/attack_v4",
+   "v": 1
+  },
+  {
+   "id": "line18_varek_win_v2",
+   "kind": "speech",
+   "voice": "voice2_varek",
+   "text": "Of course.",
+   "out": "review/v18_voices/varek/win_v2",
+   "v": 1
+  },
+  {
+   "id": "line18_varek_win_v3",
+   "kind": "speech",
+   "voice": "voice2_varek",
+   "text": "The ground is ours. Next.",
+   "out": "review/v18_voices/varek/win_v3",
+   "v": 1
+  },
+  {
+   "id": "line18_varek_win_v4",
+   "kind": "speech",
+   "voice": "voice2_varek",
+   "text": "They broke. They always break.",
+   "out": "review/v18_voices/varek/win_v4",
+   "v": 1
+  },
+  {
+   "id": "line18_varek_lose_v2",
+   "kind": "speech",
+   "voice": "voice2_varek",
+   "text": "Noted.",
+   "out": "review/v18_voices/varek/lose_v2",
+   "v": 1
+  },
+  {
+   "id": "line18_varek_lose_v3",
+   "kind": "speech",
+   "voice": "voice2_varek",
+   "text": "A costly lesson. For them, eventually.",
+   "out": "review/v18_voices/varek/lose_v3",
+   "v": 1
+  },
+  {
+   "id": "line18_varek_lose_v4",
+   "kind": "speech",
+   "voice": "voice2_varek",
+   "text": "Bury the dead. We go again.",
+   "out": "review/v18_voices/varek/lose_v4",
+   "v": 1
+  },
+  {
+   "id": "line18_varek_walkin_v2",
+   "kind": "speech",
+   "voice": "voice2_varek",
+   "text": "An open gate is an invitation. I accepted.",
+   "out": "review/v18_voices/varek/walkin_v2",
+   "v": 1
+  },
+  {
+   "id": "line18_varek_walkin_v3",
+   "kind": "speech",
+   "voice": "voice2_varek",
+   "text": "You forgot to leave a guard. I did not forget to notice.",
+   "out": "review/v18_voices/varek/walkin_v3",
+   "v": 1
+  },
+  {
+   "id": "line18_varek_retreat_v2",
+   "kind": "speech",
+   "voice": "voice2_varek",
+   "text": "Withdraw in good order. Discipline.",
+   "out": "review/v18_voices/varek/retreat_v2",
+   "v": 1
+  },
+  {
+   "id": "line18_varek_retreat_v3",
+   "kind": "speech",
+   "voice": "voice2_varek",
+   "text": "Enough. Pull them back.",
+   "out": "review/v18_voices/varek/retreat_v3",
+   "v": 1
+  },
+  {
+   "id": "line18_varek_reserves_v2",
+   "kind": "speech",
+   "voice": "voice2_varek",
+   "text": "Commit the reserve. Finish it.",
+   "out": "review/v18_voices/varek/reserves_v2",
+   "v": 1
+  },
+  {
+   "id": "line18_varek_reserves_v3",
+   "kind": "speech",
+   "voice": "voice2_varek",
+   "text": "Every man forward. Now.",
+   "out": "review/v18_voices/varek/reserves_v3",
+   "v": 1
+  },
+  {
+   "id": "line18_varek_cash_v2",
+   "kind": "speech",
+   "voice": "voice2_varek",
+   "text": "The war office sends its compliments. And its regiments.",
+   "out": "review/v18_voices/varek/cash_v2",
+   "v": 1
+  },
+  {
+   "id": "line18_varek_claim_v2",
+   "kind": "speech",
+   "voice": "voice2_varek",
+   "text": "Here. We build from here.",
+   "out": "review/v18_voices/varek/claim_v2",
+   "v": 1
+  },
+  {
+   "id": "line18_varek_claim_v3",
+   "kind": "speech",
+   "voice": "voice2_varek",
+   "text": "A sound position. Mine.",
+   "out": "review/v18_voices/varek/claim_v3",
+   "v": 1
+  },
+  {
+   "id": "line18_varek_capital_took",
+   "kind": "speech",
+   "voice": "voice2_varek",
+   "text": "Your capital is mine. Your treasury too.",
+   "out": "review/v18_voices/varek/capital_took",
+   "v": 1
+  },
+  {
+   "id": "line18_varek_capital_took_v2",
+   "kind": "speech",
+   "voice": "voice2_varek",
+   "text": "The seat of your government now flies my colours.",
+   "out": "review/v18_voices/varek/capital_took_v2",
+   "v": 1
+  },
+  {
+   "id": "line18_varek_capital_took_v3",
+   "kind": "speech",
+   "voice": "voice2_varek",
+   "text": "A capital is only stone. You should have held it.",
+   "out": "review/v18_voices/varek/capital_took_v3",
+   "v": 1
+  },
+  {
+   "id": "line18_varek_capital_lost",
+   "kind": "speech",
+   "voice": "voice2_varek",
+   "text": "They have taken my capital. They will not keep it.",
+   "out": "review/v18_voices/varek/capital_lost",
+   "v": 1
+  },
+  {
+   "id": "line18_varek_capital_lost_v2",
+   "kind": "speech",
+   "voice": "voice2_varek",
+   "text": "The capital falls. The war does not.",
+   "out": "review/v18_voices/varek/capital_lost_v2",
+   "v": 1
+  },
+  {
+   "id": "line18_varek_capital_lost_v3",
+   "kind": "speech",
+   "voice": "voice2_varek",
+   "text": "Move the court. We fight on.",
+   "out": "review/v18_voices/varek/capital_lost_v3",
+   "v": 1
+  },
+  {
+   "id": "line18_varek_taunt",
+   "kind": "speech",
+   "voice": "voice2_varek",
+   "text": "I see your border, Commander. It is thin.",
+   "out": "review/v18_voices/varek/taunt",
+   "v": 1
+  },
+  {
+   "id": "line18_varek_taunt_v2",
+   "kind": "speech",
+   "voice": "voice2_varek",
+   "text": "My columns are marching. I would dig in, if I were you.",
+   "out": "review/v18_voices/varek/taunt_v2",
+   "v": 1
+  },
+  {
+   "id": "line18_varek_taunt_v3",
+   "kind": "speech",
+   "voice": "voice2_varek",
+   "text": "You have something of mine. I am coming to collect it.",
+   "out": "review/v18_voices/varek/taunt_v3",
+   "v": 1
+  },
+  {
+   "id": "line18_varek_taunt_v4",
+   "kind": "speech",
+   "voice": "voice2_varek",
+   "text": "Brace yourself. This one will hurt.",
+   "out": "review/v18_voices/varek/taunt_v4",
+   "v": 1
+  },
+  {
+   "id": "line18_ysolde_attack_v2",
+   "kind": "speech",
+   "voice": "voice2_ysolde",
+   "text": "March. And do not come back without it.",
+   "out": "review/v18_voices/ysolde/attack_v2",
+   "v": 1
+  },
+  {
+   "id": "line18_ysolde_attack_v3",
+   "kind": "speech",
+   "voice": "voice2_ysolde",
+   "text": "Crush them. Quickly.",
+   "out": "review/v18_voices/ysolde/attack_v3",
+   "v": 1
+  },
+  {
+   "id": "line18_ysolde_attack_v4",
+   "kind": "speech",
+   "voice": "voice2_ysolde",
+   "text": "Take it. I dislike waiting.",
+   "out": "review/v18_voices/ysolde/attack_v4",
+   "v": 1
+  },
+  {
+   "id": "line18_ysolde_win_v2",
+   "kind": "speech",
+   "voice": "voice2_ysolde",
+   "text": "As it should be.",
+   "out": "review/v18_voices/ysolde/win_v2",
+   "v": 1
+  },
+  {
+   "id": "line18_ysolde_win_v3",
+   "kind": "speech",
+   "voice": "voice2_ysolde",
+   "text": "They were never going to hold.",
+   "out": "review/v18_voices/ysolde/win_v3",
+   "v": 1
+  },
+  {
+   "id": "line18_ysolde_win_v4",
+   "kind": "speech",
+   "voice": "voice2_ysolde",
+   "text": "Another province for the Viceroy.",
+   "out": "review/v18_voices/ysolde/win_v4",
+   "v": 1
+  },
+  {
+   "id": "line18_ysolde_lose_v2",
+   "kind": "speech",
+   "voice": "voice2_ysolde",
+   "text": "Unacceptable.",
+   "out": "review/v18_voices/ysolde/lose_v2",
+   "v": 1
+  },
+  {
+   "id": "line18_ysolde_lose_v3",
+   "kind": "speech",
+   "voice": "voice2_ysolde",
+   "text": "Someone will answer for this.",
+   "out": "review/v18_voices/ysolde/lose_v3",
+   "v": 1
+  },
+  {
+   "id": "line18_ysolde_lose_v4",
+   "kind": "speech",
+   "voice": "voice2_ysolde",
+   "text": "You have made an enemy today, Commander.",
+   "out": "review/v18_voices/ysolde/lose_v4",
+   "v": 1
+  },
+  {
+   "id": "line18_ysolde_walkin_v2",
+   "kind": "speech",
+   "voice": "voice2_ysolde",
+   "text": "You left it undefended. How generous.",
+   "out": "review/v18_voices/ysolde/walkin_v2",
+   "v": 1
+  },
+  {
+   "id": "line18_ysolde_walkin_v3",
+   "kind": "speech",
+   "voice": "voice2_ysolde",
+   "text": "An empty province. How very careless.",
+   "out": "review/v18_voices/ysolde/walkin_v3",
+   "v": 1
+  },
+  {
+   "id": "line18_ysolde_retreat_v2",
+   "kind": "speech",
+   "voice": "voice2_ysolde",
+   "text": "Fall back. I will remember this field.",
+   "out": "review/v18_voices/ysolde/retreat_v2",
+   "v": 1
+  },
+  {
+   "id": "line18_ysolde_retreat_v3",
+   "kind": "speech",
+   "voice": "voice2_ysolde",
+   "text": "Withdraw. We choose the next battle.",
+   "out": "review/v18_voices/ysolde/retreat_v3",
+   "v": 1
+  },
+  {
+   "id": "line18_ysolde_reserves_v2",
+   "kind": "speech",
+   "voice": "voice2_ysolde",
+   "text": "Send the guard. All of it.",
+   "out": "review/v18_voices/ysolde/reserves_v2",
+   "v": 1
+  },
+  {
+   "id": "line18_ysolde_reserves_v3",
+   "kind": "speech",
+   "voice": "voice2_ysolde",
+   "text": "Reinforce. I do not accept defeat.",
+   "out": "review/v18_voices/ysolde/reserves_v3",
+   "v": 1
+  },
+  {
+   "id": "line18_ysolde_cash_v2",
+   "kind": "speech",
+   "voice": "voice2_ysolde",
+   "text": "The treasury is open. Raise the regiments.",
+   "out": "review/v18_voices/ysolde/cash_v2",
+   "v": 1
+  },
+  {
+   "id": "line18_ysolde_claim_v2",
+   "kind": "speech",
+   "voice": "voice2_ysolde",
+   "text": "This one is mine. Mark it.",
+   "out": "review/v18_voices/ysolde/claim_v2",
+   "v": 1
+  },
+  {
+   "id": "line18_ysolde_claim_v3",
+   "kind": "speech",
+   "voice": "voice2_ysolde",
+   "text": "I will have this province.",
+   "out": "review/v18_voices/ysolde/claim_v3",
+   "v": 1
+  },
+  {
+   "id": "line18_ysolde_capital_took",
+   "kind": "speech",
+   "voice": "voice2_ysolde",
+   "text": "Your capital kneels to me now.",
+   "out": "review/v18_voices/ysolde/capital_took",
+   "v": 1
+  },
+  {
+   "id": "line18_ysolde_capital_took_v2",
+   "kind": "speech",
+   "voice": "voice2_ysolde",
+   "text": "Your court has fled. Your treasury has not.",
+   "out": "review/v18_voices/ysolde/capital_took_v2",
+   "v": 1
+  },
+  {
+   "id": "line18_ysolde_capital_took_v3",
+   "kind": "speech",
+   "voice": "voice2_ysolde",
+   "text": "A pretty city. I will rename it.",
+   "out": "review/v18_voices/ysolde/capital_took_v3",
+   "v": 1
+  },
+  {
+   "id": "line18_ysolde_capital_lost",
+   "kind": "speech",
+   "voice": "voice2_ysolde",
+   "text": "They dare to sit in my capital?",
+   "out": "review/v18_voices/ysolde/capital_lost",
+   "v": 1
+  },
+  {
+   "id": "line18_ysolde_capital_lost_v2",
+   "kind": "speech",
+   "voice": "voice2_ysolde",
+   "text": "My court moves. My army does not forget.",
+   "out": "review/v18_voices/ysolde/capital_lost_v2",
+   "v": 1
+  },
+  {
+   "id": "line18_ysolde_capital_lost_v3",
+   "kind": "speech",
+   "voice": "voice2_ysolde",
+   "text": "You have taken my capital. Now I will take everything.",
+   "out": "review/v18_voices/ysolde/capital_lost_v3",
+   "v": 1
+  },
+  {
+   "id": "line18_ysolde_taunt",
+   "kind": "speech",
+   "voice": "voice2_ysolde",
+   "text": "Your border is weak, Commander. I can see it from here.",
+   "out": "review/v18_voices/ysolde/taunt",
+   "v": 1
+  },
+  {
+   "id": "line18_ysolde_taunt_v2",
+   "kind": "speech",
+   "voice": "voice2_ysolde",
+   "text": "In my country, we do not knock.",
+   "out": "review/v18_voices/ysolde/taunt_v2",
+   "v": 1
+  },
+  {
+   "id": "line18_ysolde_taunt_v3",
+   "kind": "speech",
+   "voice": "voice2_ysolde",
+   "text": "Look east, Commander. Winter is coming for you.",
+   "out": "review/v18_voices/ysolde/taunt_v3",
+   "v": 1
+  },
+  {
+   "id": "line18_ysolde_taunt_v4",
+   "kind": "speech",
+   "voice": "voice2_ysolde",
+   "text": "I hope you enjoyed that land. You will not keep it.",
+   "out": "review/v18_voices/ysolde/taunt_v4",
+   "v": 1
+  },
+  {
+   "id": "line18_quill_attack_v2",
+   "kind": "speech",
+   "voice": "voice2_quill",
+   "text": "Right, lads. Go and repossess it.",
+   "out": "review/v18_voices/quill/attack_v2",
+   "v": 1
+  },
+  {
+   "id": "line18_quill_attack_v3",
+   "kind": "speech",
+   "voice": "voice2_quill",
+   "text": "Hostile takeover, gentlemen!",
+   "out": "review/v18_voices/quill/attack_v3",
+   "v": 1
+  },
+  {
+   "id": "line18_quill_attack_v4",
+   "kind": "speech",
+   "voice": "voice2_quill",
+   "text": "There is money in that valley. Fetch it.",
+   "out": "review/v18_voices/quill/attack_v4",
+   "v": 1
+  },
+  {
+   "id": "line18_quill_win_v2",
+   "kind": "speech",
+   "voice": "voice2_quill",
+   "text": "Ka-ching!",
+   "out": "review/v18_voices/quill/win_v2",
+   "v": 1
+  },
+  {
+   "id": "line18_quill_win_v3",
+   "kind": "speech",
+   "voice": "voice2_quill",
+   "text": "A very tidy margin.",
+   "out": "review/v18_voices/quill/win_v3",
+   "v": 1
+  },
+  {
+   "id": "line18_quill_win_v4",
+   "kind": "speech",
+   "voice": "voice2_quill",
+   "text": "Add it to the ledger!",
+   "out": "review/v18_voices/quill/win_v4",
+   "v": 1
+  },
+  {
+   "id": "line18_quill_lose_v2",
+   "kind": "speech",
+   "voice": "voice2_quill",
+   "text": "Ooh, that is a write-off.",
+   "out": "review/v18_voices/quill/lose_v2",
+   "v": 1
+  },
+  {
+   "id": "line18_quill_lose_v3",
+   "kind": "speech",
+   "voice": "voice2_quill",
+   "text": "Well, that was a poor investment.",
+   "out": "review/v18_voices/quill/lose_v3",
+   "v": 1
+  },
+  {
+   "id": "line18_quill_lose_v4",
+   "kind": "speech",
+   "voice": "voice2_quill",
+   "text": "Losses, losses. Most disappointing.",
+   "out": "review/v18_voices/quill/lose_v4",
+   "v": 1
+  },
+  {
+   "id": "line18_quill_walkin_v2",
+   "kind": "speech",
+   "voice": "voice2_quill",
+   "text": "Unattended property? Mine, by right of possession.",
+   "out": "review/v18_voices/quill/walkin_v2",
+   "v": 1
+  },
+  {
+   "id": "line18_quill_walkin_v3",
+   "kind": "speech",
+   "voice": "voice2_quill",
+   "text": "Nobody minding the shop? Lovely.",
+   "out": "review/v18_voices/quill/walkin_v3",
+   "v": 1
+  },
+  {
+   "id": "line18_quill_retreat_v2",
+   "kind": "speech",
+   "voice": "voice2_quill",
+   "text": "Pull out, lads. The market has turned.",
+   "out": "review/v18_voices/quill/retreat_v2",
+   "v": 1
+  },
+  {
+   "id": "line18_quill_retreat_v3",
+   "kind": "speech",
+   "voice": "voice2_quill",
+   "text": "Sell! Sell! Back to the ships!",
+   "out": "review/v18_voices/quill/retreat_v3",
+   "v": 1
+  },
+  {
+   "id": "line18_quill_reserves_v2",
+   "kind": "speech",
+   "voice": "voice2_quill",
+   "text": "Throw in the capital! All of it!",
+   "out": "review/v18_voices/quill/reserves_v2",
+   "v": 1
+  },
+  {
+   "id": "line18_quill_reserves_v3",
+   "kind": "speech",
+   "voice": "voice2_quill",
+   "text": "Double down, gentlemen!",
+   "out": "review/v18_voices/quill/reserves_v3",
+   "v": 1
+  },
+  {
+   "id": "line18_quill_cash_v2",
+   "kind": "speech",
+   "voice": "voice2_quill",
+   "text": "Cashing in my chips. With interest.",
+   "out": "review/v18_voices/quill/cash_v2",
+   "v": 1
+  },
+  {
+   "id": "line18_quill_claim_v2",
+   "kind": "speech",
+   "voice": "voice2_quill",
+   "text": "Prime real estate. I will take it.",
+   "out": "review/v18_voices/quill/claim_v2",
+   "v": 1
+  },
+  {
+   "id": "line18_quill_claim_v3",
+   "kind": "speech",
+   "voice": "voice2_quill",
+   "text": "Location, location, location.",
+   "out": "review/v18_voices/quill/claim_v3",
+   "v": 1
+  },
+  {
+   "id": "line18_quill_capital_took",
+   "kind": "speech",
+   "voice": "voice2_quill",
+   "text": "Your treasury? Consider it audited.",
+   "out": "review/v18_voices/quill/capital_took",
+   "v": 1
+  },
+  {
+   "id": "line18_quill_capital_took_v2",
+   "kind": "speech",
+   "voice": "voice2_quill",
+   "text": "What a lovely capital. And such generous vaults!",
+   "out": "review/v18_voices/quill/capital_took_v2",
+   "v": 1
+  },
+  {
+   "id": "line18_quill_capital_took_v3",
+   "kind": "speech",
+   "voice": "voice2_quill",
+   "text": "The Company thanks you for your contribution.",
+   "out": "review/v18_voices/quill/capital_took_v3",
+   "v": 1
+  },
+  {
+   "id": "line18_quill_capital_lost",
+   "kind": "speech",
+   "voice": "voice2_quill",
+   "text": "My counting house! Somebody stop them!",
+   "out": "review/v18_voices/quill/capital_lost",
+   "v": 1
+  },
+  {
+   "id": "line18_quill_capital_lost_v2",
+   "kind": "speech",
+   "voice": "voice2_quill",
+   "text": "They have robbed the treasury! Pack the ledgers, we are moving.",
+   "out": "review/v18_voices/quill/capital_lost_v2",
+   "v": 1
+  },
+  {
+   "id": "line18_quill_capital_lost_v3",
+   "kind": "speech",
+   "voice": "voice2_quill",
+   "text": "A temporary cash flow problem. Temporary!",
+   "out": "review/v18_voices/quill/capital_lost_v3",
+   "v": 1
+  },
+  {
+   "id": "line18_quill_taunt",
+   "kind": "speech",
+   "voice": "voice2_quill",
+   "text": "Nothing personal, Commander. Just business.",
+   "out": "review/v18_voices/quill/taunt",
+   "v": 1
+  },
+  {
+   "id": "line18_quill_taunt_v2",
+   "kind": "speech",
+   "voice": "voice2_quill",
+   "text": "I have made you an offer you cannot refuse. My army.",
+   "out": "review/v18_voices/quill/taunt_v2",
+   "v": 1
+  },
+  {
+   "id": "line18_quill_taunt_v3",
+   "kind": "speech",
+   "voice": "voice2_quill",
+   "text": "Your lands are under new management. Mine.",
+   "out": "review/v18_voices/quill/taunt_v3",
+   "v": 1
+  },
+  {
+   "id": "line18_quill_taunt_v4",
+   "kind": "speech",
+   "voice": "voice2_quill",
+   "text": "Let us call it a merger, shall we?",
+   "out": "review/v18_voices/quill/taunt_v4",
+   "v": 1
+  },
+  {
+   "id": "line18_oren_attack_v2",
+   "kind": "speech",
+   "voice": "voice2_oren",
+   "text": "Tally ho! After them!",
+   "out": "review/v18_voices/oren/attack_v2",
+   "v": 1
+  },
+  {
+   "id": "line18_oren_attack_v3",
+   "kind": "speech",
+   "voice": "voice2_oren",
+   "text": "Right! Swords out! Charge!",
+   "out": "review/v18_voices/oren/attack_v3",
+   "v": 1
+  },
+  {
+   "id": "line18_oren_attack_v4",
+   "kind": "speech",
+   "voice": "voice2_oren",
+   "text": "Come on, boys! Last one there buys the drinks!",
+   "out": "review/v18_voices/oren/attack_v4",
+   "v": 1
+  },
+  {
+   "id": "line18_oren_win_v2",
+   "kind": "speech",
+   "voice": "voice2_oren",
+   "text": "Ha! Easy!",
+   "out": "review/v18_voices/oren/win_v2",
+   "v": 1
+  },
+  {
+   "id": "line18_oren_win_v3",
+   "kind": "speech",
+   "voice": "voice2_oren",
+   "text": "Did you see that? Did everyone see that?",
+   "out": "review/v18_voices/oren/win_v3",
+   "v": 1
+  },
+  {
+   "id": "line18_oren_win_v4",
+   "kind": "speech",
+   "voice": "voice2_oren",
+   "text": "Magnificent! I am magnificent!",
+   "out": "review/v18_voices/oren/win_v4",
+   "v": 1
+  },
+  {
+   "id": "line18_oren_lose_v2",
+   "kind": "speech",
+   "voice": "voice2_oren",
+   "text": "Oh, bother.",
+   "out": "review/v18_voices/oren/lose_v2",
+   "v": 1
+  },
+  {
+   "id": "line18_oren_lose_v3",
+   "kind": "speech",
+   "voice": "voice2_oren",
+   "text": "That is, hm. That is not ideal.",
+   "out": "review/v18_voices/oren/lose_v3",
+   "v": 1
+  },
+  {
+   "id": "line18_oren_lose_v4",
+   "kind": "speech",
+   "voice": "voice2_oren",
+   "text": "Not fair! They cheated! Probably.",
+   "out": "review/v18_voices/oren/lose_v4",
+   "v": 1
+  },
+  {
+   "id": "line18_oren_walkin_v2",
+   "kind": "speech",
+   "voice": "voice2_oren",
+   "text": "Oh, it is empty! Mine, mine, mine!",
+   "out": "review/v18_voices/oren/walkin_v2",
+   "v": 1
+  },
+  {
+   "id": "line18_oren_walkin_v3",
+   "kind": "speech",
+   "voice": "voice2_oren",
+   "text": "Nobody there? Brilliant!",
+   "out": "review/v18_voices/oren/walkin_v3",
+   "v": 1
+  },
+  {
+   "id": "line18_oren_retreat_v2",
+   "kind": "speech",
+   "voice": "voice2_oren",
+   "text": "Back! Back! Regroup! Look dashing!",
+   "out": "review/v18_voices/oren/retreat_v2",
+   "v": 1
+  },
+  {
+   "id": "line18_oren_retreat_v3",
+   "kind": "speech",
+   "voice": "voice2_oren",
+   "text": "Strategic withdrawal! It is a real thing!",
+   "out": "review/v18_voices/oren/retreat_v3",
+   "v": 1
+  },
+  {
+   "id": "line18_oren_reserves_v2",
+   "kind": "speech",
+   "voice": "voice2_oren",
+   "text": "Send everyone! Even the cooks!",
+   "out": "review/v18_voices/oren/reserves_v2",
+   "v": 1
+  },
+  {
+   "id": "line18_oren_reserves_v3",
+   "kind": "speech",
+   "voice": "voice2_oren",
+   "text": "Bring the whole regiment!",
+   "out": "review/v18_voices/oren/reserves_v3",
+   "v": 1
+  },
+  {
+   "id": "line18_oren_cash_v2",
+   "kind": "speech",
+   "voice": "voice2_oren",
+   "text": "More soldiers! This is the best day ever!",
+   "out": "review/v18_voices/oren/cash_v2",
+   "v": 1
+  },
+  {
+   "id": "line18_oren_claim_v2",
+   "kind": "speech",
+   "voice": "voice2_oren",
+   "text": "That one looks fun!",
+   "out": "review/v18_voices/oren/claim_v2",
+   "v": 1
+  },
+  {
+   "id": "line18_oren_claim_v3",
+   "kind": "speech",
+   "voice": "voice2_oren",
+   "text": "I want that one! Dibs!",
+   "out": "review/v18_voices/oren/claim_v3",
+   "v": 1
+  },
+  {
+   "id": "line18_oren_capital_took",
+   "kind": "speech",
+   "voice": "voice2_oren",
+   "text": "I took your capital! Wait until I write home!",
+   "out": "review/v18_voices/oren/capital_took",
+   "v": 1
+  },
+  {
+   "id": "line18_oren_capital_took_v2",
+   "kind": "speech",
+   "voice": "voice2_oren",
+   "text": "Your capital! Is it mine? It is mine!",
+   "out": "review/v18_voices/oren/capital_took_v2",
+   "v": 1
+  },
+  {
+   "id": "line18_oren_capital_took_v3",
+   "kind": "speech",
+   "voice": "voice2_oren",
+   "text": "Ha! A whole capital! With a palace!",
+   "out": "review/v18_voices/oren/capital_took_v3",
+   "v": 1
+  },
+  {
+   "id": "line18_oren_capital_lost",
+   "kind": "speech",
+   "voice": "voice2_oren",
+   "text": "My capital! Oh, Mother is going to be furious.",
+   "out": "review/v18_voices/oren/capital_lost",
+   "v": 1
+  },
+  {
+   "id": "line18_oren_capital_lost_v2",
+   "kind": "speech",
+   "voice": "voice2_oren",
+   "text": "They took my capital? I was using that!",
+   "out": "review/v18_voices/oren/capital_lost_v2",
+   "v": 1
+  },
+  {
+   "id": "line18_oren_capital_lost_v3",
+   "kind": "speech",
+   "voice": "voice2_oren",
+   "text": "Right. New capital. Nobody panic. I am not panicking.",
+   "out": "review/v18_voices/oren/capital_lost_v3",
+   "v": 1
+  },
+  {
+   "id": "line18_oren_taunt",
+   "kind": "speech",
+   "voice": "voice2_oren",
+   "text": "Hello, neighbour! Coming through!",
+   "out": "review/v18_voices/oren/taunt",
+   "v": 1
+  },
+  {
+   "id": "line18_oren_taunt_v2",
+   "kind": "speech",
+   "voice": "voice2_oren",
+   "text": "Ready or not, here I come!",
+   "out": "review/v18_voices/oren/taunt_v2",
+   "v": 1
+  },
+  {
+   "id": "line18_oren_taunt_v3",
+   "kind": "speech",
+   "voice": "voice2_oren",
+   "text": "You look like you need a good charge, Commander!",
+   "out": "review/v18_voices/oren/taunt_v3",
+   "v": 1
+  },
+  {
+   "id": "line18_oren_taunt_v4",
+   "kind": "speech",
+   "voice": "voice2_oren",
+   "text": "I have a very fast horse, and it is pointed at you!",
+   "out": "review/v18_voices/oren/taunt_v4",
+   "v": 1
+  },
+  {
+   "id": "line18_hask_attack_v2",
+   "kind": "speech",
+   "voice": "voice2_hask",
+   "text": "Board them, lads! Ha!",
+   "out": "review/v18_voices/hask/attack_v2",
+   "v": 1
+  },
+  {
+   "id": "line18_hask_attack_v3",
+   "kind": "speech",
+   "voice": "voice2_hask",
+   "text": "Give them the broadside!",
+   "out": "review/v18_voices/hask/attack_v3",
+   "v": 1
+  },
+  {
+   "id": "line18_hask_attack_v4",
+   "kind": "speech",
+   "voice": "voice2_hask",
+   "text": "Up and at them! The Bear is hungry!",
+   "out": "review/v18_voices/hask/attack_v4",
+   "v": 1
+  },
+  {
+   "id": "line18_hask_win_v2",
+   "kind": "speech",
+   "voice": "voice2_hask",
+   "text": "Ha ha! Too easy!",
+   "out": "review/v18_voices/hask/win_v2",
+   "v": 1
+  },
+  {
+   "id": "line18_hask_win_v3",
+   "kind": "speech",
+   "voice": "voice2_hask",
+   "text": "Sunk! Like a stone!",
+   "out": "review/v18_voices/hask/win_v3",
+   "v": 1
+  },
+  {
+   "id": "line18_hask_win_v4",
+   "kind": "speech",
+   "voice": "voice2_hask",
+   "text": "That is how the Bear does it!",
+   "out": "review/v18_voices/hask/win_v4",
+   "v": 1
+  },
+  {
+   "id": "line18_hask_lose_v2",
+   "kind": "speech",
+   "voice": "voice2_hask",
+   "text": "Argh! Lucky shot!",
+   "out": "review/v18_voices/hask/lose_v2",
+   "v": 1
+  },
+  {
+   "id": "line18_hask_lose_v3",
+   "kind": "speech",
+   "voice": "voice2_hask",
+   "text": "Bah! They will pay for that one!",
+   "out": "review/v18_voices/hask/lose_v3",
+   "v": 1
+  },
+  {
+   "id": "line18_hask_lose_v4",
+   "kind": "speech",
+   "voice": "voice2_hask",
+   "text": "Grr. Patch the hull and go again.",
+   "out": "review/v18_voices/hask/lose_v4",
+   "v": 1
+  },
+  {
+   "id": "line18_hask_walkin_v2",
+   "kind": "speech",
+   "voice": "voice2_hask",
+   "text": "Ha! Nobody on deck? I will take her!",
+   "out": "review/v18_voices/hask/walkin_v2",
+   "v": 1
+  },
+  {
+   "id": "line18_hask_walkin_v3",
+   "kind": "speech",
+   "voice": "voice2_hask",
+   "text": "Empty? The Bear says thank you!",
+   "out": "review/v18_voices/hask/walkin_v3",
+   "v": 1
+  },
+  {
+   "id": "line18_hask_retreat_v2",
+   "kind": "speech",
+   "voice": "voice2_hask",
+   "text": "Hard about! Back to the ships!",
+   "out": "review/v18_voices/hask/retreat_v2",
+   "v": 1
+  },
+  {
+   "id": "line18_hask_retreat_v3",
+   "kind": "speech",
+   "voice": "voice2_hask",
+   "text": "Fall back, lads! Live to plunder another day!",
+   "out": "review/v18_voices/hask/retreat_v3",
+   "v": 1
+  },
+  {
+   "id": "line18_hask_reserves_v2",
+   "kind": "speech",
+   "voice": "voice2_hask",
+   "text": "All hands! Everybody in!",
+   "out": "review/v18_voices/hask/reserves_v2",
+   "v": 1
+  },
+  {
+   "id": "line18_hask_reserves_v3",
+   "kind": "speech",
+   "voice": "voice2_hask",
+   "text": "Send the whole fleet! Ha!",
+   "out": "review/v18_voices/hask/reserves_v3",
+   "v": 1
+  },
+  {
+   "id": "line18_hask_cash_v2",
+   "kind": "speech",
+   "voice": "voice2_hask",
+   "text": "Fresh crew for the Bear! Ha ha!",
+   "out": "review/v18_voices/hask/cash_v2",
+   "v": 1
+  },
+  {
+   "id": "line18_hask_claim_v2",
+   "kind": "speech",
+   "voice": "voice2_hask",
+   "text": "That harbour looks good. Mine!",
+   "out": "review/v18_voices/hask/claim_v2",
+   "v": 1
+  },
+  {
+   "id": "line18_hask_claim_v3",
+   "kind": "speech",
+   "voice": "voice2_hask",
+   "text": "Drop anchor there, lads!",
+   "out": "review/v18_voices/hask/claim_v3",
+   "v": 1
+  },
+  {
+   "id": "line18_hask_capital_took",
+   "kind": "speech",
+   "voice": "voice2_hask",
+   "text": "Your capital! Loot the treasury, lads! Ha ha!",
+   "out": "review/v18_voices/hask/capital_took",
+   "v": 1
+  },
+  {
+   "id": "line18_hask_capital_took_v2",
+   "kind": "speech",
+   "voice": "voice2_hask",
+   "text": "The Bear sits on your throne now!",
+   "out": "review/v18_voices/hask/capital_took_v2",
+   "v": 1
+  },
+  {
+   "id": "line18_hask_capital_took_v3",
+   "kind": "speech",
+   "voice": "voice2_hask",
+   "text": "What a prize! Hoist my colours!",
+   "out": "review/v18_voices/hask/capital_took_v3",
+   "v": 1
+  },
+  {
+   "id": "line18_hask_capital_lost",
+   "kind": "speech",
+   "voice": "voice2_hask",
+   "text": "They have taken my capital! Argh! To arms!",
+   "out": "review/v18_voices/hask/capital_lost",
+   "v": 1
+  },
+  {
+   "id": "line18_hask_capital_lost_v2",
+   "kind": "speech",
+   "voice": "voice2_hask",
+   "text": "My hall! My beer! They will pay!",
+   "out": "review/v18_voices/hask/capital_lost_v2",
+   "v": 1
+  },
+  {
+   "id": "line18_hask_capital_lost_v3",
+   "kind": "speech",
+   "voice": "voice2_hask",
+   "text": "Bah! A capital is just a building. The Bear is still here!",
+   "out": "review/v18_voices/hask/capital_lost_v3",
+   "v": 1
+  },
+  {
+   "id": "line18_hask_taunt",
+   "kind": "speech",
+   "voice": "voice2_hask",
+   "text": "I am coming for you, little general! Ha!",
+   "out": "review/v18_voices/hask/taunt",
+   "v": 1
+  },
+  {
+   "id": "line18_hask_taunt_v2",
+   "kind": "speech",
+   "voice": "voice2_hask",
+   "text": "Hide your ships and lock your doors!",
+   "out": "review/v18_voices/hask/taunt_v2",
+   "v": 1
+  },
+  {
+   "id": "line18_hask_taunt_v3",
+   "kind": "speech",
+   "voice": "voice2_hask",
+   "text": "The Bear smells your border, and it smells weak!",
+   "out": "review/v18_voices/hask/taunt_v3",
+   "v": 1
+  },
+  {
+   "id": "line18_hask_taunt_v4",
+   "kind": "speech",
+   "voice": "voice2_hask",
+   "text": "Run! Or do not. It is more fun if you do not!",
+   "out": "review/v18_voices/hask/taunt_v4",
+   "v": 1
+  },
+  {
+   "id": "line18_imre_attack_v2",
+   "kind": "speech",
+   "voice": "voice2_imre",
+   "text": "Execute.",
+   "out": "review/v18_voices/imre/attack_v2",
+   "v": 1
+  },
+  {
+   "id": "line18_imre_attack_v3",
+   "kind": "speech",
+   "voice": "voice2_imre",
+   "text": "As predicted. Proceed.",
+   "out": "review/v18_voices/imre/attack_v3",
+   "v": 1
+  },
+  {
+   "id": "line18_imre_attack_v4",
+   "kind": "speech",
+   "voice": "voice2_imre",
+   "text": "They are exactly where I expected. Strike.",
+   "out": "review/v18_voices/imre/attack_v4",
+   "v": 1
+  },
+  {
+   "id": "line18_imre_win_v2",
+   "kind": "speech",
+   "voice": "voice2_imre",
+   "text": "Precisely.",
+   "out": "review/v18_voices/imre/win_v2",
+   "v": 1
+  },
+  {
+   "id": "line18_imre_win_v3",
+   "kind": "speech",
+   "voice": "voice2_imre",
+   "text": "Of course it did.",
+   "out": "review/v18_voices/imre/win_v3",
+   "v": 1
+  },
+  {
+   "id": "line18_imre_win_v4",
+   "kind": "speech",
+   "voice": "voice2_imre",
+   "text": "The numbers never lie.",
+   "out": "review/v18_voices/imre/win_v4",
+   "v": 1
+  },
+  {
+   "id": "line18_imre_lose_v2",
+   "kind": "speech",
+   "voice": "voice2_imre",
+   "text": "Unexpected. Noted.",
+   "out": "review/v18_voices/imre/lose_v2",
+   "v": 1
+  },
+  {
+   "id": "line18_imre_lose_v3",
+   "kind": "speech",
+   "voice": "voice2_imre",
+   "text": "A variance. It will even out.",
+   "out": "review/v18_voices/imre/lose_v3",
+   "v": 1
+  },
+  {
+   "id": "line18_imre_lose_v4",
+   "kind": "speech",
+   "voice": "voice2_imre",
+   "text": "Hm. You have my attention.",
+   "out": "review/v18_voices/imre/lose_v4",
+   "v": 1
+  },
+  {
+   "id": "line18_imre_walkin_v2",
+   "kind": "speech",
+   "voice": "voice2_imre",
+   "text": "You left it open. I noticed.",
+   "out": "review/v18_voices/imre/walkin_v2",
+   "v": 1
+  },
+  {
+   "id": "line18_imre_walkin_v3",
+   "kind": "speech",
+   "voice": "voice2_imre",
+   "text": "Empty. I had counted on that.",
+   "out": "review/v18_voices/imre/walkin_v3",
+   "v": 1
+  },
+  {
+   "id": "line18_imre_retreat_v2",
+   "kind": "speech",
+   "voice": "voice2_imre",
+   "text": "The odds have shifted. Withdraw.",
+   "out": "review/v18_voices/imre/retreat_v2",
+   "v": 1
+  },
+  {
+   "id": "line18_imre_retreat_v3",
+   "kind": "speech",
+   "voice": "voice2_imre",
+   "text": "Preserve the fleet. Fall back.",
+   "out": "review/v18_voices/imre/retreat_v3",
+   "v": 1
+  },
+  {
+   "id": "line18_imre_reserves_v2",
+   "kind": "speech",
+   "voice": "voice2_imre",
+   "text": "Now. The reserve.",
+   "out": "review/v18_voices/imre/reserves_v2",
+   "v": 1
+  },
+  {
+   "id": "line18_imre_reserves_v3",
+   "kind": "speech",
+   "voice": "voice2_imre",
+   "text": "All of it. The margin matters.",
+   "out": "review/v18_voices/imre/reserves_v3",
+   "v": 1
+  },
+  {
+   "id": "line18_imre_cash_v2",
+   "kind": "speech",
+   "voice": "voice2_imre",
+   "text": "Exactly the right moment. Deploy.",
+   "out": "review/v18_voices/imre/cash_v2",
+   "v": 1
+  },
+  {
+   "id": "line18_imre_claim_v2",
+   "kind": "speech",
+   "voice": "voice2_imre",
+   "text": "This one. It connects everything.",
+   "out": "review/v18_voices/imre/claim_v2",
+   "v": 1
+  },
+  {
+   "id": "line18_imre_claim_v3",
+   "kind": "speech",
+   "voice": "voice2_imre",
+   "text": "That land. I have my reasons.",
+   "out": "review/v18_voices/imre/claim_v3",
+   "v": 1
+  },
+  {
+   "id": "line18_imre_capital_took",
+   "kind": "speech",
+   "voice": "voice2_imre",
+   "text": "Your capital. I have had it marked since round one.",
+   "out": "review/v18_voices/imre/capital_took",
+   "v": 1
+  },
+  {
+   "id": "line18_imre_capital_took_v2",
+   "kind": "speech",
+   "voice": "voice2_imre",
+   "text": "The seat of your power. Now the seat of mine.",
+   "out": "review/v18_voices/imre/capital_took_v2",
+   "v": 1
+  },
+  {
+   "id": "line18_imre_capital_took_v3",
+   "kind": "speech",
+   "voice": "voice2_imre",
+   "text": "Your treasury was poorly defended. I corrected that.",
+   "out": "review/v18_voices/imre/capital_took_v3",
+   "v": 1
+  },
+  {
+   "id": "line18_imre_capital_lost",
+   "kind": "speech",
+   "voice": "voice2_imre",
+   "text": "My capital has fallen. Irritating.",
+   "out": "review/v18_voices/imre/capital_lost",
+   "v": 1
+  },
+  {
+   "id": "line18_imre_capital_lost_v2",
+   "kind": "speech",
+   "voice": "voice2_imre",
+   "text": "A setback. The court relocates. The plan continues.",
+   "out": "review/v18_voices/imre/capital_lost_v2",
+   "v": 1
+  },
+  {
+   "id": "line18_imre_capital_lost_v3",
+   "kind": "speech",
+   "voice": "voice2_imre",
+   "text": "Well played. It will not happen twice.",
+   "out": "review/v18_voices/imre/capital_lost_v3",
+   "v": 1
+  },
+  {
+   "id": "line18_imre_taunt",
+   "kind": "speech",
+   "voice": "voice2_imre",
+   "text": "I have already seen your next move, Commander.",
+   "out": "review/v18_voices/imre/taunt",
+   "v": 1
+  },
+  {
+   "id": "line18_imre_taunt_v2",
+   "kind": "speech",
+   "voice": "voice2_imre",
+   "text": "You are predictable. That is not a compliment.",
+   "out": "review/v18_voices/imre/taunt_v2",
+   "v": 1
+  },
+  {
+   "id": "line18_imre_taunt_v3",
+   "kind": "speech",
+   "voice": "voice2_imre",
+   "text": "I found your weakest border.",
+   "out": "review/v18_voices/imre/taunt_v3",
+   "v": 1
+  },
+  {
+   "id": "line18_imre_taunt_v4",
+   "kind": "speech",
+   "voice": "voice2_imre",
+   "text": "Check.",
+   "out": "review/v18_voices/imre/taunt_v4",
+   "v": 1
+  },
+  {
+   "id": "sfx_capital_fall",
+   "kind": "sfx",
+   "duration": 4,
+   "out": "assets/raw/sfx/capital_fall",
+   "prompt": "a great city bell tolling slowly and heavily while a cannon booms and a distant crowd cries out in dismay, a capital city falling, no music"
+  },
+  {
+   "id": "howto_capital",
+   "kind": "image",
+   "type": "art",
+   "aspect": "ar_16_9",
+   "out": "assets/art/howto_capital",
+   "v": 2,
+   "prompt": "A grand capital city at dusk crowned by a domed palace flying a great banner, cannon smoke drifting over its walls as a victorious column of Napoleonic-era infantry in red coats, shakos and crossbelts, muskets with fixed bayonets, marches through the broken city gate while soldiers carry off chests of treasure, 1810s, no armour, no knights, dramatic golden light"
+  },
+  {
+   "id": "line18_advisor_fortune_us",
+   "kind": "speech",
+   "voice": "voice_advisor",
+   "text": "Fortune, favour us now! Throw again!",
+   "out": "review/v18b_voices/advisor/fortune_us",
+   "v": 1
+  },
+  {
+   "id": "line18_advisor_fortune_us_v2",
+   "kind": "speech",
+   "voice": "voice_advisor",
+   "text": "Once more, lads! Fortune is with us!",
+   "out": "review/v18b_voices/advisor/fortune_us_v2",
+   "v": 1
+  },
+  {
+   "id": "line18_advisor_fortune_us_v3",
+   "kind": "speech",
+   "voice": "voice_advisor",
+   "text": "That never happened, Commander. Throw again!",
+   "out": "review/v18b_voices/advisor/fortune_us_v3",
+   "v": 1
+  },
+  {
+   "id": "line18_advisor_fortune_them",
+   "kind": "speech",
+   "voice": "voice_advisor",
+   "text": "They have called on Fortune. The cheek of it.",
+   "out": "review/v18b_voices/advisor/fortune_them",
+   "v": 1
+  },
+  {
+   "id": "line18_advisor_fortune_them_v2",
+   "kind": "speech",
+   "voice": "voice_advisor",
+   "text": "Fortune favours them. For now.",
+   "out": "review/v18b_voices/advisor/fortune_them_v2",
+   "v": 1
+  },
+  {
+   "id": "line18_advisor_fortune_them_v3",
+   "kind": "speech",
+   "voice": "voice_advisor",
+   "text": "They have bought themselves another throw. Steady, Commander.",
+   "out": "review/v18b_voices/advisor/fortune_them_v3",
+   "v": 1
+  },
+  {
+   "id": "line18_advisor_fortune_gained",
+   "kind": "speech",
+   "voice": "voice_advisor",
+   "text": "Fortune owes us one, Commander. The dice have been cruel.",
+   "out": "review/v18b_voices/advisor/fortune_gained",
+   "v": 1
+  },
+  {
+   "id": "line18_advisor_fortune_gained_v2",
+   "kind": "speech",
+   "voice": "voice_advisor",
+   "text": "The dice have robbed us once too often. Fortune is in our debt.",
+   "out": "review/v18b_voices/advisor/fortune_gained_v2",
+   "v": 1
+  },
+  {
+   "id": "line18_advisor_fortune_gained_v3",
+   "kind": "speech",
+   "voice": "voice_advisor",
+   "text": "A favour banked. Spend it when the dice turn on us.",
+   "out": "review/v18b_voices/advisor/fortune_gained_v3",
+   "v": 1
+  },
+  {
+   "id": "line18_varek_fortune",
+   "kind": "speech",
+   "voice": "voice2_varek",
+   "text": "Again. Properly, this time.",
+   "out": "review/v18b_voices/varek/fortune",
+   "v": 1
+  },
+  {
+   "id": "line18_varek_fortune_v2",
+   "kind": "speech",
+   "voice": "voice2_varek",
+   "text": "Fortune owes me. I am collecting.",
+   "out": "review/v18b_voices/varek/fortune_v2",
+   "v": 1
+  },
+  {
+   "id": "line18_ysolde_fortune",
+   "kind": "speech",
+   "voice": "voice2_ysolde",
+   "text": "No. We do that again.",
+   "out": "review/v18b_voices/ysolde/fortune",
+   "v": 1
+  },
+  {
+   "id": "line18_ysolde_fortune_v2",
+   "kind": "speech",
+   "voice": "voice2_ysolde",
+   "text": "Fortune serves me, like everyone else.",
+   "out": "review/v18b_voices/ysolde/fortune_v2",
+   "v": 1
+  },
+  {
+   "id": "line18_quill_fortune",
+   "kind": "speech",
+   "voice": "voice2_quill",
+   "text": "I would like a refund, please!",
+   "out": "review/v18b_voices/quill/fortune",
+   "v": 1
+  },
+  {
+   "id": "line18_quill_fortune_v2",
+   "kind": "speech",
+   "voice": "voice2_quill",
+   "text": "A clerical error! Again!",
+   "out": "review/v18b_voices/quill/fortune_v2",
+   "v": 1
+  },
+  {
+   "id": "line18_oren_fortune",
+   "kind": "speech",
+   "voice": "voice2_oren",
+   "text": "Do-over! That one did not count!",
+   "out": "review/v18b_voices/oren/fortune",
+   "v": 1
+  },
+  {
+   "id": "line18_oren_fortune_v2",
+   "kind": "speech",
+   "voice": "voice2_oren",
+   "text": "Fortune loves a dashing cavalryman!",
+   "out": "review/v18b_voices/oren/fortune_v2",
+   "v": 1
+  },
+  {
+   "id": "line18_hask_fortune",
+   "kind": "speech",
+   "voice": "voice2_hask",
+   "text": "Throw the bones again, lads! Ha!",
+   "out": "review/v18b_voices/hask/fortune",
+   "v": 1
+  },
+  {
+   "id": "line18_hask_fortune_v2",
+   "kind": "speech",
+   "voice": "voice2_hask",
+   "text": "The sea owes the Bear a better wind!",
+   "out": "review/v18b_voices/hask/fortune_v2",
+   "v": 1
+  },
+  {
+   "id": "line18_imre_fortune",
+   "kind": "speech",
+   "voice": "voice2_imre",
+   "text": "Recalculating.",
+   "out": "review/v18b_voices/imre/fortune",
+   "v": 1
+  },
+  {
+   "id": "line18_imre_fortune_v2",
+   "kind": "speech",
+   "voice": "voice2_imre",
+   "text": "That result was noise. Again.",
+   "out": "review/v18b_voices/imre/fortune_v2",
+   "v": 1
+  },
+  {
+   "id": "v19_tex_felt",
+   "kind": "image",
+   "type": "texture",
+   "aspect": "ar_1_1",
+   "style": false,
+   "out": "assets/raw/v19/dice/felt",
+   "prompt": "Seamless tileable texture of green billiard-table baize seen flat from directly above: a fine woven wool felt with a soft short nap, deep rich green, very subtle fibre variation and the faintest wear, even lighting, no borders, no vignette, no seams, no objects, flat",
+   "group": "G1"
+  },
+  {
+   "id": "v19_tex_rail",
+   "kind": "image",
+   "type": "texture",
+   "aspect": "ar_1_1",
+   "style": false,
+   "out": "assets/raw/v19/dice/rail_wood",
+   "prompt": "Seamless tileable texture of polished dark mahogany wood: long straight grain running horizontally from left to right, deep reddish brown with a warm lacquered sheen and subtle ribbon figure, even lighting, flat, no knots, no borders, no objects",
+   "group": "G1"
+  },
+  {
+   "id": "v19_tex_brass",
+   "kind": "image",
+   "type": "texture",
+   "aspect": "ar_1_1",
+   "style": false,
+   "out": "assets/raw/v19/dice/brass",
+   "prompt": "Seamless tileable texture of aged brushed brass metal: fine horizontal brushing lines, warm golden yellow with a soft darker patina and faint tarnish, even lighting, flat, no borders, no objects",
+   "group": "G1"
+  },
+  {
+   "id": "v19_plaque",
+   "kind": "image",
+   "type": "ui_asset",
+   "aspect": "ar_19_9",
+   "cutout": true,
+   "out": "assets/raw/v19/dice/plaque",
+   "prompt": "An empty horizontal nameplate, long and narrow, about three times as wide as it is tall: a panel of aged cream parchment set in an ornate burnished brass frame with rivets at the corners and small laurel scrolls at each end, blank with no text and no symbols, front view, isolated on plain white background",
+   "group": "G1"
+  },
+  {
+   "id": "v19_fortune_star",
+   "kind": "image",
+   "type": "ui_asset",
+   "aspect": "ar_1_1",
+   "cutout": true,
+   "out": "assets/raw/v19/dice/fortune_star",
+   "prompt": "A gold eight-pointed star medallion: eight sharp polished gold rays, four long and four short, around a round domed gold centre, bold simple silhouette that reads at a tiny size, bright and lucky, front view, no text, isolated on plain white background",
+   "group": "G1"
+  },
+  {
+   "id": "v19_fortune_empty",
+   "kind": "edit",
+   "cutout": true,
+   "out": "assets/raw/v19/dice/fortune_empty",
+   "prompt": "Turn it into the empty socket where the star would sit: the same eight-pointed star shape, same size and outline, but as a dim recessed engraving in dull dark grey pewter, unlit and flat, no gold, no shine, no glow, front view, on a plain white background",
+   "group": "G1",
+   "from": "v19_fortune_star"
+  },
+  {
+   "id": "v19_sfx_fortune",
+   "kind": "sfx",
+   "duration": 3,
+   "out": "assets/raw/sfx/fortune",
+   "prompt": "calling on Lady Fortune: a bright magical shimmering swell of a harp glissando and tinkling bells rising quickly, ending on one deep resonant timpani hit, orchestral, no voice",
+   "group": "G1"
+  },
+  {
+   "id": "v19_sfx_fortune_gained",
+   "kind": "sfx",
+   "duration": 2,
+   "out": "assets/raw/sfx/fortune_gained",
+   "prompt": "a soft sparkling chime: a few high glockenspiel and small bell notes twinkling upward, gentle and magical, short, no voice",
+   "group": "G1"
+  },
+  {
+   "id": "v19_howto_fortune",
+   "kind": "image",
+   "type": "art",
+   "aspect": "ar_16_9",
+   "out": "assets/raw/v19/dice/howto_fortune",
+   "prompt": "A Napoleonic-era commander in a dark blue greatcoat with gold epaulettes leans over a candlelit war table covered with maps and tin soldiers; behind him rises a translucent, ghostly Lady Fortune, a classical goddess in flowing robes turning a great spoked wheel of fortune, who tips a single falling ivory die onto the map with one finger; through the open tent behind, regiments of line infantry in shakos and white crossbelts with muskets and fixed bayonets stand in ranks under their colours, 1810s, no armour, no knights, dramatic golden candlelight",
+   "group": "G1"
+  },
+  {
+   "id": "v19_pose_fallen",
+   "kind": "pose",
+   "from_file": "assets/raw/battle/soldier_stand_pad.png",
+   "pose": "Other",
+   "n": 2,
+   "out": "assets/raw/v19/battle/pose_fallen",
+   "prompt": "Side view, the same Napoleonic infantryman lying flat on his back on the ground after being shot, body stretched out horizontally along the ground with his head to the left and his feet to the right, his musket fallen on the ground beside him, still, same scale and same ground line",
+   "group": "G2p"
+  },
+  {
+   "id": "v19_pose_cheer",
+   "kind": "pose",
+   "from_file": "assets/raw/battle/soldier_stand_pad.png",
+   "pose": "Other",
+   "n": 2,
+   "out": "assets/raw/v19/battle/pose_cheer",
+   "prompt": "Side view facing right, the same Napoleonic infantryman cheering in victory: standing, one arm thrust up holding his musket high above his head, the other fist raised, mouth open in a shout",
+   "group": "G2p"
+  },
+  {
+   "id": "v19_pose_reload",
+   "kind": "pose",
+   "from_file": "assets/raw/battle/soldier_stand_pad.png",
+   "pose": "Other",
+   "n": 2,
+   "out": "assets/raw/v19/battle/pose_reload",
+   "prompt": "Side view facing right, the same Napoleonic infantryman reloading: standing with the musket held upright in front of him, its butt on the ground, driving the ramrod down the barrel with his right hand",
+   "group": "G2p"
+  },
+  {
+   "id": "v19_pose_cav_charge",
+   "kind": "pose",
+   "from_file": "assets/raw/battle/cavalry_stand_pad.png",
+   "pose": "Other",
+   "n": 2,
+   "out": "assets/raw/v19/battle/pose_cav_charge",
+   "prompt": "Side view facing right, the same cavalryman charging at full gallop: the horse stretched out with its forelegs reaching forward, the rider leaning forward in the saddle with his sabre pointed straight ahead",
+   "group": "G2p"
+  },
+  {
+   "id": "v19_kf_soldier_volley",
+   "from_file": "assets/raw/battle/soldier_stand_pad.png",
+   "middle_file": "assets/raw/battle/soldier_aim_pad.png",
+   "final_file": "assets/raw/battle/soldier_stand_pad.png",
+   "out": "assets/raw/v19/battle/soldier_volley_kf",
+   "kind": "keyframes",
+   "model": "forge",
+   "duration": 3,
+   "frames": 25,
+   "frame_size": -9,
+   "loop": false,
+   "crop": false,
+   "prompt": "raises the musket to his shoulder and aims it straight ahead to the right, his shoulder kicks back slightly with the recoil, then he lowers the musket back to his shoulder; he stays in side view facing right the whole time and never turns around",
+   "group": "G2",
+   "v": 2
+  },
+  {
+   "id": "v19_kf_soldier_kneel_volley",
+   "from_file": "assets/raw/battle/soldier_stand_pad.png",
+   "middle_file": "assets/raw/battle/soldier_kneel_aim_pad.png",
+   "final_file": "assets/raw/battle/soldier_stand_pad.png",
+   "out": "assets/raw/v19/battle/soldier_kneel_volley_kf",
+   "kind": "keyframes",
+   "model": "forge",
+   "duration": 3,
+   "frames": 25,
+   "frame_size": -9,
+   "loop": false,
+   "crop": false,
+   "prompt": "drops to one knee and aims the musket to the right, jolts back with one sharp recoil, then stands back up with the musket at the shoulder, no smoke",
+   "group": "G2"
+  },
+  {
+   "id": "v19_kf_soldier_charge",
+   "from_file": "assets/raw/battle/soldier_stand_pad.png",
+   "middle_file": "assets/raw/v19/battle/guard_pad.png",
+   "final_file": "assets/raw/battle/soldier_stand_pad.png",
+   "out": "assets/raw/v19/battle/soldier_charge_kf",
+   "kind": "keyframes",
+   "model": "forge",
+   "duration": 3,
+   "frames": 25,
+   "frame_size": -9,
+   "loop": false,
+   "crop": false,
+   "prompt": "brings the musket down and levels the bayonet at the enemy on the right, lunges forward with a bayonet thrust, pulls back and shoulders the musket again; he does not fire, no flash, no smoke, and he stays in side view facing right",
+   "group": "G2",
+   "v": 2
+  },
+  {
+   "id": "v19_kf_soldier_cheer",
+   "from_file": "assets/raw/battle/soldier_stand_pad.png",
+   "middle_file": "assets/raw/v19/battle/cheer_pad.png",
+   "final_file": "assets/raw/battle/soldier_stand_pad.png",
+   "out": "assets/raw/v19/battle/soldier_cheer_kf",
+   "kind": "keyframes",
+   "model": "forge",
+   "duration": 3,
+   "frames": 25,
+   "frame_size": -9,
+   "loop": false,
+   "crop": false,
+   "prompt": "raises his musket high above his head and cheers, shaking it in triumph, then lowers it back to his shoulder; he stays in side view facing right the whole time",
+   "group": "G2",
+   "v": 2
+  },
+  {
+   "id": "v19_kf_soldier_reload",
+   "from_file": "assets/raw/battle/soldier_stand_pad.png",
+   "middle_file": "assets/raw/v19/battle/reload_pad.png",
+   "final_file": "assets/raw/battle/soldier_stand_pad.png",
+   "out": "assets/raw/v19/battle/soldier_reload_kf",
+   "kind": "keyframes",
+   "model": "forge",
+   "duration": 3,
+   "frames": 25,
+   "frame_size": -9,
+   "loop": false,
+   "crop": false,
+   "prompt": "brings the musket upright in front of him, bites a cartridge, rams the ramrod down the barrel twice, then shoulders the musket again",
+   "group": "G2"
+  },
+  {
+   "id": "v19_kf_soldier_fall",
+   "from_file": "assets/raw/battle/soldier_stand_pad.png",
+   "final_file": "assets/raw/v19/battle/fallen_pad.png",
+   "out": "assets/raw/v19/battle/soldier_fall_kf",
+   "kind": "keyframes",
+   "model": "forge",
+   "duration": 3,
+   "frames": 25,
+   "frame_size": -9,
+   "loop": false,
+   "crop": false,
+   "prompt": "is shot in the chest, staggers backward, drops the musket and falls backward onto the ground, ending lying flat and still on his back",
+   "group": "G2"
+  },
+  {
+   "id": "v19_kf_cannon_fire",
+   "from_file": "assets/raw/battle/cannon_stand_pad.png",
+   "final_file": "assets/raw/battle/cannon_stand_pad.png",
+   "out": "assets/raw/v19/battle/cannon_fire_kf",
+   "kind": "keyframes",
+   "model": "forge",
+   "duration": 3,
+   "frames": 25,
+   "frame_size": -9,
+   "loop": false,
+   "crop": false,
+   "prompt": "the gunner touches off the cannon, the cannon jumps and recoils sharply backward to the left on its carriage while the crew lean away, then the crew heave it back into place",
+   "group": "G2"
+  },
+  {
+   "id": "v19_kf_cavalry_charge",
+   "from_file": "assets/raw/v19/battle/cav_charge_pad.png",
+   "final_file": "assets/raw/v19/battle/cav_charge_pad.png",
+   "out": "assets/raw/v19/battle/cavalry_charge_kf",
+   "kind": "keyframes",
+   "model": "forge",
+   "duration": 3,
+   "frames": 25,
+   "frame_size": -9,
+   "loop": false,
+   "crop": false,
+   "prompt": "gallops at full speed in place, one smooth gallop stride, the rider leaning forward with the sabre pointed straight ahead",
+   "group": "G2"
+  },
+  {
+   "id": "v19_fxsrc_smoke_musket",
+   "kind": "image",
+   "type": "sprite-vfx",
+   "aspect": "ar_1_1",
+   "style": false,
+   "out": "assets/raw/v19/fx/smoke_musket_src",
+   "prompt": "A single burst of white and pale grey gunpowder smoke puffing out sideways to the right from a small bright orange muzzle flash at its left edge, soft round billows, painterly oil-paint brushwork, side view",
+   "group": "G3"
+  },
+  {
+   "id": "v19_fx_smoke_musket",
+   "kind": "animate",
+   "image_type": "sprite-vfx",
+   "model": "forge",
+   "duration": 2,
+   "frames": 25,
+   "frame_size": 384,
+   "loop": false,
+   "crop": false,
+   "final_same": false,
+   "margin_ratio_mode": "manual",
+   "margin_ratio_horizontal": 0.45,
+   "margin_ratio_vertical": 0.35,
+   "out": "assets/raw/v19/fx/smoke_musket",
+   "prompt": "the smoke puff swells gently where it is, then thins, turns transparent and dissolves into faint wisps until it has vanished; it stays in place and does not drift off",
+   "group": "G3",
+   "from": "v19_fxsrc_smoke_musket",
+   "v": 2
+  },
+  {
+   "id": "v19_fxsrc_cannon_blast",
+   "kind": "image",
+   "type": "sprite-vfx",
+   "aspect": "ar_1_1",
+   "style": false,
+   "out": "assets/raw/v19/fx/cannon_blast_src",
+   "prompt": "A cannon muzzle blast seen from the side with no cannon and no gun barrel visible: a bright yellow-white flash core at the left edge with tongues of orange flame shooting to the right, and a big rolling cloud of thick white and grey gunpowder smoke billowing out to the right, sparks and burning wadding, painterly oil-paint brushwork",
+   "group": "G3",
+   "v": 2
+  },
+  {
+   "id": "v19_fx_cannon_blast",
+   "kind": "animate",
+   "image_type": "sprite-vfx",
+   "model": "forge",
+   "duration": 2.5,
+   "frames": 25,
+   "frame_size": 384,
+   "loop": false,
+   "crop": false,
+   "final_same": false,
+   "margin_ratio_mode": "manual",
+   "margin_ratio_horizontal": 0.25,
+   "margin_ratio_vertical": 0.25,
+   "out": "assets/raw/v19/fx/cannon_blast",
+   "prompt": "the flash flares and dies away in the first moments, the smoke cloud rolls outward to the right, swells, then thins and drifts apart until it has almost vanished",
+   "group": "G3",
+   "from": "v19_fxsrc_cannon_blast",
+   "v": 2
+  },
+  {
+   "id": "v19_fxsrc_fort_explosion",
+   "kind": "image",
+   "type": "sprite-vfx",
+   "aspect": "ar_1_1",
+   "style": false,
+   "out": "assets/raw/v19/fx/fort_explosion_src",
+   "prompt": "A great powder-magazine explosion erupting upward from the ground: a towering fireball of orange flame and black and grey smoke, flying stone and timber debris, painterly oil-paint brushwork, side view",
+   "group": "G3"
+  },
+  {
+   "id": "v19_fx_fort_explosion",
+   "kind": "animate",
+   "image_type": "sprite-vfx",
+   "model": "forge",
+   "duration": 3,
+   "frames": 25,
+   "frame_size": 384,
+   "loop": false,
+   "crop": false,
+   "final_same": false,
+   "margin_ratio_mode": "manual",
+   "margin_ratio_horizontal": 0.25,
+   "margin_ratio_vertical": 0.25,
+   "out": "assets/raw/v19/fx/fort_explosion",
+   "prompt": "the explosion erupts upward, the fireball swells and turns to a rising column of dark smoke while debris falls, then the smoke slowly thins",
+   "group": "G3",
+   "from": "v19_fxsrc_fort_explosion"
+  },
+  {
+   "id": "v19_fxsrc_capital_fire",
+   "kind": "image",
+   "type": "sprite-vfx",
+   "aspect": "ar_1_1",
+   "style": false,
+   "out": "assets/raw/v19/fx/capital_fire_src",
+   "prompt": "A large blaze of tall orange and yellow flames with glowing embers and dark smoke rising above, the fire of a burning city, no buildings, painterly oil-paint brushwork",
+   "group": "G3"
+  },
+  {
+   "id": "v19_fx_capital_fire",
+   "kind": "animate",
+   "image_type": "sprite-vfx",
+   "model": "forge",
+   "duration": 3,
+   "frames": 25,
+   "frame_size": 384,
+   "loop": false,
+   "crop": false,
+   "final_same": true,
+   "margin_ratio_mode": "manual",
+   "margin_ratio_horizontal": 0.25,
+   "margin_ratio_vertical": 0.25,
+   "out": "assets/raw/v19/fx/capital_fire",
+   "prompt": "the flames flicker and leap continuously, embers float upward and the smoke rolls, an endless steady blaze",
+   "group": "G3",
+   "from": "v19_fxsrc_capital_fire"
+  },
+  {
+   "id": "v19_fxsrc_fuse_spark",
+   "kind": "image",
+   "type": "sprite-vfx",
+   "aspect": "ar_1_1",
+   "style": false,
+   "out": "assets/raw/v19/fx/fuse_spark_src",
+   "prompt": "A sputtering cannon-fuse spark: a small bright white-yellow core throwing out tiny orange sparks and a thin wisp of grey smoke, painterly",
+   "group": "G3"
+  },
+  {
+   "id": "v19_fx_fuse_spark",
+   "kind": "animate",
+   "image_type": "sprite-vfx",
+   "model": "forge",
+   "duration": 1.5,
+   "frames": 16,
+   "frame_size": 384,
+   "loop": false,
+   "crop": false,
+   "final_same": false,
+   "margin_ratio_mode": "manual",
+   "margin_ratio_horizontal": 0.25,
+   "margin_ratio_vertical": 0.25,
+   "out": "assets/raw/v19/fx/fuse_spark",
+   "prompt": "the spark sputters and crackles, throwing out tiny sparks, the wisp of smoke curls up",
+   "group": "G3",
+   "from": "v19_fxsrc_fuse_spark"
+  },
+  {
+   "id": "v19_fxsrc_dust_kick",
+   "kind": "image",
+   "type": "sprite-vfx",
+   "aspect": "ar_1_1",
+   "style": false,
+   "out": "assets/raw/v19/fx/dust_kick_src",
+   "prompt": "A low spray of kicked-up brown and ochre dust and dirt bursting up from the ground, small clods of earth flying, painterly oil-paint brushwork, side view",
+   "group": "G3"
+  },
+  {
+   "id": "v19_fx_dust_kick",
+   "kind": "animate",
+   "image_type": "sprite-vfx",
+   "model": "forge",
+   "duration": 1.5,
+   "frames": 16,
+   "frame_size": 384,
+   "loop": false,
+   "crop": false,
+   "final_same": false,
+   "margin_ratio_mode": "manual",
+   "margin_ratio_horizontal": 0.25,
+   "margin_ratio_vertical": 0.25,
+   "out": "assets/raw/v19/fx/dust_kick",
+   "prompt": "the dust bursts up and out from the ground, the clods arc and fall, then the dust settles and fades",
+   "group": "G3",
+   "from": "v19_fxsrc_dust_kick"
+  },
+  {
+   "id": "v19_vid_title",
+   "kind": "video",
+   "from_file": "assets/art/splash_title.webp",
+   "final_same": true,
+   "model": "griffin",
+   "duration": 8,
+   "out": "assets/raw/video/title_loop_480",
+   "prompt": "A living oil painting, the camera stays completely still. The regimental flags stir gently in a breeze from the open windows, the tall ships outside rock slowly on the swell, dust motes drift through the golden sunbeams, light glints on the brass telescope and globe. Quiet room tone, distant gulls and a faint harbour bell.",
+   "manual": true,
+   "group": "G4"
+  },
+  {
+   "id": "v19_vid_title_up",
+   "kind": "upscale",
+   "source": "v19_vid_title",
+   "out": "assets/raw/video/title_loop",
+   "manual": true,
+   "group": "G4"
+  },
+  {
+   "id": "v19_vid_victory",
+   "kind": "video",
+   "from_file": "assets/art/victory.webp",
+   "final_same": true,
+   "model": "griffin",
+   "duration": 8,
+   "out": "assets/raw/video/victory_loop_480",
+   "prompt": "A living oil painting, the camera stays completely still. The great crimson-and-gold standard ripples in the wind over the ramparts, cannon smoke rolls slowly across the water, the ships of the line rock gently on the swell and fire a slow saluting broadside with soft flashes, gulls wheel in the golden sunset light. Distant cannon salute, wind, waves and faint far-off cheering, no music.",
+   "manual": false,
+   "group": "G4"
+  },
+  {
+   "id": "v19_vid_victory_up",
+   "kind": "upscale",
+   "source": "v19_vid_victory",
+   "out": "assets/raw/video/victory_loop",
+   "manual": false,
+   "group": "G4"
+  },
+  {
+   "id": "v19_vid_defeat",
+   "kind": "video",
+   "from_file": "assets/art/defeat.webp",
+   "final_same": true,
+   "model": "griffin",
+   "duration": 8,
+   "out": "assets/raw/video/defeat_loop_480",
+   "prompt": "A living oil painting, the camera stays completely still. The burning flagship smoulders, flames flicker and embers drift upward, the torn crimson ensign floats on the dark swell among broken spars, grey storm clouds creep across the sky, the enemy fleet sails slowly on the horizon. Crackling fire, creaking timber, wind and rolling waves, a distant tolling bell, no music.",
+   "manual": false,
+   "group": "G4"
+  },
+  {
+   "id": "v19_vid_defeat_up",
+   "kind": "upscale",
+   "source": "v19_vid_defeat",
+   "out": "assets/raw/video/defeat_loop",
+   "manual": false,
+   "group": "G4"
+  },
+  {
+   "id": "v19_cut_intro",
+   "kind": "video_refs",
+   "refs": [
+    "assets/art/splash_title.webp",
+    "assets/portraits/advisor.png"
+   ],
+   "model": "griffin",
+   "duration": 7,
+   "aspect": "ar_16_9",
+   "out": "assets/raw/video/cut_intro_480",
+   "prompt": "Image 1 is the imperial war room, Image 2 is the old field marshal. Dawn: pale golden light spills through the tall windows of the war room from Image 1 onto the great map table and its tin soldiers. The doors open and two dust-stained couriers in blue hussar jackets hurry in and lay sealed dispatches on the map. The field marshal from Image 2, standing at the window with his hands clasped behind his back, turns slowly to face the camera with a grave, knowing look, silent. Slow push-in camera. Sound: a lone snare drum and a low rising brass theme, hurried footsteps, rustling paper, distant gulls and a harbour bell. No spoken words, no dialogue, no narration: only music and sound effects. Painterly oil-painting look matching the reference images, Napoleonic era, 1810s.",
+   "group": "G5"
+  },
+  {
+   "id": "v19_cut_intro_up",
+   "kind": "upscale",
+   "source": "v19_cut_intro",
+   "out": "assets/raw/video/cut_intro",
+   "group": "G5"
+  },
+  {
+   "id": "v19_cut_capital_taken",
+   "kind": "video_refs",
+   "refs": [
+    "assets/art/howto_capital.webp",
+    "assets/art/victory.webp"
+   ],
+   "model": "griffin",
+   "duration": 7,
+   "aspect": "ar_16_9",
+   "out": "assets/raw/video/cut_capital_taken_480",
+   "prompt": "Image 1 is an enemy capital city. At dusk, regiments of our red-coated Napoleonic infantry in shakos and white crossbelts storm the broken gate of the burning capital from Image 1 with fixed bayonets, smoke and flames pouring from the walls; a colour-sergeant runs up the palace steps and raises our great crimson-and-gold standard over the dome as the soldiers cheer, as in Image 2. Sweeping crane shot. Sound: cannon fire, crackling flames, a thundering drum march and triumphant brass, soldiers roaring a wordless cheer. No spoken words, no dialogue, no narration: only music and sound effects. Painterly oil-painting look matching the reference images, Napoleonic era, 1810s.",
+   "group": "G5"
+  },
+  {
+   "id": "v19_cut_capital_taken_up",
+   "kind": "upscale",
+   "source": "v19_cut_capital_taken",
+   "out": "assets/raw/video/cut_capital_taken",
+   "group": "G5"
+  },
+  {
+   "id": "v19_cut_capital_lost",
+   "kind": "video_refs",
+   "refs": [
+    "assets/portraits/advisor.png",
+    "assets/art/howto_capital.webp"
+   ],
+   "model": "griffin",
+   "duration": 7,
+   "aspect": "ar_16_9",
+   "out": "assets/raw/video/cut_capital_lost_480",
+   "prompt": "Image 1 is the old field marshal, Image 2 is our capital city. Night: our capital from Image 2 burns on the horizon, orange flames under a black sky. A line of black carriages and mounted guards flees the city along a muddy road by torchlight. Inside a jolting carriage, the field marshal from Image 1 stares grimly out of the window at the burning city, firelight flickering on his face, silent. Sound: a slow mournful string lament, distant cannon, carriage wheels and hooves on the road, crackling fire. No spoken words, no dialogue, no narration: only music and sound effects. Painterly oil-painting look matching the reference images, Napoleonic era, 1810s.",
+   "group": "G5"
+  },
+  {
+   "id": "v19_cut_capital_lost_up",
+   "kind": "upscale",
+   "source": "v19_cut_capital_lost",
+   "out": "assets/raw/video/cut_capital_lost",
+   "group": "G5"
+  },
+  {
+   "id": "v19_cut_eliminated",
+   "kind": "video_refs",
+   "refs": [
+    "assets/art/howto_walkin.webp",
+    "assets/art/howto_clash.webp"
+   ],
+   "model": "griffin",
+   "duration": 7,
+   "aspect": "ar_16_9",
+   "out": "assets/raw/video/cut_eliminated_480",
+   "prompt": "Image 1 is a captured frontier fort. In the fort from Image 1, victorious red-coated Napoleonic infantry tear down the enemy's green regimental colours from the flagpole; the flag falls into the mud and is trampled under marching boots, while a long column of disarmed enemy prisoners in green coats from Image 2 is marched away under guard with fixed bayonets. Grey overcast light, drifting smoke. Slow tracking shot. Sound: a steady drum beat, tramping boots, a bugle call, wind, a distant church bell. No spoken words, no dialogue, no narration: only music and sound effects. Painterly oil-painting look matching the reference images, Napoleonic era, 1810s.",
+   "group": "G5"
+  },
+  {
+   "id": "v19_cut_eliminated_up",
+   "kind": "upscale",
+   "source": "v19_cut_eliminated",
+   "out": "assets/raw/video/cut_eliminated",
+   "group": "G5"
+  },
+  {
+   "id": "v19_cut_victory",
+   "kind": "video_refs",
+   "refs": [
+    "assets/art/splash_title.webp",
+    "assets/portraits/advisor.png",
+    "assets/art/victory.webp"
+   ],
+   "model": "griffin",
+   "duration": 7,
+   "aspect": "ar_16_9",
+   "out": "assets/raw/video/cut_victory_480",
+   "prompt": "Image 1 is the imperial war room, Image 2 is the old field marshal, Image 3 is our victory. In the war room from Image 1 at golden sunset, the field marshal from Image 2 plants a final small gilded flag on the great map, now covered with our flags, and straightens with quiet pride; through the tall windows crowds cheer in the streets, flags wave, and a cannon salute and fireworks burst over the harbour as in Image 3. Slow pull-back camera. Sound: church bells ringing, a triumphant orchestral march with brass and drums, crowds cheering, cannon salute. No spoken words, no dialogue, no narration: only music and sound effects. Painterly oil-painting look matching the reference images, Napoleonic era, 1810s.",
+   "group": "G5"
+  },
+  {
+   "id": "v19_cut_victory_up",
+   "kind": "upscale",
+   "source": "v19_cut_victory",
+   "out": "assets/raw/video/cut_victory",
+   "group": "G5"
+  },
+  {
+   "id": "v19_cut_defeat",
+   "kind": "video_refs",
+   "refs": [
+    "assets/art/splash_title.webp",
+    "assets/portraits/advisor.png",
+    "assets/art/defeat.webp"
+   ],
+   "model": "griffin",
+   "duration": 7,
+   "aspect": "ar_16_9",
+   "out": "assets/raw/video/cut_defeat_480",
+   "prompt": "Image 1 is the imperial war room, Image 2 is the old field marshal. The war room from Image 1 lies in ruins at dusk: shattered windows, toppled chairs, torn flags, smoke drifting through; the great map on the table is burning, flames curling across the painted continents and the tin soldiers. The field marshal from Image 2 stands alone in the ruins, his coat torn and dusty, and slowly lowers his head. Slow push-in camera. Sound: a slow sorrowful cello lament, crackling fire, wind through the broken windows, distant cannon fading, as grim as Image 3. No spoken words, no dialogue, no narration: only music and sound effects. Painterly oil-painting look matching the reference images, Napoleonic era, 1810s.",
+   "group": "G5"
+  },
+  {
+   "id": "v19_cut_defeat_up",
+   "kind": "upscale",
+   "source": "v19_cut_defeat",
+   "out": "assets/raw/video/cut_defeat",
+   "group": "G5"
+  },
+  {
+   "id": "v19_talk_advisor",
+   "kind": "animate",
+   "from_file": "assets/portraits/advisor.png",
+   "fit": true,
+   "model": "hydra",
+   "image_type": "portrait",
+   "duration": 3,
+   "frames": 36,
+   "frame_size": -9,
+   "loop": false,
+   "crop": false,
+   "final_same": true,
+   "margin_ratio_mode": "manual",
+   "margin_ratio_horizontal": 0.02,
+   "margin_ratio_vertical": 0.02,
+   "out": "assets/raw/v19/loops/advisor_talk",
+   "prompt": "The old field marshal looks at the viewer and talks steadily as if speaking a sentence: the lips and jaw move through natural speaking mouth shapes, the eyes blink once, the head nods and turns very slightly, then settles back exactly into the starting pose",
+   "group": "G6"
+  },
+  {
+   "id": "v19_talk_varek",
+   "kind": "animate",
+   "from_file": "assets/portraits/varek.png",
+   "fit": true,
+   "model": "hydra",
+   "image_type": "portrait",
+   "duration": 3,
+   "frames": 36,
+   "frame_size": -9,
+   "loop": false,
+   "crop": false,
+   "final_same": true,
+   "margin_ratio_mode": "manual",
+   "margin_ratio_horizontal": 0.02,
+   "margin_ratio_vertical": 0.02,
+   "out": "assets/raw/v19/loops/varek_talk",
+   "prompt": "The grizzled field marshal looks at the viewer and talks steadily as if speaking a sentence: the lips and jaw move through natural speaking mouth shapes, the eyes blink once, the head nods and turns very slightly, then settles back exactly into the starting pose",
+   "group": "G6"
+  },
+  {
+   "id": "v19_talk_ysolde",
+   "kind": "animate",
+   "from_file": "assets/portraits/ysolde.png",
+   "fit": true,
+   "model": "hydra",
+   "image_type": "portrait",
+   "duration": 3,
+   "frames": 36,
+   "frame_size": -9,
+   "loop": false,
+   "crop": false,
+   "final_same": true,
+   "margin_ratio_mode": "manual",
+   "margin_ratio_horizontal": 0.02,
+   "margin_ratio_vertical": 0.02,
+   "out": "assets/raw/v19/loops/ysolde_talk",
+   "prompt": "The noblewoman viceroy-general looks at the viewer and talks steadily as if speaking a sentence: the lips and jaw move through natural speaking mouth shapes, the eyes blink once, the head nods and turns very slightly, then settles back exactly into the starting pose",
+   "group": "G6"
+  },
+  {
+   "id": "v19_talk_quill",
+   "kind": "animate",
+   "from_file": "assets/portraits/quill.png",
+   "fit": true,
+   "model": "hydra",
+   "image_type": "portrait",
+   "duration": 3,
+   "frames": 36,
+   "frame_size": -9,
+   "loop": false,
+   "crop": false,
+   "final_same": true,
+   "margin_ratio_mode": "manual",
+   "margin_ratio_horizontal": 0.02,
+   "margin_ratio_vertical": 0.02,
+   "out": "assets/raw/v19/loops/quill_talk",
+   "prompt": "The portly trading-company governor looks at the viewer and talks steadily as if speaking a sentence: the lips and jaw move through natural speaking mouth shapes, the eyes blink once, the head nods and turns very slightly, then settles back exactly into the starting pose",
+   "group": "G6"
+  },
+  {
+   "id": "v19_talk_oren",
+   "kind": "animate",
+   "from_file": "assets/portraits/oren.png",
+   "fit": true,
+   "model": "hydra",
+   "image_type": "portrait",
+   "duration": 3,
+   "frames": 36,
+   "frame_size": -9,
+   "loop": false,
+   "crop": false,
+   "final_same": true,
+   "margin_ratio_mode": "manual",
+   "margin_ratio_horizontal": 0.02,
+   "margin_ratio_vertical": 0.02,
+   "out": "assets/raw/v19/loops/oren_talk",
+   "prompt": "The young hussar captain looks at the viewer and talks steadily as if speaking a sentence: the lips and jaw move through natural speaking mouth shapes, the eyes blink once, the head nods and turns very slightly, then settles back exactly into the starting pose",
+   "group": "G6"
+  },
+  {
+   "id": "v19_talk_hask",
+   "kind": "animate",
+   "from_file": "assets/portraits/hask.png",
+   "fit": true,
+   "model": "hydra",
+   "image_type": "portrait",
+   "duration": 3,
+   "frames": 36,
+   "frame_size": -9,
+   "loop": false,
+   "crop": false,
+   "final_same": true,
+   "margin_ratio_mode": "manual",
+   "margin_ratio_horizontal": 0.02,
+   "margin_ratio_vertical": 0.02,
+   "out": "assets/raw/v19/loops/hask_talk",
+   "prompt": "The bearded privateer commodore looks at the viewer and talks steadily as if speaking a sentence: the lips and jaw move through natural speaking mouth shapes, the eyes blink once, the head nods and turns very slightly, then settles back exactly into the starting pose",
+   "group": "G6"
+  },
+  {
+   "id": "v19_talk_imre",
+   "kind": "animate",
+   "from_file": "assets/portraits/imre.png",
+   "fit": true,
+   "model": "hydra",
+   "image_type": "portrait",
+   "duration": 3,
+   "frames": 36,
+   "frame_size": -9,
+   "loop": false,
+   "crop": false,
+   "final_same": true,
+   "margin_ratio_mode": "manual",
+   "margin_ratio_horizontal": 0.02,
+   "margin_ratio_vertical": 0.02,
+   "out": "assets/raw/v19/loops/imre_talk",
+   "prompt": "The woman admiral looks at the viewer and talks steadily as if speaking a sentence: the lips and jaw move through natural speaking mouth shapes, the eyes blink once, the head nods and turns very slightly, then settles back exactly into the starting pose",
+   "group": "G6"
+  },
+  {
+   "id": "v19_remix_lament",
+   "kind": "audio_transform",
+   "sample_file": "assets/audio/music/menu.mp3",
+   "strength": 0.6,
+   "duration": 90,
+   "out": "assets/raw/v19/music/lament",
+   "prompt": "The same imperial anthem reimagined as a slow, solemn lament after a lost war: muffled drums, low strings, a lone mournful bugle and a distant wordless choir, sparse and grieving, instrumental, loopable",
+   "group": "G7"
+  },
+  {
+   "id": "v19_remix_besieged",
+   "kind": "audio_transform",
+   "sample_file": "assets/audio/music/plan.mp3",
+   "strength": 0.6,
+   "duration": 90,
+   "out": "assets/raw/v19/music/besieged",
+   "prompt": "The same theme turned tense and ominous, a capital under siege: low pulsing strings, distant war drums, dark brass swells and a ticking pizzicato, slow and threatening, instrumental, loopable",
+   "group": "G7"
+  },
+  {
+   "id": "v19_remix_endgame",
+   "kind": "audio_transform",
+   "sample_file": "assets/audio/music/battle.mp3",
+   "strength": 0.55,
+   "duration": 90,
+   "out": "assets/raw/v19/music/endgame",
+   "prompt": "The same battle theme as a driving late-war climax: relentless snare and timpani, urgent staccato strings, bold brass calls, rising tension, instrumental, loopable",
+   "group": "G7"
+  },
+  {
+   "id": "v19_song_1",
+   "kind": "music",
+   "duration": 120,
+   "lyrics": "[Verse 1]\nRoll out the drums at the grey of the dawn,\nThe orders are sealed and the sabres are drawn,\nWe left all our sweethearts to cry on the quay,\nFor the map on the table has marked out the way.\n\n[Chorus]\nSo march, lads, march, where the tall colours fly,\nShoulder to shoulder we hold or we die,\nOver the river and up through the smoke,\nSteady and forward, the line never broke.\n\n[Verse 2]\nThe cannon are thundering over the plain,\nWe crossed it before and we'll cross it again,\nWith powder and ball and a crust in the pack,\nWe'll plant the flag high and we'll never look back.\n\n[Chorus]\nSo march, lads, march, where the tall colours fly,\nShoulder to shoulder we hold or we die,\nOver the river and up through the smoke,\nSteady and forward, the line never broke.",
+   "out": "assets/raw/v19/music/march_song_1",
+   "prompt": "A rousing Napoleonic-era army marching song sung by a rough male soldiers' chorus in unison, snare drums and fifes, brass on the choruses, steady quick-march tempo, proud and stirring",
+   "group": "G8"
+  },
+  {
+   "id": "v19_song_2",
+   "kind": "music",
+   "duration": 120,
+   "lyrics": "[Verse 1]\nTall caps of bearskin and boots worn thin,\nWe marched through the snow and we marched through the din,\nThey told us the city lay three days away,\nSo we sang as we marched and we marched as we prayed.\n\n[Chorus]\nOh, the Guard is coming, the Guard is coming home,\nWith the eagle on the standard and the drummers marching on,\nLet the bells of the capital ring out loud and long,\nFor the Guard is coming home with a song.\n\n[Verse 2]\nWe held at the bridge and we held at the wall,\nWe stood in the square when the others would fall,\nNow the old flag is tattered and grey is my hair,\nBut I'd follow that drum to the end of the square.\n\n[Chorus]\nOh, the Guard is coming, the Guard is coming home,\nWith the eagle on the standard and the drummers marching on,\nLet the bells of the capital ring out loud and long,\nFor the Guard is coming home with a song.",
+   "out": "assets/raw/v19/music/march_song_2",
+   "prompt": "A slow heavy grenadiers' marching song, a deep male choir singing in harmony, bass drum, side drums and a brass band, dignified and triumphant, a homecoming after a long war",
+   "group": "G8"
+  },
+  {
+   "id": "v19_song_3",
+   "kind": "music",
+   "duration": 120,
+   "lyrics": "[Verse 1]\nThe sergeant came round with a ribbon and a coin,\nSaid, here is your shilling, lad, will you not join?\nI took up the musket, I followed the drum,\nAnd I've marched every mile from the harbour to home.\n\n[Chorus]\nWith a rum-tum-tum and a fife in the rain,\nWe'll go and we'll take all the country again,\nLeft, right, left, with the flags in the sun,\nWe'll march till the last of the battles is won.\n\n[Verse 2]\nMy boots have been soaked in a hundred good streams,\nMy coat has been patched at the elbows and seams,\nBut give me a volley and give me a cheer,\nAnd I'll tell you, my lads, there's no place like here.\n\n[Chorus]\nWith a rum-tum-tum and a fife in the rain,\nWe'll go and we'll take all the country again,\nLeft, right, left, with the flags in the sun,\nWe'll march till the last of the battles is won.",
+   "out": "assets/raw/v19/music/march_song_3",
+   "prompt": "A jaunty 19th-century fife-and-drum marching song: a rough male singer with a soldiers' chorus joining on the refrains, fifes, penny whistle and snare drum, cheerful quick-step",
+   "group": "G8"
+  },
+  {
+   "id": "v19_var_grenadier_volley",
+   "kind": "sprite_edit",
+   "source": "v19_kf_soldier_volley",
+   "edit_mode": "prompt",
+   "out": "assets/raw/v19/battle/grenadier_volley_kf",
+   "prompt": "Make him a grenadier: a tall bearskin cap instead of the shako. Keep the plain white tin finish and exactly the same motion.",
+   "group": "G9",
+   "v": 2
+  },
+  {
+   "id": "v19_var_grenadier_charge",
+   "kind": "sprite_edit",
+   "source": "v19_kf_soldier_charge",
+   "edit_mode": "prompt",
+   "out": "assets/raw/v19/battle/grenadier_charge_kf",
+   "prompt": "Make him a grenadier: a tall bearskin cap instead of the shako. Keep the plain white tin finish and exactly the same motion.",
+   "group": "G9",
+   "v": 2
+  },
+  {
+   "id": "v19_var_cuirassier_charge",
+   "kind": "sprite_edit",
+   "source": "v19_kf_cavalry_charge",
+   "edit_mode": "prompt",
+   "out": "assets/raw/v19/battle/cuirassier_charge_kf",
+   "prompt": "Make the rider a heavy cuirassier: a polished steel breastplate over his coat and a steel helmet with a brass crest and a long flowing horsehair plume, a long straight heavy sword. Keep the plain white tin finish, the same horse, the same size and position, and exactly the same motion and timing.",
+   "group": "G9"
+  },
+  {
+   "id": "v19_view_infantry",
+   "kind": "rotate",
+   "from_file": "assets/raw/battle/soldier_stand.png",
+   "rotation": 45,
+   "elevation": 30,
+   "n": 2,
+   "out": "assets/raw/v19/views/infantry_q",
+   "group": "G10"
+  },
+  {
+   "id": "v19_view_cavalry",
+   "kind": "rotate",
+   "from_file": "assets/raw/battle/cavalry_stand.png",
+   "rotation": 45,
+   "elevation": 30,
+   "n": 2,
+   "out": "assets/raw/v19/views/cavalry_q",
+   "group": "G10"
+  },
+  {
+   "id": "v19_view_cannon",
+   "kind": "rotate",
+   "from_file": "assets/raw/battle/cannon_stand.png",
+   "rotation": 45,
+   "elevation": 30,
+   "n": 2,
+   "out": "assets/raw/v19/views/cannon_q",
+   "group": "G10"
+  },
+  {
+   "id": "v19_piece_infantry",
+   "kind": "image",
+   "type": "asset",
+   "art_style": "Hand-Painted",
+   "aspect": "ar_3_4",
+   "style": false,
+   "out": "assets/raw/v19/models/infantry_ref",
+   "prompt": "A single hand-painted antique tin toy miniature: a Napoleonic line infantryman in a crimson coat with white crossbelts, black shako and grey trousers, musket held upright at his side, standing at attention on a small round green-painted base. Full figure, front three-quarter view, even studio lighting, plain light grey background",
+   "group": "G11"
+  },
+  {
+   "id": "v19_model_infantry",
+   "kind": "model3d",
+   "faces": 20000,
+   "texture_size": 1024,
+   "texture_type": "pbr",
+   "out": "assets/raw/v19/models/infantry",
+   "group": "G11",
+   "from": "v19_piece_infantry"
+  },
+  {
+   "id": "v19_piece_cavalry",
+   "kind": "image",
+   "type": "asset",
+   "art_style": "Hand-Painted",
+   "aspect": "ar_4_3",
+   "style": false,
+   "out": "assets/raw/v19/models/cavalry_ref",
+   "prompt": "A single hand-painted antique tin toy miniature: a Napoleonic hussar in a sky-blue braided dolman jacket and fur busby, sabre held upright at his shoulder, riding a brown horse standing on a flat oval green-painted base. Full figure, side three-quarter view, even studio lighting, plain light grey background",
+   "group": "G11"
+  },
+  {
+   "id": "v19_model_cavalry",
+   "kind": "model3d",
+   "faces": 20000,
+   "texture_size": 1024,
+   "texture_type": "pbr",
+   "out": "assets/raw/v19/models/cavalry",
+   "group": "G11",
+   "from": "v19_piece_cavalry"
+  },
+  {
+   "id": "v19_piece_cannon",
+   "kind": "image",
+   "type": "asset",
+   "art_style": "Hand-Painted",
+   "aspect": "ar_4_3",
+   "style": false,
+   "out": "assets/raw/v19/models/cannon_ref",
+   "prompt": "A single hand-painted antique tin toy miniature: a Napoleonic bronze field cannon on a dark olive-green wooden carriage with two large spoked wheels and a trail, standing on a flat rectangular green-painted base. Full object, three-quarter view, even studio lighting, plain light grey background",
+   "group": "G11"
+  },
+  {
+   "id": "v19_model_cannon",
+   "kind": "model3d",
+   "faces": 20000,
+   "texture_size": 1024,
+   "texture_type": "pbr",
+   "out": "assets/raw/v19/models/cannon",
+   "group": "G11",
+   "from": "v19_piece_cannon"
+  },
+  {
+   "id": "v19_piece_flag",
+   "kind": "image",
+   "type": "asset",
+   "art_style": "Hand-Painted",
+   "aspect": "ar_3_4",
+   "style": false,
+   "out": "assets/raw/v19/models/flag_ref",
+   "prompt": "A single hand-painted antique tin toy miniature: a Napoleonic colour-bearer in a crimson coat with white crossbelts and black shako holding a tall staff with a large crimson-and-gold regimental flag with a gold fringe, standing on a small round green-painted base. Full figure, front three-quarter view, even studio lighting, plain light grey background",
+   "group": "G11"
+  },
+  {
+   "id": "v19_model_flag",
+   "kind": "model3d",
+   "faces": 20000,
+   "texture_size": 1024,
+   "texture_type": "pbr",
+   "out": "assets/raw/v19/models/flag",
+   "group": "G11",
+   "from": "v19_piece_flag"
+  },
+  {
+   "id": "v19_fxsrc_smoke_musket_start",
+   "kind": "image",
+   "type": "sprite-vfx",
+   "aspect": "ar_1_1",
+   "style": false,
+   "out": "assets/raw/v19/fx/smoke_musket_start_src",
+   "group": "G3",
+   "prompt": "A small bright orange-yellow musket muzzle flash with a tiny first puff of white gunpowder smoke just bursting out of it to the right, compact, side view, painterly oil-paint brushwork"
+  },
+  {
+   "id": "v19_var_grenadier_idle",
+   "kind": "sprite_edit",
+   "source": "soldier_idle_anim",
+   "edit_mode": "prompt",
+   "out": "assets/raw/v19/battle/grenadier_idle",
+   "prompt": "Make him a grenadier: a tall bearskin cap instead of the shako. Keep the plain white tin finish and exactly the same motion.",
+   "group": "G9",
+   "v": 2
+  },
+  {
+   "id": "v19_var_grenadier_march",
+   "kind": "sprite_edit",
+   "source": "soldier_march_anim",
+   "edit_mode": "prompt",
+   "out": "assets/raw/v19/battle/grenadier_march",
+   "prompt": "Make him a grenadier: a tall bearskin cap instead of the shako. Keep the plain white tin finish and exactly the same motion.",
+   "group": "G9",
+   "v": 2
+  },
+  {
+   "id": "v19_var_cuirassier_idle",
+   "kind": "sprite_edit",
+   "source": "cavalry_idle_anim",
+   "edit_mode": "prompt",
+   "out": "assets/raw/v19/battle/cuirassier_idle",
+   "prompt": "Make the rider a heavy cuirassier: a polished steel breastplate over his coat and a steel helmet with a brass crest and a long flowing horsehair plume, a long straight heavy sword. Keep the plain white tin finish, the same horse, the same size and position, and exactly the same motion and timing.",
+   "group": "G9"
+  },
+  {
+   "id": "v19_var_cuirassier_gallop",
+   "kind": "sprite_edit",
+   "source": "cavalry_gallop_anim",
+   "edit_mode": "prompt",
+   "out": "assets/raw/v19/battle/cuirassier_gallop",
+   "prompt": "Make the rider a heavy cuirassier: a polished steel breastplate over his coat and a steel helmet with a brass crest and a long flowing horsehair plume, a long straight heavy sword. Keep the plain white tin finish, the same horse, the same size and position, and exactly the same motion and timing.",
+   "group": "G9"
+  },
+  {
+   "id": "v19_fx_smoke_musket_grow",
+   "kind": "animate",
+   "group": "G3",
+   "from_file": "assets/raw/v19/fx/smoke_musket_start_pad.png",
+   "image_type": "sprite-vfx",
+   "model": "forge",
+   "duration": 2,
+   "frames": 25,
+   "frame_size": -9,
+   "loop": false,
+   "crop": false,
+   "margin_ratio_mode": "none",
+   "out": "assets/raw/v19/fx/smoke_musket_grow",
+   "prompt": "the small puff of gunpowder smoke bursts out and quickly billows into a large cloud rolling out to the right, then thins, turns transparent and dissolves into faint wisps until it has vanished"
+  },
+  {
+   "id": "v19_fx_cannon_blast_out",
+   "kind": "sprite_edit",
+   "group": "G3",
+   "source": "v19_fx_cannon_blast",
+   "edit_mode": "outpaint",
+   "out": "assets/raw/v19/fx/cannon_blast_out",
+   "prompt": "zoom out so the whole smoke cloud stays inside the frame with empty space around it"
   }
  ]
 }

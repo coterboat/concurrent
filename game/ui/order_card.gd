@@ -251,6 +251,21 @@ func rebuild() -> void:
 	var home: int = s.projected_world().get_territory(from_id).held()
 	var hl := Style.label("%s keeps %d at home" % [s.hex_name(from_id), home], 15, Style.CRIMSON.lightened(0.35) if home <= 1 else Style.PARCH)
 	_box.add_child(hl)
+	## v1.9: Fortune, both sides of this fight: who could have a bad exchange thrown again
+	if s.map.fortune and s.map.battle == Combat.MODE_VOLLEYS:
+		var owner: String = s.world.get_territory(to_id).owner
+		var mine: int = int(s.world.players[s.planner].fortune) if s.world.players.has(s.planner) else 0
+		var theirs: int = int(s.world.players[owner].fortune) if s.world.players.has(owner) and owner != "neutral" else 0
+		var bits: Array = []
+		if mine > 0:
+			bits.append("you ✦%d" % mine)
+		if theirs > 0:
+			bits.append("%s ✦%d" % [s.name_of(owner).get_slice(" ", s.name_of(owner).get_slice_count(" ") - 1), theirs])
+		if not bits.is_empty():
+			var fl := Style.label("Fortune: " + "  ·  ".join(bits), 13, Style.GOLD.lightened(0.2), "italic")
+			fl.tooltip_text = "Favours from Fortune: after an exchange that goes badly for them, a commander may have it thrown again, once a battle."
+			fl.mouse_filter = Control.MOUSE_FILTER_PASS
+			_box.add_child(fl)
 	## standing orders for the battle calls you don't make yourself
 	if s.map.battle == Combat.MODE_VOLLEYS:
 		var reserves: int = s.reserves_at(from_id)
@@ -281,7 +296,7 @@ func rebuild() -> void:
 	if p.surge_to != "":
 		var sn: int = s.surge_count(to_id)
 		act.add_child(Style.chip("then surge → %s (%s)" % [s.hex_name(p.surge_to), "all" if sn <= 0 else str(sn)], func(): gs.edit_order(to_id, p.surge_to), Style.GOLD, 13))
-	else:
+	elif s.map.surges:
 		var sb := Style.chip("Surge onward…", func(): gs.begin_surge_pick(idx), Style.PARCH, 14)
 		sb.tooltip_text = "If this wins, the men who took %s push on into a land next to it — after every other battle. Or drag from %s to the next land." % [s.hex_name(to_id), s.hex_name(to_id)]
 		act.add_child(sb)

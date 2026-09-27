@@ -3,18 +3,20 @@ extends Control
 const Style := preload("res://game/core/style.gd")
 const SessionScript := preload("res://game/core/session.gd")
 
+const LivingPainting := preload("res://game/ui/living_painting.gd")
+
 var main: Control
-var _art: TextureRect
+var _art: Control
 var _t := 0.0
+var _living := false
 
 
 func _ready() -> void:
-	_art = TextureRect.new()
-	_art.texture = Style.tex("res://assets/art/splash_title.webp")
-	_art.expand_mode = TextureRect.EXPAND_IGNORE_SIZE
-	_art.stretch_mode = TextureRect.STRETCH_KEEP_ASPECT_COVERED
-	_art.set_anchors_and_offsets_preset(PRESET_FULL_RECT)
-	_art.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	## v1.9: the war room breathes (a looping film over the painting) when there is one
+	var lp: Control = LivingPainting.new()
+	lp.setup("res://assets/art/splash_title.webp", "res://assets/video/title_loop.ogv")
+	_living = LivingPainting.has_film("res://assets/video/title_loop.ogv")
+	_art = lp
 	add_child(_art)
 	var shade := TextureRect.new()
 	shade.texture = _gradient()
@@ -75,8 +77,8 @@ func _tutorial() -> void:
 
 
 func _process(delta: float) -> void:
-	## A slow drift over the war table.
-	_t += delta
+	## A slow drift over the war table (the film moves on its own: a gentler drift then)
+	_t += delta * (0.5 if _living else 1.0)
 	var s := 1.06 + 0.02 * sin(_t * 0.07)
 	_art.pivot_offset = _art.size * 0.5
 	_art.scale = Vector2(s, s)

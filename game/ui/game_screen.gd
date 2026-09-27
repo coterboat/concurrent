@@ -19,6 +19,7 @@ const Cinema := preload("res://game/ui/cinema.gd")
 const Theater := preload("res://game/ui/battle_theater.gd")
 const Recap := preload("res://game/ui/recap.gd")
 const GameOver := preload("res://game/ui/game_over.gd")
+const Cutscene := preload("res://game/ui/cutscene.gd")
 const Intro := preload("res://game/ui/intro.gd")
 const PlanDialog := preload("res://game/ui/plan_dialog.gd")
 const HowTo := preload("res://game/ui/howto_screen.gd")
@@ -41,6 +42,8 @@ var cinema: Control
 var theater: Control
 var recap: Control
 var game_over: Control
+var cutscene: Control ## v1.9: the war's big moments on film
+var _films_seen := {} ## each film plays once a war
 var land_card: PanelContainer
 var order_card: PanelContainer
 var drawer: PanelContainer
@@ -168,6 +171,8 @@ func _ready() -> void:
 		_intro_done = true
 		_refresh())
 	add_child(intro)
+	cutscene = Cutscene.new()
+	add_child(cutscene)
 	session.changed.connect(_refresh)
 	session.phase_changed.connect(_on_phase)
 	Audio.ambience(true)
@@ -226,8 +231,7 @@ func _on_phase(ph: int) -> void:
 			if _intro_done:
 				phase_banner("CLAIMING THE LANDS", "Every commander throws a die for the order of choosing")
 			if not _intro_done and not bool(session.config.get("tutorial", false)):
-				if not intro.play(session):
-					_intro_done = true
+				_start_intro()
 			else:
 				_intro_done = true
 		Session.Phase.MANEUVER:
@@ -238,14 +242,13 @@ func _on_phase(ph: int) -> void:
 			log_line("Regroup phase: march troops one land toward the front.", Style.GOOD)
 		Session.Phase.OPENING, Session.Phase.PLANNING:
 			select("")
-			Audio.music("plan")
+			Audio.music(_plan_mood() if ph == Session.Phase.PLANNING else "plan")
 			if ph == Session.Phase.OPENING and not _intro_done and not bool(session.config.get("tutorial", false)):
-				if not intro.play(session):
-					_intro_done = true
+				_start_intro()
 			else:
 				_intro_done = true
 			if ph == Session.Phase.OPENING and _intro_done:
-				phase_banner("DEPLOYMENT", "Place your starting armies")
+				phase_banner("DEPLOYMENT", "Name your capital, then place your starting armies" if session.capital_choosable() else "Place your starting armies")
 			if ph == Session.Phase.PLANNING:
 				phase_banner("REINFORCEMENT PHASE", "Round %d · place %d fresh recruits on your lands" % [session.world.round, session.income_total()])
 				_pre_regions = _regions_of_humans()
@@ -254,6 +257,8 @@ func _on_phase(ph: int) -> void:
 					_say_once("final", "alarm")
 				elif session.world.round == 1 and not bool(session.config.get("tutorial", false)):
 					_say_once("reinforce")
+				else:
+					_standing_remark()
 		Session.Phase.PASS:
 			_show_pass()
 		Session.Phase.RESOLVING:
@@ -277,10 +282,14 @@ func _on_phase(ph: int) -> void:
 			for s in session.seats:
 				if s["kind"] == "human":
 					any_human = true
-			Audio.music("victory" if (won or not any_human) else "defeat", 0.6, false)
+			Audio.music("victory" if (won or not any_human) else "defeat", 0.6, true) ## v1.9: then the march (or the lament)
 			Audio.ambience(false)
-			game_over.show_result()
-			_game_over_voice(won, any_human)
+			## v1.9: the film of the ending first, then the tally
+			var tally := func():
+				game_over.show_result()
+				_game_over_voice(won, any_human)
+			if not (any_human and _film("victory" if won else "defeat", "", "", tally)):
+				tally.call()
 	_refresh()
 
 
@@ -291,6 +300,9 @@ func _refresh() -> void:
 	if session.world == null:
 		return
 	var ph: int = session.phase
+	board.capital_override = {}
+	if session.capital_choosable():
+		board.capital_override[session.planner] = session.capital_shown(session.planner) ## v1.8: yours, as you choose it
 	_refresh_plate()
 	roster.refresh()
 	bar.refresh()
@@ -1064,11 +1076,62 @@ func _theater_wants(b: Dictionary) -> bool:
 	return session.is_human(str(b["a"])) or session.is_human(str(b["b"]))
 
 
+func _taunt() -> void:
+	## v1.8: when the orders open, one commander marching on you has a word for you (after
+	## the advisor's own line), now and then — every round would wear thin
+	if session.rounds_log.is_empty() or randf() > 0.55 or cinema._pre == null:
+		return
+	var marching: Array = []
+	for d in session.rounds_log[-1]:
+		var pid: String = str(d.get("playerId", ""))
+		if session.is_human(pid) or not roster.faces.has(pid):
+			continue
+		var voice: String = str(session.seat(pid).get("portrait", ""))
+		if not Lines.has(voice, "taunt"):
+			continue
+		for pk in d.get("packets", []):
+			var ts: Types.TerritoryState = cinema._pre.get_territory(str(pk.get("to", "")))
+			if ts != null and session.is_human(ts.owner):
+				marching.append(pid)
+				break
+	if marching.is_empty():
+		return
+	var who: String = str(marching[randi() % marching.size()])
+	get_tree().create_timer(3.4).timeout.connect(func():
+		if roster.faces.has(who) and session.phase == Session.Phase.CINEMA:
+			roster.faces[who].react("win", "taunt", 3.0))
+
+
+func _standing_remark() -> void:
+	## v1.8: the advisor notices when we take the lead, or fall far behind
+	var me: Array = session.living_humans()
+	if me.size() != 1 or session.world.round < 2:
+		return
+	var pid: String = str(me[0])
+	var mine: int = Income.score_of(session.world, session.map, pid)
+	var best := -1
+	for o in MapLib.living_player_ids(session.world):
+		if o != pid and o != "neutral":
+			best = maxi(best, Income.score_of(session.world, session.map, o))
+	var lead: bool = mine > best
+	if lead and not _was_leading:
+		_say_once("leader", "happy")
+	elif not lead and best - mine >= 5 and session.world.round - _behind_said >= 3:
+		_behind_said = session.world.round
+		_say_once("behind", "alarm")
+	_was_leading = lead
+
+
+var _was_leading := false
+var _behind_said := -9
+
+
 func _on_beat(b: Dictionary) -> void:
 	bar.set_message("%s — %s" % [b.get("caption", ""), b.get("sub", "")] if str(b.get("sub", "")) != "" else str(b.get("caption", "")))
 	bar.refresh()
 	if bool(b.get("reveal", false)) and not session.living_humans().is_empty():
 		_say_once("reveal")
+		_taunt()
 	if b.has("walkin"):
 		var who: String = str(b["walkin"])
 		var victim: String = str(b["victim"])
@@ -1080,9 +1143,33 @@ func _on_beat(b: Dictionary) -> void:
 		elif session.is_human(victim):
 			bar.advisor.react("alarm", "walkin_them", 3.0)
 	if b.has("eliminated"):
-		_show_fallen(str(b["eliminated"]))
+		var gone: String = str(b["eliminated"])
+		if session.is_human(gone) or session.living_humans().is_empty() or not _film("eliminated", "%s is wiped out" % session.name_of(gone), "enemy_out", func(): _show_fallen(gone)):
+			_show_fallen(gone)
+	if b.has("fortune_to") and session.is_human(str(b["fortune_to"])):
+		bar.advisor.react("happy", "fortune_gained", 3.0)
+	if b.has("capital_taken"):
+		## v1.8: a capital falls — the captor crows, the fallen curse, the advisor has a view
+		var victim2: String = str(b["capital_taken"])
+		var by2: String = str(b["capital_by"])
+		for fl in b.get("focus", []):
+			board.fire_at(str(fl), 5.5) ## v1.9: the city burns
+		if session.is_human(by2):
+			if not _film("capital_taken", "%s's capital falls" % session.name_of(victim2), "capital_taken"):
+				bar.advisor.react("happy", "capital_taken", 3.4)
+		elif session.is_human(victim2):
+			if not _film("capital_lost", "Our capital has fallen", "capital_lost"):
+				bar.advisor.react("alarm", "capital_lost", 3.4)
+		var vby: String = str(session.seat(by2).get("portrait", ""))
+		var vvi: String = str(session.seat(victim2).get("portrait", ""))
+		if not session.is_human(by2) and roster.faces.has(by2) and Lines.has(vby, "capital_took"):
+			roster.faces[by2].react("win", "capital_took", 3.2)
+		elif not session.is_human(victim2) and roster.faces.has(victim2) and Lines.has(vvi, "capital_lost"):
+			roster.faces[victim2].react("lose", "capital_lost", 3.2)
 	if b.has("cards_to"):
 		_show_war_chest(str(b["cards_from"]), str(b["cards_to"]), b.get("cards", []))
+	if b.has("split_throws"):
+		_throw_split(b["split_throws"])
 	if b.has("stage"):
 		phase_banner(str(b["caption"]), str(b.get("sub", "")), true)
 		if str(b["stage"]) == "surge" and not session.living_humans().is_empty():
@@ -1354,6 +1441,59 @@ func board_float_value(pid: String, value: int) -> void:
 	tw.tween_callback(l.queue_free)
 
 
+func _throw_split(throws: Array) -> void:
+	## v1.9: a war chest divided by the dice: each taker's die falls onto the map in their
+	## colour, once the fallen commander's card has cleared the middle of the table
+	if cutscene.visible:
+		## a film is up (the fallen commander's, say): throw once it's done and their card has gone
+		cutscene.done.connect(func(): _throw_split(throws), CONNECT_ONE_SHOT)
+		return
+	var wait: float = maxf(0.0, (_fallen_until - Time.get_ticks_msec()) / 1000.0)
+	if wait > 0.05:
+		get_tree().create_timer(wait).timeout.connect(func(): _throw_split_now(throws))
+	else:
+		_throw_split_now(throws)
+
+
+func _throw_split_now(throws: Array) -> void:
+	var stage: Control = DiceStage.new()
+	stage.board = false
+	stage.arrange = false
+	stage.pitch = 66.0
+	stage.width = 17.0
+	stage.set_anchors_and_offsets_preset(PRESET_FULL_RECT)
+	stage.offset_bottom = -BAR
+	stage.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	add_child(stage)
+	var specs: Array = []
+	for i in throws.size():
+		var x: float = (float(i) - float(throws.size() - 1) * 0.5) * 2.7
+		specs.append({"value": int(throws[i]["value"]), "n": 9, "tint": Style.seat_color(str(throws[i]["pid"])), "to": Vector2(x, 0.6), "drop": true, "delay": 0.09 * i})
+	Audio.sfx("dice_shake", -2.0)
+	var dur: float = stage.throw(specs)
+	var marks: Array = []
+	get_tree().create_timer(dur + 0.1).timeout.connect(func():
+		if not is_instance_valid(stage):
+			return
+		for i in throws.size():
+			var pid: String = str(throws[i]["pid"])
+			var l := Style.label("%s  %d" % [session.name_of(pid), int(throws[i]["value"])], 20, Style.seat_color(pid).lightened(0.5), "display")
+			l.add_theme_constant_override("outline_size", 8)
+			l.add_theme_color_override("font_outline_color", Color(0, 0, 0, 0.9))
+			l.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+			l.size = Vector2(220, 30)
+			l.position = stage.position + stage.die_screen(i) + Vector2(-110, 52)
+			l.mouse_filter = Control.MOUSE_FILTER_IGNORE
+			add_child(l)
+			marks.append(l))
+	get_tree().create_timer(dur + 2.6).timeout.connect(func():
+		for m in marks:
+			if is_instance_valid(m):
+				(m as Node).queue_free()
+		if is_instance_valid(stage):
+			stage.queue_free())
+
+
 func _show_war_chest(from_pid: String, to_pid: String, cards: Array) -> void:
 	## the fallen commander's cards fly across the table to whoever took their last land;
 	## if their fallen panel is still up, the cards spill out of it as it fades
@@ -1402,6 +1542,61 @@ func _fly_chest(from_pid: String, to_pid: String, cards: Array, from_p: Vector2)
 		tw.tween_callback(tr.queue_free)
 	if roster.faces.has(to_pid):
 		get_tree().create_timer(1.6).timeout.connect(func(): roster.faces[to_pid].react("win"))
+
+
+func _plan_mood() -> String:
+	## v1.9: the planning music follows the war. Your capital under the guns: "besieged".
+	## The last rounds, or someone near a conquest: "endgame". Otherwise the plan themes.
+	for pid in session.living_humans():
+		var cap: String = str(session.world.players[pid].capital) if session.world.players.has(pid) else ""
+		if cap == "" or session.world.get_territory(cap) == null:
+			continue
+		var held: int = session.world.get_territory(cap).held()
+		var worst := 0
+		for n in MapLib.neighbors(session.map, cap):
+			var ts: Types.TerritoryState = session.world.get_territory(str(n))
+			if ts != null and ts.owner != pid and ts.owner != Types.UNOCCUPIED and ts.owner != "neutral":
+				worst = maxi(worst, ts.armies)
+		if worst >= maxi(3, held) and Audio.has_music("besieged"):
+			return "besieged"
+	var late: bool = not session.conquest() and session.world.round >= session.map.rounds - 1
+	var near := false
+	var thr: int = load("res://engine/setup.gd").early_end_threshold(session.map)
+	for st in session.seats:
+		if MapLib.player_territory_ids(session.world, str(st["id"])).size() >= int(ceil(thr * 0.85)):
+			near = true
+	if (late or near) and Audio.has_music("endgame"):
+		return "endgame"
+	return "plan"
+
+
+func _start_intro() -> void:
+	## v1.9: dawn in the war room on film, then the commanders take their seats
+	var seats := func():
+		if not intro.play(session):
+			_intro_done = true
+			_refresh()
+	if not _film("intro", "", "", seats):
+		seats.call()
+
+
+func _film(kind: String, caption: String, voice_key: String, then: Callable = Callable()) -> bool:
+	## v1.9: play a cutscene if there is one (and Settings allow films), once a war; the report
+	## waits for it. False: nothing played (the caller carries on as before).
+	if _films_seen.has(kind) or not Cutscene.available(kind):
+		return false
+	_films_seen[kind] = true
+	var was: bool = cinema.paused
+	cinema.paused = true
+	move_child(cutscene, get_child_count() - 1)
+	cutscene.done.connect(func():
+		cinema.paused = was
+		if then.is_valid():
+			then.call(), CONNECT_ONE_SHOT)
+	if not cutscene.play(kind, caption, "advisor", voice_key):
+		cinema.paused = was
+		return false
+	return true
 
 
 func _show_fallen(pid: String) -> void:

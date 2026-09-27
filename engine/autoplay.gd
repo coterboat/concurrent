@@ -14,6 +14,7 @@ const Bot := preload("res://engine/bot.gd")
 const Telemetry := preload("res://engine/telemetry.gd")
 const Maneuver := preload("res://engine/maneuver.gd")
 const Income := preload("res://engine/income.gd")
+const Capitals := preload("res://engine/capitals.gd")
 
 ## Tuning instrument only: when on, play() returns every event of every round under
 ## "events". Off by default, because a long tournament would otherwise keep every roll of
@@ -156,5 +157,6 @@ static func draft_deal(map: Types.MapDef, seats: Array, match_seed: int, brains:
 		if land == "":
 			break
 		w.set_hex(land, pid, 1)
+		Capitals.claimed(w, map, pid, land) ## v1.8: the first claim is the capital
 	Setup.finish_draft(w, map, seats.size())
 	return w

@@ -20,6 +20,11 @@ const MAX_GUNS := 12
 ## where the muzzle is on each aiming pose, from the feet, at scale 1 (facing right)
 const MUZZLE := {"soldier_aim": Vector2(91, -119), "soldier_kneel_aim": Vector2(82, -78)}
 const SHOT_AT := 0.06 ## seconds into the fire move when the musket goes off
+const ELITE := 15 ## v1.9: an army this big (a Brigade's dice) fields grenadiers and cuirassiers
+## v1.9 keyframed moves (Ludo, through our own poses): used when on disk, else the v1.4 moves
+const KF := ["soldier_volley_kf", "soldier_kneel_volley_kf", "soldier_charge_kf", "soldier_cheer_kf", "soldier_reload_kf", "soldier_fall_kf",
+	"cannon_fire_kf", "cavalry_charge_kf", "grenadier_idle", "grenadier_march", "grenadier_volley_kf", "grenadier_charge_kf",
+	"cuirassier_idle", "cuirassier_gallop", "cuirassier_charge_kf"]
 
 var armies: Array = [] ## [{pid, side, n, band: [d0, d1], fled: -1.0, flag_x}]
 var figs: Array = [] ## {army, type, pos, cur, scale, state, t, alive, order, phase, alpha, anim}
@@ -28,6 +33,9 @@ var _clock := 0.0
 var _anims := {} ## name -> sheet
 var _legacy := false
 var _soft: GradientTexture2D ## a feathered disc for smoke
+var bursts: Array = [] ## v1.9: painted effect sheets in play: {name, pos, t, px, flip}
+var _fx := {} ## name -> sheet (assets/fx), {} when missing
+var _elite_ok := {"inf": false, "cav": false}
 
 
 func _ready() -> void:
@@ -35,6 +43,11 @@ func _ready() -> void:
 	for n in ["soldier_idle", "soldier_aim", "soldier_kneel_aim", "soldier_fire", "soldier_march", "soldier_reload", "soldier_charge", "soldier_cheer",
 			"cavalry_idle", "cavalry_gallop", "cavalry_charge", "cavalry_rear", "cannon_idle", "cannon_fire", "cannon_reload", "flag_wave"]:
 		_anims[n] = _sheet("res://assets/battle/" + n)
+	for n in KF:
+		_anims[n] = _sheet("res://assets/battle/" + n)
+	## the elite dress only when the whole set is there (no bearskin swapped in mid-volley)
+	_elite_ok["inf"] = ["grenadier_idle", "grenadier_march", "grenadier_volley_kf", "grenadier_charge_kf"].all(func(k): return not _anims[k].is_empty())
+	_elite_ok["cav"] = ["cuirassier_idle", "cuirassier_gallop", "cuirassier_charge_kf"].all(func(k): return not _anims[k].is_empty())
 	if _anims["soldier_idle"].is_empty():
 		_legacy = true
 		var fire: Texture2D = Style.tex("res://assets/battle/soldier_fire.webp")
@@ -50,7 +63,37 @@ func _sheet(base: String) -> Dictionary:
 	if typeof(m) != TYPE_DICTIONARY or not (m as Dictionary).has("fw"):
 		return {}
 	return {"tex": t, "cols": int(m["cols"]), "frames": int(m["frames"]), "fw": float(m["fw"]), "fh": float(m["fh"]),
-		"ax": float(m.get("ax", 0.55)), "ay": float(m.get("ay", 0.92)), "fill": float(m.get("fill", 450.0 / 768.0)), "order": m.get("order", [])}
+		"ax": float(m.get("ax", 0.55)), "ay": float(m.get("ay", 0.92)), "fill": float(m.get("fill", 450.0 / 768.0)), "order": m.get("order", []),
+		"fps": float(m.get("fps", 0.0)), "shot": int(m.get("shot", -1)), "muzzle": m.get("muzzle", []), "down": int(m.get("down", -1))}
+
+
+func _fx_sheet(name: String) -> Dictionary:
+	## v1.9: an untinted effect sheet (smoke, blast, dust), painted with Ludo
+	if _fx.has(name):
+		return _fx[name]
+	var base := "res://assets/fx/" + name
+	var t: Texture2D = Style.tex(base + ".webp")
+	var out := {}
+	if t != null and FileAccess.file_exists(base + ".json"):
+		var m: Variant = JSON.parse_string(FileAccess.get_file_as_string(base + ".json"))
+		if typeof(m) == TYPE_DICTIONARY and (m as Dictionary).has("fw"):
+			out = {"tex": t, "cols": int(m["cols"]), "frames": int(m["frames"]), "fw": float(m["fw"]), "fh": float(m["fh"]),
+				"ax": float(m.get("ax", 0.5)), "ay": float(m.get("ay", 0.5)), "fps": float(m.get("fps", 12.0)), "loop": bool(m.get("loop", false)),
+				"order": m.get("order", []), "faces": str(m.get("faces", "right"))}
+	_fx[name] = out
+	return out
+
+
+func burst(name: String, pos: Vector2, px: float, toward_right: bool = true, delay: float = 0.0, dur: float = 0.0) -> bool:
+	## play an effect sheet at pos (its emitter point), px tall; false if there is no such sheet.
+	## A looping sheet (fire) plays for dur seconds (4 if none given), fading at the end.
+	var sh: Dictionary = _fx_sheet(name)
+	if sh.is_empty():
+		return false
+	var flip: bool = (str(sh["faces"]) == "right") != toward_right
+	var d: float = dur if dur > 0.0 else (4.0 if bool(sh["loop"]) else 0.0)
+	bursts.append({"name": name, "pos": pos, "t": -delay, "px": px, "flip": flip, "dur": d})
+	return true
 
 
 func _a(name: String, fallback: String = "soldier_idle") -> Dictionary:
@@ -72,6 +115,7 @@ func setup(list: Array) -> void:
 	armies = []
 	figs = []
 	puffs = []
+	bursts = []
 	## several armies on one side share its ground in bands, front to back
 	var per_side := [0, 0]
 	for a in list:
@@ -84,7 +128,7 @@ func setup(list: Array) -> void:
 			band = [float(seen[side]) / per_side[side], float(seen[side] + 1) / per_side[side]]
 		seen[side] += 1
 		armies.append({"pid": str(a["pid"]), "side": side, "n": int(a["n"]), "band": band, "fled": -1.0,
-			"flag_x": -160.0 if side == 0 else size.x + 160.0})
+			"flag_x": -160.0 if side == 0 else size.x + 160.0, "elite": int(a["n"]) >= ELITE})
 	for i in armies.size():
 		_spawn(i, pieces(int(armies[i]["n"])), true)
 	queue_redraw()
@@ -202,6 +246,11 @@ func _fall(f: Dictionary) -> void:
 	f["alive"] = false
 	f["state"] = "fall"
 	f["t"] = 0.0
+	var sc: float = float(f["scale"])
+	if f["type"] == "gun" and burst("fort_explosion", f["cur"] + Vector2(0, -30 * sc), 240.0 * sc):
+		return
+	if burst("dust_kick", f["cur"] + Vector2(0, -6 * sc), (110.0 if f["type"] == "inf" else 150.0) * sc, randf() < 0.5, 0.12):
+		return
 	puffs.append({"pos": f["cur"] + Vector2(0, -52 * f["scale"]), "t": 0.0, "big": f["type"] == "gun", "seed": randf() * TAU})
 
 
@@ -215,9 +264,17 @@ func volley(ai: int) -> String:
 	var guns := shooters.filter(func(f): return f["type"] == "gun")
 	if not guns.is_empty() and randf() < 0.45:
 		var g: Dictionary = guns[0]
-		_act(g, "fire", "cannon_fire", 1.2)
 		var dir := 1.0 if int(armies[ai]["side"]) == 0 else -1.0
-		puffs.append({"pos": g["cur"] + Vector2(dir * 150.0 * g["scale"], -110.0 * g["scale"]), "t": -0.15, "big": true, "seed": randf() * TAU})
+		var mouth: Vector2 = g["cur"] + Vector2(dir * 150.0 * g["scale"], -110.0 * g["scale"])
+		var at_shot := 0.15
+		if _has("cannon_fire_kf"):
+			_act(g, "fire", "cannon_fire_kf", _fire_len("cannon_fire_kf"))
+			mouth = g["cur"] + _muzzle_of("cannon_fire_kf", g, dir < 0.0)
+			at_shot = _shot_at("cannon_fire_kf")
+		else:
+			_act(g, "fire", "cannon_fire", 1.2)
+		if not burst("cannon_blast", mouth, 300.0 * float(g["scale"]), dir > 0.0, at_shot):
+			puffs.append({"pos": mouth, "t": -0.15, "big": true, "seed": randf() * TAU})
 		return "cannon_big"
 	var n := 0
 	for f in shooters:
@@ -226,24 +283,87 @@ func volley(ai: int) -> String:
 		match str(f["type"]):
 			"inf":
 				var dir2 := 1.0 if int(armies[ai]["side"]) == 0 else -1.0
-				if not _anims["soldier_aim"].is_empty():
+				var kf: String = "grenadier_volley_kf" if _elite(f) else ("soldier_kneel_volley_kf" if randf() < 0.35 and _has("soldier_kneel_volley_kf") else "soldier_volley_kf")
+				if _has(kf):
+					_act(f, "fire", kf, _fire_len(kf))
+					var at_kf: Vector2 = f["cur"] + _muzzle_of(kf, f, dir2 < 0.0)
+					var t_kf: float = _shot_at(kf)
+					var painted_kf: bool = burst("smoke_musket", at_kf, 150.0 * float(f["scale"]), dir2 > 0.0, t_kf)
+					puffs.append({"pos": at_kf, "t": -t_kf, "big": false, "seed": randf() * TAU, "flash": true, "no_smoke": painted_kf})
+				elif not _anims["soldier_aim"].is_empty():
 					## up to the shoulder (or down on one knee), fire, kick, and back to the stance
 					var pose: String = "soldier_kneel_aim" if randf() < 0.35 and not _anims["soldier_kneel_aim"].is_empty() else "soldier_aim"
 					_act(f, "fire", pose, randf_range(0.75, 0.95))
 					var mz: Vector2 = MUZZLE[pose] * float(f["scale"]) * float(SIZE["inf"]) / 0.86
-					puffs.append({"pos": f["cur"] + Vector2(dir2 * mz.x, mz.y), "t": -SHOT_AT, "big": false, "seed": randf() * TAU, "flash": true})
+					var at: Vector2 = f["cur"] + Vector2(dir2 * mz.x, mz.y)
+					var painted: bool = burst("smoke_musket", at, 150.0 * float(f["scale"]), dir2 > 0.0, SHOT_AT)
+					puffs.append({"pos": at, "t": -SHOT_AT, "big": false, "seed": randf() * TAU, "flash": true, "no_smoke": painted})
 				else:
 					_act(f, "fire", "soldier_fire", 0.85)
 					puffs.append({"pos": f["cur"] + Vector2(dir2 * 40 * f["scale"], -62 * f["scale"]), "t": -0.3, "big": false, "seed": randf() * TAU})
 				n += 1
 			"cav":
 				if randf() < 0.5:
-					_act(f, "charge", "cavalry_charge", 1.0)
+					var ck: String = "cuirassier_charge_kf" if _elite(f) else "cavalry_charge_kf"
+					if _has(ck):
+						_act(f, "charge", ck, _kf_len(ck))
+					else:
+						_act(f, "charge", "cavalry_charge", 1.0)
 					sound = "cavalry"
 					n += 1
 	if sound == "volley" and n == 1:
 		sound = "shot" ## one man fires: one shot, not a volley
 	return sound
+
+
+func _elite(f: Dictionary) -> bool:
+	return bool(armies[int(f["army"])].get("elite", false)) and bool(_elite_ok.get(str(f["type"]), false))
+
+
+func _has(name: String) -> bool:
+	return not (_anims.get(name, {}) as Dictionary).is_empty()
+
+
+func _kf_len(name: String) -> float:
+	## how long a keyframed move plays, at its own frame rate
+	var an: Dictionary = _anims.get(name, {})
+	return float(_len(an)) / maxf(1.0, float(an.get("fps", 12.0)))
+
+
+func _muzzle_of(name: String, f: Dictionary, flip: bool) -> Vector2:
+	## where the muzzle is when the sheet fires, from the feet (screen pixels)
+	var an: Dictionary = _anims[name]
+	var mz: Array = an.get("muzzle", [])
+	if mz.size() < 2:
+		return Vector2(0, -80.0 * float(f["scale"]))
+	var h: float = FIG_H * 1.75 * float(f["scale"]) * float(SIZE[str(f["type"])]) / float(an["fill"])
+	var w: float = h * float(an["fw"]) / float(an["fh"])
+	var off := Vector2((float(mz[0]) - float(an["ax"])) * w, (float(mz[1]) - float(an["ay"])) * h)
+	return Vector2(-off.x if flip else off.x, off.y)
+
+
+const RAISE := 0.28 ## seconds a keyframed fire move takes to come up to the shot (the dice have spoken)
+
+
+func _shot_at(name: String) -> float:
+	## the raise is hurried so the shot lands with the dice; the rest plays at the sheet's own pace
+	var an: Dictionary = _anims[name]
+	return RAISE if int(an.get("shot", -1)) > 0 else 0.0
+
+
+func _fire_len(name: String) -> float:
+	var an: Dictionary = _anims[name]
+	var shot: int = int(an.get("shot", -1))
+	if shot <= 0:
+		return _kf_len(name)
+	return RAISE + float(_len(an) - shot) / maxf(1.0, float(an.get("fps", 12.0)))
+
+
+func _fire_frame(an: Dictionary, t: float) -> int:
+	var shot: int = int(an.get("shot", -1))
+	if t < RAISE:
+		return int(t / RAISE * float(shot))
+	return shot + int((t - RAISE) * maxf(1.0, float(an.get("fps", 12.0))))
 
 
 func _act(f: Dictionary, state: String, anim: String, dur: float) -> void:
@@ -258,20 +378,32 @@ func charge(ai: int) -> void:
 	for f in _alive(ai):
 		if f["state"] != "idle":
 			continue
-		if f["type"] == "inf" and not _anims["soldier_charge"].is_empty():
-			_act(f, "charge", "soldier_charge", 0.9)
+		if f["type"] == "inf":
+			var ik: String = "grenadier_charge_kf" if _elite(f) else "soldier_charge_kf"
+			if _has(ik):
+				_act(f, "charge", ik, _kf_len(ik))
+			elif not _elite(f) and not _anims["soldier_charge"].is_empty():
+				_act(f, "charge", "soldier_charge", 0.9)
 		elif f["type"] == "cav":
-			_act(f, "charge", "cavalry_charge", 0.9)
+			var ck2: String = "cuirassier_charge_kf" if _elite(f) else "cavalry_charge_kf"
+			if _has(ck2):
+				_act(f, "charge", ck2, _kf_len(ck2))
+			elif not _elite(f):
+				_act(f, "charge", "cavalry_charge", 0.9)
 
 
 func cheer(ai: int) -> void:
 	for f in _alive(ai):
 		match str(f["type"]):
 			"inf":
-				if not _anims["soldier_cheer"].is_empty():
+				if _elite(f):
+					continue ## the Guard doesn't cheer in a line infantryman's shako
+				if _has("soldier_cheer_kf"):
+					_act(f, "cheer", "soldier_cheer_kf", _kf_len("soldier_cheer_kf"))
+				elif not _anims["soldier_cheer"].is_empty():
 					_act(f, "cheer", "soldier_cheer", 1.4)
 			"cav":
-				if not _anims["cavalry_rear"].is_empty():
+				if not _elite(f) and not _anims["cavalry_rear"].is_empty():
 					_act(f, "cheer", "cavalry_rear", 1.3)
 
 
@@ -280,7 +412,11 @@ func reload(ai: int) -> void:
 		if f["state"] == "idle" and randf() < 0.4:
 			match str(f["type"]):
 				"inf":
-					if not _anims["soldier_reload"].is_empty():
+					if _elite(f):
+						continue
+					if _has("soldier_reload_kf"):
+						_act(f, "reload", "soldier_reload_kf", _kf_len("soldier_reload_kf"))
+					elif not _anims["soldier_reload"].is_empty():
 						_act(f, "reload", "soldier_reload", 1.2)
 				"gun":
 					if not _anims["cannon_reload"].is_empty():
@@ -320,7 +456,12 @@ func _process(delta: float) -> void:
 					f["state"] = "idle"
 			"fall":
 				f["t"] = float(f["t"]) + delta
-				if float(f["t"]) > 0.75:
+				var lie := 0.75
+				if f["type"] == "inf" and not _elite(f) and _has("soldier_fall_kf"):
+					var fa: Dictionary = _anims["soldier_fall_kf"]
+					var down: int = int(fa.get("down", -1))
+					lie = float((down if down >= 0 else _len(fa) - 1) + 1) / maxf(1.0, float(fa.get("fps", 12.0)))
+				if float(f["t"]) > lie:
 					f["state"] = "dead"
 			"merge":
 				f["t"] = float(f["t"]) + delta
@@ -344,6 +485,15 @@ func _process(delta: float) -> void:
 				a["flag_x"] = float(a["flag_x"]) + (-1.0 if int(a["side"]) == 0 else 1.0) * 220.0 * delta
 		else:
 			a["flag_x"] = move_toward(float(a["flag_x"]), _flag_target(i), 360.0 * delta)
+	var bi := bursts.size() - 1
+	while bi >= 0:
+		var b: Dictionary = bursts[bi]
+		b["t"] = float(b["t"]) + delta
+		var sh: Dictionary = _fx_sheet(str(b["name"]))
+		var over: bool = float(b["t"]) >= float(b.get("dur", 0.0)) if float(b.get("dur", 0.0)) > 0.0 else float(b["t"]) * float(sh.get("fps", 12.0)) >= float(_len(sh))
+		if sh.is_empty() or over:
+			bursts.remove_at(bi)
+		bi -= 1
 	var p := puffs.size() - 1
 	while p >= 0:
 		puffs[p]["t"] = float(puffs[p]["t"]) + delta
@@ -383,11 +533,15 @@ func _frame(an: Dictionary, idx: int) -> Rect2:
 	return Rect2((idx % cols) * float(an["fw"]), (idx / cols) * float(an["fh"]), float(an["fw"]), float(an["fh"]))
 
 
-func _idle_of(type: String) -> String:
+func _idle_of(type: String, elite: bool = false) -> String:
+	if elite:
+		return {"inf": "grenadier_idle", "cav": "cuirassier_idle"}.get(type, "cannon_idle")
 	return {"inf": "soldier_idle", "cav": "cavalry_idle", "gun": "cannon_idle"}[type]
 
 
-func _march_of(type: String) -> String:
+func _march_of(type: String, elite: bool = false) -> String:
+	if elite:
+		return {"inf": "grenadier_march", "cav": "cuirassier_gallop"}.get(type, "cannon_idle")
 	return {"inf": "soldier_march", "cav": "cavalry_gallop", "gun": "cannon_idle"}[type]
 
 
@@ -420,19 +574,20 @@ func _draw() -> void:
 		var type: String = f["type"]
 		var col: Color = _tint(str(army["pid"]))
 		var flip: bool = int(army["side"]) == 1
-		var an: Dictionary = _a(_idle_of(type))
+		var el: bool = _elite(f)
+		var an: Dictionary = _a(_idle_of(type, el))
 		var fi := 0
 		var tilt := 0.0
 		match str(f["state"]):
 			"idle", "merge":
 				fi = _pick(an, int((_clock + float(f["phase"])) * 9.0), true)
 			"march", "flee":
-				an = _a(_march_of(type), _idle_of(type))
+				an = _a(_march_of(type, el), _idle_of(type, el))
 				fi = _pick(an, int((_clock + float(f["phase"])) * (15.0 if type == "cav" else 13.0)), true)
 				if f["state"] == "flee":
 					flip = not flip
 			"fire", "charge", "cheer", "reload":
-				an = _a(str(f["anim"]), _idle_of(type))
+				an = _a(str(f["anim"]), _idle_of(type, el))
 				var k: float = float(f["t"]) / maxf(0.1, float(f.get("dur", 1.0)))
 				if str(f["anim"]).ends_with("_aim"):
 					## the aim: snap up, fire, kick back, steady, and lower again
@@ -451,11 +606,22 @@ func _draw() -> void:
 						_draw_anim(idle, _pick(idle, int((_clock + float(f["phase"])) * 9.0), true), f["cur"], float(f["scale"]), flip, col, float(f["alpha"]) * (1.0 - aim_a), 0.0, float(SIZE[type]))
 					_draw_anim(an, 0, foot, float(f["scale"]), flip, col, float(f["alpha"]) * aim_a, -dir3 * 0.035 * kick, float(SIZE[type]))
 					continue
-				if f["state"] == "charge" and (str(f["anim"]).ends_with("charge")):
+				if f["state"] == "fire" and int(an.get("shot", -1)) > 0:
+					fi = _pick(an, _fire_frame(an, float(f["t"])), false)
+				elif f["state"] == "charge" and (str(f["anim"]).ends_with("charge")):
 					fi = _pick(an, int((_clock + float(f["phase"])) * 14.0), true)
 				else:
 					fi = _pick(an, int(k * float(_len(an))), false)
 			"fall", "dead":
+				if type == "inf" and not el and _has("soldier_fall_kf"):
+					## v1.9: a real fall, keyframed from the stand to our fallen pose
+					var fa: Dictionary = _anims["soldier_fall_kf"]
+					var down: int = int(fa.get("down", -1))
+					var last: int = (down if down >= 0 else _len(fa) - 1)
+					var kf2: int = mini(int(float(f["t"]) * maxf(1.0, float(fa.get("fps", 12.0)))), last) if f["state"] == "fall" else last
+					var dk: float = clampf(float(kf2) / maxf(1.0, float(last)), 0.0, 1.0)
+					_draw_anim(fa, _pick(fa, kf2, false), f["cur"], float(f["scale"]), flip, col.darkened(0.4 * dk), float(f["alpha"]), 0.0, float(SIZE[type]))
+					continue
 				fi = _pick(an, 0, false)
 				## over backwards, away from the enemy; a gun just slews and burns
 				var kk: float = clampf(float(f["t"]) / 0.42, 0.0, 1.0) if f["state"] == "fall" else 1.0
@@ -479,11 +645,32 @@ func _draw() -> void:
 		_soft.fill_to = Vector2(1.0, 0.5)
 		_soft.width = 64
 		_soft.height = 64
+	for b in bursts:
+		var bt: float = float(b["t"])
+		if bt < 0.0:
+			continue
+		var sh: Dictionary = _fx_sheet(str(b["name"]))
+		if sh.is_empty():
+			continue
+		var k4: int = int(bt * float(sh["fps"]))
+		var fi4: int = _pick(sh, k4, bool(sh["loop"]))
+		var bh: float = float(b["px"])
+		var bw: float = bh * float(sh["fw"]) / float(sh["fh"])
+		var bd: float = float(b.get("dur", 0.0))
+		var fade: float = clampf((bd - bt) / 0.8, 0.0, 1.0) * clampf(bt / 0.3, 0.0, 1.0) if bd > 0.0 else clampf((float(_len(sh)) - bt * float(sh["fps"])) / 4.0, 0.0, 1.0)
+		draw_set_transform(b["pos"], 0.0, Vector2(-1 if bool(b["flip"]) else 1, 1))
+		draw_texture_rect_region(sh["tex"], Rect2(Vector2(-bw * float(sh["ax"]), -bh * float(sh["ay"])), Vector2(bw, bh)), _frame(sh, fi4), Color(1, 1, 1, 0.92 * fade))
+		draw_set_transform(Vector2.ZERO, 0.0, Vector2.ONE)
 	for p in puffs:
 		var t: float = float(p["t"])
 		if t < 0.0:
 			continue
 		var big: bool = p["big"]
+		if bool(p.get("no_smoke", false)):
+			if bool(p.get("flash", false)) and t < 0.08:
+				var ft2: float = 1.0 - t / 0.08
+				draw_circle(p["pos"], 9.0 * (0.6 + 0.4 * ft2), Color(1.0, 0.95, 0.75, 0.95 * ft2))
+			continue
 		var r: float = (30.0 if big else 11.0) + t * (80.0 if big else 26.0)
 		var a2: float = clampf((0.55 if big else 0.42) - t * (0.26 if big else 0.3), 0.0, 0.55)
 		var c: Vector2 = p["pos"] + Vector2(t * 12.0, -t * 22.0)

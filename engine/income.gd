@@ -7,6 +7,7 @@ const MapLib := preload("res://engine/map.gd")
 
 const NEUTRAL_ID := "neutral"
 const INCOME_FLOOR := 3
+const TREASURY := 2 ## v1.8: a held capital's recruits a round (Capitals.TREASURY)
 
 
 static func income_of(world: Types.World, map: Types.MapDef, player_id: String, cashed_set: int = 0) -> int:
@@ -24,7 +25,24 @@ static func income_of(world: Types.World, map: Types.MapDef, player_id: String, 
 		terrs = PackedStringArray(kept)
 	var from_count: int = maxi(INCOME_FLOOR, terrs.size() / 3)
 	var from_bloc: int = connected_bloc(world, map, player_id) / 6
-	return from_count + from_bloc + region_bonus_of(world, map, player_id) + cashed_set
+	return from_count + from_bloc + region_bonus_of(world, map, player_id) + treasury_of(world, map, player_id) + levee_of(world, map, player_id) + cashed_set
+
+
+static func levee_of(world: Types.World, map: Types.MapDef, player_id: String) -> int:
+	## v1.8 (experiment) levée en masse: the commander behind rallies the people
+	if map == null or map.levee <= 0:
+		return 0
+	var mine: int = MapLib.player_territory_ids(world, player_id).size()
+	var most := 0
+	for o in MapLib.living_player_ids(world):
+		if str(o) != NEUTRAL_ID:
+			most = maxi(most, MapLib.player_territory_ids(world, str(o)).size())
+	return mini(4, maxi(0, most - mine) / map.levee)
+
+
+static func treasury_of(world: Types.World, map: Types.MapDef, player_id: String) -> int:
+	## v1.8: the capital pays while you hold it
+	return TREASURY if map != null and MapLib.capital_of(world, map, player_id) != "" else 0
 
 
 static func cap_of(world: Types.World, map: Types.MapDef, terr_id: String, supply_rule: bool = true) -> int:
@@ -55,8 +73,8 @@ static func garrison_cap(world: Types.World, map: Types.MapDef, terr_id: String)
 		n = mini(n, map.dig_cap)
 	## v1.7: a fortress takes one more man dug in than open ground. Applied after the cap,
 	## so the fort is the one place that goes deeper — that is the whole point of it.
-	if t != null and t.has_trait("fort"):
-		n += 1
+	if t != null and (t.has_trait("fort") or MapLib.is_capital(world, map, terr_id)):
+		n += 1 ## v1.8: a capital is a fortress too (one deeper, not two)
 	return n
 
 

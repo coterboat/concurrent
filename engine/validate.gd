@@ -32,6 +32,14 @@ static func validate_sheet(world: Types.World, map: Types.MapDef, sheet: Types.S
 		elif not Cards.holds(ps.cards, sheet.cash_set):
 			errors.append("you do not hold those cards")
 
+	if sheet.capital != "":
+		## v1.8: a new capital may be named only the round after the old one fell
+		var cs: Types.TerritoryState = world.get_territory(sheet.capital)
+		if not map.capitals or not ps.capital_free:
+			errors.append("capital %s: yours still stands" % sheet.capital)
+		elif cs == null or cs.owner != sheet.player_id:
+			errors.append("capital %s: not one of your lands" % sheet.capital)
+
 	var projected: Types.World = world.clone()
 	_validate_regroup(projected, map, sheet, errors)
 	if errors.size() > 0:
@@ -161,6 +169,14 @@ static func _validate_packets(world: Types.World, map: Types.MapDef, sheet: Type
 				errors.append("%s surgeTo must be adjacent to to" % tag)
 		outgoing[p.from_id] = int(outgoing.get(p.from_id, 0)) + p.strength
 
+	## v1.8: a table may play without surges
+	if not map.surges:
+		for raw2 in sheet.packets:
+			if (raw2 as Types.Packet).surge_to != "":
+				errors.append("surges are off in this war")
+				break
+		if not sheet.surges.is_empty():
+			errors.append("surges are off in this war")
 	## v1.3 surges belong to the land being attacked
 	for dest in sheet.surges.keys():
 		var to: String = str(sheet.surges[dest])

@@ -42,6 +42,8 @@ static func fire(n: int, bonus: int = 0) -> int:
 const CALL_PRESS := "p"
 const CALL_RESERVES := "r"
 const CALL_FALL_BACK := "f"
+const CALL_FORTUNE := "F" ## v1.8: throw that exchange again (engine/fortune.gd)
+const CALL_STAND := "n" ## v1.8: let it stand (Fortune declined)
 const STANCE_HOLD := "hold" ## to the last man (v1.1 behaviour)
 const STANCE_CAREFUL := "careful" ## fall back when it turns
 const STANCE_BOLD := "bold" ## throw in the reserves, never fall back
@@ -76,6 +78,8 @@ class FightResult extends RefCounted:
 	var refuge_armies: int = 0 ## armies at the refuge after the survivors arrive
 	var attacker_left: int = 0 ## attacker survivors (captors, or those who fell back)
 	var pending: bool = false ## stopped at a live call
+	var luck: float = 0.0 ## v1.9: the dice's swing in the attacker's chances, exchange by exchange
+	var luck_kept: bool = false ## v1.9 (rules 18): the event carries it, for Fortune's ledger
 
 	func extras(d: Dictionary) -> Dictionary:
 		if not calls.is_empty():
@@ -91,6 +95,8 @@ class FightResult extends RefCounted:
 		if pending:
 			d["pending"] = true
 			d["attackerLeft"] = attacker_left
+		if luck_kept:
+			d["luck"] = int(round(luck * 100.0))
 		return d
 
 	func to_dict() -> Dictionary:

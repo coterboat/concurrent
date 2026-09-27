@@ -99,6 +99,11 @@ const VARIANTS := {
 var _last_variant := {}
 
 
+func has_sfx(name: String) -> bool:
+	## v1.9: new sounds arrive from the generator; callers fall back to an old one until then
+	return _stream(SFX_DIR + name) != null
+
+
 func sfx(name: String, volume_db: float = 0.0, pitch_jitter: float = 0.04) -> void:
 	## Same sound within 60 ms is dropped so a burst of events does not stack.
 	if VARIANTS.has(name):
@@ -179,11 +184,24 @@ const PLAYLISTS := {
 	"battle": ["battle", "battle_2", "battle_3"],
 	"charge": ["charge", "charge_2", "charge_3"],
 	"muster": ["muster", "plan_2"],
+	## v1.9: Ludo remixes of the menu, plan and battle themes, and a sung march
+	"victory": ["victory", "march_song"],
+	"defeat": ["defeat", "lament"],
+	"besieged": ["besieged"],
+	"endgame": ["endgame", "battle_3"],
 }
 const XFADE := 6.0 ## seconds of overlap between takes
 var _take := "" ## file playing now
 var _player_now: AudioStreamPlayer
 var _looping := true
+
+
+func has_music(name: String) -> bool:
+	## v1.9: a mood only plays if one of its takes is on disk (new remixes arrive later)
+	for t in PLAYLISTS.get(name, [name]):
+		if _stream(MUSIC_DIR + str(t)) != null:
+			return true
+	return false
 
 
 func music(name: String, fade: float = 1.2, loop: bool = true) -> void:

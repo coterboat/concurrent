@@ -20,12 +20,11 @@ func show_result() -> void:
 	for seat in s.seats:
 		if seat["kind"] == "human":
 			any_human = true
-	var art := TextureRect.new()
-	art.texture = Style.tex("res://assets/art/victory.webp" if (humans_won or not any_human) else "res://assets/art/defeat.webp")
-	art.expand_mode = TextureRect.EXPAND_IGNORE_SIZE
-	art.stretch_mode = TextureRect.STRETCH_KEEP_ASPECT_COVERED
-	art.set_anchors_and_offsets_preset(PRESET_FULL_RECT)
-	art.modulate = Color(0.55, 0.55, 0.6)
+	## v1.9: the victory (or defeat) painting breathes behind the tally
+	var good: bool = humans_won or not any_human
+	var art: Control = load("res://game/ui/living_painting.gd").new()
+	art.setup("res://assets/art/victory.webp" if good else "res://assets/art/defeat.webp",
+		"res://assets/video/victory_loop.ogv" if good else "res://assets/video/defeat_loop.ogv", Color(0.55, 0.55, 0.6))
 	add_child(art)
 	var shade := ColorRect.new()
 	shade.color = Color(0.01, 0.02, 0.04, 0.45)
@@ -71,11 +70,15 @@ func show_result() -> void:
 	left.add_child(lv)
 	lv.add_child(Style.label("Final standings", 24, Style.GOLD, "display"))
 	var g := GridContainer.new()
-	g.columns = 7
+	g.columns = 8
 	g.add_theme_constant_override("h_separation", 18)
 	g.add_theme_constant_override("v_separation", 6)
-	for h in ["", "Commander", "Score", "Captures", "Walk-ins", "Battles won", "Sets"]:
-		g.add_child(Style.label(h, 16, Style.GOLD, "bold"))
+	for h in ["", "Commander", "Score", "Captures", "Walk-ins", "Battles won", "Sets", "Luck"]:
+		var hl := Style.label(h, 16, Style.GOLD, "bold")
+		if h == "Luck":
+			hl.tooltip_text = "Battles won beyond (or short of) what the odds said when each one began.\n+2 means the dice handed you two battles you should have lost."
+			hl.mouse_filter = Control.MOUSE_FILTER_PASS
+		g.add_child(hl)
 	var place := 1
 	for r in s.standings():
 		var st: Dictionary = s.stats.get(r["id"], {})
@@ -87,6 +90,18 @@ func show_result() -> void:
 		g.add_child(Style.label("%d" % int(st.get("walkins", 0)), 19, Style.CREAM))
 		g.add_child(Style.label("%d / %d" % [int(st.get("won", 0)), int(st.get("battles", 0))], 19, Style.CREAM))
 		g.add_child(Style.label("%d" % int(st.get("sets", 0)), 19, Style.CREAM))
+		## v1.8: the luck ledger — did the dice owe you, or you them?
+		var lk: Dictionary = s.luck_of(str(r["id"]))
+		var sw: float = float(lk["swing"])
+		var lcol: Color = Style.GOOD if sw >= 0.75 else (Style.CRIMSON.lightened(0.35) if sw <= -0.75 else Style.CREAM)
+		var lword: String = " blessed" if sw >= 2.5 else (" cursed" if sw <= -2.5 else "")
+		var ll := Style.label(("%+.1f" % sw) + lword if int(lk["n"]) > 0 else "—", 19, lcol, "bold")
+		if int(lk.get("measured", 0)) > 0:
+			ll.tooltip_text = "The dice's swing over %d battles, weighed exchange by exchange against the odds: %+.1f battles' worth.\n(A battle you fell back from counts for the volleys fought.)" % [int(lk["n"]), sw]
+		else:
+			ll.tooltip_text = "Won %d of %d one-on-one battles; the odds said %.1f." % [int(lk["won"]), int(lk["n"]), float(lk["expected"])]
+		ll.mouse_filter = Control.MOUSE_FILTER_PASS
+		g.add_child(ll)
 		place += 1
 	lv.add_child(g)
 	var right := PanelContainer.new()
@@ -122,8 +137,14 @@ func show_result() -> void:
 		chips.append(chip)
 		ch_head.add_child(chip)
 	rv.add_child(chart)
+	var keys: Array = []
 	if not s.cash_log.is_empty():
-		var key := Style.label("▣ +N: a set of cards turned in, in the commander's colour", 13, Style.MUTED, "italic")
+		keys.append("▣ +N: a set of cards turned in, in the commander's colour")
+	if not s.capital_log.is_empty():
+		keys.append("♛ a capital taken: on the line of the commander who lost it, ringed in the captor's colour")
+	if not keys.is_empty():
+		var key := Style.label("    ".join(keys), 13, Style.MUTED, "italic")
+		key.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
 		rv.add_child(key)
 
 	var btns := HBoxContainer.new()
@@ -196,3 +217,27 @@ class _Chart extends Control:
 			draw_rect(Rect2(at + Vector2(3.5, 3.5), Vector2(7, 12)), Color(0.97, 0.93, 0.82, 0.9), false, 1.2)
 			draw_string_outline(Style.font("bold"), at + Vector2(17, 15), "+%d" % int(c["value"]), HORIZONTAL_ALIGNMENT_LEFT, -1, 13, 4, Color(0, 0, 0, 0.85))
 			draw_string(Style.font("bold"), at + Vector2(17, 15), "+%d" % int(c["value"]), HORIZONTAL_ALIGNMENT_LEFT, -1, 13, col2)
+		## v1.9: capitals taken: a crown on the fallen commander's line, ringed in the captor's colour
+		var crown: Texture2D = Style.tex("res://assets/icons/crown.png")
+		for cl in session.capital_log:
+			var ci := -1
+			for i in h.size():
+				if int(h[i]["round"]) == int(cl["round"]):
+					ci = i
+			if ci < 0:
+				continue
+			var lost: String = str(cl["pid"])
+			var series3: Dictionary = (h[ci] as Dictionary).get(mode, h[ci]["terr"])
+			var cx: float = area.position.x + area.size.x * float(ci) / float(h.size() - 1)
+			var cy: float = area.end.y - area.size.y * float(series3.get(lost, 0)) / float(max_v)
+			var k2: int = int(stack.get(ci, 0))
+			stack[ci] = k2 + 1
+			var at2 := Vector2(cx, cy + 26 + k2 * 4) if cy < area.position.y + 40 else Vector2(cx, cy - 26 - k2 * 22)
+			var ring: Color = Style.seat_color(str(cl["by"])).lightened(0.2)
+			draw_line(Vector2(cx, cy), at2, Color(ring, 0.7), 2.0, true)
+			draw_circle(at2, 14.0, Color(0.06, 0.04, 0.03, 0.95))
+			draw_arc(at2, 14.0, 0.0, TAU, 32, ring, 3.0, true)
+			if crown != null:
+				draw_texture_rect(crown, Rect2(at2 - Vector2(10, 10), Vector2(20, 20)), false, Style.seat_color(lost).lightened(0.55))
+			else:
+				draw_string(Style.font("bold"), at2 + Vector2(-6, 6), "♛", HORIZONTAL_ALIGNMENT_LEFT, -1, 16, Style.GOLD)

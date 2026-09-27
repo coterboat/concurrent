@@ -36,9 +36,13 @@ Every round has four phases, each announced as it begins: **Reinforcement** (pla
 - **Surge.** Drag on from the land you're attacking to the next one: if you take it, the men who took it (from every direction) push on, up to the number you choose. All surges happen at once, after every other battle; two surges running at each other's lands clash head-on.
 - **Regroup phase.** After the battles, everyone marches troops between their own neighbouring lands, one land per soldier, then the next round begins.
 - **Garrisons.** The gold shield on a land is its garrison, who never march: its dug-in defenders, or on a land with none yet the one man who must stay behind. The big number is exactly who can march. Every round you keep a land, one more man digs in, up to three.
-- **Cards** (bigger maps). Capturing earns a card: infantry, cavalry or artillery, each naming a land. Three alike or one of each turn in for 4, 6, 8, 10, then 5 more each time, plus a free soldier on every named land you hold. Take a commander's last land and their whole hand is yours.
+- **Cards** (bigger maps). Capturing earns a card: infantry, cavalry or artillery, each naming a land. Three alike or one of each turn in for 4, 6, 8, 10, then 5 more each time, plus a free soldier on every named land you hold. Take a commander's last land and their whole hand is yours; if several of you took their last lands in the same round, each throws a die and the cards are shared out in proportion to the throws.
 - **What a land is.** Some maps give a land a standing character, shown by a small brass emblem on it. A **fortress** fires a line of six instead of five and takes one more man dug in. A **pass** lets no more than six storm it from any one land, surges and reserves included, however many you have there — come at it from two lands at once. A **port** is joined by sea to your other ports: troops march between them and supply runs along them, but you cannot attack down a sea link.
 - **Supply** (some maps). Your largest connected body of lands — joined by land, or by your own ports — is in supply. A land cut off from it pays no income and takes no recruits (deployment aside), though it still fights and still digs in. The map says CUT OFF across it. A conquest that reaches too far is worth nothing until the road behind it is yours.
+- **Capitals.** Every commander keeps a capital, marked with a crown: name it at deployment (or your first claim is it). It pays 2 recruits a round, fights like a fortress, and supply runs from it. Take a rival's and you plunder half their cards and raise 3 troops there; lose yours and the court flees to your strongest land, and you may move it next round.
+- **Fortune** ✦. Bad luck banks favours: the ledger weighs every exchange against its odds, and each time the dice have cost you about half a battle, Fortune owes you one (start with one, hold three; a commander's next star fills with gold as the dice owe them). In a battle you're watching, after an exchange that went badly for you, spend one and the exchange is thrown again. Once a battle a side; only you ever spend yours.
+- **Levée en masse.** Whoever trails the leader in lands raises a recruit for every three lands behind (up to four a round).
+- **Rules.** Standard is the full war we balance around; Recruit is a first war with fewer rules; Classic is Risk II odds; or customize any rule on the setup screen.
 - **The lands.** Dealt at random, or claimed in turn: every commander's die drops onto the map for the order, then everyone claims one land at a time.
 - **Winning.** After the last round, the highest score wins (lands + region bonuses). Holding 80% of the map, or being the last one standing, wins at once.
 
@@ -97,18 +101,21 @@ tests/       headless suite: kernel, queue T1–T8, properties, cards, AI, sessi
 | `godot --headless --path . --script res://tools/arena.gd -- map=world30 n=40 seats=general,veteran,hask   # supply=/traits= A/B a rule on the same seeds` | AI tournament: win rates, game length, walk-ins, combat bands |
 | `./scripts/combat_sim.sh` | Combat capture bands |
 | `node tools/mapgen/mapgen.mjs knife7 marches18 known24 isles24 ring26 world30` | Regenerate map geography from `tools/mapgen/*.geo.json` |
+| `python3 tools/review/review.py serve --open` | The review table: listen to, look at or watch a batch of generated assets and accept, reject or reword each one; **F** (Finish review) runs the batch's own Install accepted / Redo rejected from the page (see `tools/review/README.md`, and `docs/ASSETS.md` for the whole pipeline) |
 | `godot --headless --script res://tools/contact.gd -- dir=res://assets/portraits match=you_ out=/tmp/sheet.png` | Contact sheet of an art batch, to judge it all at once |
 | `python3 tools/ludo/ludo.py [ids…]` | Generate missing art/audio from `tools/ludo/manifest.json` (reads `LUDO_API_KEY` from `.env.local`; idempotent) |
-| `./scripts/shot.sh ui` | Drive the real client and save screenshots (`SHOT_DIR=…`); `calls` plays a battle with live calls, `v13` a melee, the reinforcement phase and the cards, `v14` the dice, a scramble and the land draft, `v15` the phases, a surge with a count, the physics dice in battle and a card turn-in, `dice` the physics dice on their own (1,000 throws checked), `field` the formations, `input` clicks with the real mouse path |
+| `./scripts/shot.sh ui` | Drive the real client and save screenshots (`SHOT_DIR=…`); `calls` plays a battle with live calls, `v13` a melee, the reinforcement phase and the cards, `v14` the dice, a scramble and the land draft, `v15` the phases, a surge with a count, the physics dice in battle and a card turn-in, `dice` the physics dice on their own (1,000 throws checked), `field` the formations, `input` clicks with the real mouse path, `v17` traits, supply and the setup screen, `v18` capitals and the spoils fix, `v19` Fortune's stars, the divided chest, the fading card star, the living title and a cutscene |
 | `python3 tools/ludo/v12_content.py` | Rewrite the v1.2 manifest entries and `game/data/lines.json` (version-bumps anything whose prompt changed) |
 | `python3 tools/ludo/pack_anims.py [--fetch]` | Pack Ludo animation masters into game sheets, checking every loop's seam and clipping |
 | `./scripts/cli.sh play --seed 42` | Text-mode knife-fight vs the monkey |
+
+Working notes for contributors (and Claude): [CLAUDE.md](CLAUDE.md), the engine's laws, the commands and the gotchas. Assets: [docs/ASSETS.md](docs/ASSETS.md).
 
 Design history: [CONCURRENT_Build_Bible.pdf](CONCURRENT_Build_Bible.pdf) → [v0.2](CONCURRENT_Build_Bible_v0.2.pdf) → [BUILD_PLAN.md](BUILD_PLAN.md) → [docs/CHANGELOG.md](docs/CHANGELOG.md) (v1.0 and every rule amendment since the bible).
 
 ## Credits
 
-- Art, music, sound effects, portrait reactions, portrait and soldier animations and all 87 voiced lines were generated with [Ludo.ai](https://ludo.ai). The prompts are in `tools/ludo/manifest.json` (lines and the v1.2 art direction in `tools/ludo/v12_content.py`), and the job ledger is in `assets/ludo_ledger.json`.
+- Art, music, sound effects, portrait reactions, portrait and soldier animations, the films (living paintings and cutscenes), the painted 3D pieces and the voiced lines were generated with [Ludo.ai](https://ludo.ai). The prompts are in `tools/ludo/manifest.json` (lines and the v1.2 art direction in `tools/ludo/v12_content.py`), and the job ledger is in `assets/ludo_ledger.json`.
 - Fonts: Cinzel and Alegreya Sans, SIL Open Font License (`assets/fonts/OFL-*.txt`).
 - Built with [Godot Engine](https://godotengine.org) (MIT).
 - An original game in the SameTime tradition. Not affiliated with any published board game.

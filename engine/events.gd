@@ -154,6 +154,16 @@ static func cards_captured(from_id: String, to_id: String, cards: PackedStringAr
 	return {"kind": Types.EVENT_CARDS_CAPTURED, "from": from_id, "to": to_id, "cards": Array(cards)}
 
 
+static func capital_taken(player_id: String, terr_id: String, by: String, cards: PackedStringArray, levy: int) -> Dictionary:
+	return {"kind": Types.EVENT_CAPITAL_TAKEN, "playerId": player_id, "terrId": terr_id, "by": by, "cards": Array(cards), "levy": levy}
+
+
+static func capital_founded(player_id: String, terr_id: String, why: String) -> Dictionary:
+	## why: "deploy" (named at the start), "draft" (the first land claimed), "fallen" (named anew
+	## after a fall), "moved" (the commander chose another the round after)
+	return {"kind": Types.EVENT_CAPITAL_FOUNDED, "playerId": player_id, "terrId": terr_id, "why": why}
+
+
 static func round_ended(round: int, winner: String, early: bool) -> Dictionary:
 	return {
 		"kind": Types.EVENT_ROUND_ENDED,

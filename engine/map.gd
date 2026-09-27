@@ -131,6 +131,34 @@ static func defender_line_bonus(map: Types.MapDef, terr_id: String) -> int:
 	return maxi(0, map.fort_bonus)
 
 
+static func is_capital(world: Types.World, map: Types.MapDef, terr_id: String) -> bool:
+	## v1.8: this land is its holder's capital
+	if world == null or map == null or not map.capitals:
+		return false
+	var ts: Types.TerritoryState = world.get_territory(terr_id)
+	if ts == null or not world.players.has(ts.owner):
+		return false
+	return (world.players[ts.owner] as Types.PlayerState).capital == terr_id
+
+
+static func capital_of(world: Types.World, map: Types.MapDef, player_id: String) -> String:
+	## the capital this commander still holds ("" if none, or it has fallen)
+	if world == null or map == null or not map.capitals or not world.players.has(player_id):
+		return ""
+	var c: String = (world.players[player_id] as Types.PlayerState).capital
+	var ts: Types.TerritoryState = world.get_territory(c) if c != "" else null
+	return c if ts != null and ts.owner == player_id else ""
+
+
+static func defender_bonus(world: Types.World, map: Types.MapDef, terr_id: String) -> int:
+	## The longer firing line a land's defenders fire: a fortress's, and v1.8 a capital's.
+	## One is the whole effect (a pip is five men), so a fortified capital fires no longer.
+	var b: int = defender_line_bonus(map, terr_id)
+	if is_capital(world, map, terr_id):
+		b = maxi(b, 1)
+	return b
+
+
 static func column_cap(map: Types.MapDef, terr_id: String) -> int:
 	## Most men who may be sent in one attacking column into this land. 0 = no cap.
 	if map == null or not has_trait(map, terr_id, "pass"):
@@ -169,6 +197,10 @@ static func supplied_ids(world: Types.World, map: Types.MapDef, player_id: Strin
 		return out
 	var seen := {}
 	var best: Array = []
+	## v1.8: with capitals, the road home runs to the capital while it stands
+	var home: String = capital_of(world, map, player_id)
+	if home != "":
+		owned = PackedStringArray([home] + Array(owned))
 	for start in owned:
 		if seen.has(start):
 			continue
@@ -186,8 +218,10 @@ static func supplied_ids(world: Types.World, map: Types.MapDef, player_id: Strin
 					continue
 				seen[n] = true
 				q.append(n)
-		if comp.size() > best.size():
+		if comp.size() > best.size() or (home != "" and str(start) == home):
 			best = comp
+			if home != "" and str(start) == home:
+				break
 	for t in best:
 		out[str(t)] = true
 	return out

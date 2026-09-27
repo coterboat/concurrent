@@ -3,6 +3,7 @@
 
     python3 tools/ludo/prep_sfx.py            # all of them
     python3 tools/ludo/prep_sfx.py --report   # just print each file's envelope
+    python3 tools/ludo/prep_sfx.py --out DIR fortune   # write somewhere else (a review folder)
 
 Knocks (one die hitting the table) are cut to the single loudest hit with a short tail;
 cheers are levelled by loudness (RMS) so a bigger army sounds fuller, not louder;
@@ -51,6 +52,11 @@ PLAN = {
     "far_shouts": ("trim", 3.0, -4.0),
     "phase_sting": ("trim", 2.0, -3.0),
     "phase_tap": ("trim", 1.0, -4.0),
+    ## v1.8: a capital falls: a tolling bell, a cannon, a cry
+    "capital_fall": ("trim", 3.6, -3.0),
+    ## v1.9: Fortune's favour: calling on it (harp and bells into a timpani hit), and banking one
+    "fortune": ("trim", 2.4, -3.0),
+    "fortune_gained": ("trim", 1.2, -5.0),
 }
 
 
@@ -119,12 +125,21 @@ def rms_db(data):
 
 
 def main():
+    global OUT
     report = "--report" in sys.argv
-    only = [x for x in sys.argv[1:] if not x.startswith("--")]
+    argv = sys.argv[1:]
+    if "--out" in argv:
+        i = argv.index("--out")
+        OUT = os.path.abspath(argv[i + 1])
+        os.makedirs(OUT, exist_ok=True)
+        argv = argv[:i] + argv[i + 2:]
+    only = [x for x in argv if not x.startswith("--")]
     for name, (mode, max_s, level) in PLAN.items():
         if only and name not in only:
             continue
         src = os.path.join(RAW, name + ".mp3")
+        if not os.path.exists(src) and os.path.exists(os.path.join(RAW, name + ".wav")):
+            src = os.path.join(RAW, name + ".wav")  ## Ludo sometimes sends a WAV
         if not os.path.exists(src):
             print("missing", name)
             continue

@@ -5,6 +5,8 @@ extends RefCounted
 const Types := preload("res://engine/types.gd")
 const Rng := preload("res://engine/rng.gd")
 const Income := preload("res://engine/income.gd")
+const Capitals := preload("res://engine/capitals.gd")
+const Fortune := preload("res://engine/fortune.gd")
 
 const KNIFE_ROUNDS := 5
 const WORLD_ROUNDS := 8
@@ -31,7 +33,9 @@ static func starting_pool(player_count: int) -> int:
 
 static func early_end_threshold(map: Types.MapDef) -> int:
 	var n: int = map.territories.size()
-	return int(ceil(EARLY_END_FRACTION * float(n)))
+	## v1.8: a map may ask for more (a duel is not won at four-fifths)
+	var f: float = map.dominate if map.dominate > 0.0 else EARLY_END_FRACTION
+	return mini(n, int(ceil(f * float(n))))
 
 
 static func make_player(id: String, display_name: String, color: String) -> Types.PlayerState:
@@ -198,7 +202,7 @@ static func deal_two_player(map: Types.MapDef, match_seed: int, pin_neutral: boo
 	return w
 
 
-static func apply_opening(world: Types.World, map: Types.MapDef, placements_by_player: Dictionary) -> void:
+static func apply_opening(world: Types.World, map: Types.MapDef, placements_by_player: Dictionary, capitals: Dictionary = {}, events: Array = []) -> void:
 	## Simultaneous: caps from the post-deal snapshot, then apply.
 	var caps := {}
 	for terr_id in world.territories.keys():
@@ -231,6 +235,9 @@ static func apply_opening(world: Types.World, map: Types.MapDef, placements_by_p
 			if t2.owner != Types.UNOCCUPIED and t2.owner != Income.NEUTRAL_ID and t2.garrison < 1 and t2.armies >= 1:
 				t2.armies -= 1
 				t2.garrison = 1
+	## v1.8: every commander names a capital (after a draft, their first claim already is one)
+	Capitals.found(world, map, capitals, events)
+	Fortune.found(world, map) ## v1.8: every commander starts the war with one favour
 
 
 static func _human_count(world: Types.World) -> int:

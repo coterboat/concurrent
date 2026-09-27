@@ -161,57 +161,350 @@ func _build_board() -> void:
 	for n in _board_nodes:
 		n.queue_free()
 	_board_nodes = []
+	clear_pieces() ## re-set by their owner on the next count
 	if not board:
 		return
 	var w: float = table_w if table_w > 0.0 else width * 0.98
 	var dd: float = _depth * 0.9
+	## v1.9: the table is dressed in real materials (assets/tex: baize, mahogany, brass), with
+	## a bump taken from each texture so the cloth has a nap and the wood a grain under the lamp
 	var felt := MeshInstance3D.new()
 	var pm := PlaneMesh.new()
 	pm.size = Vector2(w, dd)
 	felt.mesh = pm
 	var fm := StandardMaterial3D.new()
-	var tex: Texture2D = Style.tex("res://assets/battle/dice_tray.webp")
-	if tex != null:
-		fm.albedo_texture = tex
-		## the middle of the painted tray: baize, no frame (the rails are real wood)
-		fm.uv1_scale = Vector3(0.74, 0.62, 1)
-		fm.uv1_offset = Vector3(0.13, 0.19, 0)
-		fm.albedo_color = Color(0.5, 0.55, 0.5) ## the lamp is bright: a deep, quiet baize
+	var baize: Texture2D = Style.tex("res://assets/tex/felt.webp")
+	if baize != null:
+		fm.albedo_texture = baize
+		fm.uv1_scale = Vector3(w / 3.2, dd / 3.2, 1) ## a tile every ~3 units: fine cloth, never a visible repeat
+		fm.albedo_color = Color(0.62, 0.7, 0.62)
+		fm.normal_enabled = true
+		fm.normal_texture = _bump_of("felt", baize, 3.0)
+		fm.normal_scale = 0.6
 	else:
-		fm.albedo_color = Color(0.06, 0.16, 0.1)
+		var tex: Texture2D = Style.tex("res://assets/battle/dice_tray.webp")
+		if tex != null:
+			fm.albedo_texture = tex
+			fm.uv1_scale = Vector3(0.74, 0.62, 1)
+			fm.uv1_offset = Vector3(0.13, 0.19, 0)
+			fm.albedo_color = Color(0.5, 0.55, 0.5)
+		else:
+			fm.albedo_color = Color(0.06, 0.16, 0.1)
 	fm.roughness = 1.0
 	fm.metallic_specular = 0.1
 	felt.material_override = fm
-	_world.add_child(felt)
-	_board_nodes.append(felt)
-	## mahogany rails with a brass cap
+	_add_board(felt)
+	## the lamp's pool on the cloth: dark toward the rails, so the dice sit in the light
+	var vig := MeshInstance3D.new()
+	var vm := PlaneMesh.new()
+	vm.size = Vector2(w, dd)
+	vig.mesh = vm
+	vig.position.y = 0.004
+	var vmat := StandardMaterial3D.new()
+	vmat.shading_mode = BaseMaterial3D.SHADING_MODE_UNSHADED
+	vmat.transparency = BaseMaterial3D.TRANSPARENCY_ALPHA
+	vmat.albedo_texture = _vignette()
+	vig.material_override = vmat
+	_add_board(vig)
+	## a shadow under the whole table, so it sits on the field instead of floating over it
+	var drop := MeshInstance3D.new()
+	var dm := PlaneMesh.new()
+	dm.size = Vector2(w + 2.4, dd + 1.8)
+	drop.mesh = dm
+	drop.position.y = -0.02
+	var dmat := StandardMaterial3D.new()
+	dmat.shading_mode = BaseMaterial3D.SHADING_MODE_UNSHADED
+	dmat.transparency = BaseMaterial3D.TRANSPARENCY_ALPHA
+	dmat.albedo_texture = _blob_of()
+	dmat.albedo_color = Color(0, 0, 0, 0.75)
+	drop.material_override = dmat
+	_add_board(drop)
+	## mahogany rails with a rounded top and a brass inlay along the inside edge
 	var wood := StandardMaterial3D.new()
-	wood.albedo_color = Color(0.16, 0.06, 0.03)
-	wood.roughness = 0.3
+	var mahog: Texture2D = Style.tex("res://assets/tex/rail_wood.webp")
+	if mahog != null:
+		wood.albedo_texture = mahog
+		wood.uv1_triplanar = true
+		wood.uv1_scale = Vector3(0.45, 0.45, 0.45)
+		wood.albedo_color = Color(0.85, 0.78, 0.74)
+		wood.normal_enabled = true
+		wood.normal_texture = _bump_of("wood", mahog, 1.5)
+		wood.normal_scale = 0.35
+		wood.uv1_world_triplanar = true
+	else:
+		wood.albedo_color = Color(0.16, 0.06, 0.03)
+	wood.roughness = 0.32
+	wood.clearcoat_enabled = true
+	wood.clearcoat = 0.6
+	wood.clearcoat_roughness = 0.25
 	var brass := StandardMaterial3D.new()
-	brass.albedo_color = Color(0.85, 0.66, 0.3)
-	brass.metallic = 0.9
-	brass.roughness = 0.3
-	for side in [[Vector3(0, 0.16, -dd * 0.5 - 0.16), Vector3(w + 0.64, 0.32, 0.32)], [Vector3(0, 0.16, dd * 0.5 + 0.16), Vector3(w + 0.64, 0.32, 0.32)],
-			[Vector3(-w * 0.5 - 0.16, 0.16, 0), Vector3(0.32, 0.32, dd)], [Vector3(w * 0.5 + 0.16, 0.16, 0), Vector3(0.32, 0.32, dd)]]:
-		var rail := MeshInstance3D.new()
+	var bt: Texture2D = Style.tex("res://assets/tex/brass.webp")
+	if bt != null:
+		brass.albedo_texture = bt
+		brass.uv1_triplanar = true
+		brass.uv1_scale = Vector3(0.9, 0.9, 0.9)
+		brass.albedo_color = Color(1.0, 0.9, 0.7)
+	else:
+		brass.albedo_color = Color(0.85, 0.66, 0.3)
+	brass.metallic = 0.85
+	brass.roughness = 0.34
+	const RW := 0.34 ## rail width
+	const RH := 0.26 ## rail height below the rounded top
+	var rails := [
+		[Vector3(0, 0, -dd * 0.5 - RW * 0.5), w + RW * 2.0, true, 1.0],
+		[Vector3(0, 0, dd * 0.5 + RW * 0.5), w + RW * 2.0, true, -1.0],
+		[Vector3(-w * 0.5 - RW * 0.5, 0, 0), dd, false, 1.0],
+		[Vector3(w * 0.5 + RW * 0.5, 0, 0), dd, false, -1.0]]
+	for rl in rails:
+		var at: Vector3 = rl[0]
+		var length: float = rl[1]
+		var along_x: bool = rl[2]
+		var inward: float = rl[3]
+		var body := MeshInstance3D.new()
 		var bm := BoxMesh.new()
-		bm.size = side[1]
-		rail.mesh = bm
-		rail.position = side[0]
-		rail.material_override = wood
-		_world.add_child(rail)
-		_board_nodes.append(rail)
+		bm.size = Vector3(length, RH, RW) if along_x else Vector3(RW, RH, length)
+		body.mesh = bm
+		body.position = at + Vector3(0, RH * 0.5, 0)
+		body.material_override = wood
+		_add_board(body)
+		var cap := MeshInstance3D.new()
+		var cy := CylinderMesh.new()
+		cy.top_radius = RW * 0.5
+		cy.bottom_radius = RW * 0.5
+		cy.height = length
+		cy.radial_segments = 20
+		cap.mesh = cy
+		cap.position = at + Vector3(0, RH, 0)
+		cap.rotation = Vector3(0, 0, PI * 0.5) if along_x else Vector3(PI * 0.5, 0, 0)
+		cap.scale = Vector3(0.55, 1, 1) if along_x else Vector3(1, 1, 0.55) ## a low, rounded bullnose, not a pipe
+		cap.material_override = wood
+		_add_board(cap)
+		var inlay := MeshInstance3D.new()
+		var im := BoxMesh.new()
+		im.size = Vector3(length - RW * 1.6, 0.05, 0.05) if along_x else Vector3(0.05, 0.05, length - 0.1)
+		inlay.mesh = im
+		var edge: Vector3 = Vector3(0, 0, inward * (RW * 0.5 + 0.02)) if along_x else Vector3(inward * (RW * 0.5 + 0.02), 0, 0)
+		inlay.position = at + edge + Vector3(0, 0.03, 0)
+		inlay.material_override = brass
+		_add_board(inlay)
+	## brass corner posts with a round finial
 	for cx in [-1, 1]:
 		for cz in [-1, 1]:
-			var cap := MeshInstance3D.new()
-			var cm := BoxMesh.new()
-			cm.size = Vector3(0.38, 0.36, 0.38)
-			cap.mesh = cm
-			cap.position = Vector3(cx * (w * 0.5 + 0.16), 0.18, cz * (dd * 0.5 + 0.16))
-			cap.material_override = brass
-			_world.add_child(cap)
-			_board_nodes.append(cap)
+			var post := MeshInstance3D.new()
+			var pmh := BoxMesh.new()
+			pmh.size = Vector3(RW * 1.2, RH + 0.14, RW * 1.2)
+			post.mesh = pmh
+			var pc := Vector3(cx * (w * 0.5 + RW * 0.5), (RH + 0.14) * 0.5, cz * (dd * 0.5 + RW * 0.5))
+			post.position = pc
+			post.material_override = brass
+			_add_board(post)
+			var knob := MeshInstance3D.new()
+			var sm := SphereMesh.new()
+			sm.radius = RW * 0.42
+			sm.height = RW * 0.84
+			knob.mesh = sm
+			knob.position = pc + Vector3(0, (RH + 0.14) * 0.5 + RW * 0.3, 0)
+			knob.material_override = brass
+			_add_board(knob)
+
+
+func _add_board(n: Node3D) -> void:
+	_world.add_child(n)
+	_board_nodes.append(n)
+
+
+# ------------------------------------------------------------------ the pieces (v1.9)
+## Painted tin miniatures (Ludo 3D, assets/models) stand at the back corners of the table,
+## one for each side, on a plinth in its colour: the Risk piece its army is worth (a cannon
+## for ten, a horse for five, a man), so they change as the men fall. At the end the
+## winner's becomes the colour-bearer and the loser's topples.
+
+var _pieces := {} ## side (0 left, 1 right) -> {node, kind}
+static var _piece_scenes := {}
+const PIECE_H := 1.9 ## how tall a piece stands, in table units
+
+
+static func piece_for(n: int) -> String:
+	return "cannon" if n >= 10 else ("cavalry" if n >= 5 else "infantry")
+
+
+static func has_pieces() -> bool:
+	return ResourceLoader.exists("res://assets/models/infantry.glb")
+
+
+static func warm_pieces() -> void:
+	## load the four pieces once, before the first battle needs them (no hitch mid-throw)
+	for k in ["infantry", "cavalry", "cannon", "flag"]:
+		var path := "res://assets/models/%s.glb" % k
+		if not _piece_scenes.has(path):
+			_piece_scenes[path] = load(path) if ResourceLoader.exists(path) else null
+
+
+func set_piece(side: int, kind: String, tint: Color) -> void:
+	## show (or swap) a side's piece; "" clears it
+	var cur: Dictionary = _pieces.get(side, {})
+	if not cur.is_empty() and str(cur["kind"]) == kind and not bool(cur.get("down", false)):
+		return
+	if not cur.is_empty():
+		(cur["node"] as Node).queue_free()
+		_pieces.erase(side)
+	if kind == "" or _world == null or not board:
+		return
+	var path := "res://assets/models/%s.glb" % kind
+	if not _piece_scenes.has(path):
+		_piece_scenes[path] = load(path) if ResourceLoader.exists(path) else null
+	var ps: PackedScene = _piece_scenes[path]
+	if ps == null:
+		return
+	var holder := Node3D.new()
+	var pivot := Node3D.new() ## turns the model about its own centre
+	holder.add_child(pivot)
+	var model: Node3D = ps.instantiate()
+	pivot.add_child(model)
+	## fit it: base on the cloth, PIECE_H tall (cannon lower and longer)
+	var box := AABB()
+	var first := true
+	for mi in model.find_children("*", "MeshInstance3D", true, false):
+		var m3: MeshInstance3D = mi
+		var bb: AABB = m3.get_aabb()
+		var xf: Transform3D = model.global_transform.affine_inverse() * m3.global_transform if m3.is_inside_tree() else _rel_xf(model, m3)
+		bb = xf * bb
+		box = bb if first else box.merge(bb)
+		first = false
+	if first or box.size.y <= 0.0001:
+		holder.queue_free()
+		return
+	var want: float = PIECE_H * (0.48 if kind == "cannon" else 1.0)
+	var k: float = want / box.size.y
+	model.scale = Vector3.ONE * k
+	model.position = Vector3(-(box.position.x + box.size.x * 0.5) * k, -box.position.y * k, -(box.position.z + box.size.z * 0.5) * k)
+	## the plinth in the side's colour
+	var plinth := MeshInstance3D.new()
+	var cm := CylinderMesh.new()
+	cm.top_radius = 0.46
+	cm.bottom_radius = 0.5
+	cm.height = 0.08
+	plinth.mesh = cm
+	plinth.position.y = 0.04
+	var pm := StandardMaterial3D.new()
+	pm.albedo_color = tint
+	pm.metallic = 0.3
+	pm.roughness = 0.4
+	plinth.material_override = pm
+	holder.add_child(plinth)
+	model.position.y += 0.08
+	## beside the table, just outside its rails (the dice land on the cloth between them)
+	var w: float = table_w if table_w > 0.0 else width * 0.98
+	var shadow := MeshInstance3D.new()
+	var sm := PlaneMesh.new()
+	sm.size = Vector2(1.5, 1.1)
+	shadow.mesh = sm
+	shadow.position.y = 0.005
+	var smat := StandardMaterial3D.new()
+	smat.shading_mode = BaseMaterial3D.SHADING_MODE_UNSHADED
+	smat.transparency = BaseMaterial3D.TRANSPARENCY_ALPHA
+	smat.albedo_texture = _blob_of()
+	smat.albedo_color = Color(0, 0, 0, 0.65)
+	shadow.material_override = smat
+	holder.add_child(shadow)
+	holder.position = Vector3((-1.0 if side == 0 else 1.0) * minf(w * 0.5 + 1.15, width * 0.5 - 0.8), 0.0, 0.1)
+	## each faces the other side, turned a little toward us. The cannon was modelled
+	## side-on (its barrel along +x); the men and the horse face +z.
+	var base: float = 0.0 if kind == "cannon" else 90.0
+	pivot.rotation.y = deg_to_rad(base)
+	holder.rotation.y = deg_to_rad(-40.0 if side == 0 else 220.0)
+	_world.add_child(holder)
+	_pieces[side] = {"node": holder, "kind": kind}
+	## it drops onto the table
+	holder.position.y = 0.6
+	var tw := holder.create_tween()
+	tw.tween_property(holder, "position:y", 0.0, 0.22).set_trans(Tween.TRANS_BOUNCE).set_ease(Tween.EASE_OUT)
+
+
+func _rel_xf(root: Node3D, n: Node3D) -> Transform3D:
+	var xf := Transform3D.IDENTITY
+	var cur: Node = n
+	while cur != null and cur != root:
+		if cur is Node3D:
+			xf = (cur as Node3D).transform * xf
+		cur = cur.get_parent()
+	return xf
+
+
+func topple(side: int) -> void:
+	## the beaten side's piece goes over
+	var cur: Dictionary = _pieces.get(side, {})
+	if cur.is_empty():
+		return
+	cur["down"] = true
+	var n: Node3D = cur["node"]
+	var tw := n.create_tween().set_parallel(true)
+	tw.tween_property(n, "rotation:z", (1.0 if side == 0 else -1.0) * PI * 0.47, 0.45).set_trans(Tween.TRANS_QUAD).set_ease(Tween.EASE_IN)
+	tw.tween_property(n, "position:y", 0.12, 0.45)
+
+
+func clear_pieces() -> void:
+	for side in _pieces.keys():
+		(_pieces[side]["node"] as Node).queue_free()
+	_pieces = {}
+
+
+static var _bumps := {}
+
+
+static func _bump_of(key: String, t: Texture2D, strength: float) -> Texture2D:
+	## a normal map taken from the texture's own light and dark, made once per run
+	if _bumps.has(key):
+		return _bumps[key]
+	var img: Image = t.get_image()
+	if img == null:
+		return null
+	img = img.duplicate()
+	if img.is_compressed():
+		img.decompress()
+	img.convert(Image.FORMAT_RGBA8)
+	if img.get_width() > 512:
+		img.resize(512, 512 * img.get_height() / img.get_width(), Image.INTERPOLATE_BILINEAR)
+	img.bump_map_to_normal_map(strength)
+	img.generate_mipmaps()
+	var nt := ImageTexture.create_from_image(img)
+	_bumps[key] = nt
+	return nt
+
+
+static var _vig: GradientTexture2D
+
+
+static func _vignette() -> GradientTexture2D:
+	if _vig != null:
+		return _vig
+	var g := Gradient.new()
+	g.set_color(0, Color(0, 0, 0, 0.0))
+	g.set_color(1, Color(0.0, 0.01, 0.0, 0.55))
+	g.add_point(0.55, Color(0, 0, 0, 0.04))
+	_vig = GradientTexture2D.new()
+	_vig.gradient = g
+	_vig.fill = GradientTexture2D.FILL_RADIAL
+	_vig.fill_from = Vector2(0.5, 0.5)
+	_vig.fill_to = Vector2(1.05, 0.5)
+	_vig.width = 256
+	_vig.height = 128
+	return _vig
+
+
+static func _blob_of() -> GradientTexture2D:
+	var g := Gradient.new()
+	g.set_color(0, Color(1, 1, 1, 1))
+	g.set_color(1, Color(1, 1, 1, 0))
+	g.add_point(0.7, Color(1, 1, 1, 0.6))
+	var t := GradientTexture2D.new()
+	t.gradient = g
+	t.fill = GradientTexture2D.FILL_RADIAL
+	t.fill_from = Vector2(0.5, 0.5)
+	t.fill_to = Vector2(1.0, 0.5)
+	t.width = 128
+	t.height = 64
+	return t
 
 
 # ------------------------------------------------------------------ throwing
@@ -274,6 +567,21 @@ func die_screen(i: int) -> Vector2:
 	var d: Dictionary = _dice[i]
 	var e: Vector3 = _rest_at(d)
 	return _cam.unproject_position(e) / _px
+
+
+func rail_screen(x: float) -> Vector2:
+	## v1.9: the top of the front rail at table x, in this Control's coordinates (the score
+	## plates hang there)
+	if _cam == null:
+		return Vector2.ZERO
+	return _cam.unproject_position(Vector3(x, 0.3, _depth * 0.9 * 0.5 + 0.34)) / _px
+
+
+func table_x(i: int) -> float:
+	## where die i comes to rest across the table, in table units
+	if i < 0 or i >= _dice.size():
+		return 0.0
+	return _rest_at(_dice[i]).x
 
 
 func shown(i: int) -> int:

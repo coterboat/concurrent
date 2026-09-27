@@ -91,6 +91,15 @@ func rebuild() -> void:
 		_fit()
 		return
 	## ours
+	if s.capital_choosable() and s.capital_shown(s.planner) != land:
+		var cb := Style.chip("★  Make this our capital", func():
+			var err: String = s.set_capital(land)
+			if err == "":
+				Audio.sfx("order_attack", -4.0)
+				gs.log_line("%s is our capital." % s.hex_name(land), Style.GOLD)
+			rebuild(), Style.GOLD, 15)
+		cb.tooltip_text = "Your capital pays 2 recruits a round, its defenders fire a line of six, and one more man digs in. If it falls, the captor takes half your cards and raises 3 troops there."
+		_box.add_child(cb)
 	var placed: int = s.placed_on(land)
 	var sp2: Array = Income.home_split(ts)
 	var line2 := "%s  ·  %d in the garrison" % [Style.plural(int(sp2[0]), "army", "armies"), int(sp2[1])]
@@ -262,6 +271,14 @@ func _move_row(from_id: String, to_id: String) -> Control:
 func _trait_rows(s, ts: Types.TerritoryState, td: Types.TerritoryDef) -> Array:
 	## v1.7: what this particular land does, in the words the rules use.
 	var out: Array = []
+	var cap_of: String = ""
+	for pid in s.world.players.keys():
+		if s.capital_shown(str(pid)) == land:
+			cap_of = str(pid)
+	if cap_of != "":
+		var whose: String = ("Our capital" if cap_of == s.planner else "%s's capital" % s.name_of(cap_of)) + "  ·  +%d a round, a fortress" % Income.TREASURY
+		out.append(_trait("crown", whose, "Pays %d recruits a round. Its defenders fire a line of %d, not five, and one more man may dig in. Whoever takes it plunders half its commander's cards and raises %d troops there on the spot."
+			% [Income.TREASURY, Combat.LINE + 1, 3], Style.GOLD))
 	if td.has_trait("fort"):
 		out.append(_trait("fort", "Fortress", "Its defenders fire a line of %d, not five, and one more man may dig in here."
 			% [Combat.LINE + s.map.fort_bonus], Style.GOLD))

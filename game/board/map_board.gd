@@ -30,6 +30,9 @@ var flow := false ## columns on the move: marching chevrons run along the live a
 var ghosts: Array = [] ## last round's packets
 var placements := {} ## id -> queued reinforcements (viewer)
 var bonus := {} ## id -> free soldiers from the cards being turned in (v1.6), drawn as a gold star
+var bonus_seen := {} ## v1.9: id -> when its star first showed; the star pops in, then fades after BONUS_SHOW
+const BONUS_SHOW := 4.5
+var capital_override := {} ## v1.8: pid -> the capital a commander is choosing (drawn before it is sealed)
 var show_ceiling := false
 var ceiling_mult := 1 ## deployment folds two capped passes into one
 var drag_from := ""
@@ -357,6 +360,19 @@ func _process(delta: float) -> void:
 		shake[k] = float(shake[k]) - delta
 		if float(shake[k]) <= 0.0:
 			shake.erase(k)
+	var fi := fires.size() - 1
+	while fi >= 0:
+		fires[fi]["t"] = float(fires[fi]["t"]) + delta
+		if float(fires[fi]["t"]) >= float(fires[fi]["dur"]):
+			fires.remove_at(fi)
+		else:
+			live = true
+		fi -= 1
+	for k in bonus_seen.keys():
+		if not bonus.has(k):
+			bonus_seen.erase(k) ## the set was taken back: it shows afresh if it comes again
+		elif _time - float(bonus_seen[k]) < BONUS_SHOW + 0.1:
+			live = true
 	if not fx.is_empty() or not shake.is_empty() or not battle.is_empty() or not clash.is_empty() or drag_from != "" or flow:
 		live = true
 	## the ships ride the swell
@@ -376,6 +392,30 @@ func float_text(id: String, text: String, color: Color, dur: float = 1.6, size_p
 	if art == null:
 		return
 	fx.append({"map": art.anchors.get(id, Vector2.ZERO), "text": text, "color": color, "t": 0.0, "dur": dur, "size": size_px})
+
+
+var fires: Array = [] ## v1.9: a fallen capital burns: {map, t, dur}
+var _fire_sheet := {}
+
+
+func fire_at(id: String, seconds: float = 5.0) -> void:
+	## the city burns behind its token for a few seconds (assets/fx/capital_fire, a loop)
+	if art == null or not art.anchors.has(id):
+		return
+	fires.append({"map": art.anchors[id], "t": 0.0, "dur": seconds})
+
+
+func _fire_frame() -> Dictionary:
+	if _fire_sheet.is_empty():
+		var t: Texture2D = Style.tex("res://assets/fx/capital_fire.webp")
+		if t == null or not FileAccess.file_exists("res://assets/fx/capital_fire.json"):
+			return {}
+		var m: Variant = JSON.parse_string(FileAccess.get_file_as_string("res://assets/fx/capital_fire.json"))
+		if typeof(m) != TYPE_DICTIONARY:
+			return {}
+		_fire_sheet = {"tex": t, "cols": int(m["cols"]), "frames": int(m["frames"]), "fw": float(m["fw"]), "fh": float(m["fh"]),
+			"ax": float(m.get("ax", 0.5)), "ay": float(m.get("ay", 0.7)), "fps": float(m.get("fps", 12.0)), "order": m.get("order", [])}
+	return _fire_sheet
 
 
 func pulse_token(id: String, seconds: float = 0.8) -> void:
@@ -411,6 +451,23 @@ func _draw_overlay() -> void:
 		ci.draw_line(a, _mouse, Color(1, 0.9, 0.6, 0.85), 5.0, true)
 		ci.draw_circle(_mouse, 7.0, Color(1, 0.9, 0.6, 0.85))
 	_draw_battle_marks(ci)
+	## v1.9: fallen capitals burn behind their tokens
+	var fs: Dictionary = _fire_frame() if not fires.is_empty() else {}
+	for fr in fires:
+		if fs.is_empty():
+			break
+		var ft: float = float(fr["t"])
+		var o: Array = fs["order"]
+		var n: int = o.size() if not o.is_empty() else int(fs["frames"])
+		var k: int = posmod(int(ft * float(fs["fps"])), n)
+		var idx: int = int(o[k]) if not o.is_empty() else k
+		var cols: int = int(fs["cols"])
+		var src := Rect2((idx % cols) * float(fs["fw"]), (idx / cols) * float(fs["fh"]), float(fs["fw"]), float(fs["fh"]))
+		var al: float = clampf(ft / 0.3, 0.0, 1.0) * clampf((float(fr["dur"]) - ft) / 0.8, 0.0, 1.0)
+		var h: float = token_radius() * 5.2
+		var w: float = h * float(fs["fw"]) / float(fs["fh"])
+		var at: Vector2 = map_to_screen(fr["map"])
+		ci.draw_texture_rect_region(fs["tex"], Rect2(at - Vector2(w * float(fs["ax"]), h * float(fs["ay"])), Vector2(w, h)), src, Color(1, 1, 1, al))
 	var ids: Array = art.order.duplicate()
 	ids.sort_custom(func(x, y): return art.anchors[x].y < art.anchors[y].y)
 	for id in ids:
@@ -555,6 +612,14 @@ func _curve(a: Vector2, b: Vector2, bend: float) -> PackedVector2Array:
 		var t := float(i) / 20.0
 		pts.append(a.lerp(ctrl, t).lerp(ctrl.lerp(b, t), t))
 	return pts
+
+
+func _is_capital(id: String, owner: String) -> bool:
+	if map == null or not map.capitals or world == null or not world.players.has(owner):
+		return false
+	if capital_override.has(owner):
+		return str(capital_override[owner]) == id
+	return (world.players[owner] as Types.PlayerState).capital == id
 
 
 func _sea_bend(a: Vector2, b: Vector2, from_id: String, to_id: String) -> float:
@@ -714,11 +779,34 @@ func _draw_token(ci: CanvasItem, id: String) -> void:
 		ci.draw_rect(Rect2(qp - Vector2(qw * 0.5 + 5, 11), Vector2(qw + 10, 20)), Style.GOLD, false, 1.5)
 		ci.draw_string(f, qp + Vector2(-qw * 0.5, 5), qt, HORIZONTAL_ALIGNMENT_LEFT, -1, 15, Style.GOLD)
 	## a free soldier from a card naming this land: a gold star under the token
+	## v1.9: it only says where the troops came from, so it pops in and fades after a few seconds
 	if bonus.has(id):
-		var bp: Vector2 = p + Vector2(r * 0.95, r * 0.55)
-		Style.draw_shape(ci, "star", bp, 11.0, Style.GOLD, Color(0.25, 0.15, 0.02), 1.5)
-		ci.draw_string_outline(f, bp + Vector2(10, 6), "+%d" % int(bonus[id]), HORIZONTAL_ALIGNMENT_LEFT, -1, 14, 4, Color(0.05, 0.03, 0.02, 0.9))
-		ci.draw_string(f, bp + Vector2(10, 6), "+%d" % int(bonus[id]), HORIZONTAL_ALIGNMENT_LEFT, -1, 14, Style.GOLD)
+		if not bonus_seen.has(id):
+			bonus_seen[id] = _time
+		var age: float = _time - float(bonus_seen[id])
+		if age < BONUS_SHOW:
+			var al: float = 1.0 - smoothstep(BONUS_SHOW - 1.2, BONUS_SHOW, age)
+			var pop: float = 1.0 + 0.6 * (1.0 - smoothstep(0.0, 0.35, age)) + 0.12 * sin(age * 7.0) * (1.0 - smoothstep(0.0, 2.0, age))
+			var bp: Vector2 = p + Vector2(r * 0.95, r * 0.55)
+			for k in 2:
+				ci.draw_circle(bp, 11.0 * pop * (1.6 - 0.3 * k), Color(1.0, 0.8, 0.3, 0.12 * al))
+			Style.draw_shape(ci, "star", bp, 11.0 * pop, Color(Style.GOLD, al), Color(0.25, 0.15, 0.02, al), 1.5)
+			ci.draw_string_outline(f, bp + Vector2(10, 6), "+%d" % int(bonus[id]), HORIZONTAL_ALIGNMENT_LEFT, -1, 14, 4, Color(0.05, 0.03, 0.02, 0.9 * al))
+			ci.draw_string(f, bp + Vector2(10, 6), "+%d" % int(bonus[id]), HORIZONTAL_ALIGNMENT_LEFT, -1, 14, Color(Style.GOLD, al))
+	## v1.8: a capital wears a crown on top of its token
+	if _is_capital(id, owner):
+		## the crown in its laurels, set on the token's brow with a warm glow behind it
+		var cr: float = clampf(r * 0.85, 15.0, 24.0)
+		var cp: Vector2 = p + Vector2(0, -r - cr * 0.25)
+		for k in 3:
+			ci.draw_circle(cp, cr * (0.95 - 0.18 * k), Color(1.0, 0.8, 0.35, 0.10 + 0.06 * k))
+		var ctex: Texture2D = Style.tex("res://assets/icons/crown.png")
+		if ctex != null:
+			var asp: float = float(ctex.get_width()) / float(maxi(1, ctex.get_height()))
+			var sz := Vector2(cr * 2.0 * asp, cr * 2.0) if asp < 1.0 else Vector2(cr * 2.0, cr * 2.0 / asp)
+			ci.draw_texture_rect(ctex, Rect2(cp - sz * 0.5, sz), false)
+		else:
+			Style.draw_shape(ci, "star", cp, cr * 0.7, Style.GOLD, Color(0.25, 0.15, 0.02), 1.5)
 	## v1.7: what this land is, on the land itself — a fortress, a pass, a harbour — as
 	## small brass emblems off the token's left flank: under the shield, above the name
 	## (at the lower-left they sat on the first letters of every harbour on the Isles).

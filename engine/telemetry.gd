@@ -3,6 +3,7 @@
 extends RefCounted
 
 const Types := preload("res://engine/types.gd")
+const Combat := preload("res://engine/combat.gd")
 const Match := preload("res://engine/match.gd")
 
 
@@ -30,11 +31,20 @@ static func summarize_events(events: Array) -> Dictionary:
 	var fallbacks := 0
 	var melees := 0
 	var scrambles := 0
+	var capitals := 0 ## v1.8: capitals that fell
+	var fortune_spent := 0 ## v1.8: exchanges thrown again
+	var fortune_saved := 0 ## ...and battles that came out the other way for it
+	var fortune_gained := 0
+	var upsets := 0 ## v1.8: assaults that went the way the odds said they would not (under 30%)
 	for event in events:
 		var kind: String = str(event.get("kind", ""))
 		match kind:
 			Types.EVENT_VACATED:
 				vacated[str(event.get("from", ""))] = str(event.get("playerId", ""))
+			Types.EVENT_CAPITAL_TAKEN:
+				capitals += 1
+			Types.EVENT_FORTUNE:
+				fortune_gained += int(event.get("gained", 1))
 			Types.EVENT_BECAME_UNOCCUPIED:
 				var hex: String = str(event.get("terrId", ""))
 				if vacated.has(hex):
@@ -46,6 +56,17 @@ static func summarize_events(events: Array) -> Dictionary:
 					walked += 1
 			Types.EVENT_INVASION:
 				invasions += 1
+				if not bool(event.get("fellBack", false)):
+					var pu: float = Combat.capture_rate(int(event.get("attackerSize", 1)), int(event.get("defenderSize", 1)), Combat.MODE_VOLLEYS)
+					var wu: bool = bool(event.get("attackerWon", false))
+					if (wu and pu < 0.3) or (not wu and pu > 0.7):
+						upsets += 1
+				for c in event.get("calls", []):
+					if str(c.get("call", "")) == "F":
+						fortune_spent += 1
+						## the side that called it won the battle in the end
+						if (str(c.get("side", "")) == "a") == bool(event.get("attackerWon", false)):
+							fortune_saved += 1
 				if int(event.get("reservesAdded", 0)) > 0:
 					reserves += 1
 				if bool(event.get("fellBack", false)):
@@ -91,6 +112,11 @@ static func summarize_events(events: Array) -> Dictionary:
 		"invasions": invasions,
 		"even": even,
 		"evenCaptures": even_cap,
+		"capitalsTaken": capitals,
+		"fortuneSpent": fortune_spent,
+		"upsets": upsets,
+		"fortuneSaved": fortune_saved,
+		"fortuneGained": fortune_gained,
 		"evenClean": even_clean,
 		"evenCleanCaptures": even_clean_cap,
 		"ratio32": r32,

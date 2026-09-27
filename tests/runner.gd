@@ -21,6 +21,8 @@ const V14Test = preload("res://tests/test_v14.gd")
 const V15Test = preload("res://tests/test_v15.gd")
 const V16Test = preload("res://tests/test_v16.gd")
 const V17Test = preload("res://tests/test_v17.gd")
+const V18Test = preload("res://tests/test_v18.gd")
+const V19Test = preload("res://tests/test_v19.gd")
 
 const KNIFE7 := "res://maps/knife7.json"
 
@@ -70,6 +72,10 @@ func _initialize() -> void:
 	V16Test.new().run(Callable(self, "_ok"), self)
 	_section("v1.7 land traits and supply")
 	V17Test.new().run(Callable(self, "_ok"), self)
+	_section("v1.8 capitals")
+	V18Test.new().run(Callable(self, "_ok"), self)
+	_section("v1.9 Fortune's ledger, the divided chest")
+	V19Test.new().run(Callable(self, "_ok"), self)
 	_section("ai commanders")
 	AiTest.new().run(Callable(self, "_ok"))
 	print("")

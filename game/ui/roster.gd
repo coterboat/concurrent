@@ -3,11 +3,14 @@
 ## Hover a commander to light up their lands on the map.
 extends HBoxContainer
 
+const Types := preload("res://engine/types.gd")
 const Style := preload("res://game/core/style.gd")
 const Session := preload("res://game/core/session.gd")
 const LeaderFace := preload("res://game/ui/leader_face.gd")
 const MapLib := preload("res://engine/map.gd")
 const Income := preload("res://engine/income.gd")
+const Fortune := preload("res://engine/fortune.gd")
+const FortunePips := preload("res://game/ui/fortune_pips.gd")
 
 signal hovered(pid: String)
 
@@ -68,9 +71,28 @@ func refresh() -> void:
 				nc -= s.sheet().cash_set.size()
 				turning = " (3 turned in)"
 			bits += " · %d card%s%s" % [nc, "" if nc == 1 else "s", turning]
+		## v1.8: the favours Fortune owes each commander, for everyone to see (v1.9: as stars,
+		## the next one filling with gold)
+		var tip := ""
+		var pips: Control = ui["pips"]
+		pips.visible = false
+		if s.map.fortune and r["alive"]:
+			var wf: Types.World = view if view != null and view.players.has(r["id"]) else s.world
+			var ps: Types.PlayerState = wf.players.get(r["id"], null)
+			var truth: Types.PlayerState = s.world.players.get(r["id"], null)
+			if ps != null:
+				var meter: int = truth.fortune_meter if truth != null else ps.fortune_meter
+				var share: float = Fortune.meter_share(s.map, meter)
+				pips.visible = true
+				pips.set_state(ps.fortune, share)
+				var nm: String = s.name_of(r["id"])
+				tip = "Fortune ✦ %d of %d: %s. After an exchange that goes badly, %s can throw it again (once a battle).\nThe next star fills with gold as the dice rob %s: about half a battle's worth of bad luck owes another (%d%% of the way there)." % [
+					ps.fortune, Fortune.MOST, "no favours in hand" if ps.fortune == 0 else ("%d favour%s in hand" % [ps.fortune, "" if ps.fortune == 1 else "s"]),
+					nm, nm, int(round(share * 100.0))]
 		if not r["alive"]:
 			bits = "fallen"
 		(ui["sub"] as Label).text = bits
+		(ui["panel"] as Control).tooltip_text = tip
 		(ui["crown"] as Control).visible = r["alive"] and int(r["score"]) == lead and leaders == 1
 		(ui["face"] as Control).set_dead(not r["alive"])
 		(ui["panel"] as Control).modulate = Color(1, 1, 1) if r["alive"] else Color(0.7, 0.7, 0.72)
@@ -109,7 +131,20 @@ func _make_row(seat: Dictionary) -> Dictionary:
 	var name_l := Style.label(shown, 15, Style.seat_color(pid).lightened(0.45), "bold")
 	name_l.clip_text = true
 	name_l.text_overrun_behavior = TextServer.OVERRUN_TRIM_ELLIPSIS
-	v.add_child(name_l)
+	name_l.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	## v1.9: the name, and Fortune's stars beside it
+	var nh := HBoxContainer.new()
+	nh.add_theme_constant_override("separation", 4)
+	nh.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	nh.add_child(name_l)
+	var pips: Control = FortunePips.new()
+	pips.star_px = 14.0
+	pips.align = 1.0
+	pips.size_flags_vertical = Control.SIZE_SHRINK_CENTER
+	pips.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	pips.visible = false
+	nh.add_child(pips)
+	v.add_child(nh)
 	var sub := Style.label("", 13, Style.PARCH)
 	v.add_child(sub)
 	var crown := TextureRect.new()
@@ -126,7 +161,7 @@ func _make_row(seat: Dictionary) -> Dictionary:
 	for c in [name_l, sub, score]:
 		c.mouse_filter = Control.MOUSE_FILTER_IGNORE
 	p.tooltip_text = "%s — score is lands + region bonuses" % seat["name"]
-	return {"panel": p, "face": face, "score": score, "sub": sub, "crown": crown}
+	return {"panel": p, "face": face, "score": score, "sub": sub, "crown": crown, "pips": pips}
 
 
 class _Mark extends Control:

@@ -465,6 +465,9 @@ class _Dial extends Control:
 		var f := Style.font("display")
 		var fs := 30 if label.length() <= 4 else 24
 		var w: float = f.get_string_size(label, HORIZONTAL_ALIGNMENT_LEFT, -1, fs).x
+		while w > size.x * 0.8 and fs > 12: ## v1.9: a long word ("LET IT STAND") shrinks to sit on the seal
+			fs -= 1
+			w = f.get_string_size(label, HORIZONTAL_ALIGNMENT_LEFT, -1, fs).x
 		var p := Vector2(size.x * 0.5 - w * 0.5, size.y * 0.5 + (4 if sub == "" else -2))
 		draw_string_outline(f, p, label, HORIZONTAL_ALIGNMENT_LEFT, -1, fs, 6, Color(0.25, 0.03, 0.02, 0.9))
 		draw_string(f, p, label, HORIZONTAL_ALIGNMENT_LEFT, -1, fs, Color(1, 0.93, 0.78))
