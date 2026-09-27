@@ -1,0 +1,240 @@
+{
+ "id": "marches18",
+ "name": "The Marches",
+ "cards": true,
+ "pools": {
+  "2": 24
+ },
+ "minPlayers": 2,
+ "maxPlayers": 2,
+ "blurb": "Two crowns and the long frontier between them. The marches interlock, so every land on the line faces two of the enemy's and nothing can be left bare.",
+ "rounds": 10,
+ "startingPool": 24,
+ "dealEach": 3,
+ "pinNeutral": "",
+ "neutralArmies": 4,
+ "neutralLeftover": true,
+ "supply": true,
+ "fortBonus": 1,
+ "passCap": 6,
+ "regionNames": {
+  "northcrown": "The North Crown",
+  "northmarch": "The North March",
+  "southmarch": "The South March",
+  "southcrown": "The South Crown"
+ },
+ "regionBonus": {
+  "northcrown": 4,
+  "northmarch": 3,
+  "southmarch": 3,
+  "southcrown": 4
+ },
+ "regionTerrain": {
+  "northcrown": "snow",
+  "northmarch": "mountain",
+  "southmarch": "grass",
+  "southcrown": "forest"
+ },
+ "regionColors": {
+  "northcrown": "#7fa6c9",
+  "northmarch": "#8b8fa0",
+  "southmarch": "#8fae70",
+  "southcrown": "#6f9a5e"
+ },
+ "territories": {
+  "blackford": {
+   "name": "Blackford",
+   "region": "southmarch",
+   "adjacent": [
+    "ironford",
+    "olivespire",
+    "queensholt",
+    "redgate",
+    "sunreach"
+   ]
+  },
+  "boarfield": {
+   "name": "Boarfield",
+   "region": "southcrown",
+   "adjacent": [
+    "briargate",
+    "highford",
+    "southhaven",
+    "warmwater"
+   ]
+  },
+  "briargate": {
+   "name": "Briargate",
+   "region": "southmarch",
+   "adjacent": [
+    "boarfield",
+    "highford",
+    "lowmeadow",
+    "sunreach",
+    "thornreach",
+    "warmwater"
+   ],
+   "traits": [
+    "fort"
+   ]
+  },
+  "coldwater": {
+   "name": "Coldwater",
+   "region": "northcrown",
+   "adjacent": [
+    "elmspire",
+    "redgate",
+    "stagfield",
+    "thornreach"
+   ]
+  },
+  "elmspire": {
+   "name": "Elmspire",
+   "region": "northcrown",
+   "adjacent": [
+    "coldwater",
+    "ironford",
+    "kingsholt",
+    "redgate"
+   ]
+  },
+  "highford": {
+   "name": "Highford",
+   "region": "southmarch",
+   "adjacent": [
+    "boarfield",
+    "briargate",
+    "lowmeadow",
+    "southhaven"
+   ],
+   "traits": [
+    "pass"
+   ]
+  },
+  "ironford": {
+   "name": "Ironford",
+   "region": "northmarch",
+   "adjacent": [
+    "blackford",
+    "elmspire",
+    "kingsholt",
+    "redgate"
+   ],
+   "traits": [
+    "pass"
+   ]
+  },
+  "kingsholt": {
+   "name": "Kingsholt",
+   "region": "northcrown",
+   "adjacent": [
+    "elmspire",
+    "ironford"
+   ]
+  },
+  "lowmeadow": {
+   "name": "Lowmeadow",
+   "region": "northmarch",
+   "adjacent": [
+    "briargate",
+    "highford",
+    "northhaven",
+    "stagfield",
+    "thornreach"
+   ]
+  },
+  "northhaven": {
+   "name": "Northhaven",
+   "region": "northcrown",
+   "adjacent": [
+    "lowmeadow",
+    "stagfield"
+   ]
+  },
+  "olivespire": {
+   "name": "Olivespire",
+   "region": "southcrown",
+   "adjacent": [
+    "blackford",
+    "queensholt",
+    "sunreach",
+    "warmwater"
+   ]
+  },
+  "queensholt": {
+   "name": "Queensholt",
+   "region": "southcrown",
+   "adjacent": [
+    "blackford",
+    "olivespire"
+   ]
+  },
+  "redgate": {
+   "name": "Redgate",
+   "region": "northmarch",
+   "adjacent": [
+    "blackford",
+    "coldwater",
+    "elmspire",
+    "ironford",
+    "sunreach",
+    "thornreach"
+   ],
+   "traits": [
+    "fort"
+   ]
+  },
+  "southhaven": {
+   "name": "Southhaven",
+   "region": "southcrown",
+   "adjacent": [
+    "boarfield",
+    "highford"
+   ]
+  },
+  "stagfield": {
+   "name": "Stagfield",
+   "region": "northcrown",
+   "adjacent": [
+    "coldwater",
+    "lowmeadow",
+    "northhaven",
+    "thornreach"
+   ]
+  },
+  "sunreach": {
+   "name": "Sunreach",
+   "region": "southmarch",
+   "adjacent": [
+    "blackford",
+    "briargate",
+    "olivespire",
+    "redgate",
+    "thornreach",
+    "warmwater"
+   ]
+  },
+  "thornreach": {
+   "name": "Thornreach",
+   "region": "northmarch",
+   "adjacent": [
+    "briargate",
+    "coldwater",
+    "lowmeadow",
+    "redgate",
+    "stagfield",
+    "sunreach"
+   ]
+  },
+  "warmwater": {
+   "name": "Warmwater",
+   "region": "southcrown",
+   "adjacent": [
+    "boarfield",
+    "briargate",
+    "olivespire",
+    "sunreach"
+   ]
+  }
+ }
+}

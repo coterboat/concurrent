@@ -431,7 +431,7 @@ class Planner extends RefCounted:
 		if th < 1.0:
 			return 0.0
 		var d: int = maxi(0, defense)
-		var p_hit: float = 1.0 if d == 0 else Combat.capture_rate(int(round(th)), d, map.battle)
+		var p_hit: float = 1.0 if d == 0 else Combat.capture_rate(int(round(th)), d, map.battle, MapLib.defender_line_bonus(map, t))
 		var tempt: float = clampf(th / float(d + 1), 0.3, 1.6)
 		return float(prof.get("caution", 0.3)) * tempt * p_hit
 
@@ -621,7 +621,7 @@ class Planner extends RefCounted:
 			got += take
 		if got < need:
 			return {}
-		var p_win: float = 1.0 if d_eff == 0 else Combat.capture_rate(got, d_eff, map.battle)
+		var p_win: float = 1.0 if d_eff == 0 else Combat.capture_rate(got, d_eff, map.battle, MapLib.defender_line_bonus(map, e))
 		var value: float = target_value(e, targeted)
 		var loss_win: float = float(d_eff / 2)
 		var exp_loss: float = p_win * loss_win + (1.0 - p_win) * float(got)
@@ -633,10 +633,10 @@ class Planner extends RefCounted:
 		var ev: float = value * p_win - exp_loss * float(prof.get("army_cost", ARMY_COST)) - exposure - float(used_place) * 0.04
 		return {"to": e, "froms": froms, "places": places, "strength": got, "def": d_eff, "p": p_win, "ev": ev, "surge": ""}
 
-	func _needed(d: int, p_want: float) -> int:
+	func _needed(d: int, p_want: float, d_bonus: int = 0) -> int:
 		var top: int = d + maxi(12, d / 2) ## under the v1.6 firing line a big stack needs a real margin
 		for a in range(1, top):
-			if Combat.capture_rate(a, d, map.battle) >= p_want:
+			if Combat.capture_rate(a, d, map.battle, d_bonus) >= p_want:
 				return a
 		return top
 
@@ -664,7 +664,7 @@ class Planner extends RefCounted:
 				if owner_of(n) == pid or targeted.has(n) or from_set.has(n):
 					continue
 				var d: int = w.get_territory(n).held() + enemy_add(n)
-				var p: float = 1.0 if d == 0 else Combat.capture_rate(left - 1, d, map.battle)
+				var p: float = 1.0 if d == 0 else Combat.capture_rate(left - 1, d, map.battle, MapLib.defender_line_bonus(map, n))
 				if p < 0.62:
 					continue
 				var score: float = p * target_value(n, targeted)

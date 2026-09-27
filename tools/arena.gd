@@ -24,6 +24,8 @@ func _initialize() -> void:
 	var walks := 0
 	var even := 0
 	var even_cap := 0
+	var evenc := 0
+	var evenc_cap := 0
 	var inv := 0
 	var res := 0
 	var fb := 0
@@ -69,6 +71,8 @@ func _initialize() -> void:
 			walks += int(rd.get("vacatePunish", 0))
 			even += int(rd.get("even", 0))
 			even_cap += int(rd.get("evenCaptures", 0))
+			evenc += int(rd.get("evenClean", 0))
+			evenc_cap += int(rd.get("evenCleanCaptures", 0))
 			inv += int(rd.get("invasions", 0))
 			res += int(rd.get("reserves", 0))
 			fb += int(rd.get("fallbacks", 0))
@@ -80,7 +84,8 @@ func _initialize() -> void:
 	print("  wins        %s" % wins)
 	print("  rounds      mean %.1f  median %s  domination %s/%s (before the last round %s)" % [float(rounds_total) / n, lengths[n / 2], early, n, before_last])
 	print("  walk-ins    %.2f per game" % (float(walks) / n))
-	print("  even fights %s, attacker took %.0f%%" % [even, 100.0 * even_cap / maxf(1.0, even)])
+	print("  even fights %s, attacker took %.0f%%  ·  fought as they started: %s, attacker took %.0f%% (the rule says 50)"
+		% [even, 100.0 * even_cap / maxf(1.0, even), evenc, 100.0 * evenc_cap / maxf(1.0, evenc)])
 	print("  assaults    %.1f per game: reserves called in %.0f%%, fell back in %.0f%%" % [float(inv) / n, 100.0 * res / maxf(1.0, inv), 100.0 * fb / maxf(1.0, inv)])
 	print("  melees      %.1f per game, scrambles %.1f" % [float(mel) / n, float(scr) / n])
 	print("  plan time   %.1f ms per sheet" % (ms / n))

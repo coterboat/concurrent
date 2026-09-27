@@ -307,7 +307,7 @@ func _attack_row(from_id: String, to_id: String, from_enemy_view: bool) -> Contr
 		var b := Style.chip("Attack", func(): gs.order_attack(from_id, to_id), Style.CRIMSON.lightened(0.3), 15)
 		b.disabled = mx < 1
 		if mx >= 1:
-			var o: Dictionary = session.odds(mx, int(d["now"]))
+			var o: Dictionary = session.odds(mx, int(d["now"]), to_id)
 			b.text = "Attack · %s" % o["word"]
 			b.add_theme_color_override("font_color", ODDS_COLOR.get(o["word"], Style.CREAM))
 			b.tooltip_text = "With all %d who can march: %s against %d now" % [mx, o["word"], d["now"]]
@@ -378,13 +378,13 @@ func _orders() -> void:
 		for raw in s.packets:
 			if (raw as Types.Packet).to_id == p.to_id:
 				total_in += (raw as Types.Packet).strength
-		var o_now: Dictionary = session.odds(total_in, int(d["now"]))
+		var o_now: Dictionary = session.odds(total_in, int(d["now"]), p.to_id)
 		var ow := Style.label(o_now["word"], 18, ODDS_COLOR.get(o_now["word"], Style.CREAM), "bold")
 		ow.tooltip_text = "Your %d against their %d as the map stands" % [total_in, d["now"]]
 		mid.add_child(ow)
 		v.add_child(mid)
 		if int(d["ceiling"]) > int(d["now"]):
-			var o_max: Dictionary = session.odds(total_in, int(d["ceiling"]))
+			var o_max: Dictionary = session.odds(total_in, int(d["ceiling"]), p.to_id)
 			v.add_child(Style.label("if they reinforce to %d: %s" % [d["ceiling"], o_max["word"]], 14, Style.MUTED, "italic"))
 		var left: int = w.get_territory(p.from_id).held()
 		var home := Style.label("%s keeps %d at home" % [session.hex_name(p.from_id), left], 14, Style.CRIMSON.lightened(0.25) if left <= 1 else Style.MUTED)

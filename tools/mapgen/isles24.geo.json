@@ -78,8 +78,8 @@
   "vanestrand": {
    "pts": [
     [
-     370,
-     1420
+     400,
+     1520
     ]
    ],
    "r": 180
@@ -105,8 +105,8 @@
   "kestrelhowe": {
    "pts": [
     [
-     1810,
-     300
+     1750,
+     420
     ]
    ],
    "r": 175
@@ -177,17 +177,17 @@
   "morrowfen": {
    "pts": [
     [
-     1060,
-     1500
+     1010,
+     1570
     ]
    ],
-   "r": 185
+   "r": 180
   },
   "morrowhill": {
    "pts": [
     [
-     1370,
-     1560
+     1330,
+     1555
     ]
    ],
    "r": 185
@@ -204,11 +204,11 @@
   "morrowquay": {
    "pts": [
     [
-     1230,
-     1290
+     1180,
+     1370
     ]
    ],
-   "r": 170
+   "r": 175
   },
   "thalewood": {
    "pts": [
@@ -246,14 +246,14 @@
   ],
   [
    "vanestrand",
-   "morrowquay"
+   "morrowfen"
   ],
   [
    "kestrelport",
    "reachrock"
   ],
   [
-   "kestrelport",
+   "kestreldown",
    "gannetrock"
   ],
   [
@@ -295,6 +295,14 @@
   [
    "sealstone",
    "thaleharbour"
+  ],
+  [
+   "morrowgate",
+   "sealstone"
+  ],
+  [
+   "thalewood",
+   "brokenspar"
   ]
  ],
  "islands": [

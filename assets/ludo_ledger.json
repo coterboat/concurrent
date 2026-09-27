@@ -1231,6 +1231,24 @@
   "url": "https://storage.googleapis.com/ludo-assets/api/546023e939b206e86c4528ec8467c07d.webp",
   "v": 2
  },
+ "howto_fort": {
+  "credits": 0.5,
+  "endpoint": "/assets/image",
+  "file": "assets/art/howto_fort.webp",
+  "id": "howto_fort",
+  "job": "62b940a8-3da3-4146-a40b-976038efc71b",
+  "params": {
+   "art_style": "Digital Painting",
+   "aspect_ratio": "ar_16_9",
+   "augment_prompt": true,
+   "image_type": "art",
+   "n": 1,
+   "perspective": "Any perspective",
+   "prompt": "A star-fort bastion on a rocky headland at dusk, defenders lining the ramparts behind their guns while a column of infantry toils up the slope towards it under fire, banners and powder smoke, dramatic golden light. Grand imperial oil painting in the tradition of 18th-century history painting and Age of Sail maritime art, rich glazes, dramatic golden light and deep shadow, palette of imperial crimson, royal navy blue, burnished gold, ivory and gunpowder grey, heroic and triumphant, no text, no letters, no watermark"
+  },
+  "url": "https://storage.googleapis.com/ludo-assets/api/7e1f7733bfc02f5f95d0d74e38648dc1.webp",
+  "v": 1
+ },
  "howto_march": {
   "credits": 0.5,
   "endpoint": "/assets/image",
@@ -1248,6 +1266,42 @@
   },
   "url": "https://storage.googleapis.com/ludo-assets/api/a8160604839aa523b0a1b5408f17c1fc.webp",
   "v": 2
+ },
+ "howto_pass": {
+  "credits": 0.5,
+  "endpoint": "/assets/image",
+  "file": "assets/art/howto_pass.webp",
+  "id": "howto_pass",
+  "job": "b44f9d5b-cd5d-4679-aeb7-6db3f444f4c9",
+  "params": {
+   "art_style": "Digital Painting",
+   "aspect_ratio": "ar_16_9",
+   "augment_prompt": true,
+   "image_type": "art",
+   "n": 1,
+   "perspective": "Any perspective",
+   "prompt": "A narrow mountain defile between two sheer crags, a long army backed up on the road behind because only a handful of soldiers can march through the gap abreast, banners, baggage waggons waiting, dramatic light. Grand imperial oil painting in the tradition of 18th-century history painting and Age of Sail maritime art, rich glazes, dramatic golden light and deep shadow, palette of imperial crimson, royal navy blue, burnished gold, ivory and gunpowder grey, heroic and triumphant, no text, no letters, no watermark"
+  },
+  "url": "https://storage.googleapis.com/ludo-assets/api/5b710195c94623b8dd53e0647eaa1825.webp",
+  "v": 1
+ },
+ "howto_port": {
+  "credits": 0.5,
+  "endpoint": "/assets/image",
+  "file": "assets/art/howto_port.webp",
+  "id": "howto_port",
+  "job": "47f1ff42-de5b-4319-8059-60c57b6ff886",
+  "params": {
+   "art_style": "Digital Painting",
+   "aspect_ratio": "ar_16_9",
+   "augment_prompt": true,
+   "image_type": "art",
+   "n": 1,
+   "perspective": "Any perspective",
+   "prompt": "Two harbours on opposite shores of a narrow sea, transports under sail carrying troops and barrels between them, quays busy with soldiers embarking, ships of the line at anchor, golden evening light. Grand imperial oil painting in the tradition of 18th-century history painting and Age of Sail maritime art, rich glazes, dramatic golden light and deep shadow, palette of imperial crimson, royal navy blue, burnished gold, ivory and gunpowder grey, heroic and triumphant, no text, no letters, no watermark"
+  },
+  "url": "https://storage.googleapis.com/ludo-assets/api/7512224c8e50e107365451e68922be41.webp",
+  "v": 1
  },
  "howto_scramble": {
   "credits": 0.5,
@@ -1284,6 +1338,24 @@
   },
   "url": "https://storage.googleapis.com/ludo-assets/api/315d8d7c8598c25ef2405258de9e2795.webp",
   "v": 2
+ },
+ "howto_supply": {
+  "credits": 0.5,
+  "endpoint": "/assets/image",
+  "file": "assets/art/howto_supply.webp",
+  "id": "howto_supply",
+  "job": "853b134b-3646-49ec-96bc-b2f79944ef96",
+  "params": {
+   "art_style": "Digital Painting",
+   "aspect_ratio": "ar_16_9",
+   "augment_prompt": true,
+   "image_type": "art",
+   "n": 1,
+   "perspective": "Any perspective",
+   "prompt": "A stranded garrison on a bleak hill at dusk, thin and hungry, looking back down an empty road where no baggage waggons are coming, a broken supply cart in the foreground, cold desolate light. Grand imperial oil painting in the tradition of 18th-century history painting and Age of Sail maritime art, rich glazes, dramatic golden light and deep shadow, palette of imperial crimson, royal navy blue, burnished gold, ivory and gunpowder grey, heroic and triumphant, no text, no letters, no watermark"
+  },
+  "url": "https://storage.googleapis.com/ludo-assets/api/e34c9dd5bfeb454ebeb29608e950b43b.webp",
+  "v": 1
  },
  "howto_surge": {
   "credits": 0.5,

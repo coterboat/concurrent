@@ -225,7 +225,7 @@ func rebuild() -> void:
 		if (raw as Types.Packet).to_id == to_id:
 			total += (raw as Types.Packet).strength
 	var d: Dictionary = s.expected_defense(to_id)
-	var o: Dictionary = s.odds(total, int(d["now"]))
+	var o: Dictionary = s.odds(total, int(d["now"]), to_id)
 	var odds_row := HBoxContainer.new()
 	odds_row.add_theme_constant_override("separation", 8)
 	odds_row.add_child(Style.label("Odds", 15, Style.PARCH))
@@ -234,7 +234,7 @@ func rebuild() -> void:
 		odds_row.add_child(Style.label("(%d total with your other attacks)" % total, 13, Style.MUTED, "italic"))
 	_box.add_child(odds_row)
 	if int(d["ceiling"]) > int(d["now"]):
-		var o2: Dictionary = s.odds(total, int(d["ceiling"]))
+		var o2: Dictionary = s.odds(total, int(d["ceiling"]), to_id)
 		_box.add_child(Style.label("If they reinforce fully (%d): %s" % [d["ceiling"], o2["word"]], 14, Style.MUTED, "italic"))
 	var home: int = s.projected_world().get_territory(from_id).held()
 	var hl := Style.label("%s keeps %d at home" % [s.hex_name(from_id), home], 15, Style.CRIMSON.lightened(0.35) if home <= 1 else Style.PARCH)
@@ -243,7 +243,7 @@ func rebuild() -> void:
 	if s.map.battle == Combat.MODE_VOLLEYS:
 		var reserves: int = s.reserves_at(from_id)
 		if reserves > 0 and int(d["now"]) > 0:
-			var o3: Dictionary = s.odds(total + reserves, int(d["now"]))
+			var o3: Dictionary = s.odds(total + reserves, int(d["now"]), to_id)
 			_box.add_child(Style.label("With the %d reserves thrown in: %s" % [reserves, o3["word"]], 14, Style.GOLD.darkened(0.1), "italic"))
 		var st_row := HBoxContainer.new()
 		st_row.add_theme_constant_override("separation", 6)

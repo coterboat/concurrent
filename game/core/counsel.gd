@@ -161,7 +161,7 @@ static func explain(s: Node, sheet: Types.Sheet) -> Array:
 	for to in by_target.keys():
 		var info: Dictionary = by_target[to]
 		var d: int = s.world.get_territory(to).held()
-		var word: String = Combat.odds_word(int(info["n"]), maxi(1, d), s.map.battle) if d > 0 else "certain"
+		var word: String = Combat.odds_word(int(info["n"]), maxi(1, d), s.map.battle, MapLib.defender_line_bonus(s.map, str(to))) if d > 0 else "certain"
 		var txt := "Attack %s with %d from %s — %s." % [s.hex_name(to), info["n"], " and ".join(info["from"]), word]
 		if str(info["surge"]) != "":
 			txt += " If it falls, surge on into %s." % s.hex_name(str(info["surge"]))

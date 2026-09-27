@@ -19,7 +19,8 @@ const FACE_NAMES := {
 	"you_grenadier": "The Grenadier",
 }
 
-const MAPS := ["res://maps/knife7.json", "res://maps/narrow14.json", "res://maps/known24.json", "res://maps/world30.json"]
+const MAPS := ["res://maps/knife7.json", "res://maps/marches18.json", "res://maps/known24.json",
+	"res://maps/ring26.json", "res://maps/world30.json", "res://maps/isles24.json"]
 const AI_ORDER := ["oren", "hask", "quill", "varek", "imre", "ysolde"]
 const LEVEL_WORD := {"recruit": "Easy", "veteran": "Medium", "general": "Hard"}
 

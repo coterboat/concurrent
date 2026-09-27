@@ -3800,6 +3800,42 @@
    "out": "assets/icons/supply",
    "prompt": "Ox-drawn supply wagon stacked with barrels and crates, baggage train emblem, bold dark outline, isolated on plain white background",
    "v": 1
+  },
+  {
+   "id": "howto_fort",
+   "kind": "image",
+   "type": "art",
+   "aspect": "ar_16_9",
+   "out": "assets/art/howto_fort",
+   "v": 1,
+   "prompt": "A star-fort bastion on a rocky headland at dusk, defenders lining the ramparts behind their guns while a column of infantry toils up the slope towards it under fire, banners and powder smoke, dramatic golden light"
+  },
+  {
+   "id": "howto_pass",
+   "kind": "image",
+   "type": "art",
+   "aspect": "ar_16_9",
+   "out": "assets/art/howto_pass",
+   "v": 1,
+   "prompt": "A narrow mountain defile between two sheer crags, a long army backed up on the road behind because only a handful of soldiers can march through the gap abreast, banners, baggage waggons waiting, dramatic light"
+  },
+  {
+   "id": "howto_port",
+   "kind": "image",
+   "type": "art",
+   "aspect": "ar_16_9",
+   "out": "assets/art/howto_port",
+   "v": 1,
+   "prompt": "Two harbours on opposite shores of a narrow sea, transports under sail carrying troops and barrels between them, quays busy with soldiers embarking, ships of the line at anchor, golden evening light"
+  },
+  {
+   "id": "howto_supply",
+   "kind": "image",
+   "type": "art",
+   "aspect": "ar_16_9",
+   "out": "assets/art/howto_supply",
+   "v": 1,
+   "prompt": "A stranded garrison on a bleak hill at dusk, thin and hungry, looking back down an empty road where no baggage waggons are coming, a broken supply cart in the foreground, cold desolate light"
   }
  ]
 }

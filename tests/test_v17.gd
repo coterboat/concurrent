@@ -16,7 +16,8 @@ const Hash := preload("res://engine/hash.gd")
 const Autoplay := preload("res://engine/autoplay.gd")
 const Setup := preload("res://engine/setup.gd")
 
-const NARROW := "res://maps/narrow14.json"
+const MARCHES := "res://maps/marches18.json"
+const ISLES := "res://maps/isles24.json"
 
 
 func run(report: Callable, tree: SceneTree) -> void:
@@ -29,8 +30,15 @@ func run(report: Callable, tree: SceneTree) -> void:
 	Combat.use_rules(null)
 
 
-func _narrow() -> Types.MapDef:
-	var m: Types.MapDef = Types.MapDef.from_file(NARROW)
+func _marches() -> Types.MapDef:
+	return _rules(Types.MapDef.from_file(MARCHES))
+
+
+func _isles() -> Types.MapDef:
+	return _rules(Types.MapDef.from_file(ISLES))
+
+
+func _rules(m: Types.MapDef) -> Types.MapDef:
 	m.battle = Combat.MODE_VOLLEYS
 	m.scramble = true
 	m.maneuvers = true
@@ -44,36 +52,70 @@ func _narrow() -> Types.MapDef:
 # ---------------------------------------------------------------- the map file
 
 func _map_file(report: Callable) -> void:
-	var m: Types.MapDef = Types.MapDef.from_file(NARROW)
-	report.call(m != null and m.territories.size() == 14, "narrow14 loads with fourteen lands")
-	report.call(m.supply, "narrow14 asks for supply")
-	report.call(Array(MapLib.trait_ids(m, "fort")) == ["northgate", "southgate"], "both gates are fortresses")
-	report.call(Array(MapLib.trait_ids(m, "pass")) == ["bridgehead", "thespit"], "the bridge and the spit are passes")
-	report.call(Array(MapLib.trait_ids(m, "port")) == ["coldharbor", "gullrock", "warmharbor"], "three ports")
-	var undirected := true
-	for t in m.territory_ids():
-		for n in MapLib.neighbors(m, t):
-			if not m.is_adjacent(n, t):
-				undirected = false
-	report.call(undirected, "narrow14 adjacency is undirected")
-	## the two realms may only meet through the Narrows
-	var cross := 0
-	for t in m.territory_ids():
-		for n in MapLib.neighbors(m, t):
-			var a: String = m.get_territory(t).region
-			var b: String = m.get_territory(n).region
-			if (a == "frostmarch" and b == "sunmarch") or (a == "sunmarch" and b == "frostmarch"):
-				cross += 1
-	report.call(cross == 0, "the realms never touch: every road crosses the Narrows")
+	for path in [MARCHES, ISLES, "res://maps/ring26.json"]:
+		var m: Types.MapDef = Types.MapDef.from_file(path)
+		report.call(m != null and m.territories.size() > 0, "%s loads" % path.get_file())
+		if m == null:
+			continue
+		var undirected := true
+		var known := true
+		var lonely: Array = []
+		for t in m.territory_ids():
+			if MapLib.neighbors(m, t).is_empty():
+				lonely.append(t)
+			for n in MapLib.neighbors(m, t):
+				if not m.territories.has(n):
+					known = false
+				elif not m.is_adjacent(n, t):
+					undirected = false
+		report.call(undirected and known, "%s adjacency is undirected and every id exists" % m.id)
+		report.call(lonely.is_empty(), "%s: every land has a way in (%s)" % [m.id, lonely])
+		## reachable: a map you cannot cross is not a map
+		var seen := {}
+		var q: Array = [m.territory_ids()[0]]
+		seen[q[0]] = true
+		while not q.is_empty():
+			for n in MapLib.neighbors(m, str(q.pop_front())):
+				if not seen.has(n):
+					seen[n] = true
+					q.append(n)
+		report.call(seen.size() == m.territories.size(), "%s is one connected world" % m.id)
+
+	var mm: Types.MapDef = Types.MapDef.from_file(MARCHES)
+	report.call(mm.territories.size() == 18, "The Marches has eighteen lands")
+	report.call(mm.supply, "The Marches asks for supply")
+	report.call(Array(MapLib.trait_ids(mm, "fort")) == ["briargate", "redgate"], "each realm keeps one fortress")
+	report.call(Array(MapLib.trait_ids(mm, "pass")) == ["highford", "ironford"], "each realm keeps one pass")
+	## the frontier is what this map is for: the marches must interlock
+	var frontier := 0
+	for t in mm.territory_ids():
+		if mm.get_territory(t).region != "northmarch":
+			continue
+		for n in MapLib.neighbors(mm, t):
+			if mm.get_territory(n).region == "southmarch":
+				frontier += 1
+	report.call(frontier >= 7, "the two marches meet along %s borders" % frontier)
+	## and the crowns never touch: you cannot skip the frontier
+	var skipped := 0
+	for t in mm.territory_ids():
+		if mm.get_territory(t).region != "northcrown":
+			continue
+		for n in MapLib.neighbors(mm, t):
+			if mm.get_territory(n).region in ["southcrown", "southmarch"]:
+				skipped += 1
+	report.call(skipped == 0, "no road from one crown to the other but through the marches")
+
+	var isl: Types.MapDef = Types.MapDef.from_file(ISLES)
+	report.call(isl.supply and MapLib.trait_ids(isl, "port").size() >= 8, "The Thousand Isles is built on harbours")
 
 
 # ---------------------------------------------------------------- fortresses
 
 func _fort(report: Callable) -> void:
-	var m: Types.MapDef = _narrow()
+	var m: Types.MapDef = _marches()
 	Combat.use_rules(m)
-	report.call(MapLib.defender_line_bonus(m, "northgate") == 1, "a fortress fires one more")
-	report.call(MapLib.defender_line_bonus(m, "hallow") == 0, "open ground fires five")
+	report.call(MapLib.defender_line_bonus(m, "redgate") == 1, "a fortress fires one more")
+	report.call(MapLib.defender_line_bonus(m, "thornreach") == 0, "open ground fires five")
 
 	## the whole point: the same men are harder to shift out of a fort
 	var open_ground: float = Combat.capture_rate(10, 10, Combat.MODE_VOLLEYS, 0)
@@ -86,24 +128,24 @@ func _fort(report: Callable) -> void:
 		"a fort with five in it is no better than open ground")
 
 	## and it takes one more man dug in
-	var w: Types.World = H.paint(m, {"northgate": ["red", 4], "hallow": ["red", 2], "coldharbor": ["red", 2],
-		"stonewatch": ["red", 2], "bridgehead": ["blue", 2]})
-	var fort_cap: int = Income.garrison_cap(w, m, "northgate")
-	var open_cap: int = Income.garrison_cap(w, m, "hallow")
+	var w: Types.World = H.paint(m, {"redgate": ["red", 4], "thornreach": ["red", 2], "elmspire": ["red", 2],
+		"lowmeadow": ["red", 2], "ironford": ["blue", 2]})
+	var fort_cap: int = Income.garrison_cap(w, m, "redgate")
+	var open_cap: int = Income.garrison_cap(w, m, "thornreach")
 	report.call(fort_cap == open_cap + 1, "a fortress digs one deeper than open ground (%s vs %s)" % [fort_cap, open_cap])
 
 	## The fort is felt in battles actually fought. The comparison is the same land, the
 	## same board and the same seeds with the trait taken away, so nothing but the fortress
 	## can account for the difference — attacking a different land would roll different dice.
-	var open_map: Types.MapDef = _narrow()
-	(open_map.get_territory("northgate") as Types.TerritoryDef).traits = PackedStringArray()
+	var open_map: Types.MapDef = _marches()
+	(open_map.get_territory("redgate") as Types.TerritoryDef).traits = PackedStringArray()
 	var took: Array = [0, 0]
 	for i in 2:
 		var mm: Types.MapDef = m if i == 0 else open_map
 		for s in 300:
-			var w1: Types.World = H.paint(mm, {"northgate": ["red", 9], "bridgehead": ["blue", 10], "hallow": ["red", 2]})
-			var r1: Dictionary = H.resolve(w1, mm, [H.sheet("blue", [H.pkt("bridgehead", "northgate", 9)])], 9000 + s)
-			if H.owner_of(r1["world"], "northgate") == "blue":
+			var w1: Types.World = H.paint(mm, {"redgate": ["red", 9], "ironford": ["blue", 10], "thornreach": ["red", 2]})
+			var r1: Dictionary = H.resolve(w1, mm, [H.sheet("blue", [H.pkt("ironford", "redgate", 9)])], 9000 + s)
+			if H.owner_of(r1["world"], "redgate") == "blue":
 				took[i] += 1
 	report.call(took[0] < took[1] - 20, "nine storm a fortress less often than the same nine storm open ground (%s vs %s of 300)" % [took[0], took[1]])
 
@@ -118,9 +160,9 @@ func _fort(report: Callable) -> void:
 		var quoted: float = Combat.capture_rate(att, deff, Combat.MODE_VOLLEYS, 1 if fortified else 0)
 		var won := 0
 		for s in 600:
-			var w1: Types.World = H.paint(mm, {"northgate": ["red", deff], "bridgehead": ["blue", att + 1], "hallow": ["red", 2]})
-			var r1: Dictionary = H.resolve(w1, mm, [H.sheet("blue", [H.pkt("bridgehead", "northgate", att)])], 3000 + s)
-			if H.owner_of(r1["world"], "northgate") == "blue":
+			var w1: Types.World = H.paint(mm, {"redgate": ["red", deff], "ironford": ["blue", att + 1], "thornreach": ["red", 2]})
+			var r1: Dictionary = H.resolve(w1, mm, [H.sheet("blue", [H.pkt("ironford", "redgate", att)])], 3000 + s)
+			if H.owner_of(r1["world"], "redgate") == "blue":
 				won += 1
 		var got: float = float(won) / 600.0
 		report.call(abs(got - quoted) < 0.06, "%s v %s%s fought at %.0f%%, quoted %.0f%%"
@@ -130,8 +172,9 @@ func _fort(report: Callable) -> void:
 	## an even volley costs nobody: it is fired again
 	var evens := 0
 	for s in 120:
-		var w1: Types.World = H.paint(m, {"hallow": ["red", 8], "elkwood": ["blue", 9], "coldharbor": ["blue", 2]})
-		var r1: Dictionary = H.resolve(w1, m, [H.sheet("blue", [H.pkt("elkwood", "hallow", 8)])], 700 + s)
+		## open ground both sides, so both fire a line of five and even volleys really happen
+		var w1: Types.World = H.paint(m, {"thornreach": ["red", 8], "sunreach": ["blue", 9], "olivespire": ["blue", 2]})
+		var r1: Dictionary = H.resolve(w1, m, [H.sheet("blue", [H.pkt("sunreach", "thornreach", 8)])], 700 + s)
 		for e in H.all_of(r1["events"], Types.EVENT_INVASION):
 			for roll in e.get("rolls", []):
 				if str(roll.get("w", "")) == "":
@@ -142,98 +185,115 @@ func _fort(report: Callable) -> void:
 # ---------------------------------------------------------------- passes
 
 func _pass(report: Callable) -> void:
-	var m: Types.MapDef = _narrow()
-	report.call(MapLib.column_cap(m, "bridgehead") == 6, "only six may storm a pass")
-	report.call(MapLib.column_cap(m, "hallow") == 0, "open ground takes as many as you can send")
-	var w: Types.World = H.paint(m, {"northgate": ["red", 12], "bridgehead": ["blue", 3], "hallow": ["red", 2]})
-	var too_many: PackedStringArray = Validate.validate_sheet(w, m, H.sheet("red", [H.pkt("northgate", "bridgehead", 7)]))
+	var m: Types.MapDef = _marches()
+	report.call(MapLib.column_cap(m, "ironford") == 6, "only six may storm a pass")
+	report.call(MapLib.column_cap(m, "thornreach") == 0, "open ground takes as many as you can send")
+	var w: Types.World = H.paint(m, {"redgate": ["red", 12], "ironford": ["blue", 3], "thornreach": ["red", 2]})
+	var too_many: PackedStringArray = Validate.validate_sheet(w, m, H.sheet("red", [H.pkt("redgate", "ironford", 7)]))
 	report.call(too_many.size() > 0, "seven into a pass is refused")
-	var at_cap: PackedStringArray = Validate.validate_sheet(w, m, H.sheet("red", [H.pkt("northgate", "bridgehead", 6)]))
+	var at_cap: PackedStringArray = Validate.validate_sheet(w, m, H.sheet("red", [H.pkt("redgate", "ironford", 6)]))
 	report.call(at_cap.size() == 0, "six into a pass is allowed")
 	## the cap is on the column, not on the land: two columns may still converge
-	var w2: Types.World = H.paint(m, {"northgate": ["red", 12], "thebeacon": ["red", 8], "bridgehead": ["blue", 3]})
+	var w2: Types.World = H.paint(m, {"redgate": ["red", 12], "elmspire": ["red", 8], "ironford": ["blue", 3]})
 	var both: PackedStringArray = Validate.validate_sheet(w2, m,
-		H.sheet("red", [H.pkt("northgate", "bridgehead", 6), H.pkt("thebeacon", "bridgehead", 6)]))
+		H.sheet("red", [H.pkt("redgate", "ironford", 6), H.pkt("elmspire", "ironford", 6)]))
 	report.call(both.size() == 0, "two columns of six may converge on a pass")
 
 
 # ---------------------------------------------------------------- ports
 
 func _port(report: Callable) -> void:
-	var m: Types.MapDef = _narrow()
-	## coldharbor and warmharbor are ports on opposite shores and share no land border
-	report.call(not m.is_adjacent("coldharbor", "warmharbor"), "the two shore ports do not border each other")
-	var w: Types.World = H.paint(m, {"coldharbor": ["red", 6], "warmharbor": ["red", 3], "elkwood": ["red", 2],
-		"gullrock": ["blue", 2]})
+	## Ports belong to The Thousand Isles, where every crossing is a harbour.
+	var m: Types.MapDef = _isles()
+	report.call(MapLib.has_trait(m, "vanewick", "port") and MapLib.has_trait(m, "kestrelport", "port"),
+		"Vanewick and Kestrel Port are harbours")
+	report.call(not m.is_adjacent("vanewick", "kestrelport"), "and they are on different islands")
+	var w: Types.World = H.paint(m, {"vanewick": ["red", 6], "kestrelport": ["red", 3], "vanemoor": ["red", 2],
+		"reachrock": ["blue", 2]})
 	w.round = 2
-	report.call(Array(MapLib.supply_links(w, m, "coldharbor")).has("warmharbor"), "your own ports are joined by sea")
-	report.call(Maneuver.validate(w, m, "red", [{"from": "coldharbor", "to": "warmharbor", "n": 3}]).is_empty(),
-		"troops may march from one of your ports to another")
-	## but only between your own: an enemy port is no use to you
-	var w2: Types.World = H.paint(m, {"coldharbor": ["red", 6], "warmharbor": ["blue", 3], "elkwood": ["red", 2]})
+	report.call(Array(MapLib.supply_links(w, m, "vanewick")).has("kestrelport"), "your own ports are joined by sea")
+	report.call(Maneuver.validate(w, m, "red", [{"from": "vanewick", "to": "kestrelport", "n": 3}]).is_empty(),
+		"troops may march from one of your harbours to another")
+	## but only between your own: an enemy harbour is no use to you
+	var w2: Types.World = H.paint(m, {"vanewick": ["red", 6], "kestrelport": ["blue", 3], "vanemoor": ["red", 2]})
 	w2.round = 2
-	report.call(not Array(MapLib.supply_links(w2, m, "coldharbor")).has("warmharbor"), "an enemy port is not your harbour")
-	report.call(not Maneuver.validate(w2, m, "red", [{"from": "coldharbor", "to": "warmharbor", "n": 3}]).is_empty(),
-		"you cannot march into an enemy port by sea")
-	## a port is not a road for armies: you still cannot attack down it
-	report.call(Validate.validate_sheet(w2, m, H.sheet("red", [H.pkt("coldharbor", "warmharbor", 3)])).size() > 0,
-		"a port carries the baggage train, not an assault")
+	report.call(not Array(MapLib.supply_links(w2, m, "vanewick")).has("kestrelport"), "an enemy harbour is not yours")
+	report.call(not Maneuver.validate(w2, m, "red", [{"from": "vanewick", "to": "kestrelport", "n": 3}]).is_empty(),
+		"you cannot march into an enemy harbour by sea")
+	## a port carries supply, not an assault
+	report.call(Validate.validate_sheet(w2, m, H.sheet("red", [H.pkt("vanewick", "kestrelport", 3)])).size() > 0,
+		"a harbour carries the baggage train, not the assault")
+	## a map without ports is unaffected
+	var mm: Types.MapDef = _marches()
+	report.call(MapLib.trait_ids(mm, "port").is_empty(), "The Marches has no harbours")
+	var wm: Types.World = H.paint(mm, {"kingsholt": ["red", 4], "elmspire": ["red", 2], "redgate": ["blue", 2]})
+	wm.round = 2
+	report.call(Array(MapLib.supply_links(wm, mm, "kingsholt")) == Array(MapLib.neighbors(mm, "kingsholt")),
+		"with no harbours, supply follows the land borders and nothing else")
 
 
 # ---------------------------------------------------------------- supply
 
 func _supply(report: Callable) -> void:
-	var m: Types.MapDef = _narrow()
-	## red holds a solid western body plus one stranded land across the sea
+	var m: Types.MapDef = _isles()
+	## red holds a solid body on Great Vane and one stranded land away on Thale
 	var w: Types.World = H.paint(m, {
-		"elkwood": ["red", 2], "hallow": ["red", 2], "coldharbor": ["red", 2], "northgate": ["red", 2],
-		"redhill": ["red", 4],
-		"southgate": ["blue", 3], "thespit": ["blue", 3], "almsfield": ["blue", 2]})
+		"vanetor": ["red", 2], "vanefell": ["red", 2], "vaneholt": ["red", 2], "vanemoor": ["red", 2],
+		"thalecliff": ["red", 4],
+		"thaleharbour": ["blue", 3], "thalewood": ["blue", 2], "sealstone": ["blue", 2]})
 	var fed: Dictionary = MapLib.supplied_ids(w, m, "red")
-	report.call(fed.size() == 4 and not fed.has("redhill"), "the stranded land is out of supply")
-	report.call(MapLib.in_supply(w, m, "northgate"), "the main body is in supply")
-	report.call(not MapLib.in_supply(w, m, "redhill"), "Redhill, cut off across the sea, is not")
-	report.call(Income.cap_of(w, m, "redhill") == 0, "no recruits reach a land out of supply")
-	report.call(Income.cap_of(w, m, "northgate") > 0, "recruits reach the main body")
+	report.call(fed.size() == 4 and not fed.has("thalecliff"), "the stranded land is out of supply")
+	report.call(MapLib.in_supply(w, m, "vaneholt"), "the main body is in supply")
+	report.call(not MapLib.in_supply(w, m, "thalecliff"), "Thale Cliff, cut off across the sea, is not")
+	report.call(Income.cap_of(w, m, "thalecliff") == 0, "no recruits reach a land out of supply")
+	report.call(Income.cap_of(w, m, "vaneholt") > 0, "recruits reach the main body")
 
 	## it still defends itself — being cut off is not being disarmed
-	var before: int = w.get_territory("redhill").held()
-	var r: Dictionary = H.resolve(w, m, [H.sheet("blue", [H.pkt("southgate", "redhill", 2)])], 77)
+	var before: int = w.get_territory("thalecliff").held()
+	var r: Dictionary = H.resolve(w, m, [H.sheet("blue", [H.pkt("thaleharbour", "thalecliff", 2)])], 77)
 	report.call(before == 4 and (r["errors"] as PackedStringArray).is_empty(), "a cut-off land still fights")
 
 	## income counts only what is fed
-	var all_in: Types.World = H.paint(m, {
-		"elkwood": ["red", 2], "hallow": ["red", 2], "coldharbor": ["red", 2], "northgate": ["red", 2],
-		"stonewatch": ["red", 2], "southgate": ["blue", 3]})
+	var joined: Types.World = H.paint(m, {
+		"vanetor": ["red", 2], "vanefell": ["red", 2], "vaneholt": ["red", 2], "vanemoor": ["red", 2],
+		"vanehead": ["red", 2], "thaleharbour": ["blue", 3]})
 	var cut: Types.World = H.paint(m, {
-		"elkwood": ["red", 2], "hallow": ["red", 2], "coldharbor": ["red", 2], "northgate": ["red", 2],
-		"redhill": ["red", 2], "southgate": ["blue", 3]})
-	report.call(Income.income_of(all_in, m, "red") >= Income.income_of(cut, m, "red"),
+		"vanetor": ["red", 2], "vanefell": ["red", 2], "vaneholt": ["red", 2], "vanemoor": ["red", 2],
+		"thalecliff": ["red", 2], "thaleharbour": ["blue", 3]})
+	report.call(Income.income_of(joined, m, "red") >= Income.income_of(cut, m, "red"),
 		"five joined lands pay at least as well as four and a stranded one")
 
-	## a port keeps an island fed: gullrock alone would be cut off, but it is a port
+	## a harbour keeps an island fed: Kestrel Port alone would be cut off, but it is a port
 	var by_sea: Types.World = H.paint(m, {
-		"coldharbor": ["red", 3], "elkwood": ["red", 2], "hallow": ["red", 2], "gullrock": ["red", 2],
-		"southgate": ["blue", 3]})
-	report.call(MapLib.in_supply(by_sea, m, "gullrock"), "a port keeps the island in supply")
+		"vanewick": ["red", 3], "vanemoor": ["red", 2], "vanehead": ["red", 2], "kestrelport": ["red", 2],
+		"reachrock": ["blue", 3]})
+	report.call(MapLib.in_supply(by_sea, m, "kestrelport"), "a harbour keeps the far island in supply")
 	var stranded: Types.World = H.paint(m, {
-		"elkwood": ["red", 3], "hallow": ["red", 2], "northgate": ["red", 2], "gullrock": ["red", 2],
-		"southgate": ["blue", 3]})
-	report.call(not MapLib.in_supply(stranded, m, "gullrock"), "lose the harbour and the island starves")
+		"vanetor": ["red", 3], "vanefell": ["red", 2], "vaneholt": ["red", 2], "kestrelport": ["red", 2],
+		"reachrock": ["blue", 3]})
+	report.call(not MapLib.in_supply(stranded, m, "kestrelport"), "lose the harbour behind it and the island starves")
 
 	## supply off is supply ignored
-	var off: Types.MapDef = _narrow()
+	var off: Types.MapDef = _isles()
 	off.supply = false
-	report.call(MapLib.in_supply(w, off, "redhill"), "with supply off every land is fed")
+	report.call(MapLib.in_supply(w, off, "thalecliff"), "with supply off every land is fed")
 
 
 # ---------------------------------------------------------------- a whole war
 
 func _war(report: Callable) -> void:
-	var m: Types.MapDef = _narrow()
+	var m: Types.MapDef = _marches()
 	var seats: Array = [{"id": "red", "name": "general", "ai": "general"}, {"id": "blue", "name": "veteran", "ai": "veteran"}]
 	var a: Dictionary = Autoplay.play(m, seats, 4242, 0, false)
-	report.call(bool(a["ok"]), "a whole war on narrow14 is legal: %s" % [" | ".join(a["violations"])])
-	var b: Dictionary = Autoplay.play(_narrow(), seats, 4242, 0, false)
+	report.call(bool(a["ok"]), "a whole war on The Marches is legal: %s" % [" | ".join(a["violations"])])
+	var b: Dictionary = Autoplay.play(_marches(), seats, 4242, 0, false)
 	report.call(str(a.get("hash", "")) == str(b.get("hash", "")) and int(a["roundsPlayed"]) == int(b["roundsPlayed"]),
 		"the same seed replays to the same war")
+	var four: Array = [{"id": "red", "name": "general", "ai": "general"}, {"id": "blue", "name": "veteran", "ai": "veteran"},
+		{"id": "green", "name": "hask", "ai": "hask"}, {"id": "gold", "name": "quill", "ai": "quill"}]
+	for path in ["res://maps/ring26.json", "res://maps/isles24.json"]:
+		var mm: Types.MapDef = _rules(Types.MapDef.from_file(path))
+		var r1: Dictionary = Autoplay.play(mm, four, 616, 0, false)
+		report.call(bool(r1["ok"]), "a whole four-handed war on %s is legal: %s" % [mm.id, " | ".join(r1["violations"])])
+		var r2: Dictionary = Autoplay.play(_rules(Types.MapDef.from_file(path)), four, 616, 0, false)
+		report.call(str(r1.get("hash", "")) == str(r2.get("hash", "")), "%s replays to the same war" % mm.id)

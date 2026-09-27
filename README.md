@@ -37,6 +37,8 @@ Every round has four phases, each announced as it begins: **Reinforcement** (pla
 - **Regroup phase.** After the battles, everyone marches troops between their own neighbouring lands, one land per soldier, then the next round begins.
 - **Garrisons.** The gold shield on a land is its garrison, who never march: its dug-in defenders, or on a land with none yet the one man who must stay behind. The big number is exactly who can march. Every round you keep a land, one more man digs in, up to three.
 - **Cards** (bigger maps). Capturing earns a card: infantry, cavalry or artillery, each naming a land. Three alike or one of each turn in for 4, 6, 8, 10, then 5 more each time, plus a free soldier on every named land you hold. Take a commander's last land and their whole hand is yours.
+- **What a land is.** Some maps give a land a standing character, shown by a small brass emblem on it. A **fortress** fires a line of six instead of five and takes one more man dug in. A **pass** lets no more than six storm it in one column, however many you have — come at it from two sides instead. A **port** is joined by sea to your other ports: troops march between them and supply runs along them, but you cannot attack down a sea link.
+- **Supply** (some maps). Your largest connected body of lands — joined by land, or by your own ports — is in supply. A land cut off from it pays no income and takes no recruits, though it still fights and still digs in. The map says CUT OFF across it. A conquest that reaches too far is worth nothing until the road behind it is yours.
 - **The lands.** Dealt at random, or claimed in turn: every commander's die drops onto the map for the order, then everyone claims one land at a time.
 - **Winning.** After the last round, the highest score wins (lands + region bonuses). Holding 80% of the map, or being the last one standing, wins at once.
 
@@ -44,7 +46,8 @@ Every round has four phases, each announced as it begins: **Reinforcement** (pla
 
 | | |
 |---|---|
-| **Maps** | *The Isthmus* (7 lands, the teaching map), *The Known World* (24 lands, an island sea), *The Wide World* (30 lands, six regions) |
+| **Maps** | *The Isthmus* (7, the teaching map) · *The Marches* (18, the two-player duel) · *The Known World* (24, an island sea) · *The Thousand Isles* (24, an archipelago run on harbours) · *The Ring* (26, five realms around one crown) · *The Wide World* (30, six regions) |
+| **You** | Six commanders to be — the Iron Duke, the Corsair, the Lioness, the Scholar, the Rajah, the Grenadier — or stay an anonymous silhouette. Click the portrait on the setup screen. |
 | **Commanders** | Captain Oren of the Hussars (easy) · Commodore Hask, Governor Quill of the Company (medium) · Grand Marshal Varek, Viceroy Ysolde, Admiral Imre (hard). Hard commanders simulate several plans against predicted enemy moves before sealing. Each fights with a temperament: Hask and Ysolde throw in every reserve, Quill cuts his losses, Oren never knows when to quit. |
 | **Modes** | Solo vs AI, hotseat for 2–5 people (a cover screen hides each sheet), mixed, or all-AI to watch |
 | **Options** | Game length (short / standard / long / conquest), lands dealt or claimed in turn, planning clock, battle speed, text size, advisor tips, colorblind-safe token shapes |
@@ -89,11 +92,12 @@ tests/       headless suite: kernel, queue T1–T8, properties, cards, AI, sessi
 
 | Command | What |
 |---|---|
-| `./scripts/test.sh` | Full headless suite (399 checks) |
+| `./scripts/test.sh` | Full headless suite (counts drift upward — trust the run, not this line) |
 | `godot --headless --path . --script res://tools/compile_check.gd` | Compile every script (catches UI errors in seconds) |
-| `godot --headless --path . --script res://tools/arena.gd -- map=world30 n=40 seats=general,veteran,hask` | AI tournament: win rates, game length, walk-ins, combat bands |
+| `godot --headless --path . --script res://tools/arena.gd -- map=world30 n=40 seats=general,veteran,hask   # supply=/traits= A/B a rule on the same seeds` | AI tournament: win rates, game length, walk-ins, combat bands |
 | `./scripts/combat_sim.sh` | Combat capture bands |
-| `node tools/mapgen/mapgen.mjs knife7 known24 world30` | Regenerate map geography from `tools/mapgen/*.geo.json` |
+| `node tools/mapgen/mapgen.mjs knife7 marches18 known24 isles24 ring26 world30` | Regenerate map geography from `tools/mapgen/*.geo.json` |
+| `godot --headless --script res://tools/contact.gd -- dir=res://assets/portraits match=you_ out=/tmp/sheet.png` | Contact sheet of an art batch, to judge it all at once |
 | `python3 tools/ludo/ludo.py [ids…]` | Generate missing art/audio from `tools/ludo/manifest.json` (reads `LUDO_API_KEY` from `.env.local`; idempotent) |
 | `./scripts/shot.sh ui` | Drive the real client and save screenshots (`SHOT_DIR=…`); `calls` plays a battle with live calls, `v13` a melee, the reinforcement phase and the cards, `v14` the dice, a scramble and the land draft, `v15` the phases, a surge with a count, the physics dice in battle and a card turn-in, `dice` the physics dice on their own (1,000 throws checked), `field` the formations, `input` clicks with the real mouse path |
 | `python3 tools/ludo/v12_content.py` | Rewrite the v1.2 manifest entries and `game/data/lines.json` (version-bumps anything whose prompt changed) |

@@ -8,6 +8,7 @@
 ## fall, and — if it comes to that — turn and march away.
 extends Control
 
+const MapLib := preload("res://engine/map.gd")
 const Style := preload("res://game/core/style.gd")
 const Types := preload("res://engine/types.gd")
 const Lines := preload("res://game/core/lines.gd")
@@ -448,6 +449,14 @@ func _process(delta: float) -> void:
 
 func _event() -> Dictionary:
 	return _beats[_bi]["event"] if _bi >= 0 and _bi < _beats.size() else {}
+
+
+func _fort_bonus() -> int:
+	## v1.7: the bar has to quote the odds of the land actually being fought over, and in a
+	## fortress the defenders fire a longer line.
+	if _bi < 0 or _bi >= _beats.size() or session == null:
+		return 0
+	return MapLib.defender_line_bonus(session.map, str(_beats[_bi].get("resolves", "")))
 
 
 func _def() -> int:
@@ -906,7 +915,7 @@ func _update_odds() -> void:
 		bar.show_odds(1.0 if taken else 0.0, _melee_lead_pid() if _melee else _a_pid, _b_pid, what, "Decided.")
 		return
 	var ties: bool = _event_kind() == Types.EVENT_INVASION or _melee
-	var p: float = Combat.volley_capture_rate(a, d, ties)
+	var p: float = Combat.volley_capture_rate(a, d, ties, _fort_bonus())
 	var land: String = session.hex_name(str(_beats[_bi].get("resolves", ""))) if _bi >= 0 else ""
 	var head: String
 	var who: String = session.name_of(_melee_lead_pid() if _melee else _a_pid)
@@ -1093,11 +1102,11 @@ func _ask() -> void:
 	var d: int = int(p.get("d", _b_left))
 	var res: int = int(p.get("reserves", 0))
 	var refuge: String = str(p.get("refuge", ""))
-	var pr: float = Combat.capture_rate(a, d, Combat.MODE_VOLLEYS)
+	var pr: float = Combat.capture_rate(a, d, Combat.MODE_VOLLEYS, _fort_bonus())
 	var who: String = session.name_of(str(p.get("attacker", "")))
-	_odds.text = ("%s's call · " % who if _melee else "") + "From here: %s — %d%% to take it" % [Combat.odds_word(a, d, Combat.MODE_VOLLEYS), int(round(pr * 100.0))]
+	_odds.text = ("%s's call · " % who if _melee else "") + "From here: %s — %d%% to take it" % [Combat.odds_word(a, d, Combat.MODE_VOLLEYS, _fort_bonus()), int(round(pr * 100.0))]
 	if res > 0:
-		var pr2: float = Combat.capture_rate(a + res, d, Combat.MODE_VOLLEYS)
+		var pr2: float = Combat.capture_rate(a + res, d, Combat.MODE_VOLLEYS, _fort_bonus())
 		_odds.text += "   ·   with the reserves: %d%%" % int(round(pr2 * 100.0))
 	var src: Array = p.get("reserveFrom", [])
 	var from_name: String = session.hex_name(str(src[0]["from"])) if not src.is_empty() else ""

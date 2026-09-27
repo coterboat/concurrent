@@ -5,6 +5,7 @@ const Style := preload("res://game/core/style.gd")
 const Income := preload("res://engine/income.gd")
 const Types := preload("res://engine/types.gd")
 const MapLib := preload("res://engine/map.gd")
+const Combat := preload("res://engine/combat.gd")
 const Session := preload("res://game/core/session.gd")
 
 const ODDS := {
@@ -67,6 +68,8 @@ func rebuild() -> void:
 		reg = "%s  +%d" % [s.map.region_names.get(td.region, td.region), int(s.map.region_bonus.get(td.region, 0))]
 	var who: String = "Empty land" if ts.owner == Types.UNOCCUPIED else s.name_of(ts.owner)
 	_box.add_child(Style.label(("%s  ·  %s" % [who, reg]) if reg != "" else who, 15, Style.PARCH, "italic"))
+	for row in _trait_rows(s, ts, td):
+		_box.add_child(row)
 	if not mine:
 		var d: Dictionary = s.expected_defense(land)
 		if ts.owner != Types.UNOCCUPIED:
@@ -225,7 +228,7 @@ func _strike_row(from_id: String, to_id: String, from_view: bool) -> Control:
 	var mx: int = s.max_send(from_id)
 	var b := Style.chip("Attack", func(): gs.order_attack(from_id, to_id), Style.CREAM, 15)
 	if mx >= 1:
-		var o: Dictionary = s.odds(mx, int(d["now"]))
+		var o: Dictionary = s.odds(mx, int(d["now"]), to_id)
 		b.text = "Attack · %s" % o["word"]
 		b.add_theme_color_override("font_color", ODDS.get(o["word"], Style.CREAM))
 		b.tooltip_text = "All %d who can march, against %d now" % [mx, d["now"]]
@@ -253,6 +256,40 @@ func _move_row(from_id: String, to_id: String) -> Control:
 		b.tooltip_text = "One move per round."
 		row.add_child(b)
 	return row
+
+
+func _trait_rows(s, ts: Types.TerritoryState, td: Types.TerritoryDef) -> Array:
+	## v1.7: what this particular land does, in the words the rules use.
+	var out: Array = []
+	if td.has_trait("fort"):
+		out.append(_trait("fort", "Fortress", "Its defenders fire a line of %d, not five, and one more man may dig in here."
+			% [Combat.LINE + s.map.fort_bonus], Style.GOLD))
+	if td.has_trait("pass"):
+		out.append(_trait("pass", "Pass", "No more than %d may storm it in one column, however many you have."
+			% [s.map.pass_cap], Style.GOLD))
+	if td.has_trait("port"):
+		out.append(_trait("port", "Port", "Joined by sea to your other ports: troops may march between them, and supply runs along them.", Style.GOLD))
+	if s.map.supply and ts.owner != Types.UNOCCUPIED and not MapLib.in_supply(s.world, s.map, land):
+		out.append(_trait("supply", "Cut off", "No road home: it pays no income and takes no recruits until it is joined up again.", Style.CRIMSON.lightened(0.3)))
+	return out
+
+
+func _trait(icon: String, name: String, help: String, tint: Color) -> Control:
+	var h := HBoxContainer.new()
+	h.add_theme_constant_override("separation", 6)
+	var i := TextureRect.new()
+	i.texture = Style.tex("res://assets/icons/%s.png" % icon)
+	i.custom_minimum_size = Vector2(20, 20)
+	i.expand_mode = TextureRect.EXPAND_IGNORE_SIZE
+	i.stretch_mode = TextureRect.STRETCH_KEEP_ASPECT_CENTERED
+	i.modulate = tint
+	h.add_child(i)
+	var l := Style.label(name, 15, tint, "bold")
+	h.add_child(l)
+	h.tooltip_text = help
+	i.tooltip_text = help
+	l.tooltip_text = help
+	return h
 
 
 func _fit() -> void:

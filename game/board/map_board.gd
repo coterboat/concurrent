@@ -5,6 +5,7 @@ extends Control
 
 const Types := preload("res://engine/types.gd")
 const Income := preload("res://engine/income.gd")
+const MapLib := preload("res://engine/map.gd")
 const Style := preload("res://game/core/style.gd")
 const MapArt := preload("res://game/board/map_art.gd")
 
@@ -699,6 +700,29 @@ func _draw_token(ci: CanvasItem, id: String) -> void:
 		Style.draw_shape(ci, "star", bp, 11.0, Style.GOLD, Color(0.25, 0.15, 0.02), 1.5)
 		ci.draw_string_outline(f, bp + Vector2(10, 6), "+%d" % int(bonus[id]), HORIZONTAL_ALIGNMENT_LEFT, -1, 14, 4, Color(0.05, 0.03, 0.02, 0.9))
 		ci.draw_string(f, bp + Vector2(10, 6), "+%d" % int(bonus[id]), HORIZONTAL_ALIGNMENT_LEFT, -1, 14, Style.GOLD)
+	## v1.7: what this land is, on the land itself — a fortress, a pass, a harbour — as
+	## small brass emblems along the token's lower-left, clear of the shield and the count.
+	var td: Types.TerritoryDef = map.get_territory(id)
+	if td != null and td.traits.size() > 0:
+		var er: float = clampf(r * 0.46, 8.0, 12.0)
+		var ep: Vector2 = p + Vector2(-r * 1.0, r * 0.72)
+		for tr in td.traits:
+			var tex: Texture2D = Style.tex("res://assets/icons/%s.png" % tr)
+			if tex != null:
+				ci.draw_circle(ep + Vector2(1, 2), er + 1.5, Color(0, 0, 0, 0.45))
+				ci.draw_circle(ep, er + 1.5, Color(0.12, 0.09, 0.04, 0.92))
+				ci.draw_arc(ep, er + 1.5, 0, TAU, 20, Style.GOLD, 1.4, true)
+				ci.draw_texture_rect(tex, Rect2(ep - Vector2(er, er) * 0.92, Vector2(er, er) * 1.84), false, Color(1, 0.92, 0.72))
+			ep.x -= (er + 1.5) * 2.2
+	## v1.7: a land with no road home. The rule is invisible otherwise, and an invisible
+	## rule is a rule the commander gets caught by rather than plays around.
+	if map.supply and owner != Types.UNOCCUPIED and owner != "neutral" and not MapLib.in_supply(world, map, id):
+		var cut := Color(0.92, 0.35, 0.28)
+		ci.draw_arc(p, r + 6.0, 0, TAU, 40, Color(cut, 0.85), 2.5, true)
+		var cw: float = f.get_string_size("CUT OFF", HORIZONTAL_ALIGNMENT_LEFT, -1, 12).x
+		var cpp: Vector2 = p + Vector2(-cw * 0.5, -r - 10)
+		ci.draw_string_outline(f, cpp, "CUT OFF", HORIZONTAL_ALIGNMENT_LEFT, -1, 12, 4, Color(0.05, 0.03, 0.02, 0.9))
+		ci.draw_string(f, cpp, "CUT OFF", HORIZONTAL_ALIGNMENT_LEFT, -1, 12, cut)
 	## enemy ceiling: the most this hex could hold after their hidden reinforcement
 	if show_ceiling and owner != viewer and owner != Types.UNOCCUPIED:
 		var ceiling: int = n + (Income.cap_of(world, map, id) * ceiling_mult if owner != "neutral" else 0)

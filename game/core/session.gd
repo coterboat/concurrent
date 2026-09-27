@@ -1224,12 +1224,15 @@ func set_value_now() -> int:
 	return Cards.set_value(world.sets_cashed)
 
 
-func odds(att: int, def: int) -> Dictionary:
-	var p: float = 1.0 if def <= 0 else Combat.capture_rate(att, def, map.battle)
+func odds(att: int, def: int, to_id: String = "") -> Dictionary:
+	## v1.7: a fortress fires a longer line, so the sheet must quote the fort's odds, not
+	## open-ground odds. Passing the land is how the card tells the truth about it.
+	var bonus: int = MapLib.defender_line_bonus(map, to_id) if to_id != "" else 0
+	var p: float = 1.0 if def <= 0 else Combat.capture_rate(att, def, map.battle, bonus)
 	var word := "certain"
 	if def > 0:
-		word = Combat.odds_word(att, def, map.battle)
-	return {"p": p, "word": word}
+		word = Combat.odds_word(att, def, map.battle, bonus)
+	return {"p": p, "word": word, "fort": bonus > 0}
 
 
 func expected_defense(to_id: String) -> Dictionary:

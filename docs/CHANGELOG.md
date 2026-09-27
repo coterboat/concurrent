@@ -2,6 +2,138 @@
 
 The bible says amendments come with a dated entry and the test or band that justified them. Everything below has both.
 
+## v1.7 — 26 Sep 2026: the fresh pass
+
+A pass over the whole game with fresh eyes: the rules re-derived from scratch and checked
+against the code, three new maps, land that has a character of its own, supply lines, and
+a face for the commander who had none.
+
+### Amendment 18: the even volley is fired again — everywhere
+
+v1.6's headline rule says an even volley costs nobody and is fired again. The combat
+kernel did that. **The resolve queue did not.** In `_invade` a refired tie came back with
+no winner recorded, and the loop's `else` branch took a man off the *attacker*. So:
+
+- every battle actually fought ran at **41.7% a volley** where the sheet, the advisor, the
+  battle bar and the AI's planner all quoted **50%**;
+- and a fortress was worth *exactly nothing*, because the only thing its extra man did was
+  turn a tie the attacker already lost into a loss by one pip.
+
+The two faults hid each other, which is why the first fortress simulation came back
+byte-for-byte identical with the fort on and off — the giveaway that started the hunt.
+
+How it was found: the rules were re-implemented from the prose in this changelog, in
+Python, with exact rational arithmetic, and the two were compared. The kernel agreed to
+the last decimal on all sixteen quoted matchups. The queue did not.
+
+| | quoted | fought, v1.6 | fought, v1.7 |
+|---|---|---|---|
+| 9 v 9, open ground | 50% | 34% | 50% |
+| 12 v 9, open ground | 78% | 61% | 76% |
+| 9 v 9, in a fortress | 36% | 34% | 38% |
+| 6 v 9, open ground | 16% | 11% | 17% |
+
+`tests/test_v17.gd` now fights six hundred battles through the queue at each of three
+matchups and fails if the result drifts more than six points from the quoted odds, so the
+sheet and the battlefield can never disagree again.
+
+**It also explains a band that had been wrong in this document since v1.0.** The arena
+reported "even fights, attacker took 41–55%" where the rule says 50. That was read as
+noise. It was the bug. The measure was wrong too: an even fight that had reserves thrown
+into it, or that the attacker broke off, is no reading on the combat rule at all. The
+arena now reports both — every even fight, and the ones fought as they started.
+
+### Land with a character of its own
+
+Three traits a map may give a land. They are off unless the map asks for them, so the
+Isthmus, the Known World and the Wide World play exactly as they did, and old saves are
+untouched.
+
+- **Fortress** — its defenders fire a line of six instead of five, and one more man than
+  usual may dig in there.
+- **Pass** — no more than six may storm it in one column, however many you have. The
+  answer to a pass is to come at it from two sides and make the defenders split.
+- **Port** — two of your own ports are joined by sea: troops may march between them in the
+  regroup phase, and supply runs along them. You cannot attack down a sea link.
+
+**The fortress bonus is one, and one is the whole of it.** A pip is worth five men, so a
+line of six, seven, eight or nine all score exactly the same against a line of five: the
+next real step would be ten. Tested before a line of game code was written. It also means
+a fortress is worth what you garrison it with — five men fire five wherever they stand —
+which happens to be true of fortresses.
+
+| ten against ten | open ground | fort +1 | fort +2 | fort +3 |
+|---|---|---|---|---|
+| attacker takes it | 50.0% | 34.2% | 34.2% | 34.1% |
+
+### Supply
+
+A map may ask that an army have a road home. Your largest connected body of lands — joined
+by land borders, or by your own ports — is in supply. Anything cut off from it pays no
+income and takes no recruits. It still fights, still holds, still digs in; it simply feeds
+nobody until you join it up again. The map says CUT OFF across it.
+
+It is a real lever, measured on the Thousand Isles over the same seeds:
+
+| | walk-ins per game | the hard commander's share of 24 |
+|---|---|---|
+| supply off | 10.5 | 3 |
+| supply on | 6.8 | 11 |
+
+It costs some of the game's cheerful chaos and pays for it in generalship: overreaching
+is punished, and cutting a neighbour's chain in the middle can strand half their empire
+without fighting for a single one of those lands.
+
+### Three new maps
+
+| | lands | seats | what it is for |
+|---|---|---|---|
+| **The Marches** | 18 | 2 | The duel. Two crowns and a frontier that interlocks, so every march land faces two or three of the enemy's. One fortress and one pass each. |
+| **The Ring** | 26 | 3–5 | Five realms around one crown. Every road in goes through a pass, and the Throne at the centre is a fortress. |
+| **The Thousand Isles** | 24 | 2–5 | Five island groups and nothing but sea between them. Every crossing is a harbour; supply runs on ships. |
+
+Every map is generated from a rules graph that is checked before it is drawn — undirected,
+connected, no land without a way in, regions the right size, and the symmetry the map
+claims — and `mapgen` then refuses to draw a border the graph denies or a sea lane that
+would cross land. It refused twice while the Isles were being laid out, both times
+correctly.
+
+**The Narrow Sea did not survive its own simulations.** A first draft of the duel map put
+two realms either side of a sea with three crossings. It read beautifully and played badly:
+78% of wars ended in outright conquest, by round five of eight, with **0.9 walk-ins a
+game** on a game whose whole hook is the walk-in. Two realms across a sea barely touch, and
+what does not touch cannot be walked into. It was replaced by The Marches, whose frontier
+interlocks on purpose.
+
+### A face for the commander
+
+The human seat was a black silhouette beside six painted faces — it read as a missing
+asset rather than a choice. There are now six commanders to be: the Iron Duke, the Corsair,
+the Lioness, the Scholar, the Rajah and the Grenadier, each with the same triumphant,
+angry and defeated faces the AI commanders have, and an idle loop that breathes. The old
+anonymous silhouette is still the first choice for anyone who liked being nobody in
+particular. Click the portrait on the setup screen to change it.
+
+### The rules where you can see them
+
+- A land's character shows **on the land**: small brass emblems along the token, and on its
+  card in the words the rules use.
+- A land out of supply is ringed in crimson and says **CUT OFF**.
+- The order card, the advisor, the live battle bar and the AI's planner all quote the
+  fortress's odds on a fortress. An odds figure that ignores the fort is a lie told to the
+  commander at the moment they commit.
+- Two new How to Play pages: *Fortresses, passes and ports*, and *Supply*.
+
+### Tools and checks
+
+- `tests/test_v17.gd`: the traits, the supply rule, Amendment 18, the map files' topology,
+  and whole wars on all three new maps replaying to the same hash.
+- `tools/contact.gd` builds a contact sheet from a glob of images, so a whole art batch can
+  be judged at once instead of one file at a time. It caught three portraits where "eyes
+  blazing with victory" had been taken literally.
+- The arena learned `supply=` and `traits=` so a rule can be measured against the very same
+  seeds without a second map file.
+
 ## v1.6 — 26 Sep 2026: the polish pass
 
 ### Amendment 17: the firing line

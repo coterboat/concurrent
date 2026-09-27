@@ -1,0 +1,416 @@
+{
+ "id": "marches18",
+ "width": 2600,
+ "height": 2050,
+ "order": [
+  "blackford",
+  "boarfield",
+  "briargate",
+  "coldwater",
+  "elmspire",
+  "highford",
+  "ironford",
+  "kingsholt",
+  "lowmeadow",
+  "northhaven",
+  "olivespire",
+  "queensholt",
+  "redgate",
+  "southhaven",
+  "stagfield",
+  "sunreach",
+  "thornreach",
+  "warmwater"
+ ],
+ "anchors": {
+  "blackford": {
+   "x": 782,
+   "y": 1172,
+   "depth": 167.2,
+   "area": 117706,
+   "bbox": [
+    567,
+    939,
+    991,
+    1366
+   ]
+  },
+  "boarfield": {
+   "x": 1802,
+   "y": 1582,
+   "depth": 195.5,
+   "area": 206740,
+   "bbox": [
+    1580,
+    1268,
+    2022,
+    1907
+   ]
+  },
+  "briargate": {
+   "x": 1584,
+   "y": 1170,
+   "depth": 176.5,
+   "area": 120339,
+   "bbox": [
+    1386,
+    941,
+    1786,
+    1377
+   ]
+  },
+  "coldwater": {
+   "x": 1156,
+   "y": 470,
+   "depth": 179.9,
+   "area": 196524,
+   "bbox": [
+    941,
+    173,
+    1386,
+    762
+   ]
+  },
+  "elmspire": {
+   "x": 760,
+   "y": 464,
+   "depth": 189.7,
+   "area": 202687,
+   "bbox": [
+    539,
+    148,
+    985,
+    753
+   ]
+  },
+  "highford": {
+   "x": 2018,
+   "y": 1150,
+   "depth": 173.8,
+   "area": 153810,
+   "bbox": [
+    1782,
+    908,
+    2238,
+    1393
+   ]
+  },
+  "ironford": {
+   "x": 556,
+   "y": 894,
+   "depth": 184,
+   "area": 149198,
+   "bbox": [
+    347,
+    655,
+    781,
+    1128
+   ]
+  },
+  "kingsholt": {
+   "x": 342,
+   "y": 478,
+   "depth": 210.4,
+   "area": 217186,
+   "bbox": [
+    96,
+    150,
+    583,
+    779
+   ]
+  },
+  "lowmeadow": {
+   "x": 1790,
+   "y": 878,
+   "depth": 175.4,
+   "area": 118811,
+   "bbox": [
+    1586,
+    673,
+    2006,
+    1109
+   ]
+  },
+  "northhaven": {
+   "x": 1988,
+   "y": 470,
+   "depth": 210.4,
+   "area": 219405,
+   "bbox": [
+    1735,
+    200,
+    2276,
+    753
+   ]
+  },
+  "olivespire": {
+   "x": 1000,
+   "y": 1578,
+   "depth": 188.3,
+   "area": 204648,
+   "bbox": [
+    766,
+    1264,
+    1226,
+    1899
+   ]
+  },
+  "queensholt": {
+   "x": 580,
+   "y": 1572,
+   "depth": 206.6,
+   "area": 211532,
+   "bbox": [
+    322,
+    1279,
+    824,
+    1862
+   ]
+  },
+  "redgate": {
+   "x": 974,
+   "y": 882,
+   "depth": 168.3,
+   "area": 114823,
+   "bbox": [
+    776,
+    679,
+    1175,
+    1109
+   ]
+  },
+  "southhaven": {
+   "x": 2216,
+   "y": 1560,
+   "depth": 207.8,
+   "area": 205314,
+   "bbox": [
+    1982,
+    1243,
+    2475,
+    1858
+   ]
+  },
+  "stagfield": {
+   "x": 1554,
+   "y": 478,
+   "depth": 193.6,
+   "area": 196692,
+   "bbox": [
+    1322,
+    186,
+    1781,
+    769
+   ]
+  },
+  "sunreach": {
+   "x": 1186,
+   "y": 1166,
+   "depth": 168.3,
+   "area": 121249,
+   "bbox": [
+    982,
+    932,
+    1389,
+    1380
+   ]
+  },
+  "thornreach": {
+   "x": 1390,
+   "y": 878,
+   "depth": 165.7,
+   "area": 116616,
+   "bbox": [
+    1175,
+    684,
+    1597,
+    1110
+   ]
+  },
+  "warmwater": {
+   "x": 1400,
+   "y": 1584,
+   "depth": 180.1,
+   "area": 199801,
+   "bbox": [
+    1176,
+    1294,
+    1617,
+    1879
+   ]
+  }
+ },
+ "lanes": [],
+ "regions": {
+  "northcrown": {
+   "x": 1478,
+   "y": 332,
+   "room": 238
+  },
+  "northmarch": {
+   "x": 566,
+   "y": 782,
+   "room": 176
+  },
+  "southcrown": {
+   "x": 1772,
+   "y": 1394,
+   "room": 241
+  },
+  "southmarch": {
+   "x": 1802,
+   "y": 1190,
+   "room": 174
+  }
+ },
+ "landAdjacency": [
+  [
+   "blackford",
+   "ironford"
+  ],
+  [
+   "blackford",
+   "redgate"
+  ],
+  [
+   "blackford",
+   "sunreach"
+  ],
+  [
+   "blackford",
+   "olivespire"
+  ],
+  [
+   "blackford",
+   "queensholt"
+  ],
+  [
+   "boarfield",
+   "briargate"
+  ],
+  [
+   "boarfield",
+   "highford"
+  ],
+  [
+   "boarfield",
+   "warmwater"
+  ],
+  [
+   "boarfield",
+   "southhaven"
+  ],
+  [
+   "briargate",
+   "thornreach"
+  ],
+  [
+   "briargate",
+   "lowmeadow"
+  ],
+  [
+   "briargate",
+   "highford"
+  ],
+  [
+   "briargate",
+   "sunreach"
+  ],
+  [
+   "briargate",
+   "warmwater"
+  ],
+  [
+   "coldwater",
+   "elmspire"
+  ],
+  [
+   "coldwater",
+   "stagfield"
+  ],
+  [
+   "coldwater",
+   "redgate"
+  ],
+  [
+   "coldwater",
+   "thornreach"
+  ],
+  [
+   "elmspire",
+   "kingsholt"
+  ],
+  [
+   "elmspire",
+   "ironford"
+  ],
+  [
+   "elmspire",
+   "redgate"
+  ],
+  [
+   "highford",
+   "lowmeadow"
+  ],
+  [
+   "highford",
+   "southhaven"
+  ],
+  [
+   "ironford",
+   "kingsholt"
+  ],
+  [
+   "ironford",
+   "redgate"
+  ],
+  [
+   "lowmeadow",
+   "northhaven"
+  ],
+  [
+   "lowmeadow",
+   "stagfield"
+  ],
+  [
+   "lowmeadow",
+   "thornreach"
+  ],
+  [
+   "northhaven",
+   "stagfield"
+  ],
+  [
+   "olivespire",
+   "sunreach"
+  ],
+  [
+   "olivespire",
+   "warmwater"
+  ],
+  [
+   "olivespire",
+   "queensholt"
+  ],
+  [
+   "redgate",
+   "thornreach"
+  ],
+  [
+   "redgate",
+   "sunreach"
+  ],
+  [
+   "stagfield",
+   "thornreach"
+  ],
+  [
+   "sunreach",
+   "thornreach"
+  ],
+  [
+   "sunreach",
+   "warmwater"
+  ]
+ ]
+}

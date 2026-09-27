@@ -13,6 +13,12 @@ static func summarize_events(events: Array) -> Dictionary:
 	var invasions := 0
 	var even := 0
 	var even_cap := 0
+	## v1.7: an even fight is only a reading on the combat rule if it was fought as it
+	## started. Reserves thrown in mid-battle make the attacker bigger than attackerSize
+	## says, and a fall-back is scored as a loss the dice never dealt — together they were
+	## masking the very bug Amendment 18 fixed.
+	var even_clean := 0
+	var even_clean_cap := 0
 	var r32 := 0
 	var r32_cap := 0
 	var leader := ""
@@ -51,6 +57,10 @@ static func summarize_events(events: Array) -> Dictionary:
 					even += 1
 					if won:
 						even_cap += 1
+					if int(event.get("reservesAdded", 0)) == 0 and not bool(event.get("fellBack", false)):
+						even_clean += 1
+						if won:
+							even_clean_cap += 1
 				if d > 0 and a * 2 == d * 3:
 					r32 += 1
 					if won:
@@ -81,6 +91,8 @@ static func summarize_events(events: Array) -> Dictionary:
 		"invasions": invasions,
 		"even": even,
 		"evenCaptures": even_cap,
+		"evenClean": even_clean,
+		"evenCleanCaptures": even_clean_cap,
 		"ratio32": r32,
 		"ratio32Captures": r32_cap,
 		"reserves": reserves,
