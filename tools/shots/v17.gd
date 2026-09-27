@@ -36,6 +36,20 @@ func run(probe) -> void:
 	await p.frames(10)
 	await snap("02_setup_face")
 	p.ok(Style.portrait("you_lioness") != null, "the Lioness has a portrait")
+	## every face the player may wear needs its stills, its moods and a loop that breathes,
+	## packed and imported — a raw master that was never packed leaves the face sitting still
+	var faces := 0
+	var missing: Array = []
+	for f in setup.FACES:
+		if str(f) == "player":
+			continue
+		faces += 1
+		for suffix in ["", "_triumphant", "_angry", "_defeated"]:
+			if Style.portrait(str(f) + suffix) == null:
+				missing.append(str(f) + suffix)
+		if load("res://game/ui/leader_face.gd").loop_for(str(f), "idle").is_empty():
+			missing.append(str(f) + " idle loop")
+	p.ok(missing.is_empty(), "all %s commanders have their faces and their breathing (%s)" % [faces, missing])
 
 	## --- The Marches: a fortress, a pass, and what the card says about them
 	main.start_game({"map": "res://maps/marches18.json", "seed": 31, "length": "standard", "timer": 0, "seats": [
