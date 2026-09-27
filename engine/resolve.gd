@@ -106,6 +106,15 @@ static func reserves_available(w: Types.World, owner: String, froms: PackedStrin
 	return n
 
 
+static func _column_room(map: Types.MapDef, dest: String, froms: PackedStringArray, a: int) -> int:
+	## v1.7: how many more men may join a column storming a pass: at most the pass's cap
+	## from each road in, reserves included. -1: no limit (open ground, or an older game).
+	var col: int = MapLib.column_cap(map, dest)
+	if col <= 0 or map.rules < 17:
+		return -1
+	return maxi(0, col * maxi(1, froms.size()) - a)
+
+
 static func refuge_for(w: Types.World, map: Types.MapDef, owner: String, froms: PackedStringArray, dest: String) -> String:
 	## Survivors fall back to where they marched from; if that is lost, to the
 	## strongest friendly land bordering the battle. Nowhere: they are cut off.
@@ -160,8 +169,12 @@ static func _invade(w: Types.World, map: Types.MapDef, t: Transit, dest: String,
 			## advisor and the AI all quoted 50% — and a fortress changed nothing at all,
 			## because its extra man only ever turned a tie into the same lost volley.
 			if str(r["w"]) == "":
-				fight.rerolls += 1
-				continue
+				if map.rules >= 17:
+					fight.rerolls += 1
+					continue
+				## games begun before v1.7 replay as they were fought (the defender took it),
+				## and the record now says so, so their battle report shows what happened
+				r["w"] = "b"
 			if str(r["w"]) == "a":
 				d -= 1
 			else:
@@ -171,6 +184,9 @@ static func _invade(w: Types.World, map: Types.MapDef, t: Transit, dest: String,
 			break
 		## the call
 		var reserves: int = 0 if used_reserves else reserves_available(w, t.owner, froms)
+		var room: int = _column_room(map, dest, froms, a)
+		if room >= 0:
+			reserves = mini(reserves, room)
 		var refuge: String = refuge_for(w, map, t.owner, froms, dest)
 		var call := ""
 		if ci < recorded.size():
@@ -199,6 +215,8 @@ static func _invade(w: Types.World, map: Types.MapDef, t: Transit, dest: String,
 				if os == null or os.owner != t.owner:
 					continue
 				var k: int = Income.max_send(os)
+				if room >= 0:
+					k = mini(k, room - added) ## a pass: the road is only so wide
 				if k <= 0:
 					continue
 				os.armies -= k
@@ -598,6 +616,9 @@ static func _melee(w: Types.World, map: Types.MapDef, dest: String, invaders: Ar
 			var t: Transit = f["t"]
 			var froms: PackedStringArray = _froms(t)
 			var reserves: int = 0 if bool(f["used"]) else reserves_available(w, t.owner, froms)
+			var room: int = _column_room(map, dest, froms, int(f["a"]))
+			if room >= 0:
+				reserves = mini(reserves, room)
 			var refuge: String = refuge_for(w, map, t.owner, froms, dest)
 			var share_now: int = d if Combat.line > 0 else maxi(1, int(round(float(d) * float(f["a"]) / float(maxi(1, tot2)))))
 			var recorded: Array = (ctx["calls"].get(t.owner, {}) as Dictionary).get(f["key"], [])
@@ -626,6 +647,8 @@ static func _melee(w: Types.World, map: Types.MapDef, dest: String, invaders: Ar
 					if os == null or os.owner != t.owner:
 						continue
 					var k: int = Income.max_send(os)
+					if room >= 0:
+						k = mini(k, room - added)
 					if k <= 0:
 						continue
 					os.armies -= k
@@ -814,6 +837,8 @@ static func _resolve_surges(w: Types.World, map: Types.MapDef, match_seed: int, 
 		var strength: int = ts.armies - 1
 		if map.rules >= 15 and int(info.get("n", 0)) > 0:
 			strength = mini(strength, int(info["n"])) ## v1.5: the count the surge was ordered with, at most
+		if map.rules >= 17 and MapLib.column_cap(map, surge_to) > 0:
+			strength = mini(strength, MapLib.column_cap(map, surge_to)) ## v1.7: a pass takes a column of six, surge or not
 		ts.armies -= strength
 		events.append(Events.surge_event(ts.owner, dest, surge_to, strength, ts.armies))
 		var t := Transit.new()

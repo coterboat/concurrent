@@ -116,9 +116,14 @@ static func opening_placements(world: Types.World, map: Types.MapDef, pid: Strin
 
 static func plan(world: Types.World, map: Types.MapDef, pid: String, rng: RefCounted, prof: Dictionary) -> Types.Sheet:
 	Combat.use_rules(map) ## the odds it plans by are the ones the battles are fought by
-	if Combat.line > 0:
-		## under the firing line every attack is a longer shot: the commanders accept a little
-		## less certainty rather than sit still (the arena: the hard AI keeps its edge)
+	if Combat.line > 0 and (map.rules < 17 or bool(prof.get("search", false))):
+		## Under the firing line every attack is a longer shot, and the hard commanders
+		## accept a little less certainty rather than sit still. v1.6 gave every commander
+		## this nerve, but v1.6's queue was quietly handing the defender every even volley
+		## (Amendment 18), so the whole table was compensating for dice that lied. With
+		## honest dice only the hard commanders keep it: the arena then lands where v1.6
+		## actually played (Known World: 10 wars in 60 won before the last round against
+		## 11, the hard commander 47% against 47%), with odds that now tell the truth.
 		prof = prof.duplicate()
 		prof["p_win"] = float(prof.get("p_win", 0.68)) - 0.07
 	var s: Types.Sheet
@@ -279,9 +284,19 @@ static func _endgame(world: Types.World, map: Types.MapDef, prof: Dictionary) ->
 	return p
 
 
+## Tuning instrument: sheets the planner drew up that broke a rule and had to be cut back
+## (surges struck, attacks dropped). Should stay at zero; the tests hold it there.
+static var repairs := 0
+static var repair_log: Array = []
+
+
 static func _legalize(world: Types.World, map: Types.MapDef, sheet: Types.Sheet) -> Types.Sheet:
-	if Validate.validate_sheet(world, map, sheet).is_empty():
+	var errs: PackedStringArray = Validate.validate_sheet(world, map, sheet)
+	if errs.is_empty():
 		return sheet
+	repairs += 1
+	if repair_log.size() < 20:
+		repair_log.append("%s r%s %s: %s" % [map.id, world.round, sheet.player_id, " ".join(errs)])
 	for raw in sheet.packets:
 		(raw as Types.Packet).surge_to = ""
 	while not sheet.packets.is_empty() and not Validate.validate_sheet(world, map, sheet).is_empty():
@@ -411,7 +426,10 @@ class Planner extends RefCounted:
 			var ns: Types.TerritoryState = w.get_territory(n)
 			var send: int = Income.max_send(ns)
 			var extra: int = mini(Income.cap_of(w, map, n), int(incomes.get(o, 3)))
-			by_owner[o] = float(by_owner.get(o, 0.0)) + float(send + extra)
+			var punch: int = send + extra
+			if MapLib.column_cap(map, t) > 0:
+				punch = mini(punch, MapLib.column_cap(map, t)) ## v1.7: our pass lets in six a road
+			by_owner[o] = float(by_owner.get(o, 0.0)) + float(punch)
 		var best := 0.0
 		for o in by_owner.keys():
 			best = maxf(best, float(by_owner[o]))
@@ -527,8 +545,33 @@ class Planner extends RefCounted:
 				v *= 1.0 + float(prof.get("hunt", 0.0))
 		if map.cards and attacks.is_empty():
 			v += 0.7 ## the first capture of the round draws a card
+		if map.supply:
+			## how well a commander reads the roads is how well it reads the board: the
+			## recruit never sees them, the general sees every one
+			v += _supply_swing(e, o) * float(prof.get("read", 0.5))
 		var jitter: float = float(prof.get("noise", 0.1)) * (float(rng.roll_int(0, 1000)) / 1000.0 - 0.5) * 2.0
 		return v * (1.0 + jitter)
+
+	func _supply_swing(e: String, o: String) -> float:
+		## v1.7 supply maps: what taking e does to the roads home. A conquest that joins
+		## stranded lands back to the main body is worth every land it feeds again; one that
+		## would itself be stranded is worth less (it pays nothing and takes no recruits);
+		## and one that cuts a rival's chain starves every land beyond the cut.
+		var before_mine: int = MapLib.supplied_ids(w, map, pid).size()
+		var before_theirs: int = MapLib.supplied_ids(w, map, o).size() if is_foe(o) else 0
+		var ts: Types.TerritoryState = w.get_territory(e)
+		var was: String = ts.owner
+		ts.owner = pid
+		var after: Dictionary = MapLib.supplied_ids(w, map, pid)
+		var after_theirs: int = MapLib.supplied_ids(w, map, o).size() if is_foe(o) else 0
+		ts.owner = was
+		var v := 0.0
+		if not after.has(e):
+			v -= 0.6
+		v += 0.5 * float(maxi(0, after.size() - (1 if after.has(e) else 0) - before_mine))
+		if is_foe(o):
+			v += 0.4 * float(maxi(0, before_theirs - after_theirs - 1))
+		return v
 
 	func choose_attacks() -> void:
 		var max_attacks: int = int(prof.get("attacks", 4))
@@ -587,14 +630,22 @@ class Planner extends RefCounted:
 			if int(x[2]) != int(y[2]):
 				return int(x[2]) < int(y[2])
 			return int(x[1]) > int(y[1]))
+		var fort: int = MapLib.defender_line_bonus(map, e)
 		var need := 1
 		if d_eff > 0:
-			need = _needed(d_eff, p_want)
+			need = _needed(d_eff, p_want, fort)
 		elif es.owner == Types.UNOCCUPIED:
 			need = 2 ## someone else may walk in too
+		## v1.7: a pass takes no more than its column from any one land
+		var col: int = MapLib.column_cap(map, e)
 		var total := 0
+		var per := {}
 		for o in offers:
-			total += int(o[1])
+			var k: int = int(o[1])
+			if col > 0:
+				k = clampi(col - int(per.get(o[0], 0)), 0, k)
+			per[o[0]] = int(per.get(o[0], 0)) + k
+			total += k
 		if total < need:
 			return {}
 		## Take the extra punch while it is cheap spare men.
@@ -611,6 +662,10 @@ class Planner extends RefCounted:
 			if got >= want:
 				break
 			var take: int = mini(int(o[1]), want - got)
+			if col > 0:
+				take = mini(take, col - int(froms.get(o[0], 0)))
+			if take <= 0:
+				continue
 			if int(o[2]) == 1:
 				take = mini(take, income_left - used_place)
 				if take <= 0:
@@ -621,7 +676,7 @@ class Planner extends RefCounted:
 			got += take
 		if got < need:
 			return {}
-		var p_win: float = 1.0 if d_eff == 0 else Combat.capture_rate(got, d_eff, map.battle, MapLib.defender_line_bonus(map, e))
+		var p_win: float = 1.0 if d_eff == 0 else Combat.capture_rate(got, d_eff, map.battle, fort)
 		var value: float = target_value(e, targeted)
 		var loss_win: float = float(d_eff / 2)
 		var exp_loss: float = p_win * loss_win + (1.0 - p_win) * float(got)
@@ -664,7 +719,10 @@ class Planner extends RefCounted:
 				if owner_of(n) == pid or targeted.has(n) or from_set.has(n):
 					continue
 				var d: int = w.get_territory(n).held() + enemy_add(n)
-				var p: float = 1.0 if d == 0 else Combat.capture_rate(left - 1, d, map.battle, MapLib.defender_line_bonus(map, n))
+				var push: int = left - 1
+				if MapLib.column_cap(map, n) > 0:
+					push = mini(push, MapLib.column_cap(map, n)) ## a surge into a pass is a column of six too
+				var p: float = 1.0 if d == 0 else Combat.capture_rate(push, d, map.battle, MapLib.defender_line_bonus(map, n))
 				if p < 0.62:
 					continue
 				var score: float = p * target_value(n, targeted)

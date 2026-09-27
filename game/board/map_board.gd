@@ -557,6 +557,23 @@ func _curve(a: Vector2, b: Vector2, bend: float) -> PackedVector2Array:
 	return pts
 
 
+func _sea_bend(a: Vector2, b: Vector2, from_id: String, to_id: String) -> float:
+	## the arc, of a few, that keeps farthest from every other land's token
+	var best := 0.3
+	var best_gap := -1.0
+	for bend in [0.3, -0.3, 0.55, -0.55, 0.12, -0.12]:
+		var gap := 1.0e9
+		for pt in _curve(a, b, bend):
+			for id in art.anchors.keys():
+				if str(id) == from_id or str(id) == to_id:
+					continue
+				gap = minf(gap, pt.distance_to(anchor(str(id))))
+		if gap > best_gap + 4.0:
+			best_gap = gap
+			best = bend
+	return best
+
+
 var _surges_drawn := {}
 
 
@@ -574,6 +591,8 @@ func _draw_arrow(ci: CanvasItem, from_id: String, to_id: String, strength: int, 
 	var bend := 0.14 if from_id < to_id else -0.14
 	if kind == "move":
 		bend *= 0.5
+		if not map.is_adjacent(from_id, to_id):
+			bend = _sea_bend(a, b, from_id, to_id) ## v1.7: a march by sea sails round the other lands
 	var pts := _curve(a, b, bend)
 	if grow < 1.0:
 		## a column setting out: the arrow draws itself from its origin
@@ -701,11 +720,12 @@ func _draw_token(ci: CanvasItem, id: String) -> void:
 		ci.draw_string_outline(f, bp + Vector2(10, 6), "+%d" % int(bonus[id]), HORIZONTAL_ALIGNMENT_LEFT, -1, 14, 4, Color(0.05, 0.03, 0.02, 0.9))
 		ci.draw_string(f, bp + Vector2(10, 6), "+%d" % int(bonus[id]), HORIZONTAL_ALIGNMENT_LEFT, -1, 14, Style.GOLD)
 	## v1.7: what this land is, on the land itself — a fortress, a pass, a harbour — as
-	## small brass emblems along the token's lower-left, clear of the shield and the count.
+	## small brass emblems off the token's left flank: under the shield, above the name
+	## (at the lower-left they sat on the first letters of every harbour on the Isles).
 	var td: Types.TerritoryDef = map.get_territory(id)
 	if td != null and td.traits.size() > 0:
-		var er: float = clampf(r * 0.58, 11.0, 16.0)
-		var ep: Vector2 = p + Vector2(-r * 1.05, r * 0.82)
+		var er: float = clampf(r * 0.5, 10.0, 14.0)
+		var ep: Vector2 = p + Vector2(-r * 1.32, r * 0.42)
 		for tr in td.traits:
 			var tex: Texture2D = Style.tex("res://assets/icons/%s.png" % tr)
 			if tex != null:

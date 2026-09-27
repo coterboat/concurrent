@@ -103,13 +103,23 @@ static func has_trait(map: Types.MapDef, terr_id: String, name: String) -> bool:
 	return t != null and t.has_trait(name)
 
 
+static var _trait_memo := {}
+
+
 static func trait_ids(map: Types.MapDef, name: String) -> PackedStringArray:
+	## memoised per map object: supply_links asks for the ports on every step of a search
+	var key := "%d|%s" % [map.get_instance_id(), name]
+	if _trait_memo.has(key):
+		return _trait_memo[key]
+	if _trait_memo.size() > 256:
+		_trait_memo.clear()
 	var ids: Array = []
 	for terr_id in map.territory_ids():
 		if has_trait(map, str(terr_id), name):
 			ids.append(str(terr_id))
 	ids.sort()
-	return PackedStringArray(ids)
+	_trait_memo[key] = PackedStringArray(ids)
+	return _trait_memo[key]
 
 
 static func defender_line_bonus(map: Types.MapDef, terr_id: String) -> int:

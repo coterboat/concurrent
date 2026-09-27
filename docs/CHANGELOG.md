@@ -8,6 +8,65 @@ A pass over the whole game with fresh eyes: the rules re-derived from scratch an
 against the code, three new maps, land that has a character of its own, supply lines, and
 a face for the commander who had none.
 
+### The review (27 Sep): what the first pass got wrong
+
+The pass below was reviewed line by line before anyone played it. Amendment 18 was a real
+find and stands. Around it:
+
+- **Amendment 18 rewrote old saves.** The fix applied to every game, so a war saved under
+  v1.6 replayed with different dice outcomes than it was fought with, and its later sheets
+  stopped matching the world. The fix now belongs to games begun under v1.7 rules
+  (`rules` 17, the default for new games); older games replay exactly as fought, and their
+  battle report now shows the even volley going to the defender, as it did.
+- **The AI couldn't count to six at a pass.** The planner didn't know the column cap, so any
+  attack of seven or more into a pass failed the sheet check, and the repair step then
+  struck *every* surge and dropped attacks from the end until the sheet passed: 11 to 31
+  hobbled sheets a war on The Ring, 14 in one war on The Marches. The Ring and Marches
+  ladders below were measured with that bug in. The planner now sends at most six from
+  any one land into a pass, surges into one with six, and fears six a road into its own;
+  a test holds the repair count at zero.
+- **Nor could you.** "Attack with all" and the strength slider ignored the cap too, so the
+  order was simply refused at the seal. Orders into a pass now stop at six, and the card
+  says why.
+- **The pass leaked.** Only the order was capped: a surge into a pass took every survivor,
+  and the reserves could pour in without limit. Both now hold to six a road (games begun
+  under v1.7 rules). And the text promised that two columns make "the defenders split";
+  they never did, because one commander's columns into one land always merge into a single
+  assault. So the rule now reads as it plays: six from each land you attack from.
+- **Ports only worked for the AI's validator.** The regroup phase in the client still asked
+  for a land border, so the sea march the rules page describes was impossible to order.
+  It can be ordered now (the land card marks the crossing "by sea"), and the AI's own
+  regroup ships men between its harbours too.
+- **Deployment obeyed supply.** A land dealt away from your main cluster had room 0, so it
+  couldn't take a single starting soldier. The lands were dealt, not conquered, and
+  nothing is cut off before the war begins; the opening ignores supply now.
+- **The AI couldn't see supply.** Every new map uses it and the planner didn't know it
+  existed. It now values a conquest by what it does to the roads home: rejoining stranded
+  lands, not stranding the conquest itself, cutting a rival's chain. Weighted by how well
+  a commander reads the board: the recruit never sees it, the general sees it all.
+- **The fortress was quoted open-ground odds in the planner's own sizing.** `_needed` took
+  the fort's bonus as a parameter and was never passed it. It is now, and the battle bar's
+  "both fire a full line of five" no longer says so inside a fortress.
+- **The setup screen lost its start button.** Six maps in an unscrolled list made the page
+  taller than the window, so "Begin the Campaign" sat at y 1070 of a 900-high screen, out
+  of reach in fullscreen. The map list scrolls now (the last map you played is scrolled
+  into view), the page fits with five commanders seated, and the v17 probe fails if the
+  button ever leaves the screen again.
+- **The emblems sat on the names.** On the Isles nearly every harbour's name lost its first
+  letters under the anchor. They sit off the token's left flank now. The Marches read
+  "2–2 players", and two map blurbs ran out of their cards.
+
+**And the balance.** Amendment 18 changed every map, not only the new ones: the v1.6 that
+was played and liked was quietly giving the defender every even volley. With honest
+dice the whole table was a touch too bold, because v1.6 had made every commander 7 points
+bolder to make up for dice that lied. Only the hard commanders keep that nerve now:
+
+| Known World, general v two veterans, 60 wars | v1.6 as played | v1.7, all bold | v1.7, as shipped |
+|---|---|---|---|
+| won outright before the last round | 11 | 17 | 10 |
+| the hard commander's wins | 47% | 52% | 47% |
+| walk-ins a war | 5.4 | 5.7 | 5.1 |
+
 ### Amendment 18: the even volley is fired again — everywhere
 
 v1.6's headline rule says an even volley costs nobody and is fired again. The combat
@@ -59,13 +118,14 @@ dealt.
 ### Land with a character of its own
 
 Three traits a map may give a land. They are off unless the map asks for them, so the
-Isthmus, the Known World and the Wide World play exactly as they did, and old saves are
-untouched.
+Isthmus, the Known World and the Wide World have none. (Amendment 18 does touch them: it is
+the combat rule itself.)
 
 - **Fortress** — its defenders fire a line of six instead of five, and one more man than
   usual may dig in there.
-- **Pass** — no more than six may storm it in one column, however many you have. The
-  answer to a pass is to come at it from two sides and make the defenders split.
+- **Pass** — no more than six may storm it from any one land, however many you have
+  there: surges and reserves included. The answer to a pass is to come at it from two
+  lands at once.
 - **Port** — two of your own ports are joined by sea: troops may march between them in the
   regroup phase, and supply runs along them. You cannot attack down a sea link.
 
@@ -112,6 +172,22 @@ would cross land. It refused twice while the Isles were being laid out, both tim
 correctly.
 
 ### Bands after v1.7 (arena, same rules on every map)
+
+After the review (seed 3000; these replace the first pass's table, which was measured
+with the AI hobbled at every pass and under the old `rules` default):
+
+| map / seats | rounds (median) | ended in conquest | walk-ins per game | AI ladder |
+|---|---|---|---|---|
+| The Marches, 2 | 7 | 36/40 | 4.6 | general 22 / veteran 18 of 40 |
+| The Ring, 5 | 10 | 8/40 | 10.3 | general 12, hask 10, veteran 8, quill 6, oren 4 of 40 |
+| The Thousand Isles, 4 | 10 | 5/30, 7/30 | 8.7 | general 17 of 60 over two seed sets (a fair share is 15) |
+| Known World, 3 | 8 | 17/60 | 5.1 | general 28 of 60 |
+| Wide World, 4 | 10 | 9/40 | 9.6 | general 18 of 40 |
+
+The Isles are the luckiest map: supply plus a random deal scatters everyone's lands, so the
+early game is decided more by the deal than by generalship.
+
+The first pass's table, for the record:
 
 | map / seats | rounds (median) | ended in conquest | walk-ins per game | AI ladder |
 |---|---|---|---|---|

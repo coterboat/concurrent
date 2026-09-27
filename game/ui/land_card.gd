@@ -168,7 +168,7 @@ func _rebuild_maneuver(ts: Types.TerritoryState, td: Types.TerritoryDef, mine: b
 	var can: int = s.can_move_from(land)
 	_box.add_child(Style.label("%d can still march out — one land, no further" % can, 14, Style.MUTED, "italic"))
 	var any := false
-	for n in MapLib.neighbors(s.map, land):
+	for n in MapLib.supply_links(s.world, s.map, land): ## v1.7: a port's march may cross the sea
 		if s.world.get_territory(n).owner != s.planner:
 			continue
 		any = true
@@ -179,7 +179,8 @@ func _rebuild_maneuver(ts: Types.TerritoryState, td: Types.TerritoryDef, mine: b
 			var es: Types.TerritoryState = s.world.get_territory(e)
 			if es.owner != s.planner and es.owner != Types.UNOCCUPIED:
 				danger = maxi(danger, es.armies)
-		var l := Style.label("➜ %s  %d%s" % [s.hex_name(n), w.get_territory(n).held(), ("  · faces %d" % danger) if danger > 0 else "  · quiet"], 15, Style.CREAM)
+		var by_sea: String = " by sea" if not s.map.is_adjacent(land, n) else ""
+		var l := Style.label("➜ %s%s  %d%s" % [s.hex_name(n), by_sea, w.get_territory(n).held(), ("  · faces %d" % danger) if danger > 0 else "  · quiet"], 15, Style.CREAM)
 		l.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 		l.clip_text = true
 		row.add_child(l)
@@ -225,13 +226,13 @@ func _strike_row(from_id: String, to_id: String, from_view: bool) -> Control:
 		b0.tooltip_text = "Edit this attack"
 		row.add_child(b0)
 		return row
-	var mx: int = s.max_send(from_id)
+	var mx: int = s.max_attack(from_id, to_id)
 	var b := Style.chip("Attack", func(): gs.order_attack(from_id, to_id), Style.CREAM, 15)
 	if mx >= 1:
 		var o: Dictionary = s.odds(mx, int(d["now"]), to_id)
 		b.text = "Attack · %s" % o["word"]
 		b.add_theme_color_override("font_color", ODDS.get(o["word"], Style.CREAM))
-		b.tooltip_text = "All %d who can march, against %d now" % [mx, d["now"]]
+		b.tooltip_text = ("All %d who can march, against %d now" % [mx, d["now"]]) if mx >= s.max_send(from_id) else ("%d: a pass takes no more from one land. Against %d now" % [mx, d["now"]])
 	else:
 		b.disabled = true
 		b.tooltip_text = s._cannot_send(from_id)
@@ -265,7 +266,7 @@ func _trait_rows(s, ts: Types.TerritoryState, td: Types.TerritoryDef) -> Array:
 		out.append(_trait("fort", "Fortress", "Its defenders fire a line of %d, not five, and one more man may dig in here."
 			% [Combat.LINE + s.map.fort_bonus], Style.GOLD))
 	if td.has_trait("pass"):
-		out.append(_trait("pass", "Pass", "No more than %d may storm it in one column, however many you have."
+		out.append(_trait("pass", "Pass", "No more than %d may storm it from any one land (surges and reserves too), however many you have."
 			% [s.map.pass_cap], Style.GOLD))
 	if td.has_trait("port"):
 		out.append(_trait("port", "Port", "Joined by sea to your other ports: troops may march between them, and supply runs along them.", Style.GOLD))

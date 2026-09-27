@@ -121,8 +121,9 @@ func _apply_length() -> void:
 	map.dig_cap = int(config.get("dig_cap", 3))
 	config["dig_cap"] = map.dig_cap
 	## v1.5 rules: surges clash head-on and carry a count; v1.6: the firing line, fair ties,
-	## and campaign cards with a land on each
-	map.rules = int(config.get("rules", 16))
+	## and campaign cards with a land on each; v1.7: an even volley is fired again in every
+	## battle actually fought, and a pass holds to its column of six, surges and reserves too
+	map.rules = int(config.get("rules", 17))
 	config["rules"] = map.rules
 	map.first_digs_in = bool(config.get("first_digs_in", false))
 	config["first_digs_in"] = map.first_digs_in
@@ -520,7 +521,7 @@ func add_move(from_id: String, to_id: String, n: int = -1) -> String:
 	var b: Types.TerritoryState = world.get_territory(to_id)
 	if a == null or b == null or a.owner != planner or b.owner != planner:
 		return "March between two of your own lands."
-	if not map.is_adjacent(from_id, to_id):
+	if not marches_to(from_id, to_id):
 		return "One land at a time: %s does not border %s." % [hex_name(to_id), hex_name(from_id)]
 	var idx: int = move_index(from_id, to_id)
 	var mx: int = can_move_from(from_id, idx)
@@ -978,6 +979,18 @@ func max_send(from_id: String, skip_packet: int = -1) -> int:
 	return maxi(0, n - (0 if ts.garrison >= 1 else 1))
 
 
+func max_attack(from_id: String, to_id: String, skip_packet: int = -1) -> int:
+	## max_send, and v1.7: no more than a pass's column may storm it from any one land
+	var mx: int = max_send(from_id, skip_packet)
+	var col: int = MapLib.column_cap(map, to_id)
+	return mini(mx, col) if col > 0 else mx
+
+
+func marches_to(from_id: String, to_id: String) -> bool:
+	## a march or a move: a neighbouring land, or v1.7 another of your ports across the sea
+	return Array(MapLib.supply_links(world, map, from_id)).has(to_id)
+
+
 func packet_index(from_id: String, to_id: String) -> int:
 	var i := 0
 	for raw in sheet().packets:
@@ -998,7 +1011,7 @@ func set_attack(from_id: String, to_id: String, strength: int = -1) -> String:
 	if not map.is_adjacent(from_id, to_id):
 		return "%s does not border %s." % [hex_name(to_id), hex_name(from_id)]
 	var idx: int = packet_index(from_id, to_id)
-	var mx: int = max_send(from_id, idx)
+	var mx: int = max_attack(from_id, to_id, idx)
 	if mx < 1:
 		return _cannot_send(from_id)
 	var n: int = mx if strength < 0 else clampi(strength, 1, mx)
@@ -1027,7 +1040,7 @@ func set_packet_strength(i: int, n: int) -> void:
 	if i < 0 or i >= sheet().packets.size():
 		return
 	var p: Types.Packet = sheet().packets[i]
-	p.strength = clampi(n, 1, maxi(1, max_send(p.from_id, i)))
+	p.strength = clampi(n, 1, maxi(1, max_attack(p.from_id, p.to_id, i)))
 	changed.emit()
 
 
@@ -1100,7 +1113,11 @@ func surge_most(dest: String) -> int:
 	for raw in sheet().packets:
 		if (raw as Types.Packet).to_id == dest:
 			total += (raw as Types.Packet).strength
-	return maxi(1, total - 1)
+	var most: int = maxi(1, total - 1)
+	var on: String = str(sheet().surges.get(dest, ""))
+	if on != "" and map.rules >= 17 and MapLib.column_cap(map, on) > 0:
+		most = mini(most, MapLib.column_cap(map, on)) ## v1.7: into a pass, a column of six at most
+	return most
 
 
 func set_surge_count(dest: String, n: int) -> void:
@@ -1118,7 +1135,7 @@ func clamp_packets() -> void:
 	var i := 0
 	while i < s.packets.size():
 		var p: Types.Packet = s.packets[i]
-		var mx: int = max_send(p.from_id, i)
+		var mx: int = max_attack(p.from_id, p.to_id, i)
 		if mx < 1:
 			s.packets.remove_at(i)
 			continue
@@ -1143,7 +1160,7 @@ func set_regroup(from_id: String, to_id: String, n: int = -1) -> String:
 	var b: Types.TerritoryState = world.get_territory(to_id)
 	if a == null or b == null or a.owner != planner or b.owner != planner:
 		return "Moves go from one of your lands to a neighboring land of yours."
-	if not map.is_adjacent(from_id, to_id):
+	if not marches_to(from_id, to_id):
 		return "%s does not border %s." % [hex_name(to_id), hex_name(from_id)]
 	var mx: int = max_regroup(from_id)
 	if mx < 1:

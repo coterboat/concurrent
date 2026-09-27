@@ -25,6 +25,15 @@ func run(probe) -> void:
 	await p.frames(12)
 	await snap("01_setup_marches")
 	var setup: Control = main.current
+	## the page must fit the window: six maps once pushed the start button off the screen
+	var vis: Rect2 = p.get_viewport().get_visible_rect()
+	var br: Rect2 = setup.begin_button.get_global_rect()
+	p.ok(vis.encloses(br) and br.size.y > 20.0, "Begin the Campaign is on screen (%s inside %s)" % [br, vis.size])
+	var page: Control = null
+	for c in setup.get_children():
+		if c is MarginContainer:
+			page = c
+	p.ok(page != null and page.get_combined_minimum_size().y <= vis.size.y + 0.5, "the setup page is no taller than the window (%.0f of %.0f)" % [page.get_combined_minimum_size().y if page != null else -1.0, vis.size.y])
 	p.ok(setup.MAPS.size() == 6, "six maps on the shelf (%s)" % setup.MAPS.size())
 	var human := -1
 	for i in setup.seats.size():
@@ -97,6 +106,16 @@ func run(probe) -> void:
 	await snap("05_cut_off")
 	p.ok(not MapLib.in_supply(w, s.map, "thalecliff"), "Thale Cliff really is cut off")
 	p.ok(MapLib.in_supply(w, s.map, "vaneholt"), "the main body really is in supply")
+
+	## --- a march by sea: two of your own harbours, and the arrow sails round
+	w.set_hex("kestrelport", "red", 3, 1)
+	w.set_hex("vanewick", "red", 8, 1)
+	p.ok(s.marches_to("vanewick", "kestrelport") and not s.map.is_adjacent("vanewick", "kestrelport"), "the client lets a march cross the sea between two of your ports")
+	gs.select("")
+	gs.board.orders = [{"from": "vanewick", "to": "kestrelport", "strength": 5, "owner": "red", "kind": "move"}]
+	gs.board.queue_redraw()
+	await p.frames(6)
+	await snap("06_sea_march")
 
 	## --- the rules book explains the new rules
 	var pages: Array = load("res://game/ui/howto_screen.gd").PAGES

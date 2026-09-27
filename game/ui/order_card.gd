@@ -4,6 +4,7 @@ extends PanelContainer
 const Style := preload("res://game/core/style.gd")
 const Types := preload("res://engine/types.gd")
 const Combat := preload("res://engine/combat.gd")
+const MapLib := preload("res://engine/map.gd")
 
 const ODDS := {
 	"long shot": Color(0.9, 0.42, 0.35), "toss-up": Color(0.95, 0.72, 0.35),
@@ -88,7 +89,13 @@ func _rebuild_surge() -> void:
 	nl.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
 	row.add_child(nl)
 	_box.add_child(row)
-	_box.add_child(Style.label(("Up to %d push on (fewer if the battle costs more); the rest hold %s." % [shown, s.hex_name(from_id)]) if n0 > 0 else "Everyone who survives pushes on but the one who stays to hold %s." % s.hex_name(from_id), 14, Style.PARCH))
+	var into_pass: bool = s.map.rules >= 17 and MapLib.column_cap(s.map, to_id) > 0
+	if n0 > 0:
+		_box.add_child(Style.label("Up to %d push on (fewer if the battle costs more); the rest hold %s." % [shown, s.hex_name(from_id)], 14, Style.PARCH))
+	elif into_pass:
+		_box.add_child(Style.label("%s is a pass: no more than %d push on; the rest hold %s." % [s.hex_name(to_id), MapLib.column_cap(s.map, to_id), s.hex_name(from_id)], 14, Style.PARCH))
+	else:
+		_box.add_child(Style.label("Everyone who survives pushes on but the one who stays to hold %s." % s.hex_name(from_id), 14, Style.PARCH))
 	var act := HBoxContainer.new()
 	act.add_theme_constant_override("separation", 6)
 	act.add_child(Style.chip("All who can", func(): s.set_surge_count(from_id, 0), Style.CREAM, 14))
@@ -199,7 +206,7 @@ func rebuild() -> void:
 	h.add_child(t)
 	h.add_child(Style.chip("✕", func(): gs.edit_order("", ""), Style.MUTED, 13))
 	_box.add_child(h)
-	var mx: int = maxi(1, s.max_send(from_id, idx))
+	var mx: int = maxi(1, s.max_attack(from_id, to_id, idx))
 	var row := HBoxContainer.new()
 	row.add_theme_constant_override("separation", 8)
 	row.add_child(Style.chip(" − ", func(): _set_strength(p.strength - 1), Style.CREAM, 17))
@@ -220,6 +227,11 @@ func rebuild() -> void:
 	n.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
 	row.add_child(n)
 	_box.add_child(row)
+	if s.max_attack(from_id, to_id, idx) < s.max_send(from_id, idx):
+		var pl := Style.label("A pass: no more than %d may storm it from %s. Attack from another land too to bring more." % [s.max_attack(from_id, to_id, idx), s.hex_name(from_id)], 13, Style.GOLD.darkened(0.1), "italic")
+		pl.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
+		pl.custom_minimum_size = Vector2(300, 0)
+		_box.add_child(pl)
 	var total := 0
 	for raw in s.sheet().packets:
 		if (raw as Types.Packet).to_id == to_id:

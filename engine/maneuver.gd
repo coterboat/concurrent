@@ -100,7 +100,7 @@ static func plan(world: Types.World, map: Types.MapDef, pid: String, prof: Dicti
 			continue
 		var ts: Types.TerritoryState = world.get_territory(t)
 		var friends: Array = []
-		for n in MapLib.neighbors(map, t):
+		for n in MapLib.supply_links(world, map, t): ## v1.7: our own harbours are next door by sea
 			if world.get_territory(n).owner == pid:
 				friends.append(n)
 		if friends.is_empty():
@@ -187,7 +187,7 @@ static func _pull(world: Types.World, map: Types.MapDef, pid: String, mine: Arra
 	while i < queue.size():
 		var t: String = queue[i]
 		i += 1
-		for n in MapLib.neighbors(map, t):
+		for n in MapLib.supply_links(world, map, t):
 			if world.get_territory(n).owner != pid:
 				continue
 			var v: float = float(pull[t]) * 0.8
@@ -222,7 +222,7 @@ static func _front_distance(world: Types.World, map: Types.MapDef, pid: String, 
 	while i < queue.size():
 		var t: String = queue[i]
 		i += 1
-		for n in MapLib.neighbors(map, t):
+		for n in MapLib.supply_links(world, map, t): ## the march home may go by sea
 			if world.get_territory(n).owner == pid and not dist.has(n):
 				dist[n] = int(dist[t]) + 1
 				queue.append(n)

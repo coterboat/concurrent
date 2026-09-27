@@ -97,7 +97,7 @@ static func pool_for(map: Types.MapDef, player_count: int) -> int:
 
 
 static func opening_cap(world: Types.World, map: Types.MapDef, terr_id: String) -> int:
-	return OPENING_PASSES * Income.cap_of(world, map, terr_id)
+	return OPENING_PASSES * Income.cap_of(world, map, terr_id, false)
 
 
 static func seat_color(seat_id: String) -> String:

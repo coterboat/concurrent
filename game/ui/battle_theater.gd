@@ -930,7 +930,7 @@ func _update_odds() -> void:
 	var men := func(n: int) -> String: return Style.plural(n, "man", "men")
 	var tie_note: String = "  ·  ties go to the attacker" if ties and not _melee and not Combat.fair_ties else ""
 	var fa0: int = Combat.fire(a)
-	var fd0: int = Combat.fire(d)
+	var fd0: int = Combat.fire(d, _fort_bonus()) ## v1.7: a fortress's defenders fire a longer line
 	if Combat.line > 0 and not _melee:
 		## v1.6: what the firing line means right now
 		if fa0 == fd0:
@@ -941,6 +941,8 @@ func _update_odds() -> void:
 		else:
 			var strong: String = who if fa0 > fd0 else (session.name_of(_b_pid) if _b_pid != "neutral" else "The garrison")
 			edge = "%s against %d: %d fire against %d, and %s every tied pip" % [men.call(a), d, maxi(fa0, fd0), mini(fa0, fd0), Style.says(strong, "wins")]
+			if fd0 > Combat.LINE:
+				edge += " (the fortress fires a line of %d)" % fd0
 		bar.show_odds(p, _a_pid, _b_pid, head, edge)
 		return
 	if _melee:

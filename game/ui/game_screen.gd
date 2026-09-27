@@ -522,7 +522,7 @@ func _march_targets() -> Dictionary:
 	var t := {}
 	if selected == "" or session.world.get_territory(selected).owner != session.planner or session.can_move_from(selected) < 1:
 		return t
-	for n in MapLib.neighbors(session.map, selected):
+	for n in MapLib.supply_links(session.world, session.map, selected): ## v1.7: ports cross the sea
 		if session.world.get_territory(n).owner == session.planner:
 			t[n] = true
 	return t
@@ -564,7 +564,7 @@ func _on_click(id: String, button: int) -> void:
 		return
 	if ph == Session.Phase.MANEUVER:
 		var own: bool = session.world.get_territory(id).owner == session.planner
-		if own and selected != "" and selected != id and session.world.get_territory(selected).owner == session.planner and session.map.is_adjacent(selected, id):
+		if own and selected != "" and selected != id and session.world.get_territory(selected).owner == session.planner and session.marches_to(selected, id):
 			order_march(selected, id)
 		elif own:
 			select(id if selected != id else "")

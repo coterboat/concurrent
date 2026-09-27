@@ -27,12 +27,13 @@ static func income_of(world: Types.World, map: Types.MapDef, player_id: String, 
 	return from_count + from_bloc + region_bonus_of(world, map, player_id) + cashed_set
 
 
-static func cap_of(world: Types.World, map: Types.MapDef, terr_id: String) -> int:
+static func cap_of(world: Types.World, map: Types.MapDef, terr_id: String, supply_rule: bool = true) -> int:
 	var ts: Types.TerritoryState = world.get_territory(terr_id)
 	if ts == null or ts.owner == Types.UNOCCUPIED:
 		return 0
 	## v1.7: no recruits reach a land the baggage train cannot. It still defends itself.
-	if map != null and map.supply and not MapLib.in_supply(world, map, terr_id):
+	## (Not at deployment: the lands were dealt, not conquered, and nothing is cut off yet.)
+	if supply_rule and map != null and map.supply and not MapLib.in_supply(world, map, terr_id):
 		return 0
 	return 1 + MapLib.friendly_neighbor_count(world, map, terr_id)
 

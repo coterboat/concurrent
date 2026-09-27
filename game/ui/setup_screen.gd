@@ -38,6 +38,7 @@ var _map_cards := {}
 var _seat_box: VBoxContainer
 var _add_btn: Button
 var _note: Label
+var begin_button: Button
 var _mapdefs := {}
 
 
@@ -55,7 +56,7 @@ func _ready() -> void:
 	var root := MarginContainer.new()
 	root.set_anchors_and_offsets_preset(PRESET_FULL_RECT)
 	for side in ["left", "right", "top", "bottom"]:
-		root.add_theme_constant_override("margin_" + side, 36)
+		root.add_theme_constant_override("margin_" + side, 36 if side == "left" or side == "right" else 26)
 	add_child(root)
 	var v := VBoxContainer.new()
 	v.add_theme_constant_override("separation", 18)
@@ -84,9 +85,23 @@ func _ready() -> void:
 	lv.add_theme_constant_override("separation", 12)
 	left.add_child(lv)
 	lv.add_child(Style.label("Choose the map", 26, Style.GOLD, "display"))
+	## v1.7: six maps are taller than the screen. Unscrolled, the list stretched the whole
+	## page past the window and pushed "Begin the Campaign" off the bottom, out of reach.
+	var scroll := ScrollContainer.new()
+	scroll.size_flags_vertical = Control.SIZE_EXPAND_FILL
+	scroll.horizontal_scroll_mode = ScrollContainer.SCROLL_MODE_DISABLED
+	lv.add_child(scroll)
+	var list := VBoxContainer.new()
+	list.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	list.add_theme_constant_override("separation", 12)
+	scroll.add_child(list)
 	for p in MAPS:
 		var card := _map_card(p)
-		lv.add_child(card)
+		list.add_child(card)
+	## the map you played last may be at the bottom of the list: bring it into view
+	get_tree().process_frame.connect(func():
+		if _map_cards.has(map_path):
+			scroll.ensure_control_visible(_map_cards[map_path]), CONNECT_ONE_SHOT)
 
 	## ---- seats + options
 	var right := PanelContainer.new()
@@ -94,7 +109,7 @@ func _ready() -> void:
 	right.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 	cols.add_child(right)
 	var rv := VBoxContainer.new()
-	rv.add_theme_constant_override("separation", 12)
+	rv.add_theme_constant_override("separation", 8) ## five commanders and every option must fit a 900-high window
 	right.add_child(rv)
 	rv.add_child(Style.label("Commanders", 26, Style.GOLD, "display"))
 	_seat_box = VBoxContainer.new()
@@ -120,6 +135,7 @@ func _ready() -> void:
 	grow.size_flags_vertical = Control.SIZE_EXPAND_FILL
 	rv.add_child(grow)
 	var start := Style.button("Begin the Campaign", func(): _start(), 0, 26)
+	begin_button = start
 	start.custom_minimum_size = Vector2(0, 70)
 	start.icon = Style.icon("seal")
 	start.expand_icon = true
@@ -194,7 +210,8 @@ func _map_card(path: String) -> Control:
 	txt.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 	h.add_child(txt)
 	txt.add_child(Style.label(m.display_name, 26, Style.CREAM, "display"))
-	var facts := Style.label("%d lands · %d regions · %d–%d players · %d rounds%s" % [m.territories.size(), m.region_bonus.size(), m.min_players, m.max_players, Setup.rounds_for(m), " · cards" if m.cards else ""], 17, Style.GOLD, "bold")
+	var who: String = ("%d players" % m.min_players) if m.min_players == m.max_players else ("%d–%d players" % [m.min_players, m.max_players])
+	var facts := Style.label("%d lands · %d regions · %s · %d rounds%s" % [m.territories.size(), m.region_bonus.size(), who, Setup.rounds_for(m), " · cards" if m.cards else ""], 17, Style.GOLD, "bold")
 	txt.add_child(facts)
 	var blurb := Style.label(m.blurb, 17, Style.PARCH)
 	blurb.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART

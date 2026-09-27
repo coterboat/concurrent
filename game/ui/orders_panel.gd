@@ -303,7 +303,7 @@ func _attack_row(from_id: String, to_id: String, from_enemy_view: bool) -> Contr
 		var p: Types.Packet = session.sheet().packets[idx]
 		row.add_child(Style.label("attacking with %d" % p.strength, 15, Style.GOLD, "bold"))
 	else:
-		var mx: int = session.max_send(from_id)
+		var mx: int = session.max_attack(from_id, to_id)
 		var b := Style.chip("Attack", func(): gs.order_attack(from_id, to_id), Style.CRIMSON.lightened(0.3), 15)
 		b.disabled = mx < 1
 		if mx >= 1:

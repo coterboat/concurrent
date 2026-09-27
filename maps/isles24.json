@@ -9,7 +9,7 @@
   },
   "minPlayers": 2,
   "maxPlayers": 5,
-  "blurb": "Five island groups and nothing but sea between them. Every crossing is a harbour, and an army with no harbour behind it is an army that starves.",
+  "blurb": "Five island groups and nothing but sea. Every crossing is a harbour; an army with no harbour behind it starves.",
   "rounds": 10,
   "startingPool": 18,
   "dealEach": 3,

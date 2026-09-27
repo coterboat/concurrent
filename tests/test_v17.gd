@@ -16,6 +16,9 @@ const Hash := preload("res://engine/hash.gd")
 const Autoplay := preload("res://engine/autoplay.gd")
 const Setup := preload("res://engine/setup.gd")
 
+const Ai := preload("res://engine/ai.gd")
+const Session := preload("res://game/core/session.gd")
+
 const MARCHES := "res://maps/marches18.json"
 const ISLES := "res://maps/isles24.json"
 
@@ -27,6 +30,10 @@ func run(report: Callable, tree: SceneTree) -> void:
 	_port(report)
 	_supply(report)
 	_war(report)
+	_old_saves(report)
+	_pass_columns(report)
+	_planner_keeps_the_rules(report)
+	_session(report, tree)
 	Combat.use_rules(null)
 
 
@@ -320,3 +327,138 @@ func _war(report: Callable) -> void:
 		report.call(bool(r1["ok"]), "a whole four-handed war on %s is legal: %s" % [mm.id, " | ".join(r1["violations"])])
 		var r2: Dictionary = Autoplay.play(_rules(Types.MapDef.from_file(path)), four, 616, 0, false)
 		report.call(str(r1.get("hash", "")) == str(r2.get("hash", "")), "%s replays to the same war" % mm.id)
+
+
+# ---------------------------------------------------------------- the review's fixes
+
+func _old_saves(report: Callable) -> void:
+	## Amendment 18 belongs to games begun under v1.7 rules. A v1.6 save must replay exactly
+	## as it was fought, or its sheets stop matching the world they were written for.
+	var fought := {}
+	var blanks := {}
+	for rules in [16, 17]:
+		var m: Types.MapDef = _marches()
+		m.rules = rules
+		Combat.use_rules(m)
+		var won := 0
+		var even := 0
+		for s in 300:
+			var w1: Types.World = H.paint(m, {"thornreach": ["red", 9], "sunreach": ["blue", 10], "olivespire": ["blue", 2]})
+			var r1: Dictionary = H.resolve(w1, m, [H.sheet("blue", [H.pkt("sunreach", "thornreach", 9)])], 5000 + s)
+			if H.owner_of(r1["world"], "thornreach") == "blue":
+				won += 1
+			for e in H.all_of(r1["events"], Types.EVENT_INVASION):
+				for roll in e.get("rolls", []):
+					if str(roll.get("w", "")) == "":
+						even += 1
+		fought[rules] = float(won) / 300.0
+		blanks[rules] = even
+	report.call(int(blanks[16]) == 0 and int(blanks[17]) > 0 and float(fought[16]) < float(fought[17]) - 0.08,
+		"a v1.6 game replays as it was fought (9 v 9: %.0f%%, every volley has a winner); v1.7 games refire the even ones (%.0f%%)" % [float(fought[16]) * 100.0, float(fought[17]) * 100.0])
+	Combat.use_rules(null)
+
+
+func _pass_columns(report: Callable) -> void:
+	var m: Types.MapDef = _marches()
+	Combat.use_rules(m)
+	## a surge into a pass is a column of six, however many took the land before it
+	var over := 0
+	var surged := 0
+	for s in 40:
+		var w: Types.World = H.paint(m, {"stagfield": ["red", 20], "coldwater": ["red", 2], "lowmeadow": ["blue", 1], "highford": ["blue", 2], "briargate": ["blue", 1]})
+		w.round = 2
+		w.get_territory("stagfield").garrison = 1
+		var sh := H.sheet("red", [H.pkt("stagfield", "lowmeadow", 19, "highford")])
+		sh.surges["lowmeadow"] = "highford"
+		var r: Dictionary = H.resolve(w, m, [sh, H.sheet("blue")], 800 + s)
+		for e in H.all_of(r["events"], Types.EVENT_SURGE):
+			surged += 1
+			if int(e["strength"]) > 6:
+				over += 1
+	report.call(surged > 30 and over == 0, "a surge into a pass pushes on with six at most (%d surges, %d over)" % [surged, over])
+	## the reserves only top the column back up to six from each road in
+	var widest := 0
+	var called := 0
+	for s in 60:
+		var w2: Types.World = H.paint(m, {"elmspire": ["red", 16], "kingsholt": ["red", 2], "ironford": ["blue", 9], "blackford": ["blue", 2]})
+		w2.round = 2
+		w2.get_territory("elmspire").garrison = 1
+		var p := H.pkt("elmspire", "ironford", 6)
+		p.stance = Combat.STANCE_BOLD
+		var r2: Dictionary = H.resolve(w2, m, [H.sheet("red", [p]), H.sheet("blue")], 900 + s)
+		for e in H.all_of(r2["events"], Types.EVENT_INVASION):
+			if int(e.get("reservesAdded", 0)) > 0:
+				called += 1
+			for roll in e.get("rolls", []):
+				widest = maxi(widest, int(roll.get("sa", 0)))
+	report.call(called > 10 and widest <= 6, "reserves storming a pass top the column up to six, never past it (%d calls, widest %d)" % [called, widest])
+	## older games on the same map keep their surges whole
+	var m16: Types.MapDef = _marches()
+	m16.rules = 16
+	var w3: Types.World = H.paint(m16, {"stagfield": ["red", 20], "coldwater": ["red", 2], "lowmeadow": ["blue", 1], "highford": ["blue", 2], "briargate": ["blue", 1]})
+	w3.round = 2
+	w3.get_territory("stagfield").garrison = 1
+	var sh3 := H.sheet("red", [H.pkt("stagfield", "lowmeadow", 19, "highford")])
+	sh3.surges["lowmeadow"] = "highford"
+	var e3: Dictionary = H.first(H.resolve(w3, m16, [sh3, H.sheet("blue")], 801)["events"], Types.EVENT_SURGE)
+	report.call(int(e3.get("strength", 0)) > 6, "a game begun before the cap surges as it always did (%d)" % int(e3.get("strength", 0)))
+	Combat.use_rules(null)
+
+
+func _planner_keeps_the_rules(report: Callable) -> void:
+	## The planner must draw up sheets that are legal as drawn. A sheet that breaks a rule is
+	## cut back by _legalize, which strikes every surge and drops attacks from the end until
+	## it passes — so one column too wide for a pass used to cost a commander half its turn.
+	var four: Array = [{"id": "red", "name": "general", "ai": "general"}, {"id": "blue", "name": "veteran", "ai": "veteran"},
+		{"id": "green", "name": "hask", "ai": "hask"}, {"id": "gold", "name": "quill", "ai": "quill"}]
+	var two: Array = [{"id": "red", "name": "general", "ai": "general"}, {"id": "blue", "name": "hask", "ai": "hask"}]
+	var total := 0
+	var log: Array = []
+	for path in [MARCHES, "res://maps/ring26.json"]:
+		for sd in [11, 12]:
+			Ai.repairs = 0
+			Ai.repair_log = []
+			var r: Dictionary = Autoplay.play(_rules(Types.MapDef.from_file(path)), two if path == MARCHES else four, sd)
+			total += Ai.repairs
+			log.append_array(Ai.repair_log.slice(0, 2))
+	report.call(total == 0, "the commanders never order a column too wide for a pass (sheets cut back: %d) %s" % [total, " | ".join(log)])
+
+
+func _session(report: Callable, tree: SceneTree) -> void:
+	var s: Node = Session.new()
+	s.instant = true
+	tree.root.add_child(s)
+	s.new_game({"map": MARCHES, "seed": 3, "length": "short", "open_sheets": true, "seats": [
+		{"id": "red", "name": "Dad", "kind": "human", "ai": ""},
+		{"id": "blue", "name": "Varek", "kind": "ai", "ai": "varek"}]})
+	report.call(s.map.rules >= 17, "new games play by v1.7 rules (%d)" % s.map.rules)
+	## orders: "attack with all" into a pass is six from one land
+	s.world = H.paint(s.map, {"elmspire": ["red", 14], "kingsholt": ["red", 2], "ironford": ["blue", 3], "blackford": ["blue", 2]})
+	s.world.round = 2
+	s.world.get_territory("elmspire").garrison = 1
+	s.phase = Session.Phase.PLANNING
+	s.planner = "red"
+	s.plan_step = "orders"
+	s.drafts["red"] = s._empty("red")
+	var err: String = s.set_attack("elmspire", "ironford")
+	var idx: int = s.packet_index("elmspire", "ironford")
+	var n: int = (s.sheet().packets[idx] as Types.Packet).strength if idx >= 0 else -1
+	report.call(err == "" and n == 6 and s.max_attack("elmspire", "ironford", idx) == 6 and s.max_send("elmspire", idx) == 14,
+		"attacking a pass with everything sends the six it allows (%d)" % n)
+	s.set_packet_strength(idx, 12)
+	report.call((s.sheet().packets[idx] as Types.Packet).strength == 6, "and no more can be dialled in")
+	s.queue_free()
+	## ports: a march across the sea in the regroup phase
+	var p: Node = Session.new()
+	p.instant = true
+	tree.root.add_child(p)
+	p.new_game({"map": ISLES, "seed": 3, "length": "short", "open_sheets": true, "seats": [
+		{"id": "red", "name": "Dad", "kind": "human", "ai": ""},
+		{"id": "blue", "name": "Varek", "kind": "ai", "ai": "varek"}]})
+	p.world = H.paint(p.map, {"vanewick": ["red", 6], "kestrelport": ["red", 3], "vanemoor": ["red", 2], "reachrock": ["blue", 2]})
+	p.world.round = 2
+	p.world.get_territory("vanewick").garrison = 1
+	p.planner = "red"
+	report.call(p.marches_to("vanewick", "kestrelport") and not p.map.is_adjacent("vanewick", "kestrelport"),
+		"the regroup phase lets you march between your own ports")
+	p.queue_free()
