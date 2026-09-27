@@ -15,6 +15,11 @@ const Telemetry := preload("res://engine/telemetry.gd")
 const Maneuver := preload("res://engine/maneuver.gd")
 const Income := preload("res://engine/income.gd")
 
+## Tuning instrument only: when on, play() returns every event of every round under
+## "events". Off by default, because a long tournament would otherwise keep every roll of
+## every battle in memory.
+static var keep_events := false
+
 
 ## seats: [{id, name, ai: "general"|"veteran"|"recruit"|commander id|"monkey"}]
 static func play(map: Types.MapDef, seats: Array, match_seed: int, max_rounds: int = 0, draft: bool = false) -> Dictionary:
@@ -35,6 +40,7 @@ static func play(map: Types.MapDef, seats: Array, match_seed: int, max_rounds: i
 	Setup.apply_opening(world, map, opening)
 	var setup: Dictionary = world.to_dict()
 	var rounds: Array = []
+	var all_events: Array = []
 	var sheets_log: Array = []
 	var hashes: Array = []
 	var maneuvers_log: Array = []
@@ -72,6 +78,8 @@ static func play(map: Types.MapDef, seats: Array, match_seed: int, max_rounds: i
 			break
 		## P2 on every map and seat count: nothing appears or vanishes outside a fight.
 		var evs: Array = result["events"]
+		if keep_events:
+			all_events.append_array(evs)
 		var expected: int = before + Bot._placed_added(evs) + Bot._entrenched_added(evs) - Bot._combat_deaths(evs)
 		var got: int = MapLib.sum_armies(result["world"])
 		if got != expected:
@@ -118,6 +126,7 @@ static func play(map: Types.MapDef, seats: Array, match_seed: int, max_rounds: i
 		"hashes": hashes,
 		"history": territory_history,
 		"brains": brains,
+		"events": all_events,
 		"planMs": float(plan_usec) / 1000.0 / float(maxi(1, plans)),
 	}
 

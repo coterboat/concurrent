@@ -704,16 +704,18 @@ func _draw_token(ci: CanvasItem, id: String) -> void:
 	## small brass emblems along the token's lower-left, clear of the shield and the count.
 	var td: Types.TerritoryDef = map.get_territory(id)
 	if td != null and td.traits.size() > 0:
-		var er: float = clampf(r * 0.46, 8.0, 12.0)
-		var ep: Vector2 = p + Vector2(-r * 1.0, r * 0.72)
+		var er: float = clampf(r * 0.58, 11.0, 16.0)
+		var ep: Vector2 = p + Vector2(-r * 1.05, r * 0.82)
 		for tr in td.traits:
 			var tex: Texture2D = Style.tex("res://assets/icons/%s.png" % tr)
 			if tex != null:
-				ci.draw_circle(ep + Vector2(1, 2), er + 1.5, Color(0, 0, 0, 0.45))
-				ci.draw_circle(ep, er + 1.5, Color(0.12, 0.09, 0.04, 0.92))
-				ci.draw_arc(ep, er + 1.5, 0, TAU, 20, Style.GOLD, 1.4, true)
-				ci.draw_texture_rect(tex, Rect2(ep - Vector2(er, er) * 0.92, Vector2(er, er) * 1.84), false, Color(1, 0.92, 0.72))
-			ep.x -= (er + 1.5) * 2.2
+				## a brass medal: dark enough to sit on any land, bright enough to read at
+				## token size, where the icon's own painting turns to mud
+				ci.draw_circle(ep + Vector2(1.5, 2.5), er + 2.0, Color(0, 0, 0, 0.5))
+				ci.draw_circle(ep, er + 2.0, Color(0.20, 0.15, 0.06, 0.97))
+				ci.draw_arc(ep, er + 2.0, 0, TAU, 24, Color(1.0, 0.84, 0.42), 2.0, true)
+				ci.draw_texture_rect(tex, Rect2(ep - Vector2(er, er) * 0.95, Vector2(er, er) * 1.9), false, Color(1.0, 0.95, 0.82))
+			ep.x -= (er + 2.0) * 2.1
 	## v1.7: a land with no road home. The rule is invisible otherwise, and an invisible
 	## rule is a rule the commander gets caught by rather than plays around.
 	if map.supply and owner != Types.UNOCCUPIED and owner != "neutral" and not MapLib.in_supply(world, map, id):

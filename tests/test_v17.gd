@@ -181,6 +181,29 @@ func _fort(report: Callable) -> void:
 					evens += 1
 	report.call(evens > 0, "even volleys are recorded and fired again (%s of them)" % evens)
 
+	## And on a map with no traits at all, at several sizes, so nothing but the rule is in
+	## play. This is the check the arena's "even fights" band was mistaken for: which fights
+	## a tournament produces is chosen by the commanders, so it never measured the rule.
+	var plain: Types.MapDef = Types.MapDef.from_file("res://maps/known24.json")
+	plain.battle = Combat.MODE_VOLLEYS
+	plain.scramble = true
+	plain.maneuvers = true
+	plain.dig_cap = 3
+	plain.rules = 17
+	plain.fire_line = true
+	plain.wild_cards = false
+	Combat.use_rules(plain)
+	for n in [2, 5, 9]:
+		var carried := 0
+		for t in 300:
+			var pw: Types.World = H.paint(plain, {"keep": ["red", n], "pass": ["blue", n + 1], "peak": ["blue", 2]})
+			var pr: Dictionary = H.resolve(pw, plain, [H.sheet("blue", [H.pkt("pass", "keep", n)])], 20000 + t)
+			if H.owner_of(pr["world"], "keep") == "blue":
+				carried += 1
+		var rate: float = float(carried) / 300.0
+		report.call(abs(rate - 0.5) < 0.07, "%s against %s on open ground is even: attacker took %.0f%%" % [n, n, rate * 100.0])
+	Combat.use_rules(m)
+
 
 # ---------------------------------------------------------------- passes
 

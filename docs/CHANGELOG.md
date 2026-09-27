@@ -37,11 +37,24 @@ the last decimal on all sixteen quoted matchups. The queue did not.
 matchups and fails if the result drifts more than six points from the quoted odds, so the
 sheet and the battlefield can never disagree again.
 
-**It also explains a band that had been wrong in this document since v1.0.** The arena
-reported "even fights, attacker took 41–55%" where the rule says 50. That was read as
-noise. It was the bug. The measure was wrong too: an even fight that had reserves thrown
-into it, or that the attacker broke off, is no reading on the combat rule at all. The
-arena now reports both — every even fight, and the ones fought as they started.
+**And a band in this document has been meaningless since v1.0.** The arena reports "even
+fights, attacker took X%", and that number has wandered between 41% and 79% across
+versions while being read as a check on the combat rule. It never was one. Which even
+fights a tournament produces is chosen by the commanders, not the dice — the AI sizes an
+attack against the defence it *predicts*, so the fights that happen to come out equal are
+a selected handful (53 of them in a forty-game tournament), not a sample of the rule.
+
+The rule is now checked where a rule can actually be checked: the same matchup fought
+through the real queue, 800 times, at eight sizes, on a map with no traits on it.
+
+| through the queue | 1v1 | 2v2 | 3v3 | 4v4 | 5v5 | 6v6 | 8v8 | 12v12 |
+|---|---|---|---|---|---|---|---|---|
+| attacker takes it | 47.9% | 52.4% | 53.0% | 50.1% | 51.0% | 51.8% | 51.1% | 49.9% |
+
+The arena still prints the band, now labelled as the selected sample it is, and also
+reports the subset fought as they started — reserves thrown in mid-battle make the
+attacker bigger than the record says, and a fall-back is scored as a loss the dice never
+dealt.
 
 ### Land with a character of its own
 
@@ -97,6 +110,26 @@ connected, no land without a way in, regions the right size, and the symmetry th
 claims — and `mapgen` then refuses to draw a border the graph denies or a sea lane that
 would cross land. It refused twice while the Isles were being laid out, both times
 correctly.
+
+### Bands after v1.7 (arena, same rules on every map)
+
+| map / seats | rounds (median) | ended in conquest | walk-ins per game | AI ladder |
+|---|---|---|---|---|
+| The Marches, 2 | 6 | 35/40 | 3.4 | general 23 / veteran 17 of 40; general 30 / recruit 10 |
+| The Ring, 5 | 10 | 5/40 | 9.0 | veteran 12, hask 10, general 10, quill 7, oren 1 of 40 |
+| The Thousand Isles, 4 | 10 | 8/30 | 9.1 | general 12, veteran 7, quill 6, hask 5 of 30 |
+| Known World, 3 | 8 | 17/40 | 5.9 | — |
+| Wide World, 4 | 10 | 12/30 | 10.0 | — |
+
+The Ring is the one to watch and the best of the three: almost every war goes the full ten
+rounds and is decided on score rather than conquest, with a walk-in somewhere on the board
+nearly every round, and the easy commander is properly buried.
+
+**The Marches is honest about what it is.** It fixed what it was built to fix — 3.4
+walk-ins a game against the Narrow Sea's 0.9 — and its ladder is right. But 35 wars in 40
+still end in outright conquest, usually by round six of ten. Two commanders on one map
+with a frontier between them tend to finish each other off; that is arguably what a duel
+is for, and it is left as it is rather than tuned into something limper.
 
 **The Narrow Sea did not survive its own simulations.** A first draft of the duel map put
 two realms either side of a sea with three crossings. It read beautifully and played badly:

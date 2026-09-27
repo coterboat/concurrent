@@ -84,7 +84,12 @@ func _initialize() -> void:
 	print("  wins        %s" % wins)
 	print("  rounds      mean %.1f  median %s  domination %s/%s (before the last round %s)" % [float(rounds_total) / n, lengths[n / 2], early, n, before_last])
 	print("  walk-ins    %.2f per game" % (float(walks) / n))
-	print("  even fights %s, attacker took %.0f%%  ·  fought as they started: %s, attacker took %.0f%% (the rule says 50)"
+	## Not a reading on the combat rule. These are the even fights the commanders happened to
+	## end up in, and which fights those are is chosen by the AI, not by the dice: the band
+	## wanders far from 50% on a small sample and always has. The rule itself is checked
+	## under controlled conditions in tests/test_v17.gd, which fights the same matchup
+	## through this very queue 600 times and holds it to the quoted odds.
+	print("  even fights %s, attacker took %.0f%% (a selected sample, not the rule: see test_v17)  ·  fought as they started: %s at %.0f%%"
 		% [even, 100.0 * even_cap / maxf(1.0, even), evenc, 100.0 * evenc_cap / maxf(1.0, evenc)])
 	print("  assaults    %.1f per game: reserves called in %.0f%%, fell back in %.0f%%" % [float(inv) / n, 100.0 * res / maxf(1.0, inv), 100.0 * fb / maxf(1.0, inv)])
 	print("  melees      %.1f per game, scrambles %.1f" % [float(mel) / n, float(scr) / n])

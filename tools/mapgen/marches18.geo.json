@@ -215,5 +215,27 @@
    ],
    "r": 245
   }
+ },
+ "regionLabels": {
+  "northcrown": {
+   "x": 1478,
+   "y": 300,
+   "room": 230
+  },
+  "northmarch": {
+   "x": 660,
+   "y": 800,
+   "room": 150
+  },
+  "southmarch": {
+   "x": 1700,
+   "y": 1160,
+   "room": 150
+  },
+  "southcrown": {
+   "x": 900,
+   "y": 1570,
+   "room": 220
+  }
  }
 }

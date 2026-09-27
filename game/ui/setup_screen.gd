@@ -285,8 +285,8 @@ func _seat_row(i: int) -> Control:
 	row.add_child(pic)
 	var name_edit := LineEdit.new()
 	name_edit.text = str(s["name"])
-	name_edit.custom_minimum_size = Vector2(232, 44)
-	name_edit.max_length = 18
+	name_edit.custom_minimum_size = Vector2(268, 44) ## 'Grand Marshal Varek' must fit without losing its k
+	name_edit.max_length = 24 ## 'Grand Marshal Varek' is nineteen; eighteen lost its k
 	name_edit.editable = s["kind"] == "human"
 	name_edit.text_changed.connect(func(t): s["name"] = t)
 	row.add_child(name_edit)

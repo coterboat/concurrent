@@ -244,23 +244,23 @@
  "regions": {
   "northcrown": {
    "x": 1478,
-   "y": 332,
-   "room": 238
+   "y": 300,
+   "room": 230
   },
   "northmarch": {
-   "x": 566,
-   "y": 782,
-   "room": 176
+   "x": 660,
+   "y": 800,
+   "room": 150
   },
   "southcrown": {
-   "x": 1772,
-   "y": 1394,
-   "room": 241
+   "x": 900,
+   "y": 1570,
+   "room": 220
   },
   "southmarch": {
-   "x": 1802,
-   "y": 1190,
-   "room": 174
+   "x": 1700,
+   "y": 1160,
+   "room": 150
   }
  },
  "landAdjacency": [

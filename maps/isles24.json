@@ -1,317 +1,317 @@
 {
- "name": "The Thousand Isles",
- "cards": true,
- "pools": {
-  "2": 26,
-  "3": 22,
-  "4": 18,
-  "5": 16
- },
- "minPlayers": 2,
- "maxPlayers": 5,
- "blurb": "Five island groups and nothing but sea between them. Every crossing is a harbour, and an army with no harbour behind it is an army that starves.",
- "rounds": 10,
- "startingPool": 18,
- "dealEach": 3,
- "pinNeutral": "thecompass",
- "neutralArmies": 4,
- "neutralLeftover": true,
- "supply": true,
- "fortBonus": 1,
- "passCap": 6,
- "regionNames": {
-  "vane": "Great Vane",
-  "kestrel": "The Kestrel Isles",
-  "reach": "The Reach",
-  "morrow": "Morrow",
-  "thale": "Thale"
- },
- "regionBonus": {
-  "vane": 4,
-  "kestrel": 3,
-  "reach": 5,
-  "morrow": 2,
-  "thale": 3
- },
- "regionTerrain": {
-  "vane": "moor",
-  "kestrel": "mountain",
-  "reach": "coast",
-  "morrow": "grass",
-  "thale": "forest"
- },
- "regionColors": {
-  "vane": "#7d93b8",
-  "kestrel": "#9a8fb0",
-  "reach": "#59a3a8",
-  "morrow": "#8fae70",
-  "thale": "#c09a55"
- },
- "id": "isles24",
- "territories": {
-  "brokenspar": {
-   "name": "Broken Spar",
-   "region": "reach",
-   "adjacent": [
-    "gannetrock",
-    "sealstone",
-    "thaleharbour",
-    "thalewood"
-   ],
-   "traits": [
-    "port"
-   ]
+  "name": "The Thousand Isles",
+  "cards": true,
+  "pools": {
+    "2": 26,
+    "3": 22,
+    "4": 18,
+    "5": 16
   },
-  "gannetrock": {
-   "name": "Gannet Rock",
-   "region": "reach",
-   "adjacent": [
-    "brokenspar",
-    "kestreldown",
-    "reachrock",
-    "thecompass"
-   ],
-   "traits": [
-    "port"
-   ]
+  "minPlayers": 2,
+  "maxPlayers": 5,
+  "blurb": "Five island groups and nothing but sea between them. Every crossing is a harbour, and an army with no harbour behind it is an army that starves.",
+  "rounds": 10,
+  "startingPool": 18,
+  "dealEach": 3,
+  "pinNeutral": "thecompass",
+  "neutralArmies": 4,
+  "neutralLeftover": true,
+  "supply": true,
+  "fortBonus": 1,
+  "passCap": 6,
+  "regionNames": {
+    "vane": "Great Vane",
+    "kestrel": "The Kestrel Isles",
+    "reach": "The Reach",
+    "morrow": "Morrow",
+    "thale": "Thale"
   },
-  "kestrelcrag": {
-   "name": "Kestrel Crag",
-   "region": "kestrel",
-   "adjacent": [
-    "kestrelmere",
-    "kestrelport"
-   ]
+  "regionBonus": {
+    "vane": 4,
+    "kestrel": 3,
+    "reach": 5,
+    "morrow": 2,
+    "thale": 3
   },
-  "kestreldown": {
-   "name": "Kestrel Down",
-   "region": "kestrel",
-   "adjacent": [
-    "gannetrock",
-    "kestrelhowe",
-    "kestrelmere",
-    "kestrelport"
-   ],
-   "traits": [
-    "port"
-   ]
+  "regionTerrain": {
+    "vane": "moor",
+    "kestrel": "mountain",
+    "reach": "coast",
+    "morrow": "grass",
+    "thale": "forest"
   },
-  "kestrelhowe": {
-   "name": "Kestrel Howe",
-   "region": "kestrel",
-   "adjacent": [
-    "kestreldown",
-    "kestrelmere"
-   ]
+  "regionColors": {
+    "vane": "#7d93b8",
+    "kestrel": "#9a8fb0",
+    "reach": "#59a3a8",
+    "morrow": "#8fae70",
+    "thale": "#c09a55"
   },
-  "kestrelmere": {
-   "name": "Kestrelmere",
-   "region": "kestrel",
-   "adjacent": [
-    "kestrelcrag",
-    "kestreldown",
-    "kestrelhowe"
-   ]
-  },
-  "kestrelport": {
-   "name": "Kestrel Port",
-   "region": "kestrel",
-   "adjacent": [
-    "kestrelcrag",
-    "kestreldown",
-    "reachrock"
-   ],
-   "traits": [
-    "port"
-   ]
-  },
-  "morrowfen": {
-   "name": "Morrowfen",
-   "region": "morrow",
-   "adjacent": [
-    "morrowquay",
-    "vanestrand"
-   ],
-   "traits": [
-    "port"
-   ]
-  },
-  "morrowgate": {
-   "name": "Morrow Gate",
-   "region": "morrow",
-   "adjacent": [
-    "morrowhill",
-    "sealstone"
-   ],
-   "traits": [
-    "fort",
-    "port"
-   ]
-  },
-  "morrowhill": {
-   "name": "Morrow Hill",
-   "region": "morrow",
-   "adjacent": [
-    "morrowgate",
-    "morrowquay"
-   ]
-  },
-  "morrowquay": {
-   "name": "Morrow Quay",
-   "region": "morrow",
-   "adjacent": [
-    "morrowfen",
-    "morrowhill",
-    "sealstone",
-    "thecompass"
-   ],
-   "traits": [
-    "port"
-   ]
-  },
-  "reachrock": {
-   "name": "Reach Rock",
-   "region": "reach",
-   "adjacent": [
-    "gannetrock",
-    "kestrelport",
-    "thecompass",
-    "vanewick"
-   ],
-   "traits": [
-    "port"
-   ]
-  },
-  "sealstone": {
-   "name": "Sealstone",
-   "region": "reach",
-   "adjacent": [
-    "brokenspar",
-    "morrowgate",
-    "morrowquay",
-    "thaleharbour",
-    "thecompass"
-   ],
-   "traits": [
-    "port"
-   ]
-  },
-  "thalecliff": {
-   "name": "Thale Cliff",
-   "region": "thale",
-   "adjacent": [
-    "thaleharbour",
-    "thalewood"
-   ]
-  },
-  "thaleharbour": {
-   "name": "Thale Harbour",
-   "region": "thale",
-   "adjacent": [
-    "brokenspar",
-    "sealstone",
-    "thalecliff"
-   ],
-   "traits": [
-    "port"
-   ]
-  },
-  "thalewood": {
-   "name": "Thalewood",
-   "region": "thale",
-   "adjacent": [
-    "brokenspar",
-    "thalecliff"
-   ],
-   "traits": [
-    "port"
-   ]
-  },
-  "thecompass": {
-   "name": "The Compass",
-   "region": "reach",
-   "adjacent": [
-    "gannetrock",
-    "morrowquay",
-    "reachrock",
-    "sealstone"
-   ],
-   "traits": [
-    "port"
-   ]
-  },
-  "vanefell": {
-   "name": "Vanefell",
-   "region": "vane",
-   "adjacent": [
-    "vanehead",
-    "vaneholt",
-    "vanemoor",
-    "vanetor"
-   ]
-  },
-  "vanehead": {
-   "name": "Vanehead",
-   "region": "vane",
-   "adjacent": [
-    "vanefell",
-    "vanemoor",
-    "vanewick"
-   ]
-  },
-  "vaneholt": {
-   "name": "Vaneholt",
-   "region": "vane",
-   "adjacent": [
-    "vanefell",
-    "vanemoor",
-    "vanetor"
-   ],
-   "traits": [
-    "fort"
-   ]
-  },
-  "vanemoor": {
-   "name": "Vanemoor",
-   "region": "vane",
-   "adjacent": [
-    "vanefell",
-    "vanehead",
-    "vaneholt",
-    "vanewick"
-   ]
-  },
-  "vanestrand": {
-   "name": "Vane Strand",
-   "region": "vane",
-   "adjacent": [
-    "morrowfen",
-    "vanewick"
-   ],
-   "traits": [
-    "port"
-   ]
-  },
-  "vanetor": {
-   "name": "Vane Tor",
-   "region": "vane",
-   "adjacent": [
-    "vanefell",
-    "vaneholt"
-   ]
-  },
-  "vanewick": {
-   "name": "Vanewick",
-   "region": "vane",
-   "adjacent": [
-    "reachrock",
-    "vanehead",
-    "vanemoor",
-    "vanestrand"
-   ],
-   "traits": [
-    "port"
-   ]
+  "id": "isles24",
+  "territories": {
+    "brokenspar": {
+      "name": "Broken Spar",
+      "region": "reach",
+      "adjacent": [
+        "gannetrock",
+        "sealstone",
+        "thaleharbour",
+        "thalewood"
+      ],
+      "traits": [
+        "port"
+      ]
+    },
+    "gannetrock": {
+      "name": "Gannet Rock",
+      "region": "reach",
+      "adjacent": [
+        "brokenspar",
+        "kestreldown",
+        "reachrock",
+        "thecompass"
+      ],
+      "traits": [
+        "port"
+      ]
+    },
+    "kestrelcrag": {
+      "name": "Kestrel Crag",
+      "region": "kestrel",
+      "adjacent": [
+        "kestrelmere",
+        "kestrelport"
+      ]
+    },
+    "kestreldown": {
+      "name": "Kestrel Down",
+      "region": "kestrel",
+      "adjacent": [
+        "gannetrock",
+        "kestrelhowe",
+        "kestrelmere",
+        "kestrelport"
+      ],
+      "traits": [
+        "port"
+      ]
+    },
+    "kestrelhowe": {
+      "name": "Kestrel Howe",
+      "region": "kestrel",
+      "adjacent": [
+        "kestreldown",
+        "kestrelmere"
+      ]
+    },
+    "kestrelmere": {
+      "name": "Kestrelmere",
+      "region": "kestrel",
+      "adjacent": [
+        "kestrelcrag",
+        "kestreldown",
+        "kestrelhowe"
+      ]
+    },
+    "kestrelport": {
+      "name": "Kestrel Port",
+      "region": "kestrel",
+      "adjacent": [
+        "kestrelcrag",
+        "kestreldown",
+        "reachrock"
+      ],
+      "traits": [
+        "port"
+      ]
+    },
+    "morrowfen": {
+      "name": "Morrowfen",
+      "region": "morrow",
+      "adjacent": [
+        "morrowquay",
+        "vanestrand"
+      ],
+      "traits": [
+        "port"
+      ]
+    },
+    "morrowgate": {
+      "name": "Morrow Gate",
+      "region": "morrow",
+      "adjacent": [
+        "morrowhill",
+        "sealstone"
+      ],
+      "traits": [
+        "fort",
+        "port"
+      ]
+    },
+    "morrowhill": {
+      "name": "Morrow Hill",
+      "region": "morrow",
+      "adjacent": [
+        "morrowgate",
+        "morrowquay"
+      ]
+    },
+    "morrowquay": {
+      "name": "Morrow Quay",
+      "region": "morrow",
+      "adjacent": [
+        "morrowfen",
+        "morrowhill",
+        "sealstone",
+        "thecompass"
+      ],
+      "traits": [
+        "port"
+      ]
+    },
+    "reachrock": {
+      "name": "Reach Rock",
+      "region": "reach",
+      "adjacent": [
+        "gannetrock",
+        "kestrelport",
+        "thecompass",
+        "vanewick"
+      ],
+      "traits": [
+        "port"
+      ]
+    },
+    "sealstone": {
+      "name": "Sealstone",
+      "region": "reach",
+      "adjacent": [
+        "brokenspar",
+        "morrowgate",
+        "morrowquay",
+        "thaleharbour",
+        "thecompass"
+      ],
+      "traits": [
+        "port"
+      ]
+    },
+    "thalecliff": {
+      "name": "Thale Cliff",
+      "region": "thale",
+      "adjacent": [
+        "thaleharbour",
+        "thalewood"
+      ]
+    },
+    "thaleharbour": {
+      "name": "Thale Harbour",
+      "region": "thale",
+      "adjacent": [
+        "brokenspar",
+        "sealstone",
+        "thalecliff"
+      ],
+      "traits": [
+        "port"
+      ]
+    },
+    "thalewood": {
+      "name": "Thalewood",
+      "region": "thale",
+      "adjacent": [
+        "brokenspar",
+        "thalecliff"
+      ],
+      "traits": [
+        "port"
+      ]
+    },
+    "thecompass": {
+      "name": "The Compass",
+      "region": "reach",
+      "adjacent": [
+        "gannetrock",
+        "morrowquay",
+        "reachrock",
+        "sealstone"
+      ],
+      "traits": [
+        "port"
+      ]
+    },
+    "vanefell": {
+      "name": "Vanefell",
+      "region": "vane",
+      "adjacent": [
+        "vanehead",
+        "vaneholt",
+        "vanemoor",
+        "vanetor"
+      ]
+    },
+    "vanehead": {
+      "name": "Vanehead",
+      "region": "vane",
+      "adjacent": [
+        "vanefell",
+        "vanemoor",
+        "vanewick"
+      ]
+    },
+    "vaneholt": {
+      "name": "Vaneholt",
+      "region": "vane",
+      "adjacent": [
+        "vanefell",
+        "vanemoor",
+        "vanetor"
+      ],
+      "traits": [
+        "fort"
+      ]
+    },
+    "vanemoor": {
+      "name": "Vanemoor",
+      "region": "vane",
+      "adjacent": [
+        "vanefell",
+        "vanehead",
+        "vaneholt",
+        "vanewick"
+      ]
+    },
+    "vanestrand": {
+      "name": "Vane Strand",
+      "region": "vane",
+      "adjacent": [
+        "morrowfen",
+        "vanewick"
+      ],
+      "traits": [
+        "port"
+      ]
+    },
+    "vanetor": {
+      "name": "Vane Tor",
+      "region": "vane",
+      "adjacent": [
+        "vanefell",
+        "vaneholt"
+      ]
+    },
+    "vanewick": {
+      "name": "Vanewick",
+      "region": "vane",
+      "adjacent": [
+        "reachrock",
+        "vanehead",
+        "vanemoor",
+        "vanestrand"
+      ],
+      "traits": [
+        "port"
+      ]
+    }
   }
- }
 }
