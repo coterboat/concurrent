@@ -38,6 +38,7 @@ reviews taught us), and `PLAYTEST.md` is the testers' brief.
 | What the reviews taught us | `python3 tools/review/review.py lessons` (`W` in the table) |
 | Tool tests | `python3 tools/review/test_review.py && python3 tools/ludo/test_notes.py` |
 | Repo size | `./scripts/repo_size.sh` (plain git, no LFS: see `docs/ASSETS.md`, "Storage") |
+| Pull what the bot pushed | `./scripts/sync_main.sh` (automatic: a hook runs it every prompt) |
 | Generate assets | `python3 tools/ludo/ludo.py <ids>` or a `tools/ludo/vNN_content.py` script |
 
 Arena switches: `rules=`, `deal=draft|random`, `levee=`, `capitals=0|1`, `fortune=0|1`,
@@ -51,6 +52,12 @@ points as noise.
 - A **playtest bot** (the owner's Grok agent) runs on every push to `main` and reports findings
   (e.g. "B1 … crash signal 11"). Treat its report as a bug list: reproduce, fix, and say which
   were fixed. It flags tooling bugs as well as game bugs.
+- **It pushes to `main`** (reports in `playtest/`, the running ledger in `playtest/BUGS.md`). So
+  local main must be current before any work: `scripts/sync_main.sh` fetches and fast-forwards it
+  (never merges, never touches uncommitted work). The project hooks (`.claude/settings.json`) run it
+  at the start of every session and before every prompt, and it speaks only when something came in.
+  **If it names new playtest files, the open bugs in `playtest/BUGS.md` come first.** Leave the
+  ledger to the bot's clerk; say which B-numbers you fixed in the reply and the CHANGELOG.
 - **`PLAYTEST.md` is its brief:** how to get and run the whole game, what's by design, and per
   version what changed and what to poke at (checklist step 7). Put there anything you want tested
   on another machine. The arena's `fingerprint` line is a cross-machine determinism check.
@@ -108,7 +115,13 @@ points as noise.
   | 17 | v1.7 | Amendment 18: fair ties (an even volley is fired again); a pass holds six, surges and reserves included |
   | 18 | v1.9 | Fortune's ledger kept exchange by exchange (`luck` on each invasion); a war chest divided by dice among everyone who took the last lands |
   | 19 | v1.10 | every fight feeds Fortune's ledger (clash/spoils odds, `luck` on melees and scrambles); Fortune can be spent in a melee (`defCalls`, fronts' calls); a second-wave surge whose land already fell marches in |
+  | 20 | v1.12 | a fallen capital's court flees deep into its own lands (not to the biggest stack) with its guard: one fresh troop and the garrison dug in to the full; map amendments (the Thousand Isles' Great Vane pays 3) |
 
+- **A map change that affects play is an amendment, not an edit.** Add it to the map json's
+  `amendments` list (`{"since": N, "lanes": [[a, b]], "regionBonus": {id: n}, "why": …}`): setting
+  `map.rules` applies it (the `MapDef.rules` setter), so a save replays on the map it was played on.
+  A new lane also needs its entry in `maps/art/<id>_art.json` (the board hides it under older rules;
+  `tools/study/lane.gd` finds the coast points). Measure a map change with a `tools/study/` script.
 - Rules that a table chooses (capitals, Fortune, levée, surges, terrain, the deal…) live
   in `game/core/rules.gd` with their help text, and presets there (**Standard** is the
   version we balance around). The config is saved with the game, and loaded games default

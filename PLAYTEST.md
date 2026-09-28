@@ -52,7 +52,36 @@ shown: fine" is as useful as a bug.
   v1.8 Fortune.
 - **Probes run with films off** (`motion = "paintings"`). `v19` turns them on.
 
-## v1.11: the review table learns (this push)
+## v1.12: the fled court, a fairer Thousand Isles, a war you can hear (this push)
+
+New games play **rules 20**.
+
+- **A three-way scramble looks like one.** When three or more commanders march on an empty land, each
+  army gets its own ground: left, right, and a row at the back that turns to face whoever it fires
+  at. Each ring stands over its own army.
+  - **Poke:** probe `v112`, and any war with 4–5 commanders. No two armies should share a side as if
+    allied, and nothing should overlap the odds bar.
+- **A fallen capital's court** flees to the land deepest among the commander's own (not the biggest
+  stack), with one fresh troop and the garrison dug in to the full.
+  - **Poke:** conservation and the report (`tests/test_v112.gd` checks both), and what the AI does
+    with a capital that's now thinly held.
+- **Map amendments.** The Thousand Isles' Great Vane pays 3 under rules 20. A rules 19 save still
+  pays 4.
+  - **Poke:** load an old Isles save. It must replay (no hash mismatch), and the region labels must
+    show the old bonus.
+- **Border clashes** clear the beaten column's arrow, even when you skip past its card.
+  - **Poke:** Battles: mine, several AI clashes, Space through the report. No arrow may be left for
+    a column that died in the field.
+- **The war around you:** distant sounds while planning (on the ambience slider), smoke over lands
+  that changed hands, and the map's light warming toward dusk in the last rounds.
+  - **Poke:** it should never hide a token or number, the seat colours must stay readable at dusk,
+    and it should be silent at Ambience 0.
+- **B-004 fixed** (the lessons test needed local review data).
+- **Fingerprints (Mac, 28 Sep 2026, rules 20)** for `arena.gd -- map=<m> n=6 seats=general,veteran,recruit,hask seed=500`:
+  `known24` → `f782eba38886`, `world30` → `d9f01fe55802`. The CLI hashes below are unchanged (the
+  CLI plays the old rules).
+
+## v1.11: the review table learns
 
 Mostly tooling: the review table, and how assets get made. What reaches the game:
 
@@ -66,7 +95,7 @@ Mostly tooling: the review table, and how assets get made. What reaches the game
     the dice land, not before and not from the soldier's chest.
 - **The eliminated film is re-encoded smaller** (Theora q5).
   - **Poke:** `v19` plays it; it should look the same as before.
-- **Fingerprints (Mac, 27 Sep 2026)** for `arena.gd -- map=<m> n=6 seats=general,veteran,recruit,hask seed=500`:
+- **Fingerprints (Mac, 27 Sep 2026, rules 19: superseded by v1.12's above)** for `arena.gd -- map=<m> n=6 seats=general,veteran,recruit,hask seed=500`:
   `known24` → `5ccf6e1a9a75`, `world30` → `fdc5601fe4b7`.
   - **Poke:** a different fingerprint on Linux, with no code change between the two runs, means
     the engine isn't deterministic across machines. That would break shared saves: please report it

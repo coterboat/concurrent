@@ -236,6 +236,7 @@ func _on_phase(ph: int) -> void:
 				_intro_done = true
 		Session.Phase.MANEUVER:
 			select("")
+			_war_alive()
 			Audio.music("muster")
 			phase_banner("REGROUP PHASE", "March troops one land toward the front")
 			_say_once("maneuver", "neutral")
@@ -250,6 +251,7 @@ func _on_phase(ph: int) -> void:
 			if ph == Session.Phase.OPENING and _intro_done:
 				phase_banner("DEPLOYMENT", "Name your capital, then place your starting armies" if session.capital_choosable() else "Place your starting armies")
 			if ph == Session.Phase.PLANNING:
+				_war_alive()
 				phase_banner("REINFORCEMENT PHASE", "Round %d · place %d fresh recruits on your lands" % [session.world.round, session.income_total()])
 				_pre_regions = _regions_of_humans()
 				_note_rival_marches()
@@ -269,6 +271,7 @@ func _on_phase(ph: int) -> void:
 			select("")
 			if not bool(session.get_meta("opening_cinema", false)):
 				phase_banner("THE BATTLES", "Every order happens at once")
+			board.smolder([]) ## the report makes its own smoke
 			cinema.play(session, board)
 		Session.Phase.RECAP:
 			Audio.music("plan")
@@ -835,6 +838,7 @@ func place_order_card(ctrl: Control, a: String, b: String) -> void:
 
 
 func _process(_d: float) -> void:
+	_far_off(_d)
 	## cards follow the map when it pans or zooms
 	if land_card.visible and land_card.land != "":
 		place_popover(land_card, land_card.land)
@@ -1542,6 +1546,64 @@ func _fly_chest(from_pid: String, to_pid: String, cards: Array, from_p: Vector2)
 		tw.tween_callback(tr.queue_free)
 	if roster.faces.has(to_pid):
 		get_tree().create_timer(1.6).timeout.connect(func(): roster.faces[to_pid].react("win"))
+
+
+# ================================================================ v1.12: the war around you
+
+var _far_in := 12.0 ## seconds until the next far-off sound of the war
+
+
+func _war_alive() -> void:
+	## the lands fought over last round still smoke, and the light is the war's time of day
+	var changed: Array = []
+	if session.pre_world != null and session.world.round > 1:
+		for t in session.world.territories.keys():
+			var a: Types.TerritoryState = session.pre_world.get_territory(str(t))
+			var b: Types.TerritoryState = session.world.get_territory(str(t))
+			if a != null and b != null and a.owner != b.owner and b.owner != Types.UNOCCUPIED:
+				changed.append(str(t))
+	board.smolder(changed)
+	board.set_daylight(war_light(war_progress()), session.world.round <= 1)
+
+
+func war_progress() -> float:
+	## how far into the war we are, 0 to 1: by the rounds, or in a conquest by the leader's
+	## progress toward the lands that end it
+	var f: float = float(session.world.round - 1) / float(maxi(1, session.rounds_total() - 1))
+	if session.conquest():
+		var thr: int = load("res://engine/setup.gd").early_end_threshold(session.map)
+		var most := 0
+		for st in session.seats:
+			most = maxi(most, MapLib.player_territory_ids(session.world, str(st["id"])).size())
+		f = float(most) / float(maxi(1, thr))
+	return clampf(f, 0.0, 1.0)
+
+
+static func war_light(f: float) -> Color:
+	## a cool morning, a plain noon, a golden afternoon and a red dusk for the last rounds
+	var keys := [[0.0, Color(0.9, 0.95, 1.0)], [0.35, Color(1, 1, 1)], [0.7, Color(1.0, 0.93, 0.8)], [1.0, Color(1.0, 0.72, 0.58)]]
+	for k in range(1, keys.size()):
+		if f <= float(keys[k][0]):
+			var a: Array = keys[k - 1]
+			var b: Array = keys[k]
+			return (a[1] as Color).lerp(b[1] as Color, (f - float(a[0])) / (float(b[0]) - float(a[0])))
+	return keys[-1][1]
+
+
+func _far_off(delta: float) -> void:
+	## the war beyond the tent while you plan: now and then a far cannon, volley, drum or
+	## bugle, nearer and more often as the war heats up (the besieged and endgame moods)
+	if session == null or session.world == null or (session.phase != Session.Phase.PLANNING and session.phase != Session.Phase.MANEUVER):
+		return
+	if cinema.visible or theater.visible:
+		return
+	_far_in -= delta
+	if _far_in > 0.0:
+		return
+	var mood: String = _plan_mood()
+	var hot: bool = mood != "plan"
+	Audio.distant(randf_range(-17.0, -12.0) if hot else randf_range(-24.0, -18.0))
+	_far_in = randf_range(9.0, 20.0) if hot else randf_range(22.0, 45.0)
 
 
 func _plan_mood() -> String:

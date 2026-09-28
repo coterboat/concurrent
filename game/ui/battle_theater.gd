@@ -591,15 +591,17 @@ func _next_engagement() -> void:
 		_a_pid = str(b["a"])
 		_b_pid = str(e["defenderId"])
 	elif _scramble:
-		## no defender: every army against every other, split either side of the field
+		## no defender: every army against every other. v1.12: each on its own ground (the lead on
+		## the left, the next on the right, any others in a row at the back, facing whoever they
+		## fire at), never two on one side as if they were allies
 		_fronts = e.get("fronts", [])
 		_rolls = e.get("salvos", [])
 		_volley_mode = true
 		_left = []
-		for i in _fronts.size():
-			list.append({"pid": _front_pid(i), "side": i % 2, "n": int(_fronts[i]["size"])})
-			_left.append(int(_fronts[i]["size"]))
 		_a_pid = str(b["a"])
+		for i in _fronts.size():
+			list.append({"pid": _front_pid(i), "side": _station(i), "n": int(_fronts[i]["size"])})
+			_left.append(int(_fronts[i]["size"]))
 		_b_pid = _front_pid(_b_front())
 	else:
 		_fronts = []
@@ -686,6 +688,27 @@ func _lead_front() -> int:
 	return 0
 
 
+func _station(i: int) -> int:
+	## a scramble army's ground on the field: 0 left (the lead), 1 right, 2 the back row
+	if i == _lead_front():
+		return 0
+	if i == _b_front():
+		return 1
+	return 2
+
+
+func _back_rank(i: int) -> Array:
+	## [its place in the back row, how many stand there]
+	var k := 0
+	var n := 0
+	for j in _fronts.size():
+		if _station(j) == 2:
+			if j < i:
+				k += 1
+			n += 1
+	return [k, n]
+
+
 func _b_front() -> int:
 	## the scramble's second ring: the first army that isn't the lead
 	var lead: int = _lead_front()
@@ -715,17 +738,23 @@ func _setup_extras() -> void:
 		var pid: String = _front_pid(i)
 		var face: Control = LeaderFace.new()
 		face.bubble_side = "bottom"
-		face.position = Vector2(236 + k * 138, 40)
+		var at := Vector2(236 + k * 138, 40)
+		if _scramble:
+			## v1.12: over its own army in the back row, not beside the lead as if allied
+			var br: Array = _back_rank(i)
+			var cx: float = 40.0 + (size.x - 80.0) * (0.5 + (float(br[0]) - float(int(br[1]) - 1) * 0.5) * 0.26)
+			at = Vector2(cx - 62.0, 196)
+		face.position = at
 		face.size = Vector2(124, 124)
 		add_child(face)
 		face.setup(_who(pid), pid, session.name_of(pid))
 		var nm := _side_label(18)
 		nm.text = session.name_of(pid)
 		nm.add_theme_color_override("font_color", Style.seat_color(pid).lightened(0.45))
-		nm.position = Vector2(206 + k * 138, 164)
+		nm.position = at + Vector2(-30, 124)
 		nm.size = Vector2(184, 26)
 		var ct := _side_label(34)
-		ct.position = Vector2(206 + k * 138, 188)
+		ct.position = at + Vector2(-30, 148)
 		ct.size = Vector2(184, 44)
 		_extra.append({"face": face, "name": nm, "count": ct, "front": i})
 		k += 1
@@ -954,7 +983,7 @@ func _settle_pair(pr: Dictionary, k: int) -> void:
 	var loser_army: int = ra if w == "a" else la
 	_left[loser_army] = int(_left[loser_army]) - 1
 	_float_at(k * 2 + (1 if w == "a" else 0), "−1", Style.CRIMSON.lightened(0.35))
-	var sound: String = _field.volley(winner_army)
+	var sound: String = _field.volley(winner_army, loser_army)
 	_field.set_count(loser_army, maxi(0, int(_left[loser_army])))
 	if _scramble:
 		_flinch(_face_of_front(loser_army))

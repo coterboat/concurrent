@@ -111,24 +111,34 @@ static func pieces(n: int) -> Dictionary:
 
 
 func setup(list: Array) -> void:
-	## list: [{pid, side: 0 left / 1 right, n}]; attackers first, the defender last
+	## list: [{pid, side: 0 left / 1 right / 2 the back row, n}]; attackers first, the defender last.
+	## v1.12: side 2 is for a free-for-all (the scramble): a third or fourth army stands on its own
+	## ground at the back, in the middle, and turns to face whoever it fires at, so three armies read
+	## as three armies and not as two ganging up on one.
 	armies = []
 	figs = []
 	puffs = []
 	bursts = []
 	## several armies on one side share its ground in bands, front to back
-	var per_side := [0, 0]
+	var per_side := [0, 0, 0]
 	for a in list:
 		per_side[int(a["side"])] += 1
-	var seen := [0, 0]
+	var back_row: bool = int(per_side[2]) > 0
+	var seen := [0, 0, 0]
 	for a in list:
 		var side: int = int(a["side"])
 		var band := [0.0, 1.0]
-		if int(per_side[side]) > 1:
+		if side == 2:
+			band = [0.66, 1.0] ## the far ground
+		elif int(per_side[side]) > 1:
 			band = [float(seen[side]) / per_side[side], float(seen[side] + 1) / per_side[side]]
+		if back_row and side != 2:
+			band = [float(band[0]) * 0.52, float(band[1]) * 0.52] ## the near ground: the back row stands behind
+		var col: int = int(seen[side])
 		seen[side] += 1
-		armies.append({"pid": str(a["pid"]), "side": side, "n": int(a["n"]), "band": band, "fled": -1.0,
-			"flag_x": -160.0 if side == 0 else size.x + 160.0, "elite": int(a["n"]) >= ELITE})
+		var cx: float = size.x * (0.5 + (float(col) - float(per_side[2] - 1) * 0.5) * 0.26) if side == 2 else 0.0
+		armies.append({"pid": str(a["pid"]), "side": side, "n": int(a["n"]), "band": band, "fled": -1.0, "cx": cx, "face_left": col % 2 == 1,
+			"flag_x": (-160.0 if side == 0 else (size.x + 160.0 if side == 1 else cx)), "elite": int(a["n"]) >= ELITE})
 	for i in armies.size():
 		_spawn(i, pieces(int(armies[i]["n"])), true)
 	queue_redraw()
@@ -147,6 +157,8 @@ func _spawn(ai: int, want: Dictionary, fresh: bool) -> void:
 	for type in ["inf", "cav", "gun"]:
 		for k in int(want.get(type, 0)):
 			var edge: float = -120.0 - randf() * 160.0 if int(armies[ai]["side"]) == 0 else size.x + 120.0 + randf() * 160.0
+			if int(armies[ai]["side"]) == 2:
+				edge = float(armies[ai]["cx"]) + (1.0 if randf() < 0.5 else -1.0) * randf_range(220.0, 360.0) ## in from the flanks
 			figs.append({"army": ai, "type": type, "pos": Vector2.ZERO, "cur": Vector2(edge, size.y * 0.8), "scale": 1.0,
 				"state": "march", "t": 0.0, "alive": true, "order": 0, "phase": randf() * 3.0, "alpha": 1.0, "anim": ""})
 	_form(ai, fresh)
@@ -199,6 +211,8 @@ func _form(ai: int, snap_y: bool) -> void:
 	var room: float = maxf(80.0, size.x * 0.5 - FRONT - 90.0)
 	var squeeze: float = minf(1.0, room / maxf(1.0, deepest))
 	var front: float = FRONT + (40.0 if b0 > 0.01 else 0.0) ## the rear band stands a little back
+	if side == 2: ## the back row: a compact block around its own middle
+		squeeze = minf(1.0, maxf(60.0, size.x * 0.11) / maxf(1.0, deepest))
 	for i in slots.size():
 		var f: Dictionary = slots[i][0]
 		var depth: float = float(slots[i][2])
@@ -206,6 +220,8 @@ func _form(ai: int, snap_y: bool) -> void:
 		var y: float = size.y * (0.97 - depth * 0.52)
 		var dx: float = (front + float(slots[i][1]) * squeeze) * sc
 		var px: float = size.x * 0.5 - dx if side == 0 else size.x * 0.5 + dx
+		if side == 2:
+			px = float(armies[ai]["cx"]) + (float(slots[i][1]) - deepest * 0.5) * squeeze * sc
 		f["order"] = i
 		f["pos"] = Vector2(px, y)
 		f["scale"] = sc
@@ -254,8 +270,33 @@ func _fall(f: Dictionary) -> void:
 	puffs.append({"pos": f["cur"] + Vector2(0, -52 * f["scale"]), "t": 0.0, "big": f["type"] == "gun", "seed": randf() * TAU})
 
 
-func volley(ai: int) -> String:
-	## army ai wins a volley: a few of its pieces fire. Returns the sound to play.
+func _dir(ai: int) -> float:
+	## which way army ai faces: +1 right, -1 left (the back row turns to face its foe)
+	var a: Dictionary = armies[ai]
+	match int(a["side"]):
+		0:
+			return 1.0
+		1:
+			return -1.0
+	return -1.0 if bool(a.get("face_left", false)) else 1.0
+
+
+func _army_x(ai: int) -> float:
+	var xs := 0.0
+	var n := 0
+	for f in _alive(ai):
+		xs += float(f["pos"].x)
+		n += 1
+	if n > 0:
+		return xs / n
+	return float(armies[ai].get("cx", size.x * 0.5)) if int(armies[ai]["side"]) == 2 else (0.0 if int(armies[ai]["side"]) == 0 else size.x)
+
+
+func volley(ai: int, foe: int = -1) -> String:
+	## army ai wins a volley: a few of its pieces fire (at army foe, if given: the back row turns
+	## to face it). Returns the sound to play.
+	if foe >= 0 and foe < armies.size() and int(armies[ai]["side"]) == 2:
+		armies[ai]["face_left"] = _army_x(foe) < _army_x(ai)
 	var sound := "volley"
 	var shooters := _alive(ai).filter(func(f): return f["state"] == "idle")
 	if shooters.is_empty():
@@ -264,7 +305,7 @@ func volley(ai: int) -> String:
 	var guns := shooters.filter(func(f): return f["type"] == "gun")
 	if not guns.is_empty() and randf() < 0.45:
 		var g: Dictionary = guns[0]
-		var dir := 1.0 if int(armies[ai]["side"]) == 0 else -1.0
+		var dir := _dir(ai)
 		var mouth: Vector2 = g["cur"] + Vector2(dir * 150.0 * g["scale"], -110.0 * g["scale"])
 		var at_shot := 0.15
 		if _has("cannon_fire_kf"):
@@ -282,7 +323,7 @@ func volley(ai: int) -> String:
 			break
 		match str(f["type"]):
 			"inf":
-				var dir2 := 1.0 if int(armies[ai]["side"]) == 0 else -1.0
+				var dir2 := _dir(ai)
 				var kf: String = "grenadier_volley_kf" if _elite(f) else ("soldier_kneel_volley_kf" if randf() < 0.35 and _has("soldier_kneel_volley_kf") else "soldier_volley_kf")
 				if _has(kf):
 					_act(f, "fire", kf, _fire_len(kf))
@@ -456,7 +497,7 @@ func _process(delta: float) -> void:
 			"fire", "charge", "cheer", "reload":
 				f["t"] = float(f["t"]) + delta
 				if f["state"] == "charge":
-					var dir := 1.0 if int(armies[int(f["army"])]["side"]) == 0 else -1.0
+					var dir := _dir(int(f["army"]))
 					var k: float = sin(clampf(float(f["t"]) / float(f.get("dur", 0.9)), 0.0, 1.0) * PI)
 					f["cur"] = f["pos"] + Vector2(dir * 38.0 * k * float(f["scale"]), 0)
 				if float(f["t"]) >= float(f.get("dur", 1.0)):
@@ -478,7 +519,7 @@ func _process(delta: float) -> void:
 					f["state"] = "gone"
 			"flee":
 				f["t"] = float(f["t"]) + delta
-				var away := -1.0 if int(armies[int(f["army"])]["side"]) == 0 else 1.0
+				var away := -_dir(int(f["army"]))
 				if float(f["t"]) > 0.25:
 					f["cur"] = f["cur"] + Vector2(away * 220.0 * float(f["scale"]) * delta, 0)
 				f["alpha"] = clampf(1.6 - float(f["t"]) * 0.8, 0.0, 1.0)
@@ -490,7 +531,7 @@ func _process(delta: float) -> void:
 		if float(a["fled"]) >= 0.0:
 			a["fled"] = float(a["fled"]) + delta
 			if float(a["fled"]) > 0.25:
-				a["flag_x"] = float(a["flag_x"]) + (-1.0 if int(a["side"]) == 0 else 1.0) * 220.0 * delta
+				a["flag_x"] = float(a["flag_x"]) - _dir(i) * 220.0 * delta
 		else:
 			a["flag_x"] = move_toward(float(a["flag_x"]), _flag_target(i), 360.0 * delta)
 	var bi := bursts.size() - 1
@@ -518,6 +559,8 @@ func _flag_target(ai: int) -> float:
 		back = maxf(back, absf(float(f["pos"].x) - size.x * 0.5))
 	if back == 0.0:
 		back = 120.0
+	if int(armies[ai]["side"]) == 2:
+		return float(armies[ai]["cx"]) - _dir(ai) * 70.0 ## behind the block, the way it faces
 	return size.x * 0.5 + (-1.0 if int(armies[ai]["side"]) == 0 else 1.0) * (back + 60.0)
 
 
@@ -569,7 +612,7 @@ func _draw() -> void:
 		var band: Array = a["band"]
 		var depth: float = (float(band[0]) + float(band[1])) * 0.5 + 0.12
 		var y: float = size.y * (0.97 - clampf(depth, 0.0, 1.0) * 0.52)
-		var flip: bool = int(a["side"]) == 1
+		var flip: bool = _dir(i) < 0.0
 		if fled >= 0.0:
 			flip = not flip
 		_draw_anim(flag, _pick(flag, int((_clock + i * 0.7) * 10.0), true), Vector2(float(a["flag_x"]), y), 1.0 - depth * 0.3, flip, _tint(str(a["pid"])), alpha, 0.0, 1.05)
@@ -581,7 +624,7 @@ func _draw() -> void:
 		var army: Dictionary = armies[int(f["army"])]
 		var type: String = f["type"]
 		var col: Color = _tint(str(army["pid"]))
-		var flip: bool = int(army["side"]) == 1
+		var flip: bool = _dir(int(f["army"])) < 0.0
 		var el: bool = _elite(f)
 		var an: Dictionary = _a(_idle_of(type, el))
 		var fi := 0

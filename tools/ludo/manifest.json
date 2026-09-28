@@ -6610,7 +6610,7 @@
    "out": "assets/raw/video/cut_intro_480",
    "prompt": "Image 1 is the imperial war room, Image 2 is the old field marshal. Dawn: pale golden light spills through the tall windows of the war room from Image 1 onto the great map table and its tin soldiers. The doors open and two dust-stained couriers in blue hussar jackets hurry in and lay sealed dispatches on the map. The field marshal from Image 2, standing at the window with his hands clasped behind his back, turns slowly to face the camera with a grave, knowing look, silent. Slow push-in camera. Sound: a lone snare drum and a low rising brass theme, hurried footsteps, rustling paper, distant gulls and a harbour bell. No spoken words, no dialogue, no narration: only music and sound effects. Painterly oil-painting look matching the reference images, Napoleonic era, 1810s.",
    "group": "G5",
-   "v": 4
+   "v": 5
   },
   {
    "id": "v19_cut_intro_up",
@@ -6618,7 +6618,7 @@
    "source": "v19_cut_intro",
    "out": "assets/raw/video/cut_intro",
    "group": "G5",
-   "v": 4
+   "v": 5
   },
   {
    "id": "v19_cut_capital_taken",

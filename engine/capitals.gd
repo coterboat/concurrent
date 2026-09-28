@@ -4,6 +4,10 @@
 ## and a levy of fresh troops on the spot) and a new capital is named at once, which its
 ## commander may move to another of their lands the round after. Off unless the game asks
 ## for it (MapDef.capitals), so older saves replay untouched. No Node. No UI. Seeded RNG only.
+##
+## v1.12 (rules 20): the court flees somewhere safe, not to the biggest stack: the new capital is
+## the land deepest among the commander's own (the most friends, the fewest foes; its troops only
+## break a tie). It arrives with its guard: one fresh troop, and the garrison dug in to the full.
 extends RefCounted
 
 const Types := preload("res://engine/types.gd")
@@ -14,11 +18,14 @@ const Rng := preload("res://engine/rng.gd")
 const NEUTRAL_ID := "neutral"
 const TREASURY := 2 ## recruits a round while you hold your capital
 const LEVY := 3 ## fresh troops the captor raises in a fallen capital
+const COURT_GUARD := 1 ## v1.12: fresh troops arriving with a fled court at its new capital
+const Income := preload("res://engine/income.gd")
 
 
-static func auto_pick(w: Types.World, map: Types.MapDef, pid: String) -> String:
+static func auto_pick(w: Types.World, map: Types.MapDef, pid: String, refuge: bool = false) -> String:
 	## Where a commander's capital goes when nobody chooses: deep in their own lands and
 	## well held. Deterministic: the same world always names the same land.
+	## refuge (v1.12, a court fleeing a fallen capital): the depth decides; troops only break ties.
 	var best := ""
 	var best_score := -1.0e9
 	var ids: Array = Array(MapLib.player_territory_ids(w, pid))
@@ -32,7 +39,8 @@ static func auto_pick(w: Types.World, map: Types.MapDef, pid: String) -> String:
 				friends += 1
 			elif ns.owner != Types.UNOCCUPIED:
 				foes += 1
-		var score: float = 3.0 * friends - 2.0 * foes + float(w.get_territory(str(t)).held())
+		var held: float = float(w.get_territory(str(t)).held())
+		var score: float = (3.0 * friends - 2.0 * foes + 0.01 * held) if refuge else (3.0 * friends - 2.0 * foes + held)
 		if score > best_score:
 			best_score = score
 			best = str(t)
@@ -132,7 +140,23 @@ static func upkeep(w: Types.World, map: Types.MapDef, events: Array, match_seed:
 			var cev: Dictionary = Events.cards_captured(str(pid), captor, loot)
 			cev["plunder"] = true ## half a hand, not a war chest
 			events.append(cev)
-		ps.capital = auto_pick(w, map, str(pid))
+		var v112: bool = map.rules >= 20
+		ps.capital = auto_pick(w, map, str(pid), v112)
 		ps.capital_free = ps.capital != ""
 		if ps.capital != "":
 			events.append(Events.capital_founded(str(pid), ps.capital, "fallen"))
+			if v112:
+				## v1.12: the court's guard: one fresh troop, and the garrison dug in to the full
+				var nts: Types.TerritoryState = w.get_territory(ps.capital)
+				nts.armies += COURT_GUARD
+				var gev: Dictionary = Events.placed(str(pid), ps.capital, COURT_GUARD, nts.armies, 0)
+				gev["courtGuard"] = true
+				events.append(gev)
+				var cap: int = Income.garrison_cap(w, map, ps.capital)
+				if nts.garrison < cap:
+					var dug: int = cap - nts.garrison
+					nts.garrison = cap
+					var dev: Dictionary = Events.entrenched(ps.capital, nts.garrison, cap)
+					dev["added"] = dug
+					dev["court"] = true
+					events.append(dev)

@@ -340,6 +340,25 @@ func _duck(on: bool) -> void:
 	AudioServer.set_bus_volume_db(i, base - (9.0 if on else 0.0))
 
 
+var _far: AudioStreamPlayer
+var _far_last := ""
+
+
+func distant(volume_db: float = -20.0) -> void:
+	## v1.12: the war beyond the tent: a far-off cannon, volley, drum, bugle or cheer, on the
+	## ambience bus (so the Ambience slider governs it), never the same one twice running
+	if _far == null:
+		_far = _player("Ambience")
+	var takes: Array = (VARIANTS["far"] as Array).filter(func(t): return t != _far_last and _stream(SFX_DIR + str(t)) != null)
+	if takes.is_empty():
+		return
+	_far_last = str(takes[randi() % takes.size()])
+	_far.stream = _stream(SFX_DIR + _far_last)
+	_far.volume_db = volume_db
+	_far.pitch_scale = randf_range(0.94, 1.04)
+	_far.play()
+
+
 func ambience(on: bool, name: String = "ambience_tent") -> void:
 	if on and _amb.playing and _amb.has_meta("name") and str(_amb.get_meta("name")) != name:
 		_amb.stop()

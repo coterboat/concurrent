@@ -144,7 +144,7 @@ static func _entrenched_added(events: Array) -> int:
 	var n := 0
 	for e in events:
 		if str(e.get("kind", "")) == Types.EVENT_ENTRENCHED and int(e.get("converted", 0)) == 0:
-			n += 1
+			n += int(e.get("added", 1)) ## v1.12: a fallen capital's court digs in several at once
 	return n
 
 

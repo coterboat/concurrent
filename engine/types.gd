@@ -71,7 +71,14 @@ class MapDef extends RefCounted:
 	var maneuvers: bool = false ## v1.3 new games: true (a regroup phase after the battles)
 	var scramble: bool = false ## v1.4 new games: true (spoils are one free-for-all, not a ladder of duels)
 	var dig_cap: int = 0 ## v1.4 new games: 2 (v1.5: 3) (no land digs in deeper); 0 = the old ceiling of 1 + neighbours
-	var rules: int = 0 ## v1.5 new games: 15 (surges clash head-on and carry a count)
+	var rules: int = 0: ## v1.5 new games: 15 (surges clash head-on and carry a count)
+		set(v):
+			rules = v
+			_amend() ## v1.12: the map as it stood under these rules
+	## v1.12: a map can be amended from a rules version on (a new sea lane, a region's bonus), so a
+	## save replays on the map it was played on. [{since, lanes: [[a, b]], regionBonus: {id: n}}]
+	var amendments: Array = []
+	var _base_bonus := {}
 	var fire_line: bool = false ## v1.6 new games: at most five men fire in a volley, even volleys are fired again (setup: Battle odds)
 	var first_digs_in: bool = false ## the man left behind is locked in as a dug-in defender for good (tried in v1.5; off: it halved the conquests)
 	## v1.7 land traits and supply. Off unless the map asks for them, so the first three
@@ -97,6 +104,48 @@ class MapDef extends RefCounted:
 
 	func get_territory(terr_id: String) -> TerritoryDef:
 		return territories.get(terr_id, null)
+
+	func _amend() -> void:
+		## Put the map back as drawn, then apply every amendment these rules have reached, oldest
+		## first. Runs whenever `rules` is set; the same rules always give the same map.
+		if amendments.is_empty():
+			return
+		for a in amendments:
+			for pair in a.get("lanes", []):
+				_link(str(pair[0]), str(pair[1]), false)
+		for r in _base_bonus.keys():
+			region_bonus[r] = int(_base_bonus[r])
+		for a in amendments:
+			if rules < int(a.get("since", 0)):
+				continue
+			for pair in a.get("lanes", []):
+				_link(str(pair[0]), str(pair[1]), true)
+			var rb: Dictionary = a.get("regionBonus", {})
+			for r in rb.keys():
+				if not _base_bonus.has(r):
+					_base_bonus[r] = int(region_bonus.get(r, 0))
+				region_bonus[r] = int(rb[r])
+
+	func _link(x: String, y: String, on: bool) -> void:
+		var tx: TerritoryDef = territories.get(x, null)
+		var ty: TerritoryDef = territories.get(y, null)
+		if tx == null or ty == null:
+			return
+		for pr in [[tx, y], [ty, x]]:
+			var t: TerritoryDef = pr[0]
+			var at: int = Array(t.adjacent).find(pr[1])
+			if on and at < 0:
+				t.adjacent.append(pr[1])
+			elif not on and at >= 0:
+				t.adjacent.remove_at(at)
+
+	func lane_live(a: String, b: String) -> bool:
+		## a sea lane an amendment added is only there under the rules that added it
+		for am in amendments:
+			for pair in am.get("lanes", []):
+				if (str(pair[0]) == a and str(pair[1]) == b) or (str(pair[0]) == b and str(pair[1]) == a):
+					return rules >= int(am.get("since", 0))
+		return true
 
 	func is_adjacent(a: String, b: String) -> bool:
 		var ta: TerritoryDef = territories.get(a, null)
@@ -179,6 +228,16 @@ class MapDef extends RefCounted:
 		m.supply = bool(data.get("supply", false))
 		m.dominate = float(data.get("dominate", 0.0))
 		m.levee = int(data.get("levee", 0))
+		var am: Variant = data.get("amendments", [])
+		if typeof(am) == TYPE_ARRAY:
+			m.amendments = am.duplicate(true)
+			m.amendments.sort_custom(func(x, y): return int(x.get("since", 0)) < int(y.get("since", 0)))
+			## remember every amended bonus as drawn, before any rules touch it
+			for a in m.amendments:
+				for r in (a.get("regionBonus", {}) as Dictionary).keys():
+					if not m._base_bonus.has(r):
+						m._base_bonus[r] = int(m.region_bonus.get(r, 0))
+			m._amend()
 		return m
 
 

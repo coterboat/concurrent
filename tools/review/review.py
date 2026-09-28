@@ -450,21 +450,22 @@ def _item_notes(entry: dict) -> list[str]:
     return out
 
 
-def lessons() -> dict:
+def lessons(names: list[str] | None = None) -> dict:
     """Every batch's verdicts and notes, summed up: how often a first take is kept, by kind and by
-    group (a voice), and what the notes ask for, by theme, with examples."""
+    group (a voice), and what the notes ask for, by theme, with examples. `names` limits it to
+    those batches (and then includes them even if they'd normally be skipped, as tests do)."""
     kinds: dict = {}
     groups: dict = {}
     themes = {t: {"theme": t, "label": lbl, "notes": 0, "fixed": 0, "open": 0, "kinds": {}, "examples": []}
               for t, lbl, _, _ in NOTE_THEMES}
     batches = 0
-    for name in list_batch_names():
+    for name in names if names is not None else list_batch_names():
         try:
             d, data = load_batch(name)
             entries = load_review(d)["items"]
         except ReviewError:
             continue
-        if name.startswith("_") or name.endswith("_lab") or data.get("lab"):
+        if names is None and (name.startswith("_") or name.endswith("_lab") or data.get("lab")):
             continue  # the demo batch, and experiments (a lab's verdicts say which variant won, not which take)
         batches += 1
         for item in data.get("items", []):

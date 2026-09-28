@@ -145,7 +145,7 @@ func _apply_length() -> void:
 	## v1.5 rules: surges clash head-on and carry a count; v1.6: the firing line, fair ties,
 	## and campaign cards with a land on each; v1.7: an even volley is fired again in every
 	## battle actually fought, and a pass holds to its column of six, surges and reserves too
-	map.rules = int(config.get("rules", 19))
+	map.rules = int(config.get("rules", 20)) ## v1.12: rules 20
 	config["rules"] = map.rules
 	map.first_digs_in = bool(config.get("first_digs_in", false))
 	config["first_digs_in"] = map.first_digs_in

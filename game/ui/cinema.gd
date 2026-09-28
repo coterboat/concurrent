@@ -21,6 +21,7 @@ var _events: Array = []
 var _pre: Types.World
 var _packets: Array = []
 var _resolved := {} ## destination -> true once its fight is over
+var _settled := {} ## v1.12: beat index -> true once a clash's arrows are settled
 var _banner: PanelContainer
 var _caption: Label
 var _sub: Label
@@ -132,6 +133,7 @@ func play(p_session: Node, p_board: Control) -> void:
 	_pre = session.pre_world
 	_packets = []
 	_resolved = {}
+	_settled = {}
 	_waiting = false
 	_theater_off = false
 	beats = _build_beats()
@@ -496,8 +498,21 @@ func _build_beats() -> Array:
 					"sound": "fortune_gained" if Audio.has_sfx("fortune_gained") else "war_chest", "delay": 1.8, "fortune_to": fp})
 			Types.EVENT_CAPITAL_FOUNDED:
 				if str(e.get("why", "")) == "fallen":
-					out.append({"upto": i, "caption": "The court flees to %s" % _hex(str(e["terrId"])), "sub": "%s's new capital. They may move it in their next reinforcement phase." % _name(str(e["playerId"])),
-						"sound": "", "delay": 1.6, "focus": [str(e["terrId"])], "flash": str(e["terrId"]), "flash_text": "NEW CAPITAL"})
+					## v1.12 (rules 20): the court's guard comes with it: one fresh troop, the walls manned
+					var up5 := i
+					var guard := 0
+					var dug5 := 0
+					while up5 + 1 < n and (bool((evs[up5 + 1] as Dictionary).get("courtGuard", false)) or bool((evs[up5 + 1] as Dictionary).get("court", false))):
+						up5 += 1
+						guard += int((evs[up5] as Dictionary).get("added", 0)) if bool((evs[up5] as Dictionary).get("courtGuard", false)) else 0
+						dug5 = int((evs[up5] as Dictionary).get("garrison", dug5)) if bool((evs[up5] as Dictionary).get("court", false)) else dug5
+					var sub5: String = "%s's new capital. They may move it in their next reinforcement phase." % _name(str(e["playerId"]))
+					if guard > 0:
+						sub5 = "%s's new capital: the court's guard arrives (+%d)%s. They may move it in their next reinforcement phase." % [
+							_name(str(e["playerId"])), guard, (" and %d dig in behind the walls" % dug5) if dug5 > 0 else ""]
+					out.append({"upto": up5, "caption": "The court flees to %s" % _hex(str(e["terrId"])), "sub": sub5,
+						"sound": "", "delay": 1.6 if guard == 0 else 2.2, "focus": [str(e["terrId"])], "flash": str(e["terrId"]), "flash_text": "NEW CAPITAL"})
+					i = up5
 			Types.EVENT_CARDS_CAPTURED:
 				if bool(e.get("plunder", false)):
 					i += 1
@@ -587,6 +602,10 @@ func _fight_beat(upto: int, title: String, subtitle: String, a: String, a_size: 
 
 
 func _show(b: Dictionary) -> void:
+	## v1.12: every clash already told has its arrows settled, even one whose card was skipped
+	## before its dice landed (the loser's arrow used to stay on the map)
+	for k in range(0, mini(index, beats.size())):
+		_settle_arrows(beats[k], k)
 	if bool(b.get("fight", false)) and not _theater_off and theater != null and theater_hook.is_valid() and bool(theater_hook.call(b)):
 		_open_theater(b)
 		return
@@ -760,12 +779,18 @@ func _start_fight(b: Dictionary) -> void:
 	board.refresh()
 
 
-func _settle_arrows(b: Dictionary) -> void:
+func _settle_arrows(b: Dictionary, k: int = -1) -> void:
 	## v1.6: a column that lost a border clash no longer marches: its arrow goes, and the
-	## winner's arrow carries only the men still standing
+	## winner's arrow carries only the men still standing. Once per clash (k: its beat).
 	var ev: Dictionary = b.get("event", {})
 	if str(ev.get("kind", "")) != Types.EVENT_CLASH:
 		return
+	if k < 0:
+		k = beats.find(b)
+	if k >= 0:
+		if _settled.has(k):
+			return
+		_settled[k] = true
 	var wid: String = str(ev.get("winnerId", ""))
 	var a_pid: String = str(ev.get("playerA", ""))
 	var b_pid: String = str(ev.get("playerB", ""))

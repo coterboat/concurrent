@@ -17,6 +17,7 @@ uniform int hover_id = -1;
 uniform int select_id = -1;
 uniform float pulse = 0.0;
 uniform int view_mode = 0; // 0 = owners, 1 = regions
+uniform vec3 daylight = vec3(1.0); // v1.12: the light of the day the war has reached (morning cool, dusk red)
 
 const int F_TARGET = 1;
 const int F_DIM = 2;
@@ -124,6 +125,10 @@ void fragment() {
 
 	// ---- coast
 	float land_a = smoothstep(-aa, aa, coast);
+	// v1.12: the light of the day falls full on the sea and lightly on the land, so every
+	// commander's colour still reads true at dusk
+	sea *= daylight;
+	land *= mix(vec3(1.0), daylight, 0.35);
 	vec3 col = mix(sea, land, land_a);
 	float cw = max(1.4 * px, 1.4);
 	float coast_line = 1.0 - smoothstep(cw - aa, cw + aa, abs(coast));

@@ -20,6 +20,8 @@ const Capitals := preload("res://engine/capitals.gd")
 ## "events". Off by default, because a long tournament would otherwise keep every roll of
 ## every battle in memory.
 static var keep_events := false
+## v1.12 studies: called with (world, map) after every round when set. Watching changes nothing.
+static var watch: Callable = Callable()
 
 
 ## seats: [{id, name, ai: "general"|"veteran"|"recruit"|commander id|"monkey"}]
@@ -109,6 +111,8 @@ static func play(map: Types.MapDef, seats: Array, match_seed: int, max_rounds: i
 		for pid in brains.keys():
 			snap[pid] = MapLib.player_territory_ids(world, pid).size()
 		territory_history.append(snap)
+		if watch.is_valid():
+			watch.call(world, map)
 		winner = str(summary.get("winner", ""))
 		early = bool(summary.get("early", false))
 		if winner != "":

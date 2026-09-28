@@ -14334,10 +14334,17 @@
     "job": "c8e263c7-c231-4abd-a346-f1724c264b45",
     "url": "https://storage.googleapis.com/ludo-assets/api/hVeCj7BErCsA1YubwyDS1_minimax-h3.mp4",
     "v": 3
+   },
+   {
+    "credits": 17.5,
+    "endpoint": "/assets/video/references",
+    "job": "b1e84250-9d79-4c2d-905e-40abd02a08cc",
+    "url": "https://storage.googleapis.com/ludo-assets/api/4LHLxbZIPbY0-T_Yho7VC_minimax-h3.mp4",
+    "v": 4
    }
   ],
   "id": "v19_cut_intro",
-  "job": "b1e84250-9d79-4c2d-905e-40abd02a08cc",
+  "job": "f75fb63c-f1b0-48e5-8a7d-9b1eab21bfd5",
   "params": {
    "aspect_ratio": "ar_16_9",
    "duration": 7,
@@ -14348,8 +14355,8 @@
    "model": "griffin",
    "prompt": "Image 1 is the imperial war room, Image 2 is the old field marshal. Dawn: pale golden light spills through the tall windows of the war room from Image 1 onto the great map table and its tin soldiers. The doors open and two dust-stained couriers in blue hussar jackets hurry in and lay sealed dispatches on the map. The field marshal from Image 2, standing at the window with his hands clasped behind his back, turns slowly to face the camera with a grave, knowing look, silent. Slow push-in camera. Sound: a lone snare drum and a low rising brass theme, hurried footsteps, rustling paper, distant gulls and a harbour bell. No spoken words, no dialogue, no narration: only music and sound effects. Painterly oil-painting look matching the reference images, Napoleonic era, 1810s."
   },
-  "url": "https://storage.googleapis.com/ludo-assets/api/4LHLxbZIPbY0-T_Yho7VC_minimax-h3.mp4",
-  "v": 4
+  "url": "https://storage.googleapis.com/ludo-assets/api/R8vucGFw66xWeWF-z1yY8_minimax-h3.mp4",
+  "v": 5
  },
  "v19_cut_intro_up": {
   "credits": 1.4,
@@ -14369,15 +14376,29 @@
     "job": "9ea87d80-c3c2-4893-b592-e3831917103f",
     "url": "https://storage.googleapis.com/ludo-assets/api/d9384551c0642f36ac51bc7561125ce2.mp4",
     "v": 2
+   },
+   {
+    "credits": 1.4,
+    "endpoint": "/assets/video/upscale",
+    "job": "7d3bc726-80ec-448b-a73b-ca0b1202f8f0",
+    "url": "https://storage.googleapis.com/ludo-assets/api/1c43b60a9f5458b8fe5291bf45e6ca32.mp4",
+    "v": 3
+   },
+   {
+    "credits": 1.4,
+    "endpoint": "/assets/video/upscale",
+    "job": "92defbe9-9121-4c4c-bbdd-93a664c3cc2d",
+    "url": "https://storage.googleapis.com/ludo-assets/api/33e1d90e233b211b57e95927dfc84c8a.mp4",
+    "v": 4
    }
   ],
   "id": "v19_cut_intro_up",
-  "job": "7d3bc726-80ec-448b-a73b-ca0b1202f8f0",
+  "job": "de169910-b1dd-4d6e-9e78-2d4a6de8bffb",
   "params": {
-   "video": "https://storage.googleapis.com/ludo-assets/api/hVeCj7BErCsA1YubwyDS1_minimax-h3.mp4"
+   "video": "https://storage.googleapis.com/ludo-assets/api/R8vucGFw66xWeWF-z1yY8_minimax-h3.mp4"
   },
-  "url": "https://storage.googleapis.com/ludo-assets/api/1c43b60a9f5458b8fe5291bf45e6ca32.mp4",
-  "v": 3
+  "url": "https://storage.googleapis.com/ludo-assets/api/254531504a1caafa5063bd501e7da7b0.mp4",
+  "v": 5
  },
  "v19_cut_victory": {
   "credits": 17.5,

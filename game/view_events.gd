@@ -137,6 +137,7 @@ static func apply(world: Types.World, event: Dictionary) -> void:
 			var ps: Types.PlayerState = world.players.get(str(event.get("playerId", "")), null)
 			if ps != null:
 				ps.alive = false
+				ps.capital = "" ## v1.12: no lands, no seat of government (the engine clears it silently)
 		## v1.6: hands follow the report too, so the card counts along the top are always true
 		Types.EVENT_SET_CASHED:
 			var pc: Types.PlayerState = world.players.get(str(event.get("playerId", "")), null)

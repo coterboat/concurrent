@@ -48,6 +48,15 @@
     "thale": "#c09a55"
   },
   "id": "isles24",
+  "amendments": [
+    {
+      "since": 20,
+      "why": "v1.12: whoever held Great Vane won 63% of AI wars (bonus 4, only two gates to guard); at 3 it is 40%. A third crossing (Vaneholt-Kestrel Port) made it 73% and doubled the conquests, so it stays a two-gate continent.",
+      "regionBonus": {
+        "vane": 3
+      }
+    }
+  ],
   "territories": {
     "brokenspar": {
       "name": "Broken Spar",

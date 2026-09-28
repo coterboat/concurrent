@@ -2,6 +2,111 @@
 
 The bible says amendments come with a dated entry and the test or band that justified them. Everything below has both.
 
+## v1.12 — 28 Sep 2026: the fled court, a fairer Thousand Isles, and a war you can hear
+
+New games play **rules 20**. v1.11 saves (rules 19) and older replay exactly as they were
+played, on the map as it was.
+
+### Three commanders on one empty land
+
+The owner: "three players all trying to invade an undefended piece of land … adding a 1v1v1v1
+combat option or some other solution." The rules already had that: several arrivals on an empty
+land fight one scramble, every army duelling every other at once. What broke was the picture.
+The battlefield stood the armies by `i % 2`, so the first and third stood on the same side and
+looked allied, and the third army's ring stood beside the lead's. Now each army has its own
+ground: the lead on the left, the next on the right, and any others in a row at the back, in the
+middle. The back row turns to face whoever it fires at, and each ring stands over its own army.
+Probe `v112` shows it.
+
+### A fallen capital (rules 20)
+
+The owner: "an enemy losing their capital shouldn't get that many fresh troops automatically upon
+simply choosing their new capital — maybe 1 or 2 while automatically maxing out the garrison."
+Measured first (`tools/study/capitals.gd`, 24 AI wars on the Isles, 86 capitals fell). Nothing
+gave the loser troops. The AI put 1.2 recruits on average on its new capital the round after,
+and never moved it. But the new capital was picked by `3·friends − 2·foes + troops`, so the court
+always fled to the biggest stack, and "NEW CAPITAL" flashed over a land that already looked like
+an army. Now:
+
+- **The court flees deep, not to the biggest stack.** Friends and foes decide; troops only break a
+  tie.
+- **It arrives with its guard.** One fresh troop, and the garrison dug in to the full at once. The
+  events for both (`courtGuard`, and an Entrenched with `added`) keep the counts and the report
+  true. The report says: "the court's guard arrives (+1) and 4 dig in behind the walls".
+
+Arena, the same seeds, 4 commanders with Standard rules, rules 19 → 20:
+
+| | wins general / veteran / hask / recruit | lead changes | won from behind | within 3 at the end | capitals fell |
+|---|---|---|---|---|---|
+| Known World, 40 wars | 12/11/10/7 → **10/10/10/10** | 1.4 → **1.8** | 30% → **35%** | 8 → **12** | 3.5 → 3.4 |
+| Thousand Isles, 40 wars | 12/9/12/7 → 14/7/10/9 | 2.0 → **2.5** | 22% → **27%** | 12 → **15** | 4.6 → 3.5 |
+
+### The Thousand Isles: Great Vane pays 3 (rules 20)
+
+The owner: "whoever gains control of the west continent wins pretty easily. maybe add a third
+crossing point from either the northern continent or the eastern one." Great Vane is 7 lands with
+a fortress and two gates to guard, and it paid 4. Measured (`tools/study/isles.gd`, 60 wars each
+on the same seeds, 4 AI commanders): a commander who held Vane for 3+ rounds won 63% of those
+wars (25% would be even).
+
+| variant | Vane's holder wins | wars ended by conquest |
+|---|---|---|
+| as drawn | 63% | 11 / 60 |
+| + a crossing Vaneholt ⇄ Kestrel Port (the nearest strait, 140 px) | 73% | 24 / 60 |
+| + the crossing, the fortress moved inland | 71% | 24 / 60 |
+| **Great Vane pays 3** | **40%** | 11 / 60 |
+| + the crossing, fortress moved, pays 3 | 73% | 26 / 60 |
+
+The crossing made Vane a launch pad into the Kestrel Isles: more wins for its holder, and twice the
+conquests. The bonus was the lever. Thale, the eastern continent, lies across the whole map. So
+Great Vane now pays 3, and stays a two-gate continent.
+
+**Map amendments** carry the change. A map's `amendments` list (`{since, lanes, regionBonus, why}`)
+is applied whenever `map.rules` is set (a setter on `MapDef.rules`), so a rules 19 save replays with
+Vane paying 4. A lane added by an amendment is drawn only under the rules that added it.
+`tools/study/lane.gd` finds the closest coast points for a new lane and can paint it on a preview.
+
+### Border clashes: the beaten column's arrow goes
+
+The owner: "at the very least we need to remove the arrows of forces that get destroyed after a
+border clash." Reproduced (`v112`, both battle settings). With **Battles: mine**, a clash between
+two AI commanders is a quick card, and the loser's arrow went only when that card's dice landed.
+Skip past the card first (Space, or the fast pace) and the arrow stayed for the rest of the report.
+Now every clash already told is settled whenever a beat shows, whichever path it came by.
+
+### The war around you
+
+The owner: "end game music escalation is sweet, let's see what other little things like that we
+can throw in to make the game feel more alive."
+
+- **The war beyond the tent.** While you plan and regroup, now and then a far cannon, volley, drum,
+  bugle or cheer, on the ambience slider. Every 20–45 s normally; every 9–20 s and louder when your
+  capital is under the guns or the war is near its end (the same test as the besieged and endgame
+  music).
+- **Smoke over the fighting.** Every land that changed hands in the last battles smoulders through
+  the regroup and reinforcement phases, a column of smoke drifting off in the wind.
+- **The day wears on.** The map's light runs from a cool morning in the first rounds, through noon
+  and a golden afternoon, to a red dusk in the last round (in a conquest game, by the leader's
+  progress toward the lands that end it). It falls full on the sea and lightly on the land, so every
+  commander's colour still reads true.
+
+### Fixes
+
+- **B-004** (the playtest bot's first automatic report): the lessons test only passed on a machine
+  with review batches that had "pause" notes. The bot's clean clone has none, and the test's own
+  batch was skipped for its `_` name. `lessons()` now takes the batches to mine, and the test mines
+  only its own. Checked in a clean clone.
+- An eliminated commander's capital stayed in the report's world (the engine clears it without an
+  event). The report now clears it on elimination. Display only; `tests/test_v112.gd` checks that
+  capitals match.
+
+### Working with the bot
+
+- `scripts/sync_main.sh` fast-forwards local main from GitHub (over SSH when https has no
+  credentials in the terminal). It never merges and never touches uncommitted work. The project hooks
+  (`.claude/settings.json`) run it at the start of every session and before every prompt, and it
+  speaks only when something came in, naming new `playtest/` files first.
+
 ## v1.11 — 27 Sep 2026: the review table learns
 
 No rule changes: games still play **rules 19**, and every save replays as before. This version is

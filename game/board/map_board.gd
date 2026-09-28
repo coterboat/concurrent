@@ -380,6 +380,13 @@ func _process(delta: float) -> void:
 		live = true
 	if _mat != null:
 		_mat.set_shader_parameter("pulse", 0.5 + 0.5 * sin(_time * 6.0))
+		if _day != _day_to:
+			_day = _day.lerp(_day_to, clampf(delta * 0.6, 0.0, 1.0))
+			if absf(_day.r - _day_to.r) + absf(_day.g - _day_to.g) + absf(_day.b - _day_to.b) < 0.002:
+				_day = _day_to
+			_mat.set_shader_parameter("daylight", Vector3(_day.r, _day.g, _day.b))
+	if not smoke.is_empty():
+		live = true
 	if live:
 		overlay.queue_redraw()
 
@@ -392,6 +399,48 @@ func float_text(id: String, text: String, color: Color, dur: float = 1.6, size_p
 	if art == null:
 		return
 	fx.append({"map": art.anchors.get(id, Vector2.ZERO), "text": text, "color": color, "t": 0.0, "dur": dur, "size": size_px})
+
+
+## v1.12: the war's day (morning to a red dusk) and smoke over the lands fought over last round
+var _day := Color(1, 1, 1)
+var _day_to := Color(1, 1, 1)
+var smoke := {} ## territory id -> when it began smouldering
+
+
+func set_daylight(c: Color, instant: bool = false) -> void:
+	_day_to = c
+	if instant:
+		_day = c
+		if _mat != null:
+			_mat.set_shader_parameter("daylight", Vector3(c.r, c.g, c.b))
+
+
+func smolder(ids: Array) -> void:
+	smoke = {}
+	for id in ids:
+		smoke[str(id)] = _time - randf() * 3.0 ## not all in step
+
+
+func _draw_smoke(ci: CanvasItem) -> void:
+	if smoke.is_empty() or art == null:
+		return
+	var r: float = token_radius()
+	for id in smoke.keys():
+		if not art.anchors.has(id) or dimmed.has(id):
+			continue
+		var base: Vector2 = map_to_screen(art.anchors[id]) + Vector2(r * 0.95, -r * 0.55)
+		var age: float = _time - float(smoke[id])
+		var fade: float = clampf(age / 1.5, 0.0, 1.0)
+		for i in 8:
+			var ph: float = fmod(age * 0.14 + float(i) / 8.0, 1.0)
+			var at: Vector2 = base + Vector2(sin(ph * 3.0 + float(i)) * r * 0.3 + ph * r * 1.1, -ph * r * 3.4)
+			var rad: float = r * (0.3 + 0.62 * ph)
+			var a: float = 0.5 * sin(ph * PI) * fade
+			ci.draw_circle(at, rad, Color(0.14, 0.12, 0.11, a), true, -1.0, true)
+			ci.draw_circle(at + Vector2(-rad * 0.22, -rad * 0.22), rad * 0.62, Color(0.5, 0.47, 0.44, a * 0.6), true, -1.0, true)
+		## the embers at its foot
+		var glow: float = (0.55 + 0.25 * sin(age * 5.0 + float(id.hash() % 7))) * fade
+		ci.draw_circle(base + Vector2(0, r * 0.15), r * 0.2, Color(1.0, 0.45, 0.12, 0.5 * glow), true, -1.0, true)
 
 
 var fires: Array = [] ## v1.9: a fallen capital burns: {map, t, dur}
@@ -451,6 +500,7 @@ func _draw_overlay() -> void:
 		ci.draw_line(a, _mouse, Color(1, 0.9, 0.6, 0.85), 5.0, true)
 		ci.draw_circle(_mouse, 7.0, Color(1, 0.9, 0.6, 0.85))
 	_draw_battle_marks(ci)
+	_draw_smoke(ci)
 	## v1.9: fallen capitals burn behind their tokens
 	var fs: Dictionary = _fire_frame() if not fires.is_empty() else {}
 	for fr in fires:
@@ -590,6 +640,8 @@ func _draw_region_labels(ci: CanvasItem) -> void:
 
 func _draw_lanes(ci: CanvasItem) -> void:
 	for l in art.lanes:
+		if map != null and not map.lane_live(str(l["a"]), str(l["b"])):
+			continue ## v1.12: a lane a map amendment added shows only under the rules that added it
 		var a: Vector2 = map_to_screen(l["pa"])
 		var b: Vector2 = map_to_screen(l["pb"])
 		var d: Vector2 = b - a
