@@ -29,17 +29,20 @@ reviews taught us), and `PLAYTEST.md` is the testers' brief.
 
 | What | Command |
 |---|---|
+| Before a commit (~10 s; the pre-commit hook runs it) | `./scripts/check.sh`: compile, tool tests, the newest `test_vNN.gd` and any test changed (+ view/properties/match when `engine/` or `session.gd` changed). `./scripts/check.sh --install` sets the hook up in a checkout |
 | Compile every script (seconds) | `$G --headless --path . --script res://tools/compile_check.gd` |
 | Full test suite | `./scripts/test.sh` → ends `CONCURRENT ok passed=N failed=0` (a few minutes) |
-| One test file | `$G --headless --path . --script res://tools/test_one.gd -- tests/test_v110.gd` |
-| Screenshot probes (windowed) | `SHOT_DIR=/some/dir ./scripts/shot.sh v18` (`calls`, `input`, `dice`, `v13`…`v19`, `v110`, `v111`) |
+| One test file | `$G --headless --path . --script res://tools/test_one.gd -- tests/test_v110.gd` (it can print `failed=0` over a `SCRIPT ERROR`: grep for it, or use `check.sh`) |
+| Every probe, as facts (windowed, ~15 min) | `./scripts/probes.sh` or `./scripts/probes.sh v112 v113`: fails on any `FAIL`, `SCRIPT ERROR` or hang |
+| One screenshot probe (windowed) | `SHOT_DIR=/some/dir ./scripts/shot.sh v18` (`calls`, `input`, `dice`, `v13`…`v19`, `v110`…`v113`) |
 | AI arena (balance) | `$G --headless --path . --script res://tools/arena.gd -- map=known24 n=40 seats=general,veteran,recruit,hask deal=draft levee=3` |
-| Review table | `python3 tools/review/review.py serve --open` (port 8765) |
+| Review table | `./scripts/review.sh`, or the owner double-clicks `Review Table.command` in the repo folder (port 8765; if it's already running it just opens the page) |
 | What the reviews taught us | `python3 tools/review/review.py lessons` (`W` in the table) |
 | Tool tests | `python3 tools/review/test_review.py && python3 tools/ludo/test_notes.py` |
 | Repo size | `./scripts/repo_size.sh` (plain git, no LFS: see `docs/ASSETS.md`, "Storage") |
 | Pull what the bot pushed | `./scripts/sync_main.sh` (automatic: a hook runs it every prompt) |
 | Generate assets | `python3 tools/ludo/ludo.py <ids>` or a `tools/ludo/vNN_content.py` script |
+| Voices, free on this Mac | VoiceStudio running (`http://127.0.0.1:3900`), then `python3 tools/voicestudio/vs_samples.py` (see `docs/ASSETS.md`) |
 
 Arena switches: `rules=`, `deal=draft|random`, `levee=`, `capitals=0|1`, `fortune=0|1`,
 `fbar=`/`ffloor=` (try a Fortune bar or floor), `supply=`, `traits=`, `line=`, `battle=`.
@@ -65,6 +68,27 @@ points as noise.
   they built: read it before writing a line or a prompt. After a review round, run
   `python3 tools/review/review.py lessons --write docs/PROMPTING.md` and fold any new pattern into
   its rules.
+- **The bot is a playtest helper, not CI.** It catches things on a clean Linux clone after a push.
+  The gate before a commit is ours: `scripts/check.sh` (the pre-commit hook), and `probes.sh` for
+  anything that changes the picture.
+
+## How the work is run
+
+- **One writer.** One Claude session writes code. The bot writes only `playtest/`; Grok reads and
+  reviews. If the owner may be playing from this tree, work in a `git worktree` beside it (copy
+  `.godot/` in with `cp -Rc` to skip the import) so a running Godot never hot-reloads half-done code.
+- **A version is a session.** When a version is in and the owner has played it, the next one starts
+  in a fresh session from the top of `docs/CHANGELOG.md`, `PLAYTEST.md` and `playtest/BUGS.md`, not
+  from a summary of a summary.
+- **Peel, don't rewrite.** `game_screen.gd`, `battle_theater.gd` and `session.gd` are big. When a
+  version touches a piece of one, move that piece into its own file in the same change, with its
+  probe. No cleanup passes for their own sake, and never "tidy" `session.gd` or `engine/`: that is
+  how replay breaks.
+- **Probes assert facts.** The kernel tests can't see the picture. A probe's `p.ok()` states what
+  the screen must say (three armies on three grounds, no arrow left for a column that died), so a
+  regression fails without anyone squinting at a PNG.
+- **No new systems** unless a play session asks for one in a way the arena can see. Polish,
+  legibility and moments come first. (Parked: online play, AI diplomacy.)
 
 ## Gotchas that have bitten before
 
@@ -94,6 +118,9 @@ points as noise.
 - **Voice text carries direction.** `*stars*` and `...` in a line are for the voice; `Lines.text()`
   strips the stars for subtitles. A note's direction goes in the manifest's `speak`, never into the
   words.
+- **Anything that runs a Session must fence the save slot first** (`Session.SAVE_PATH` to a test
+  path, `Settings.persist = false`). `runner.gd`, `probe.gd` and `test_one.gd` do; a new entry point
+  that plays rounds would otherwise overwrite, then clear, the owner's `user://savegame.json`.
 - Screens must fit **1440×900**: the setup screen (the Rules row replaced five rows for this)
   and the settings panel are near the limit. Screenshot-check after adding rows.
 
@@ -138,7 +165,8 @@ points as noise.
    untouched, conservation (`_conserved`), the report agreeing (`_view_agrees`), and
    whole wars replaying to the same hash.
 3. The arena, when it touches balance: before and after on the same seeds.
-4. UI, then a screenshot probe in `tools/shots/vNN.gd`. Look at the screenshots.
+4. UI, then a screenshot probe in `tools/shots/vNN.gd` whose `p.ok()` checks state what the
+   screen must show, and `./scripts/probes.sh vNN`. Look at the screenshots too.
 5. Words: the How to Play page (`game/ui/howto_screen.gd`), `rules.gd` help, `README.md`,
    and a dated `docs/CHANGELOG.md` entry with the evidence.
 6. Voice lines, if a moment deserves one: add them to a `tools/ludo/vNN_content.py`, and
@@ -146,3 +174,4 @@ points as noise.
    `docs/PROMPTING.md`.
 7. After meaningful gameplay changes, update PLAYTEST.md with what changed and what to poke at,
    or add a `playtest:` line to the commit message.
+8. `./scripts/check.sh` passes (the hook runs it on commit), and the full suite before a push.

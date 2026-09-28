@@ -17,6 +17,7 @@ const LeaderFace := preload("res://game/ui/leader_face.gd")
 const BattleField := preload("res://game/ui/battle_field.gd")
 const DiceStage := preload("res://game/ui/dice_stage.gd")
 const FortunePips := preload("res://game/ui/fortune_pips.gd")
+const Moments := preload("res://game/ui/moments.gd")
 
 signal finished(skip_rest: bool)
 
@@ -40,6 +41,7 @@ var _advised := false
 var _human := false
 var _ex_start := [0, 0] ## v1.8: the counts when this exchange began (for the advisor's roll lines)
 var _rolled_line := false ## v1.8: one good/bad-roll remark a battle at most
+var _last_stand := false ## v1.13: "one man left" is called once a battle
 
 var _bg: TextureRect
 var _title: Label
@@ -422,14 +424,14 @@ func abort() -> void:
 	_face_b.hush()
 	_advisor.hush()
 	Audio.ambience(true, "ambience_tent")
-	Audio.music("battle")
+	Audio.music(Audio.battle_music())
 
 
 func _close(skip_rest: bool) -> void:
 	_state = "idle"
 	_call_plate.visible = false
 	Audio.ambience(true, "ambience_tent")
-	Audio.music("battle")
+	Audio.music(Audio.battle_music())
 	var tw := create_tween()
 	tw.tween_property(self, "modulate:a", 0.0, 0.25)
 	tw.tween_callback(func():
@@ -573,6 +575,7 @@ func _next_engagement() -> void:
 	_f_used = {}
 	_exchange = 0
 	_rolled_line = false
+	_last_stand = false
 	_advised = false
 	_ri = 0
 	_call_plate.visible = false
@@ -810,6 +813,11 @@ func _update_counts() -> void:
 	_tier_b.text = (DiceStage.tier_name(nb) + " dice") if nb > 0 else ""
 	if _fort_a != null:
 		_update_fortune()
+	## v1.13: a side down to its last man against three or more, mid-fight: the drum rolls
+	if not _last_stand and _exchange >= 1 and not _melee and not _scramble and ((na == 1 and nb >= 3) or (nb == 1 and na >= 3)):
+		_last_stand = true
+		_shout_text("ONE MAN LEFT", Style.PARCH)
+		Audio.sfx("drumroll", -6.0)
 	## v1.9: the painted pieces on the table: what each side's men are worth (v1.10: in a melee
 	## and a free-for-all too, the lead army against the one across the field)
 	if DiceStage.has_pieces() and not _pieces_final:
@@ -1688,6 +1696,7 @@ func _finish_engagement() -> void:
 		_field.set_count(0, _a_left)
 		_field.set_count(1, _b_left)
 	_left = [_a_left, _b_left]
+	_last_stand = true ## the verdict has its own word
 	_update_counts()
 	if fell:
 		_result.text = ("%s back to %s — %d saved" % [Style.says(session.name_of(_a_pid), "falls"), session.hex_name(str(e.get("refuge", ""))), _a_left]).to_upper()
@@ -1705,7 +1714,20 @@ func _finish_engagement() -> void:
 	## the bar ends where the fight did
 	var wn: String = session.name_of(winner) if winner != "neutral" else "The garrison"
 	var verdict: String = "%s back" % Style.says(session.name_of(_a_pid), "falls") if fell else (("%s %s" % [Style.says(wn, "takes" if a_won else "holds"), session.hex_name(land)]) if kind == "Invasion" else "%s the field" % Style.says(wn, "wins"))
-	_odds_bar.show_odds(1.0 if a_won and not fell else 0.0, _a_pid, _b_pid, verdict, "Decided.")
+	## v1.13: the moments, played harder, whoever fights: a win against the odds, or the last man
+	## standing (the advisor still has his word when it's ours)
+	var closing := "Decided."
+	if not fell:
+		var inv: bool = kind == "Invasion"
+		var fort: int = _fort_bonus() if inv else 0
+		if Moments.upset(inv, int(b["a_size"]), int(b["b_size"]), a_won, fort):
+			closing = "Decided, against %d%% odds." % int(round(100.0 * Moments.winner_chance(inv, int(b["a_size"]), int(b["b_size"]), a_won, fort)))
+			_shout_text("AGAINST ALL ODDS!", Style.GOLD)
+			Audio.sfx("fanfare_order", -4.0)
+		elif int(b["left"]) == 1:
+			_shout_text("THE LAST MAN STANDING!", Style.GOLD.lightened(0.25))
+			Audio.sfx("drumroll", -8.0)
+	_odds_bar.show_odds(1.0 if a_won and not fell else 0.0, _a_pid, _b_pid, verdict, closing)
 	_field.cheer(0 if a_won else 1)
 	## the colours go up on the winner's side of the table; the loser's piece goes over
 	if DiceStage.has_pieces() and not fell:
@@ -1771,8 +1793,9 @@ func _advisor_verdict(a_won: bool, invasion: bool, a0: int, d0: int, left: int, 
 		mood = "alarm"
 	if key == "" or not Lines.has("advisor", key):
 		return
-	## the everyday verdicts not every time, or he would never stop talking; the upsets always
-	if not key.begins_with("upset") and randf() > 0.6:
+	## the everyday verdicts not every time, or he would never stop talking; the upsets and the
+	## last man standing always (v1.13)
+	if not key.begins_with("upset") and not key.begins_with("close") and randf() > 0.6:
 		return
 	get_tree().create_timer(maxf(0.6, after + 0.2)).timeout.connect(func():
 		if visible:

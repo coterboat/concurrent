@@ -7,6 +7,8 @@ const Types := preload("res://engine/types.gd")
 const ViewEvents := preload("res://game/view_events.gd")
 const Combat := preload("res://engine/combat.gd")
 const DiceStage := preload("res://game/ui/dice_stage.gd")
+const MapLib := preload("res://engine/map.gd")
+const Moments := preload("res://game/ui/moments.gd")
 
 signal finished
 signal shown ## the map now shows a new moment of the report (the roster follows it)
@@ -152,7 +154,7 @@ func play(p_session: Node, p_board: Control) -> void:
 	board.orders = []
 	board.world = _pre.clone()
 	board.refresh()
-	Audio.music("battle")
+	Audio.music(Audio.battle_music()) ## v1.13: the endgame carries on into the last battles
 	if bool(session.get_meta("opening_cinema", false)):
 		advance()
 	else:
@@ -511,7 +513,7 @@ func _build_beats() -> Array:
 						sub5 = "%s's new capital: the court's guard arrives (+%d)%s. They may move it in their next reinforcement phase." % [
 							_name(str(e["playerId"])), guard, (" and %d dig in behind the walls" % dug5) if dug5 > 0 else ""]
 					out.append({"upto": up5, "caption": "The court flees to %s" % _hex(str(e["terrId"])), "sub": sub5,
-						"sound": "", "delay": 1.6 if guard == 0 else 2.2, "focus": [str(e["terrId"])], "flash": str(e["terrId"]), "flash_text": "NEW CAPITAL"})
+						"sound": "banner", "delay": 1.6 if guard == 0 else 2.2, "focus": [str(e["terrId"])], "flash": str(e["terrId"]), "flash_text": "NEW CAPITAL"}) ## v1.13: its flag goes up
 					i = up5
 			Types.EVENT_CARDS_CAPTURED:
 				if bool(e.get("plunder", false)):
@@ -840,6 +842,13 @@ func _reveal_result() -> void:
 	var inv: bool = bool(b.get("invasion", false))
 	var ev: Dictionary = b.get("event", {})
 	var txt := ""
+	## v1.13: a fight won against the odds says so on the card, and on the map
+	var fell0: bool = inv and bool(ev.get("fellBack", false))
+	var fort0: int = MapLib.defender_bonus(_pre, session.map, str(b.get("resolves", ""))) if inv and _pre != null else 0
+	var against: bool = not fell0 and Moments.upset(inv, int(b["a_size"]), int(b["b_size"]), a_won, fort0)
+	if against:
+		txt = "Against the odds!  "
+		Audio.sfx("fanfare_order", -8.0)
 	if int(ev.get("reservesAdded", 0)) > 0:
 		txt = "Reserves +%d!  " % int(ev["reservesAdded"])
 		Audio.sfx("reserves", -4.0)
@@ -865,7 +874,9 @@ func _reveal_result() -> void:
 		get_tree().create_timer(0.3).timeout.connect(func(): Audio.cheer(cheering, -12.0)) ## a distant cheer, as big as the army that won
 	_apply(b)
 	if inv and a_won:
-		board.float_text(str(b["resolves"]), "Captured", Style.GOLD, 1.8, 26)
+		board.float_text(str(b["resolves"]), "Against the odds!" if against else "Captured", Style.GOLD, 1.8, 26)
+	elif against:
+		board.float_text(str(b["resolves"]) if str(b["resolves"]) != "" else str((b["focus"] as Array)[0]), "Against the odds!", Style.GOLD, 1.8, 26)
 	board.pulse_token(str(b["resolves"]) if str(b["resolves"]) != "" else str((b["focus"] as Array)[0]), 0.8)
 
 

@@ -18,6 +18,8 @@ const Ai := preload("res://engine/ai.gd")
 const Telemetry := preload("res://engine/telemetry.gd")
 const Maneuver := preload("res://engine/maneuver.gd")
 const Capitals := preload("res://engine/capitals.gd")
+const LastRound := preload("res://game/core/last_round.gd")
+const BoardFacts := preload("res://game/core/board_facts.gd")
 
 enum Phase { NONE, OPENING, PASS, PLANNING, RESOLVING, CINEMA, RECAP, GAME_OVER, MANEUVER, DRAFT }
 
@@ -687,28 +689,9 @@ func _absorb(sheets: Array, result: Dictionary) -> void:
 	var before: Types.World = world
 	world = result["world"]
 	hashes.append(Hash.world_hash(world))
-	## last round's marches, as they actually went (v1.6): a column beaten in a border clash
-	## never got there, and a surge only shows if it set off
-	var beaten := {}
-	var surged := {}
-	for e in events:
-		match str(e.get("kind", "")):
-			Types.EVENT_CLASH:
-				var wa: bool = str(e.get("winnerId", "")) == str(e.get("playerA", ""))
-				var lo: String = str(e.get("playerB", "")) if wa else str(e.get("playerA", ""))
-				var lo_to: String = str(e.get("hexA", "")) if wa else str(e.get("hexB", ""))
-				beaten[lo + "|" + lo_to] = true
-			Types.EVENT_SURGE:
-				surged[str(e.get("playerId", "")) + "|" + str(e.get("from", ""))] = true
-	ghosts = []
-	for s in sheets:
-		var sh: Types.Sheet = s
-		for p in sh.packets:
-			var pk: Types.Packet = p
-			if beaten.has(sh.player_id + "|" + pk.to_id):
-				continue
-			var sg: String = pk.surge_to if surged.has(sh.player_id + "|" + pk.to_id) else ""
-			ghosts.append({"from": pk.from_id, "to": pk.to_id, "strength": pk.strength, "owner": sh.player_id, "surgeTo": sg})
+	## last round's marches, as they actually went, each with its fate (v1.13: game/core/last_round.gd;
+	## a column beaten in a border clash now shows where it died, and a surge only if it set off)
+	ghosts = LastRound.ghosts(before, world, sheets, events)
 	_tally(events)
 	_luck(events, before)
 	for e in events:
@@ -960,13 +943,23 @@ func _dealt_armies(pid: String) -> int:
 
 
 func income_breakdown() -> Dictionary:
+	## v1.13: the parts add up to income_total(), as Income.income_of counts them: only the lands
+	## in supply pay, and a held capital's treasury and the levée are recruits too
 	var w: Types.World = _post_regroup()
 	var terrs: int = MapLib.player_territory_ids(w, planner).size()
+	var cut := 0
+	if map.supply:
+		var fed: Dictionary = MapLib.supplied_ids(w, map, planner)
+		cut = terrs - fed.size()
+		terrs = fed.size()
 	return {
 		"lands": maxi(Income.INCOME_FLOOR, terrs / 3),
 		"bloc": Income.connected_bloc(w, map, planner) / 6,
 		"regions": Income.region_bonus_of(w, map, planner),
+		"capital": Income.treasury_of(w, map, planner),
+		"levee": Income.levee_of(w, map, planner),
 		"cards": Validate.cash_value_of(world, map, sheet()),
+		"cut": cut, ## lands that pay nothing, cut off from the road home
 	}
 
 
@@ -1004,6 +997,8 @@ func add_place(t: String, delta: int) -> String:
 	if delta > 0:
 		if income_left() <= 0:
 			return "No reinforcements left to place."
+		if cap == 0 and phase != Phase.OPENING and map.supply and not MapLib.in_supply(world, map, t):
+			return "%s is cut off: no recruits can reach it until the road home is open again." % hex_name(t) ## v1.13
 		if cur >= cap:
 			return "%s can take at most %d (1 + your %d neighboring lands%s)." % [
 				hex_name(t), cap, cap / (2 if phase == Phase.OPENING else 1) - 1,
@@ -1425,6 +1420,7 @@ func warnings() -> PackedStringArray:
 			out.append("%d reinforcement%s not placed yet — unplaced armies are lost." % [income_left(), "" if income_left() == 1 else "s"])
 	if phase == Phase.PLANNING:
 		var w: Types.World = projected_world()
+		var hinges: Dictionary = BoardFacts.hinges(w, map, planner) ## v1.13: lands that hold the road home
 		var warned := {}
 		for raw in sheet().packets:
 			var p: Types.Packet = raw
@@ -1438,7 +1434,11 @@ func warnings() -> PackedStringArray:
 				if o != planner and o != Types.UNOCCUPIED and o != Income.NEUTRAL_ID:
 					danger = true
 			if left <= 1 and danger:
-				out.append("%s will be left with %d — a neighbor could walk right in." % [hex_name(p.from_id), left])
+				var road := ""
+				if hinges.has(p.from_id):
+					var cut: Array = hinges[p.from_id]
+					road = " It holds the road home for %s: lose it and %s cut off." % [", ".join(cut.map(func(x): return hex_name(str(x)))), "that land is" if cut.size() == 1 else "they are"]
+				out.append("%s will be left with %d — a neighbor could walk right in.%s" % [hex_name(p.from_id), left, road])
 				warned[p.from_id] = true
 		if hand().size() >= Cards.HAND_LIMIT and sheet().cash_set.is_empty():
 			out.append("Your hand is full: trade a set in or you won't draw new cards.")

@@ -2,6 +2,129 @@
 
 The bible says amendments come with a dated entry and the test or band that justified them. Everything below has both.
 
+## v1.13 — 28 Sep 2026: the map says what the engine knows, and the big moments land
+
+No rule changes: new games still play **rules 20**, nothing in `engine/` changed, and every save
+replays as it was played.
+
+The owner asked Grok to review the game and how it's built. Its verdict: the kernel is sound and
+tested, the client is the soft part ("a three-way fight can be correct in the engine and wrong on the
+table"), and the next good version is "the one where the table never disagrees with the kernel", with
+moments "played harder, not new toys". No new systems (AI diplomacy is parked as a nice-to-have).
+Two read-only audits of the code set the list: what the planning screen leaves out that the engine
+already knows, and which moments the game detects but plays thin.
+
+### Last round's columns carry their fate
+
+The planning map drew last round's marches as faint arrows, all alike: one thrown back from the walls
+looked like one that took its land, and a column beaten in a border clash was simply gone. Now
+(`game/core/last_round.gd`, peeled out of `session._absorb`):
+
+- a **red cross** where a column was thrown back, fell back, or lost the scramble;
+- a column beaten in a **border clash stops halfway**, where the columns met, with a cross there
+  (and a surge beaten by another surge, the same on its leg);
+- a land's **tooltip** says it: "Varek's 7 were thrown back by Dad." / "Dad's 5 were beaten by
+  Varek; 2 fell back to Ridge." / "…never got there: Hask's column met them on the border."
+
+The engine marches all of a commander's columns bound for one land as one (their first origin names
+it), and a clash names side A's origin and target while B's target is one of A's origins. The first
+matching took those literally and left 15% of failed columns unexplained. Matching them the engine's
+way, whole AI wars on three maps (`tests/test_v113.gd`, 4 commanders, rules 20):
+
+| map | took | thrown back | fell back | outfought | died in a clash | unexplained |
+|---|---|---|---|---|---|---|
+| Thousand Isles | 48 | 6 | 3 | 4 | 8 | **0** |
+| Known World | 30 | 2 | 1 | 1 | 4 | **0** |
+| The Ring | 30 | 3 | 4 | 4 | 2 | **0** |
+
+Every fate agrees with the world after the round, and every border clash is matched to the column
+that died in it.
+
+### What could land on you, the road home, who holds the regions
+
+From `game/core/board_facts.gd` (pure functions of a world; the counsel's threat estimate moved there
+so the map and the advisor agree), on the world as it will stand when you seal:
+
+- **A sword plate** on a land of yours that could be outnumbered next round (the most one enemy
+  could bring: every man they can march from their bordering lands plus the most they could place
+  there, shown at about 1.5× your men and 3 more). **Your capital rings crimson** as soon as it
+  could be outnumbered at all. It updates as you place and order.
+- **An amber dashed ring** on a land that holds the road home for others (supply maps). Sealing an
+  order that leaves one with a single man says so: "…It holds the road home for Vane Tor: lose it
+  and that land is cut off."
+- **Region pips** beside each bonus: one per land in its holder's colour, and a pulsing ring on the
+  last land someone needs. Drawn over the tokens (under them a crown hid three of Great Vane's seven).
+- **The tooltip** (`game/ui/land_tip.gd`, peeled out of `game_screen.gd`) adds who holds the region
+  ("Varek holds 5 of 7") and, for three ways in or fewer, where they are: Great Vane's two, Morrow
+  Fen → Vane Strand and Reach Rock → Vanewick.
+- **The roster** shows each commander's recruits for next round (+N).
+
+### Numbers that disagreed with the engine
+
+- The recruits' breakdown (the orders drawer) left out the capital's treasury and the levée, and
+  counted cut-off lands. Its parts now add up to the total; `tests/test_v113.gd` checks every round
+  of a live war.
+- Clicking a cut-off land in the reinforcement phase said "can take at most 0 (1 + your -1
+  neighboring lands)". It now says the land is cut off.
+- The recap skipped melees held, scrambles won, fall-backs and capitals taken, and named a border
+  clash "at" one end of the road. It tells them all now, and names the road.
+
+### The moments, played harder
+
+From the audit: capitals and eliminations were staged in full; lead changes, upsets, the last man
+standing and the end-of-war music had lines and sounds that were barely used.
+(`game/ui/moments.gd` finds them.)
+
+- **Against all odds.** A battle won with under a 30% chance (the advisor's own upset line), whoever
+  fought, now gets a gold shout, a fanfare, and "Decided, against 8% odds." under the bar. Before,
+  only a human beating an AI one on one got the advisor's line. The report's cards say "Against the
+  odds!" too.
+- **The last man.** A side down to one man against three or more: "ONE MAN LEFT" and a drum roll
+  (`drumroll`, unused until now); winning with him: "THE LAST MAN STANDING!". The advisor's
+  close-call lines no longer sit behind the 60% gate.
+- **The lead.** A new sole leader on points opens the recap ("Dad takes the lead from Grand Marshal
+  Varek."), with the flag snap (`banner`, unused until now); the roster's crown pops across as it
+  changes hands; the advisor's `leader` / `behind` lines play at that moment. A capital won back by
+  the commander who lost it is told too.
+- **The endgame carries through.** The last rounds' music used to drop back to the regroup theme,
+  the battle theme and the plan theme between planning phases. The regroup and the recap keep the
+  hot mood, and the battles play the endgame's (`Audio.heat`). The ending's music now starts with the
+  tally, after the film, instead of ducked under it; when an AI wins, the advisor's defeat line
+  follows theirs (it never played).
+- **A capital's fall on film:** the commander's line plays after the film (the film's line used to
+  cut it off, its bubble hidden). The court fleeing raises its flag (a sound; it was silent). The
+  capital-choosing line is voiced (it never was).
+
+Not done here, and the owner's call: 16 Fortune voice takes accepted in `review/v18b_voices` on
+27 Sep were never installed (the review table's *Install accepted*), and 5 rejected ones wait for
+*Redo rejected*. Until then every Fortune line is a subtitle.
+
+### Working
+
+- **`scripts/check.sh`**, the short check before a commit (~10 s): compile, the tool tests, the
+  newest `test_vNN.gd` and any test file changed (plus the view, properties and match tests when
+  `engine/` or `session.gd` changed), each time-boxed, and failing on `SCRIPT ERROR`: `test_one`
+  prints `failed=0` over a runtime error. It is the git pre-commit hook
+  (`scripts/githooks/pre-commit`, set up with `./scripts/check.sh --install`).
+- **`scripts/probes.sh`** runs every probe (or the ones named) and fails on any `FAIL`, `SCRIPT
+  ERROR` or hang. The baseline before this version: 18 of 18. The bot is asked to run it (PLAYTEST.md).
+- **The review table is one double-click away:** `Review Table.command` in the repo folder (or
+  `./scripts/review.sh`) starts it and opens it in the browser, or just opens it if it's running.
+- **`tools/test_one.gd` fences the save slot** as `tests/runner.gd` does. It didn't: a test that
+  plays a session, run through it, wrote the game's own `user://savegame.json` and cleared it at game
+  over.
+- **Probe `v112` checks where the armies stand** (no two sharing a side, each ring over its own army),
+  in a three-way and now a five-way scramble on the World, not just how many there are.
+- **Probe `v19` waits for the film's fade** instead of 40 frames: at 114 fps, 40 frames is 0.35 s,
+  shorter than the 0.4 s fade, so it failed whenever the machine ran fast.
+- **CLAUDE.md**: one writer (the bot writes only `playtest/`), a version is a session, peel don't
+  rewrite, probes assert facts, no new systems until a play session asks.
+
+Tests: 648 passed (`tests/test_v113.gd`: 29). Every probe passes (`probes.sh`: 19 of 19; `v113`:
+28 facts). The arena fingerprints are unchanged (`known24` → `f782eba38886`, `world30` →
+`d9f01fe55802`): nothing that decides a battle moved. v1.13 was built in a `git worktree` beside the
+owner's checkout, so the Godot they were playing v1.12 in never reloaded half-done scripts.
+
 ## v1.12 — 28 Sep 2026: the fled court, a fairer Thousand Isles, and a war you can hear
 
 New games play **rules 20**. v1.11 saves (rules 19) and older replay exactly as they were

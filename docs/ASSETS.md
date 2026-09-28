@@ -49,6 +49,23 @@ for another take. `git checkout` restores the previous version.
 - Every POST needs the page's token.
 - Full contract: `tools/review/README.md`.
 
+## Voices on this Mac: VoiceStudio (free, local)
+
+[VoiceStudio](https://github.com/debpalash/VoiceStudio) (cloned to `~/Documents/GitHub/VoiceStudio`)
+runs k2-fsa's OmniVoice on the Mac's GPU. It serves a local API at `http://127.0.0.1:3900`, and an
+MCP server at `/mcp/` (`.mcp.json`). No credits and no key; nothing leaves the machine.
+
+- `tools/voicestudio/vs.py` is the client: `generate(text, out, ref_audio, ref_text, seed)` clones a
+  voice from a reference clip plus its transcript, and `instruct="male, elderly, low pitch, british
+  accent"` designs one instead. OmniVoice also reads `[laughter]`, `[sigh]` and
+  `[dissatisfaction-hnn]` in the text.
+- `tools/voicestudio/vs_samples.py` is the first pass (v1.14). Each voice is cloned from its own
+  accepted takes (`REFS`) and says four lines the game already has. 3 takes of each go into the review
+  batch `vs_voices`, loudness-matched to the Ludo take, and `0` in the table plays that Ludo take.
+  Install replaces only what's accepted; Redo is free and reads the notes.
+- About 17 s to make a take of 3–6 s. The advisor and the commanders are saved in VoiceStudio as
+  profiles named "CONCURRENT · …", so they can be used in its app too.
+
 ## Formats the code reads
 
 ### Battle sprite sheets: `assets/battle/<name>.webp` + `.json`

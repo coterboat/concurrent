@@ -8,6 +8,8 @@ const Income := preload("res://engine/income.gd")
 const MapLib := preload("res://engine/map.gd")
 const Style := preload("res://game/core/style.gd")
 const MapArt := preload("res://game/board/map_art.gd")
+const LastRound := preload("res://game/core/last_round.gd")
+const BoardFacts := preload("res://game/core/board_facts.gd")
 
 signal territory_clicked(id: String, button: int)
 signal territory_hovered(id: String)
@@ -27,7 +29,9 @@ var battle := {}
 var clash: Array = [] ## [land a, land b]: a border clash being fought on the line between them
 var orders: Array = [] ## [{from, to, strength, owner, surge, kind: "attack"|"move", born?}]
 var flow := false ## columns on the move: marching chevrons run along the live arrows (the battle report)
-var ghosts: Array = [] ## last round's packets
+var ghosts: Array = [] ## last round's packets (v1.13: each with its fate, LastRound.ghosts)
+var threats := {} ## v1.13: the viewer's lands -> BoardFacts.threats (planning only): what could land on them
+var hinges := {} ## v1.13: the viewer's lands -> the lands they hold the road home for (supply maps)
 var placements := {} ## id -> queued reinforcements (viewer)
 var bonus := {} ## id -> free soldiers from the cards being turned in (v1.6), drawn as a gold star
 var bonus_seen := {} ## v1.9: id -> when its star first showed; the star pops in, then fades after BONUS_SHOW
@@ -45,6 +49,7 @@ var pad_top := 0.0 ## screen space kept clear of the map at fit (HUD above)
 var pad_bottom := 0.0 ## (HUD below)
 var show_region_labels := true
 var _label_hits: Array = [] ## [{pos, from, to}] arrow labels you can click
+var _late: Array = [] ## v1.13: marks drawn over the tokens (fates, region pips), queued while the arrows draw
 var _region_font: FontVariation
 
 var zoom := 0.5
@@ -482,6 +487,7 @@ func _draw_overlay() -> void:
 		return
 	var ci := overlay
 	_label_hits.clear()
+	_late.clear()
 	_draw_ornaments(ci)
 	_draw_lanes(ci)
 	if show_region_labels:
@@ -490,7 +496,7 @@ func _draw_overlay() -> void:
 		return
 	_surges_drawn = {}
 	for g in ghosts:
-		_draw_arrow(ci, str(g["from"]), str(g["to"]), int(g.get("strength", 1)), str(g.get("owner", "")), str(g.get("surgeTo", "")), str(g.get("kind", "attack")), 0.22, false)
+		_draw_ghost(ci, g)
 	_surges_drawn = {}
 	for o in orders:
 		var grow: float = clampf((_time - float(o["born"])) / 0.55, 0.0, 1.0) if o.has("born") else 1.0
@@ -522,6 +528,8 @@ func _draw_overlay() -> void:
 	ids.sort_custom(func(x, y): return art.anchors[x].y < art.anchors[y].y)
 	for id in ids:
 		_draw_token(ci, str(id))
+	for m in _late:
+		(m as Callable).call(ci)
 	_draw_clash(ci)
 	for f in fx:
 		var t: float = float(f["t"]) / float(f["dur"])
@@ -617,6 +625,7 @@ func _draw_region_labels(ci: CanvasItem) -> void:
 		_region_font.spacing_glyph = 5
 	var k: float = zoom / maxf(fit, 0.01)
 	var sz: int = int(clampf(30.0 * sqrt(k) * (art.size.x / 2400.0 + 0.3), 20.0, 52.0))
+	var shares: Dictionary = BoardFacts.shares(world, map) if world != null and not plain else {}
 	for r in art.regions.keys():
 		if not map.region_bonus.has(r):
 			continue
@@ -636,6 +645,39 @@ func _draw_region_labels(ci: CanvasItem) -> void:
 		var bp := p + Vector2(-bw * 0.5, bs + 4)
 		ci.draw_string_outline(bf, bp, bonus, HORIZONTAL_ALIGNMENT_LEFT, -1, bs, 5, Color(0.05, 0.03, 0.02, 0.4))
 		ci.draw_string(bf, bp, bonus, HORIZONTAL_ALIGNMENT_LEFT, -1, bs, Color(1.0, 0.85, 0.45, 0.7))
+		if shares.has(r):
+			## beside the bonus, over the tokens (a pip hidden under a crown would miscount)
+			_late.append(_draw_region_pips.bind(shares[r], bp + Vector2(bw + 10.0, -bs * 0.34), sz))
+
+
+func _draw_region_pips(ci: CanvasItem, sh: Dictionary, at: Vector2, sz: int) -> void:
+	## v1.13: who holds the region, a pip a land in its holder's colour, the biggest holder first,
+	## on a dark pill that starts at `at`. A commander one land short of it: the missing pip rings
+	## in their colour, pulsing.
+	var by: Dictionary = sh["by"]
+	var owners: Array = by.keys()
+	owners.sort_custom(func(a, b): return int(by[a]) > int(by[b]) or (int(by[a]) == int(by[b]) and str(a) < str(b)))
+	var cols: Array = []
+	for o in owners:
+		for i in int(by[o]):
+			cols.append(Style.seat_color(str(o)))
+	var n: int = (sh["members"] as PackedStringArray).size()
+	var pr: float = clampf(float(sz) * 0.13, 3.5, 6.5)
+	var gap: float = pr * 2.0 + 3.0
+	var x0: float = at.x + pr + 4.0
+	var pill := Rect2(Vector2(at.x, at.y - pr - 3.0), Vector2(gap * float(n - 1) + pr * 2.0 + 8.0, pr * 2.0 + 6.0))
+	ci.draw_rect(pill, Color(0.05, 0.035, 0.02, 0.55))
+	var one_short: bool = int(sh["to_go"]) == 1 and str(sh["leader"]) != "" and n > 1
+	for i in n:
+		var c: Vector2 = Vector2(x0 + gap * i, at.y)
+		ci.draw_circle(c, pr + 1.5, Color(0.05, 0.03, 0.02, 0.55))
+		if i < cols.size():
+			ci.draw_circle(c, pr, cols[i])
+		else:
+			ci.draw_arc(c, pr - 0.5, 0, TAU, 14, Color(0.95, 0.9, 0.78, 0.5), 1.5, true)
+			if one_short and i == cols.size():
+				var lc: Color = Style.seat_color(str(sh["leader"]))
+				ci.draw_arc(c, pr + 3.5, 0, TAU, 18, Color(lc, 0.55 + 0.4 * sin(_time * 4.0)), 2.5, true)
 
 
 func _draw_lanes(ci: CanvasItem) -> void:
@@ -666,6 +708,30 @@ func _curve(a: Vector2, b: Vector2, bend: float) -> PackedVector2Array:
 	return pts
 
 
+func _draw_threat(ci: CanvasItem, id: String, p: Vector2, r: float, f: Font) -> void:
+	## v1.13: your land could be outnumbered next round: a crimson plate at its lower right with a
+	## sword and the most that could land on it. A capital that could be outnumbered at all also
+	## wears a slow crimson ring.
+	if not threats.has(id) or not bool(threats[id].get("danger", false)):
+		return
+	var th: Dictionary = threats[id]
+	if bool(th.get("capital", false)):
+		var pulse: float = 0.55 + 0.35 * sin(_time * 3.0)
+		ci.draw_arc(p, r + 7.0, 0, TAU, 40, Color(0.92, 0.25, 0.2, pulse), 3.0, true)
+	var txt := str(int(th["max"]))
+	var fs := 14
+	var tw: float = f.get_string_size(txt, HORIZONTAL_ALIGNMENT_LEFT, -1, fs).x
+	var ic: float = 14.0
+	var box := Rect2(p + Vector2(r * 0.55, r * 0.45), Vector2(ic + tw + 12.0, 20.0))
+	ci.draw_rect(Rect2(box.position + Vector2(1.5, 2.0), box.size), Color(0, 0, 0, 0.4))
+	ci.draw_rect(box, Color(0.38, 0.06, 0.05, 0.95))
+	ci.draw_rect(box, Color(0.98, 0.55, 0.45, 0.9), false, 1.5)
+	var sw: Texture2D = Style.icon("attack")
+	if sw != null:
+		ci.draw_texture_rect(sw, Rect2(box.position + Vector2(4, 3), Vector2(ic, ic)), false, Color(1, 0.9, 0.85))
+	ci.draw_string(f, box.position + Vector2(ic + 7.0, 15.0), txt, HORIZONTAL_ALIGNMENT_LEFT, -1, fs, Color(1, 0.93, 0.88))
+
+
 func _is_capital(id: String, owner: String) -> bool:
 	if map == null or not map.capitals or world == null or not world.players.has(owner):
 		return false
@@ -694,10 +760,43 @@ func _sea_bend(a: Vector2, b: Vector2, from_id: String, to_id: String) -> float:
 var _surges_drawn := {}
 
 
-func _draw_arrow(ci: CanvasItem, from_id: String, to_id: String, strength: int, owner: String, surge: String, kind: String, alpha: float, labeled: bool, grow: float = 1.0, surge_n: int = 0) -> void:
+func _draw_ghost(ci: CanvasItem, g: Dictionary) -> void:
+	## v1.13: last round's column, faint, with its fate: a column that failed ends in a cross at
+	## the walls it was thrown back from; one beaten in a border clash stops halfway, where the two
+	## columns met. One that took its land needs no mark: the land's colour says it.
+	var res: String = str(g.get("result", ""))
+	var failed: bool = LastRound.FAILED.has(res)
+	var surge_died: bool = str(g.get("surgeFate", "")) == LastRound.CLASH
+	var kind: String = str(g.get("kind", "attack"))
+	var end: Vector2 = _draw_arrow(ci, str(g["from"]), str(g["to"]), int(g.get("strength", 1)), str(g.get("owner", "")), "" if surge_died else str(g.get("surgeTo", "")),
+		kind, 0.42 if failed else 0.22, false, 1.0, 0, 0.5 if res == LastRound.CLASH else 1.0)
+	## the crosses go over the tokens: at a land's edge its garrison shield would hide them
+	if failed and end != Vector2.INF:
+		_late.append(_draw_fate_mark.bind(end))
+	if surge_died:
+		## the surge it sent on met another surge on the border and died there
+		var se: Vector2 = _draw_arrow(ci, str(g["to"]), str(g["surgeTo"]), -1, str(g.get("owner", "")), "", kind, 0.42, false, 1.0, 0, 0.5)
+		if se != Vector2.INF:
+			_late.append(_draw_fate_mark.bind(se))
+
+
+func _draw_fate_mark(ci: CanvasItem, at: Vector2) -> void:
+	## a column that failed: a red cross on a dark medal, readable over any land or sea
+	var s: float = clampf(token_radius() * 0.32, 6.0, 9.0)
+	ci.draw_circle(at + Vector2(1.0, 1.5), s + 5.0, Color(0, 0, 0, 0.35))
+	ci.draw_circle(at, s + 5.0, Color(0.10, 0.05, 0.04, 0.88))
+	ci.draw_arc(at, s + 5.0, 0, TAU, 20, Color(0.95, 0.88, 0.72, 0.7), 1.5, true)
+	var red := Color(0.95, 0.33, 0.26)
+	ci.draw_line(at + Vector2(-s, -s), at + Vector2(s, s), red, 3.5, true)
+	ci.draw_line(at + Vector2(-s, s), at + Vector2(s, -s), red, 3.5, true)
+
+
+func _draw_arrow(ci: CanvasItem, from_id: String, to_id: String, strength: int, owner: String, surge: String, kind: String, alpha: float, labeled: bool, grow: float = 1.0, surge_n: int = 0, cut: float = 1.0) -> Vector2:
 	## strength < 0: a surge onward (everyone left after the capture, less the one who stays)
+	## v1.13: cut < 1 draws only that part of the way, with no head (a column that never got
+	## there); returns where the drawn arrow ends (Vector2.INF when it isn't drawn)
 	if not art.anchors.has(from_id) or not art.anchors.has(to_id):
-		return
+		return Vector2.INF
 	var r := token_radius()
 	var a: Vector2 = anchor(from_id)
 	var b: Vector2 = anchor(to_id)
@@ -711,6 +810,8 @@ func _draw_arrow(ci: CanvasItem, from_id: String, to_id: String, strength: int, 
 		if not map.is_adjacent(from_id, to_id):
 			bend = _sea_bend(a, b, from_id, to_id) ## v1.7: a march by sea sails round the other lands
 	var pts := _curve(a, b, bend)
+	if cut < 1.0:
+		pts = pts.slice(0, maxi(3, int(ceil(cut * float(pts.size() - 1))) + 1))
 	if grow < 1.0:
 		## a column setting out: the arrow draws itself from its origin
 		var keep: int = maxi(3, int(ceil(grow * float(pts.size() - 1))) + 1)
@@ -730,10 +831,11 @@ func _draw_arrow(ci: CanvasItem, from_id: String, to_id: String, strength: int, 
 	var tip: Vector2 = pts[pts.size() - 1]
 	var back: Vector2 = (tip - pts[pts.size() - 3]).normalized()
 	var side: Vector2 = back.orthogonal()
-	var head := PackedVector2Array([tip + back * (w + 8), tip + side * (w + 6), tip - side * (w + 6)])
-	ci.draw_colored_polygon(head, dark)
-	var inner := PackedVector2Array([tip + back * (w + 4), tip + side * (w + 2.5), tip - side * (w + 2.5)])
-	ci.draw_colored_polygon(inner, col)
+	if cut >= 1.0:
+		var head := PackedVector2Array([tip + back * (w + 8), tip + side * (w + 6), tip - side * (w + 6)])
+		ci.draw_colored_polygon(head, dark)
+		var inner := PackedVector2Array([tip + back * (w + 4), tip + side * (w + 2.5), tip - side * (w + 2.5)])
+		ci.draw_colored_polygon(inner, col)
 	if flow and alpha >= 0.95 and grow >= 1.0:
 		## marching chevrons: which way the column is going, at a glance
 		for k in 3:
@@ -762,6 +864,7 @@ func _draw_arrow(ci: CanvasItem, from_id: String, to_id: String, strength: int, 
 		ci.draw_circle(m, rad + 2.0, dark)
 		ci.draw_circle(m, rad, Color(0.96, 0.92, 0.82, alpha))
 		ci.draw_string(f, m + Vector2(-tw * 0.5, 6), txt, HORIZONTAL_ALIGNMENT_LEFT, -1, 17, Color(0.1, 0.08, 0.06, alpha))
+	return tip ## the head's base: at a land's edge, just outside its token
 
 
 func _draw_token(ci: CanvasItem, id: String) -> void:
@@ -830,6 +933,7 @@ func _draw_token(ci: CanvasItem, id: String) -> void:
 		ci.draw_rect(Rect2(qp - Vector2(qw * 0.5 + 5, 11), Vector2(qw + 10, 20)), Color(0.12, 0.09, 0.03, 0.95))
 		ci.draw_rect(Rect2(qp - Vector2(qw * 0.5 + 5, 11), Vector2(qw + 10, 20)), Style.GOLD, false, 1.5)
 		ci.draw_string(f, qp + Vector2(-qw * 0.5, 5), qt, HORIZONTAL_ALIGNMENT_LEFT, -1, 15, Style.GOLD)
+	_draw_threat(ci, id, p, r, f)
 	## a free soldier from a card naming this land: a gold star under the token
 	## v1.9: it only says where the troops came from, so it pops in and fades after a few seconds
 	if bonus.has(id):
@@ -885,6 +989,11 @@ func _draw_token(ci: CanvasItem, id: String) -> void:
 		var cpp: Vector2 = p + Vector2(-cw * 0.5, -r - 10)
 		ci.draw_string_outline(f, cpp, "CUT OFF", HORIZONTAL_ALIGNMENT_LEFT, -1, 12, 4, Color(0.05, 0.03, 0.02, 0.9))
 		ci.draw_string(f, cpp, "CUT OFF", HORIZONTAL_ALIGNMENT_LEFT, -1, 12, cut)
+	## v1.13: a land that holds the road home for others: an amber ring, dashed (the tooltip names them)
+	if hinges.has(id):
+		var amber := Color(1.0, 0.72, 0.25, 0.85)
+		for k in 16:
+			ci.draw_arc(p, r + 6.0, TAU * k / 16.0, TAU * (k + 0.55) / 16.0, 4, amber, 2.5, true)
 	## enemy ceiling: the most this hex could hold after their hidden reinforcement
 	if show_ceiling and owner != viewer and owner != Types.UNOCCUPIED:
 		var ceiling: int = n + (Income.cap_of(world, map, id) * ceiling_mult if owner != "neutral" else 0)

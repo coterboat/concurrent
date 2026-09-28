@@ -21,8 +21,9 @@ further down apply to every push.
 | What | Command | Passes when |
 |---|---|---|
 | All tests | `godot --headless --path . --script res://tests/runner.gd` | the last line is `CONCURRENT ok passed=N failed=0` |
-| One screenshot probe (needs a display, e.g. Xvfb) | `SHOT_DIR=/tmp/shots godot --path . res://tools/probe.tscn -- --script=res://tools/shots/<name>.gd` | it prints no `FAIL` lines and the PNGs look right |
-| The probes | `calls input ui dice v13 v14 v14b v15 v16 v17 v18 v19 v110 v111` | |
+| Every probe (needs a display, e.g. Xvfb) | `GODOT=godot ./scripts/probes.sh` (or name some: `./scripts/probes.sh v112 v113`) | it ends without `probes: failed:`. Each probe's `ok`/`FAIL` lines are facts about the picture (three armies on three grounds, no arrow left for a dead column): a `FAIL` is a bug, even when the PNG looks fine |
+| One screenshot probe | `SHOT_DIR=/tmp/shots godot --path . res://tools/probe.tscn -- --script=res://tools/shots/<name>.gd` | it prints no `FAIL` lines and the PNGs look right |
+| The short check before a commit | `GODOT=godot ./scripts/check.sh` | it ends without `check: FAIL` |
 | The text CLI | `godot --headless --path . --script res://tools/cli.gd -- play --seed 42 </dev/null` | a clean exit |
 | AI wars | `godot --headless --path . --script res://tools/arena.gd -- map=known24 n=6 seats=general,veteran,recruit,hask seed=500` | no `VIOLATION` or `SCRIPT ERROR`, and the fingerprint below |
 | Tool tests | `python3 tools/review/test_review.py && python3 tools/ludo/test_notes.py` | `OK` |
@@ -52,7 +53,58 @@ shown: fine" is as useful as a bug.
   v1.8 Fortune.
 - **Probes run with films off** (`motion = "paintings"`). `v19` turns them on.
 
-## v1.12: the fled court, a fairer Thousand Isles, a war you can hear (this push)
+## v1.13: the map says what the engine knows, and the big moments land (this push)
+
+No rule changes: new games still play **rules 20**, and every save replays as before (the arena
+fingerprints below v1.12 are unchanged). Everything here is what the table shows and says.
+
+- **Last round's columns carry their fate.** The faint arrows you plan over now say what happened:
+  a red cross where a column was thrown back (or fell back, or lost the scramble), and a column
+  beaten in a border clash stops halfway, where it died, with a cross there. Hover the land for the
+  words ("Varek's 7 were thrown back by Dad.").
+  - **Poke:** probe `v113`, and any war on the Isles or the Ring. `tests/test_v113.gd` checks every
+    column's fate against the world in whole AI wars on three maps; tell us any cross that sits on a
+    land the column actually took, or a clash with no half-arrow.
+- **A sword plate on your lands that could be outnumbered next round**, with the most one enemy
+  could bring. Your capital rings crimson as soon as it could be outnumbered at all. It updates as
+  you place recruits and give orders.
+  - **Poke:** it should never cover a number or the garrison shield, and on a crowded map it
+    shouldn't be on every land (it needs about 1.5× your men and 3 more).
+- **An amber dashed ring (supply maps): a land that holds the road home for others.** The tooltip
+  names them; sealing an order that leaves one with a single man warns you.
+- **Region pips** beside each region's bonus: one per land, in its holder's colour, biggest holder
+  first; a pulsing ring on the last land someone needs. The tooltip adds "Varek holds 5 of 7" and,
+  for a region with three ways in or fewer, where they are (Great Vane: two).
+- **The land tooltip** now says all of the above; the roster shows each commander's recruits for
+  next round (+N); the recruits' breakdown adds up to the total (capital and levée included, only
+  lands in supply paying; it used to leave them out). A cut-off land's recruit message no longer
+  says "at most 0 (1 + your -1 neighbouring lands)".
+- **The recap** tells melees held, scrambles won, fall-backs and capitals taken (it used to skip
+  them), names a border clash by the road it was fought on, and opens with a new leader or a
+  capital won back.
+- **The moments, played harder:**
+  - **Against all odds:** any battle won with under a 30% chance, whoever fought, gets a gold shout,
+    a fanfare, and "Decided, against N% odds" under the bar. The report's cards say it too.
+  - **The last man:** a side down to one man against three or more gets "ONE MAN LEFT" and a
+    drum roll; winning with him gets "THE LAST MAN STANDING!". The advisor's close-call lines now
+    always play.
+  - **The lead:** a new leader on points opens the recap with a flag snap, the roster's crown pops
+    across, and the advisor says so when it's our lead won or lost.
+  - **The endgame music carries through** the regroup, the battles and the recap of the last rounds
+    (it used to drop back to the ordinary themes). The ending's music starts with the tally,
+    after the film, not ducked under it; when an AI wins, the advisor's defeat line follows theirs.
+  - A capital's fall filmed: the commander's line now plays after the film (it was cut off). The
+    court fleeing raises a flag (a sound). The capital-choosing line is voiced.
+  - **Poke:** the voice queue. Several moments in one round (a lead change, a region, a capital)
+    must never talk over each other or leave the music ducked.
+- **Tooling:** `scripts/check.sh` (the short pre-commit check, ~10 s: compile, tool tests, the
+  newest test file) and `scripts/probes.sh` (every probe, failing on any `FAIL`, `SCRIPT ERROR` or
+  hang). `tools/test_one.gd` no longer plays sessions into the real save slot.
+  - **Poke:** `GODOT=godot ./scripts/probes.sh` under Xvfb end to end: it should end without
+    `probes: failed:`. `v112` now also checks where each army stands in a three- and a five-way
+    scramble.
+
+## v1.12: the fled court, a fairer Thousand Isles, a war you can hear
 
 New games play **rules 20**.
 

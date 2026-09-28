@@ -25,6 +25,9 @@ const PlanDialog := preload("res://game/ui/plan_dialog.gd")
 const HowTo := preload("res://game/ui/howto_screen.gd")
 const LeaderFace := preload("res://game/ui/leader_face.gd")
 const DiceStage := preload("res://game/ui/dice_stage.gd")
+const LandTip := preload("res://game/ui/land_tip.gd")
+const Moments := preload("res://game/ui/moments.gd")
+const BoardFacts := preload("res://game/core/board_facts.gd")
 
 const BAR := 156.0
 const TOP := 84.0
@@ -237,12 +240,13 @@ func _on_phase(ph: int) -> void:
 		Session.Phase.MANEUVER:
 			select("")
 			_war_alive()
-			Audio.music("muster")
+			Audio.music(_hot_or("muster")) ## v1.13: a war at its height stays there through the regroup
 			phase_banner("REGROUP PHASE", "March troops one land toward the front")
 			_say_once("maneuver", "neutral")
 			log_line("Regroup phase: march troops one land toward the front.", Style.GOOD)
 		Session.Phase.OPENING, Session.Phase.PLANNING:
 			select("")
+			Audio.heat = _plan_mood() if ph == Session.Phase.PLANNING else ""
 			Audio.music(_plan_mood() if ph == Session.Phase.PLANNING else "plan")
 			if ph == Session.Phase.OPENING and not _intro_done and not bool(session.config.get("tutorial", false)):
 				_start_intro()
@@ -270,14 +274,18 @@ func _on_phase(ph: int) -> void:
 			roster.view = session.pre_world ## the counts start where the round began
 			select("")
 			if not bool(session.get_meta("opening_cinema", false)):
+				Audio.heat = _plan_mood() ## v1.13: the report's music (Audio.battle_music)
 				phase_banner("THE BATTLES", "Every order happens at once")
 			board.smolder([]) ## the report makes its own smoke
 			cinema.play(session, board)
 		Session.Phase.RECAP:
-			Audio.music("plan")
+			if session.winner == "":
+				Audio.music(_hot_or("plan")) ## v1.13: the endgame doesn't drop back to the plan theme
+			## (the war's last reckoning keeps the battle playing until the ending)
 			_log_round()
 			recap.show_round()
 			_react_to_round()
+			_lead_moment()
 			_maybe_defeat_notice()
 		Session.Phase.GAME_OVER:
 			var won: bool = session.is_human(session.winner)
@@ -285,13 +293,17 @@ func _on_phase(ph: int) -> void:
 			for s in session.seats:
 				if s["kind"] == "human":
 					any_human = true
-			Audio.music("victory" if (won or not any_human) else "defeat", 0.6, true) ## v1.9: then the march (or the lament)
 			Audio.ambience(false)
-			## v1.9: the film of the ending first, then the tally
+			## v1.9: the film of the ending first, then the tally. v1.13: the ending's music starts
+			## with the tally, full, not ducked under the film's own score (the war's music fades
+			## out under the film)
 			var tally := func():
+				Audio.music("victory" if (won or not any_human) else "defeat", 0.6, true) ## v1.9: then the march (or the lament)
 				game_over.show_result()
 				_game_over_voice(won, any_human)
-			if not (any_human and _film("victory" if won else "defeat", "", "", tally)):
+			if any_human and _film("victory" if won else "defeat", "", "", tally):
+				Audio.music("", 1.5)
+			else:
 				tally.call()
 	_refresh()
 
@@ -303,6 +315,8 @@ func _refresh() -> void:
 	if session.world == null:
 		return
 	var ph: int = session.phase
+	board.threats = {}
+	board.hinges = {}
 	board.capital_override = {}
 	if session.capital_choosable():
 		board.capital_override[session.planner] = session.capital_shown(session.planner) ## v1.8: yours, as you choose it
@@ -367,6 +381,11 @@ func _refresh() -> void:
 			for ln in session.card_bonus_lands():
 				board.bonus[ln] = int(board.bonus.get(ln, 0)) + 1
 		board.ghosts = (session.ghosts + session.move_ghosts) if ph == Session.Phase.PLANNING else []
+		if ph == Session.Phase.PLANNING:
+			## v1.13: on the world as it will stand when you seal (your recruits placed, your columns
+			## gone), what could land on each of your lands, and which of them hold the road home
+			board.threats = BoardFacts.threats(board.world, session.map, session.planner)
+			board.hinges = BoardFacts.hinges(board.world, session.map, session.planner)
 		board.orders = _my_arrows()
 		board.targets = _targets()
 		board.battle = {}
@@ -489,7 +508,7 @@ func _update_counsel() -> void:
 	## speak the most important thing, once per round
 	var top: Dictionary = items[0]
 	var v: String = str(top.get("voice", ""))
-	if v != "" and (int(top["rank"]) >= 80 or v in ["welcome", "deploy", "cards", "dug_in", "surge", "attack_hint"]):
+	if v != "" and (int(top["rank"]) >= 80 or v in ["welcome", "deploy", "cards", "dug_in", "surge", "attack_hint", "capital_choose"]): ## v1.13: naming the capital is spoken too
 		_say_once(v, {"alarmed": "alarm", "pleased": "happy"}.get(str(top["mood"]), "neutral"), str(top["key"]))
 
 
@@ -756,18 +775,7 @@ func _on_hover(id: String) -> void:
 	if id == "" or session.world == null or land_card.visible and id == selected:
 		_hover_tip.visible = false
 		return
-	var w: Types.World = board.world
-	var ts: Types.TerritoryState = w.get_territory(id)
-	var td: Types.TerritoryDef = session.map.get_territory(id)
-	var lines: Array = [td.display_name]
-	if td.region != "":
-		lines.append("%s  (+%d)" % [session.map.region_names.get(td.region, td.region), int(session.map.region_bonus.get(td.region, 0))])
-	if ts.owner == Types.UNOCCUPIED:
-		lines.append("Empty")
-	else:
-		var sp: Array = Income.home_split(ts)
-		lines.append("%s · %s · %d in the garrison" % [session.name_of(ts.owner), Style.plural(int(sp[0]), "army", "armies"), int(sp[1])])
-	_hover_label.text = "\n".join(lines)
+	_hover_label.text = "\n".join(LandTip.lines(session, board, id)) ## v1.13: game/ui/land_tip.gd
 	_hover_tip.visible = true
 	_hover_tip.reset_size()
 	var p: Vector2 = board.anchor(id) + Vector2(28, -_hover_tip.size.y - 22)
@@ -1158,18 +1166,26 @@ func _on_beat(b: Dictionary) -> void:
 		var by2: String = str(b["capital_by"])
 		for fl in b.get("focus", []):
 			board.fire_at(str(fl), 5.5) ## v1.9: the city burns
-		if session.is_human(by2):
-			if not _film("capital_taken", "%s's capital falls" % session.name_of(victim2), "capital_taken"):
-				bar.advisor.react("happy", "capital_taken", 3.4)
-		elif session.is_human(victim2):
-			if not _film("capital_lost", "Our capital has fallen", "capital_lost"):
-				bar.advisor.react("alarm", "capital_lost", 3.4)
 		var vby: String = str(session.seat(by2).get("portrait", ""))
 		var vvi: String = str(session.seat(victim2).get("portrait", ""))
-		if not session.is_human(by2) and roster.faces.has(by2) and Lines.has(vby, "capital_took"):
-			roster.faces[by2].react("win", "capital_took", 3.2)
-		elif not session.is_human(victim2) and roster.faces.has(victim2) and Lines.has(vvi, "capital_lost"):
-			roster.faces[victim2].react("lose", "capital_lost", 3.2)
+		var commander_says := func():
+			if not session.is_human(by2) and roster.faces.has(by2) and Lines.has(vby, "capital_took"):
+				roster.faces[by2].react("win", "capital_took", 3.2)
+			elif not session.is_human(victim2) and roster.faces.has(victim2) and Lines.has(vvi, "capital_lost"):
+				roster.faces[victim2].react("lose", "capital_lost", 3.2)
+		## v1.13: when the fall plays as a film, the commander speaks after it (the film's own
+		## line used to cut theirs off, its bubble hidden under the film)
+		var filmed := false
+		if session.is_human(by2):
+			filmed = _film("capital_taken", "%s's capital falls" % session.name_of(victim2), "capital_taken", commander_says)
+			if not filmed:
+				bar.advisor.react("happy", "capital_taken", 3.4)
+		elif session.is_human(victim2):
+			filmed = _film("capital_lost", "Our capital has fallen", "capital_lost", commander_says)
+			if not filmed:
+				bar.advisor.react("alarm", "capital_lost", 3.4)
+		if not filmed:
+			commander_says.call()
 	if b.has("cards_to"):
 		_show_war_chest(str(b["cards_from"]), str(b["cards_to"]), b.get("cards", []))
 	if b.has("split_throws"):
@@ -1606,6 +1622,12 @@ func _far_off(delta: float) -> void:
 	_far_in = randf_range(9.0, 20.0) if hot else randf_range(22.0, 45.0)
 
 
+func _hot_or(calm: String) -> String:
+	## v1.13: the planning mood when the war is hot (besieged, endgame), else the phase's own theme
+	var m: String = _plan_mood()
+	return m if m != "plan" else calm
+
+
 func _plan_mood() -> String:
 	## v1.9: the planning music follows the war. Your capital under the guns: "besieged".
 	## The last rounds, or someone near a conquest: "endgame". Otherwise the plan themes.
@@ -1726,6 +1748,24 @@ func _react_to_round() -> void:
 			return
 
 
+func _lead_moment() -> void:
+	## v1.13: a new leader on points is a moment. The recap says it at the top (recap.gd), the
+	## flag snaps, and the advisor has his word when it's our lead won or lost.
+	var lc: Dictionary = Moments.lead_change(session.history)
+	if lc.is_empty() or session.winner != "":
+		return
+	Audio.sfx("banner", -4.0)
+	var to: String = str(lc["to"])
+	var from: String = str(lc.get("from", ""))
+	if session.is_human(to):
+		_say_once("leader", "happy")
+		_was_leading = true
+	elif from != "" and session.is_human(from):
+		_say_once("behind", "alarm")
+		_behind_said = session.world.round
+		_was_leading = false
+
+
 func _log_round() -> void:
 	var took := {}
 	var lost := {}
@@ -1748,7 +1788,10 @@ func _game_over_voice(won: bool, any_human: bool) -> void:
 	var who: String = str(session.seat(w).get("portrait", ""))
 	get_tree().create_timer(0.8).timeout.connect(func():
 		if not session.is_human(w) and Lines.has(who, "victory"):
-			Audio.voice(Lines.voice_path(who, "victory"))
+			var secs: float = Audio.voice(Lines.voice_path(who, "victory"))
+			if any_human and secs > 0.0:
+				## v1.13: then the advisor, for the table that lost (it never spoke when an AI won)
+				get_tree().create_timer(secs + 0.6).timeout.connect(func(): Audio.voice(Lines.voice_path("advisor", "defeat")))
 		elif won:
 			Audio.voice(Lines.voice_path("advisor", "victory"))
 		elif any_human:

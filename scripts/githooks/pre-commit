@@ -1,0 +1,5 @@
+#!/bin/sh
+# The short check before every commit (scripts/check.sh). Installed per checkout with
+#   ./scripts/check.sh --install      (git config core.hooksPath scripts/githooks)
+# Skip it once: git commit --no-verify
+exec "$(git rev-parse --show-toplevel)/scripts/check.sh"

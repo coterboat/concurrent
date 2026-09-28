@@ -15014,7 +15014,7 @@
   "video_url": "https://storage.googleapis.com/ludo-assets/api/de8eb79ca6ae664548c01089a22093be.mp4"
  },
  "v19_kf_soldier_reload": {
-  "credits": 4.2,
+  "credits": 4.3,
   "endpoint": "/assets/sprite/animate-keyframes",
   "file": "assets/raw/v19/battle/soldier_reload_kf.webp",
   "history": [
@@ -15024,10 +15024,17 @@
     "job": "e353586b-67f9-4425-bfb1-b75b65ece5ed",
     "url": "https://storage.googleapis.com/ludo-assets/api/13627e6651e3919bf1b165df761d4e77.webp",
     "v": 1
+   },
+   {
+    "credits": 4.2,
+    "endpoint": "/assets/sprite/animate-keyframes",
+    "job": "0a8afc8c-456f-49d3-8ecb-3ed3fcd9acac",
+    "url": "https://storage.googleapis.com/ludo-assets/api/ec0b9b31af6b6c6f94e6d034b2e0116a.webp",
+    "v": 2
    }
   ],
   "id": "v19_kf_soldier_reload",
-  "job": "0a8afc8c-456f-49d3-8ecb-3ed3fcd9acac",
+  "job": "e49c078c-b0ca-4363-8643-3bb5dc0723a8",
   "params": {
    "crop": false,
    "duration": 3,
@@ -15041,9 +15048,9 @@
    "model": "forge",
    "motion_prompt": "brings the musket upright in front of him, bites a cartridge, rams the ramrod down the barrel twice, then shoulders the musket again"
   },
-  "url": "https://storage.googleapis.com/ludo-assets/api/ec0b9b31af6b6c6f94e6d034b2e0116a.webp",
-  "v": 2,
-  "video_url": "https://storage.googleapis.com/ludo-assets/api/baa41ea1dc725b040b34af34de806ced.mp4"
+  "url": "https://storage.googleapis.com/ludo-assets/api/d162e9bc5c65401b81e33bb7b3693109.webp",
+  "v": 3,
+  "video_url": "https://storage.googleapis.com/ludo-assets/api/e4cc23b12b77d058412e181fe7fd20e2.mp4"
  },
  "v19_kf_soldier_volley": {
   "credits": 4.3,

@@ -27,6 +27,9 @@ func _ready() -> void:
 var view: RefCounted ## v1.6: the world the table is showing (the battle report's), for the card counts
 
 
+var _crowned := "" ## v1.13: the sole leader the crown last sat on
+
+
 func refresh() -> void:
 	if session == null or session.world == null:
 		return
@@ -61,7 +64,11 @@ func refresh() -> void:
 			Color(0.16, 0.12, 0.06, 0.94) if active else Color(0.03, 0.045, 0.08, 0.86),
 			col.lightened(0.2) if r["alive"] else Color(0.3, 0.3, 0.3), 2 if active else 1, 8, 6))
 		(ui["score"] as Label).text = "%d" % r["score"] if r["alive"] else "—"
-		var bits := "%d lands" % r["lands"]
+		## v1.13: what each commander raises next round, for everyone to see (the recap had it alone)
+		var inc: int = int(r["income"])
+		if view != null and view.players.has(r["id"]):
+			inc = Income.income_of(view, s.map, r["id"])
+		var bits := "%d lands · +%d" % [r["lands"], inc]
 		if s.map.cards and r["alive"]:
 			var nc: int = int(r["cards"])
 			if view != null and view.players.has(r["id"]):
@@ -73,7 +80,7 @@ func refresh() -> void:
 			bits += " · %d card%s%s" % [nc, "" if nc == 1 else "s", turning]
 		## v1.8: the favours Fortune owes each commander, for everyone to see (v1.9: as stars,
 		## the next one filling with gold)
-		var tip := ""
+		var tip := "%s raises %d recruits next round, as the map stands." % [s.name_of(r["id"]), inc] if r["alive"] else ""
 		var pips: Control = ui["pips"]
 		pips.visible = false
 		if s.map.fortune and r["alive"]:
@@ -86,14 +93,26 @@ func refresh() -> void:
 				pips.visible = true
 				pips.set_state(ps.fortune, share)
 				var nm: String = s.name_of(r["id"])
-				tip = "Fortune ✦ %d of %d: %s. After an exchange that goes badly, %s can throw it again (once a battle).\nThe next star fills with gold as the dice rob %s: about half a battle's worth of bad luck owes another (%d%% of the way there)." % [
+				tip += "\n\n" + "Fortune ✦ %d of %d: %s. After an exchange that goes badly, %s can throw it again (once a battle).\nThe next star fills with gold as the dice rob %s: about half a battle's worth of bad luck owes another (%d%% of the way there)." % [
 					ps.fortune, Fortune.MOST, "no favours in hand" if ps.fortune == 0 else ("%d favour%s in hand" % [ps.fortune, "" if ps.fortune == 1 else "s"]),
 					nm, nm, int(round(share * 100.0))]
 		if not r["alive"]:
 			bits = "fallen"
 		(ui["sub"] as Label).text = bits
 		(ui["panel"] as Control).tooltip_text = tip
-		(ui["crown"] as Control).visible = r["alive"] and int(r["score"]) == lead and leaders == 1
+		var crown: Control = ui["crown"]
+		var crowned: bool = r["alive"] and int(r["score"]) == lead and leaders == 1
+		if crowned and str(r["id"]) != _crowned:
+			## v1.13: the crown changes hands with a flourish (silently here; the recap sounds it)
+			if _crowned != "":
+				crown.pivot_offset = crown.size * 0.5
+				crown.scale = Vector2(2.0, 2.0)
+				crown.modulate = Color(1.6, 1.4, 0.9)
+				var tw := crown.create_tween().set_parallel(true)
+				tw.tween_property(crown, "scale", Vector2.ONE, 0.5).set_trans(Tween.TRANS_BACK).set_ease(Tween.EASE_OUT)
+				tw.tween_property(crown, "modulate", Color(1, 1, 1), 0.8)
+			_crowned = str(r["id"])
+		crown.visible = crowned
 		(ui["face"] as Control).set_dead(not r["alive"])
 		(ui["panel"] as Control).modulate = Color(1, 1, 1) if r["alive"] else Color(0.7, 0.7, 0.72)
 

@@ -3,6 +3,7 @@ extends Control
 
 const Style := preload("res://game/core/style.gd")
 const Types := preload("res://engine/types.gd")
+const Moments := preload("res://game/ui/moments.gd")
 
 signal continue_pressed
 
@@ -40,6 +41,14 @@ func show_round() -> void:
 		title = "The final reckoning"
 	_box.add_child(_center(Style.label(title, 34, Style.CREAM, "display")))
 	var lines: Array = _lines(s.events)
+	## v1.13: the moments first: a new leader, a capital won back
+	for rt in Moments.retaken(s.events, s.capital_log):
+		lines.insert(0, ["crown", "%s won back %s, the capital lost in round %d." % [s.name_of(str(rt["pid"])), s.hex_name(str(rt["land"])), int(rt["round"])], Style.GOLD])
+	var lc: Dictionary = Moments.lead_change(s.history)
+	if not lc.is_empty() and s.winner == "":
+		var from: String = str(lc.get("from", ""))
+		lines.insert(0, ["crown", ("%s takes the lead from %s." % [s.name_of(str(lc["to"])), s.name_of(from)]) if from != "" else "%s takes the lead." % s.name_of(str(lc["to"])),
+			Style.seat_color(str(lc["to"])).lightened(0.45)])
 	if lines.is_empty():
 		lines.append(["scroll", "A quiet round. Nobody lost an inch.", Style.MUTED])
 	var list := VBoxContainer.new()
@@ -107,9 +116,29 @@ func _lines(evs: Array) -> Array:
 					took[who].append(s.hex_name(hex))
 			Types.EVENT_INVASION:
 				if not bool(e["attackerWon"]):
-					out.append(["shield", "%s held %s against %s." % [s.name_of(str(e["defenderId"])), s.hex_name(str(e["to"])), s.name_of(str(e["attackerId"]))], Style.PARCH])
+					var fell: String = ""
+					if bool(e.get("fellBack", false)):
+						fell = " (%d fell back to %s)" % [int(e.get("attackerLeft", 0)), s.hex_name(str(e.get("refuge", "")))]
+					out.append(["shield", "%s held %s against %s%s." % [s.name_of(str(e["defenderId"])), s.hex_name(str(e["to"])), s.name_of(str(e["attackerId"])), fell], Style.PARCH])
+			Types.EVENT_MELEE:
+				## v1.13: several at once against one land
+				if int(e.get("defenderLeft", 0)) > 0:
+					var foes: Array = []
+					for f in e.get("fronts", []):
+						foes.append(s.name_of(str(f.get("attackerId", ""))))
+					out.append(["shield", "%s held %s against %s at once." % [s.name_of(str(e.get("defenderId", ""))), s.hex_name(str(e.get("to", ""))), _join(foes)], Style.PARCH])
+			Types.EVENT_SCRAMBLE:
+				var rivals: Array = []
+				for f in e.get("fronts", []):
+					if str(f.get("playerId", "")) != str(e.get("winnerId", "")):
+						rivals.append(s.name_of(str(f.get("playerId", ""))))
+				out.append(["attack", "%s won the scramble for %s against %s." % [s.name_of(str(e.get("winnerId", ""))), s.hex_name(str(e.get("to", ""))), _join(rivals)], Style.PARCH])
+			Types.EVENT_CAPITAL_TAKEN:
+				out.append(["crown", "%s took %s's capital, %s." % [s.name_of(str(e.get("by", ""))), s.name_of(str(e.get("playerId", ""))), s.hex_name(str(e.get("terrId", "")))], Style.GOLD])
 			Types.EVENT_CLASH:
-				out.append(["attack", "%s won the border clash at %s." % [s.name_of(str(e["winnerId"])), s.hex_name(str(e["hexB"]))], Style.PARCH])
+				## v1.13: named by the road it was fought on (hexB was one end of it, not "where" it was)
+				var loser: String = str(e["playerB"]) if str(e["winnerId"]) == str(e["playerA"]) else str(e["playerA"])
+				out.append(["attack", "%s beat %s's column on the road between %s and %s." % [s.name_of(str(e["winnerId"])), s.name_of(loser), s.hex_name(str(e["hexA"])), s.hex_name(str(e["hexB"]))], Style.PARCH])
 			Types.EVENT_PLAYER_ELIMINATED:
 				out.append(["skull", "%s has been eliminated." % s.name_of(str(e["playerId"])), Style.CRIMSON.lightened(0.3)])
 			Types.EVENT_SET_CASHED:

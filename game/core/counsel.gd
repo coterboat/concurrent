@@ -12,6 +12,7 @@ const Ai := preload("res://engine/ai.gd")
 const Rng := preload("res://engine/rng.gd")
 const Validate := preload("res://engine/validate.gd")
 const Session := preload("res://game/core/session.gd")
+const BoardFacts := preload("res://game/core/board_facts.gd")
 
 ## item: {key, text, mood: neutral|alarmed|pleased, voice: line key or "", focus: [ids], rank}
 
@@ -103,24 +104,8 @@ static func _item(key: String, text: String, mood: String, voice: String, focus:
 
 
 static func _threat(w: Types.World, map: Types.MapDef, pid: String, t: String) -> Dictionary:
-	## The biggest single-owner punch that could land on t: everyone who can march
-	## from their bordering lands plus what they could place there.
-	var by_owner := {}
-	var from := {}
-	for n in MapLib.neighbors(map, t):
-		var ns: Types.TerritoryState = w.get_territory(n)
-		var o: String = ns.owner
-		if o == pid or o == Types.UNOCCUPIED or o == Income.NEUTRAL_ID:
-			continue
-		var punch: int = Income.max_send(ns) + mini(Income.cap_of(w, map, n), Income.income_of(w, map, o))
-		by_owner[o] = int(by_owner.get(o, 0)) + punch
-		if not from.has(o) or punch > int(from[o][1]):
-			from[o] = [n, punch]
-	var best := {}
-	for o in by_owner.keys():
-		if best.is_empty() or int(by_owner[o]) > int(best["max"]):
-			best = {"owner": o, "max": int(by_owner[o]), "from": from[o][0]}
-	return best
+	## The biggest single-owner punch that could land on t (v1.13: in BoardFacts, which the map uses too)
+	return BoardFacts.threat_on(w, map, pid, t)
 
 
 static func _touches(w: Types.World, map: Types.MapDef, pid: String, t: String) -> bool:

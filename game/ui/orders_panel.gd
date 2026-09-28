@@ -155,8 +155,14 @@ func _reinforcements() -> void:
 			parts.append("connected %d" % b["bloc"])
 		if int(b["regions"]) > 0:
 			parts.append("regions %d" % b["regions"])
+		if int(b.get("capital", 0)) > 0:
+			parts.append("capital %d" % b["capital"])
+		if int(b.get("levee", 0)) > 0:
+			parts.append("levée %d" % b["levee"])
 		if int(b["cards"]) > 0:
 			parts.append("cards %d" % b["cards"])
+		if int(b.get("cut", 0)) > 0:
+			parts.append("(%d cut off pay nothing)" % b["cut"])
 		v.add_child(Style.label(" + ".join(parts), 15, Style.MUTED))
 	else:
 		v.add_child(Style.label("each land takes up to 2 × (1 + your neighbors)", 15, Style.MUTED))

@@ -175,7 +175,12 @@ func run(probe) -> void:
 		await snap("07_cutscene")
 		p.ok(played and gs.cutscene.visible, "the capital-taken film plays over the game")
 		gs.cutscene._close()
-		await p.frames(40)
+		## v1.13: wait for the 0.4 s fade itself (40 frames passed only when frames were slow)
+		var g := 0
+		while gs.cutscene.visible and g < 600:
+			g += 1
+			await p.frames(1)
+		await p.frames(2)
 		p.ok(not gs.cutscene.visible and not gs.cinema.paused, "and closes, handing the report back")
 	else:
 		p.log("no cutscene film on disk yet: skipped")

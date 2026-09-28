@@ -196,6 +196,16 @@ var _player_now: AudioStreamPlayer
 var _looping := true
 
 
+## v1.13: how hot the war is ("", "besieged" or "endgame"), set by the war table as each phase
+## opens, so the battles and the reckoning carry the endgame on instead of dropping back
+var heat := ""
+
+
+func battle_music() -> String:
+	## the report's and the battlefield's music: in the last rounds, the endgame's
+	return "endgame" if heat == "endgame" and has_music("endgame") else "battle"
+
+
 func has_music(name: String) -> bool:
 	## v1.9: a mood only plays if one of its takes is on disk (new remixes arrive later)
 	for t in PLAYLISTS.get(name, [name]):
