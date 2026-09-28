@@ -23,6 +23,7 @@ G4 living paintings, G5 cutscenes, G6 Hydra talk loops, G7 leitmotif remixes, G8
 song, G9 unit variants (editSpritesheet on the G2 sheets, which must be under 7 days old),
 G10 three-quarter views, G11 3D pieces.
 """
+import filecmp
 import glob
 import json
 import os
@@ -43,6 +44,7 @@ RAW = "assets/raw/v19"
 SELF = "tools/ludo/v19_content.py"
 sys.path.insert(0, HERE)
 import pack_anims  # noqa: E402
+import notes  # noqa: E402  (v1.11: a review note steers the redo)
 
 BATCHES = {
     "v19_dice": "v1.9 dice table and Fortune",
@@ -768,6 +770,32 @@ def normalize_canvas(src, ref, ref_last=None, W=1152, H=768, P=200):
     return out, (bx, by)
 
 
+def musket_marks(fr, W=1152, H=768):
+    """The aim is held where the musket tip reaches furthest right, at a steady height: the first
+    run of 3+ such frames. The shot is its last frame before the recoil kicks the tip up (or the
+    run's end). v1.11: works whether the move starts shouldered or already aiming (the first
+    detector wanted a shouldered start and found nothing in the redone volleys)."""
+    if not fr:
+        return {}
+    far = max(f["tx"] for f in fr)
+    run = []
+    for f in fr:
+        if f["tx"] >= far - 60:
+            run.append(f)
+        elif len(run) >= 3:
+            break
+        else:
+            run = []
+    if len(run) < 3:
+        return {}
+    shot = run[-1]
+    for prev, f in zip(run, run[1:]):
+        if f["ty"] < prev["ty"] - 35:  ## the tip jumps up: the recoil
+            shot = prev
+            break
+    return {"shot": shot["i"], "muzzle": [round(shot["tx"] / W, 3), round(shot["ty"] / H, 3)]}
+
+
 def sheet_marks(it, src, W=1152, H=768):
     """The moments the battlefield syncs to, read off the frames (on our 1152x768 canvas):
     "shot" + "muzzle" for a firing sheet, "down" for a fall. Indices are in playback order."""
@@ -778,21 +806,7 @@ def sheet_marks(it, src, W=1152, H=768):
     fr = probe_frames(src, m["cols"], m["rows"], m["frames"])
     out = {}
     if kind == "musket":
-        ## the aim is held where the musket tip is far out to the right at a steady height;
-        ## the shot is the last frame of that first hold, just before the recoil kicks it
-        base = fr[0]["tx"]
-        far = [f for f in fr if f["tx"] > base + 150]
-        if far:
-            ys = sorted(f["ty"] for f in far)
-            aim_y = ys[len(ys) // 2]
-            run = []
-            for f in fr:
-                if f["tx"] > base + 150 and abs(f["ty"] - aim_y) < 40:
-                    run.append(f)
-                elif run:
-                    break
-            shot = run[-1] if run else far[0]
-            out = {"shot": shot["i"], "muzzle": [round(shot["tx"] / W, 3), round(shot["ty"] / H, 3)]}
+        out = musket_marks(fr, W, H)
     elif kind == "cannon":
         ## the discharge is the first frame whose outline jumps out past the muzzle (flash,
         ## sparks); the muzzle itself is where the barrel ends at rest
@@ -831,6 +845,9 @@ def post_sheet(it, src, bd):
     report = pack_anims.pack_sheet(src, rel, it["opts"]["anchor"], order)
     meta = json.load(open(abs_(rel.replace(".webp", ".json"))))
     marks = sheet_marks(it, src)
+    missing = bool(it["opts"].get("marks")) and not ({"shot", "down"} & set(marks))
+    if missing:
+        log("  ! %s: no %s marks found: the battlefield would fall back to default timing" % (it["id"], it["opts"]["marks"]))
     if marks and order:  ## frame indices -> positions in the playback order
         for k in ("shot", "down"):
             if k in marks and marks[k] in order:
@@ -843,7 +860,8 @@ def post_sheet(it, src, bd):
     return (os.path.relpath(gif, bd),
             [("battle/%s.webp" % name, it["target"]), ("battle/%s.json" % name, it["target"].replace(".webp", ".json"))],
             {"grid": "%sx%s, %s frames of %sx%s at %s fps" % (meta["cols"], meta["rows"], meta["frames"], meta["fw"], meta["fh"], meta.get("fps")),
-             "check": summ[0] if summ else "", "canvas_crop": list(crop)})
+             "check": ("NO SHOT/FALL MARKS FOUND: check the timing in game. " if missing else "") + (summ[0] if summ else ""),
+             "canvas_crop": list(crop)})
 
 
 def grow_in(src, scales, emit):
@@ -953,7 +971,7 @@ def vinfo(path):
 
 def encode_pair(filter_args, maps, out_base):
     """The same filtered clip as .ogv (Theora + Vorbis, for Godot) and .mp4 (for the review page)."""
-    ff(*filter_args, *maps, "-c:v", "libtheora", "-q:v", "7", "-c:a", "libvorbis", "-q:a", "4", out_base + ".ogv")
+    ff(*filter_args, *maps, "-c:v", "libtheora", "-q:v", "5", "-c:a", "libvorbis", "-q:a", "4", out_base + ".ogv")
     ff(*filter_args, *maps, "-c:v", "libx264", "-crf", "18", "-pix_fmt", "yuv420p", "-c:a", "aac", "-b:a", "160k",
        "-movflags", "+faststart", out_base + ".mp4")
 
@@ -1195,11 +1213,14 @@ def actions(batch):
          "cmd": ["python3", SELF, "--install", "--batch-name", batch],
          "options": [{"flag": "--dry-run", "label": "Dry run", "type": "bool", "default": False}]},
         {"id": "regen", "kind": "regen", "label": "Redo rejected",
-         "help": "Generate a new take of every rejected item with Ludo (spends credits; an edited text becomes the new "
-                 "prompt). New takes land in this review folder only; install them after you accept them.",
+         "help": "Generate a new take of every rejected item with Ludo (spends credits). An edited text becomes the new "
+                 "prompt; otherwise the note rewrites it. New takes land in this review folder only; install them after "
+                 "you accept them.",
          "cmd": ["python3", SELF, "--regen", "--batch-name", batch], "spends": True,
          "options": [{"flag": "--dry-run", "label": "Dry run (show the cost, spend nothing)", "type": "bool", "default": False},
-                     {"flag": "--jobs", "label": "Jobs in flight", "type": "int", "min": 1, "max": 12, "default": 6}]},
+                     {"flag": "--jobs", "label": "Jobs in flight", "type": "int", "min": 1, "max": 12, "default": 6},
+                     {"flag": "--no-notes", "label": "Ignore the notes", "type": "bool", "default": False,
+                      "help": "A plain re-roll. Otherwise each note rewrites its prompt (Claude when installed) unless you edited it"}]},
     ]
 
 
@@ -1392,7 +1413,7 @@ def run_ludo(ids, jobs):
     return r.returncode
 
 
-def regen(batch, dry, jobs):
+def regen(batch, dry, jobs, use_notes=True):
     items = [it for it in merged(batch) if it.get("status") == "reject"]
     if not items:
         print("%s: nothing rejected" % batch)
@@ -1400,7 +1421,7 @@ def regen(batch, dry, jobs):
     mine = {it["id"]: it for it in ITEMS if it["batch"] == batch}
     man = manifest()
     by = {a["id"]: a for a in man["assets"]}
-    bump, redo = [], []
+    bump, redo, directed = [], [], []
     for r in items:
         it = mine.get(r["id"])
         if not it:
@@ -1415,10 +1436,25 @@ def regen(batch, dry, jobs):
             print("  %s: new prompt for %s" % (r["id"], pid))
             if not dry:
                 by[pid]["prompt"] = new_text.strip()
+        elif pid and use_notes and notes.meaningful(r.get("note"), r.get("kind", "image")):
+            ## v1.11: no edit, but a note: it rewrites the prompt (tools/ludo/notes.py)
+            directed.append({"id": pid, "kind": r.get("kind", "image"), "prompt": by[pid].get("prompt", ""),
+                             "note": r["note"], "item": r["id"]})
         for c in it["chain"]:
             if c not in bump:
                 bump.append(c)
         redo.append(it)
+    if directed:
+        if dry:
+            os.environ["CONCURRENT_NO_CLAUDE"] = "1"  ## a dry run spends nothing, Claude included
+        print("reading %d note%s%s..." % (len(directed), "s" if len(directed) != 1 else "",
+                                          " with Claude" if notes.claude_bin() and not dry else ""), flush=True)
+        for pid, (prompt, why, how) in notes.rewrite_prompts(directed).items():
+            item_id = next(x["item"] for x in directed if x["id"] == pid)
+            print("  %snew prompt (%s) for %s / %s: %s%s" % ("[dry-run] " if dry else "", how, item_id, pid, prompt,
+                                                            "  (" + why + ")" if why else ""))
+            if not dry:
+                by[pid]["prompt"] = prompt
     cost = estimate(bump)
     print("%sredo %d items: %s (bumps %s), about %.1f credits" % ("[dry-run] " if dry else "", len(redo),
                                                                 ", ".join(i["id"] for i in redo), " ".join(bump), cost))
@@ -1447,6 +1483,37 @@ def regen(batch, dry, jobs):
         except Exception as ex:
             print("  ! post %s failed: %s" % (it["id"], ex))
     write_batch(batch)
+
+
+def remark(names):
+    """Re-read the shot/fall marks of sheets already made (their canvas from the last post) and patch
+    them into the review copy and, when it is the same sheet, the game's copy. The sheet itself and
+    its review verdict are left alone."""
+    for it in ITEMS:
+        if it["id"] not in names or it["post"] != "sheet":
+            continue
+        src = source_of(it)
+        canvas = os.path.splitext(src)[0] + "_canvas.png" if src else None
+        src = canvas if canvas and os.path.exists(canvas) else src
+        marks = sheet_marks(it, src)
+        order = it["opts"].get("order") if isinstance(it["opts"].get("order"), list) else None
+        if marks and order:
+            for k in ("shot", "down"):
+                if k in marks and marks[k] in order:
+                    marks[k] = order.index(marks[k])
+        if not marks:
+            log("  ! %s: still no marks" % it["id"])
+            continue
+        bd = batch_dir(it["batch"])
+        name = os.path.basename(it["target"]).replace(".webp", "")
+        review_json = os.path.join(bd, "battle", name + ".json")
+        game_webp = abs_(it["target"])
+        patch_json(review_json, **marks)
+        if os.path.exists(game_webp) and filecmp.cmp(game_webp, os.path.join(bd, "battle", name + ".webp"), shallow=False):
+            patch_json(game_webp.replace(".webp", ".json"), **marks)
+            log("  %s: marks %s (review and game)" % (it["id"], json.dumps(marks)))
+        else:
+            log("  %s: marks %s (review copy; the game has a different sheet)" % (it["id"], json.dumps(marks)))
 
 
 def ids_of(groups):
@@ -1491,7 +1558,10 @@ def main(argv):
     if "--regen" in argv:
         write_manifest()
         for b in ([batch] if batch else list(BATCHES)):
-            regen(b, dry, jobs)
+            regen(b, dry, jobs, "--no-notes" not in argv)
+        return
+    if "--remark" in argv:
+        remark([a for a in argv[argv.index("--remark") + 1:] if not a.startswith("--")])
         return
     if "--ids" in argv:
         print(" ".join(ids_of(groups)))

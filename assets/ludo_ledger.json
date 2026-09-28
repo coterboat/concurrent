@@ -2344,6 +2344,2970 @@
   "url": "https://storage.googleapis.com/ludo-assets/api/ab25e5d7efd061c8cb2828038f640565.png",
   "v": 1
  },
+ "lab111_emph_advisor_l1_caps_t1": {
+  "credits": 1,
+  "endpoint": "/audio/speech",
+  "file": "review/v111_lab/emph/advisor_l1_caps_t1.mp3",
+  "id": "lab111_emph_advisor_l1_caps_t1",
+  "job": "c74ccad1-6933-4d6b-9ca1-3857ff430dc5",
+  "params": {
+   "sample": "https://storage.googleapis.com/ludo-assets/api/68f97e86657c680226e7a504-f315f52bb2200802cd805e5d61d284aa.mp3",
+   "text": "We ALWAYS hold the line."
+  },
+  "url": "https://storage.googleapis.com/ludo-assets/api/68f97e86657c680226e7a504-606d0732f068ac1eaef3b912358e36b4.mp3",
+  "v": 1
+ },
+ "lab111_emph_advisor_l1_italic_underscore_t1": {
+  "credits": 1,
+  "endpoint": "/audio/speech",
+  "file": "review/v111_lab/emph/advisor_l1_italic_underscore_t1.mp3",
+  "id": "lab111_emph_advisor_l1_italic_underscore_t1",
+  "job": "da2d39ad-c88a-4a35-9919-bad84433c08c",
+  "params": {
+   "sample": "https://storage.googleapis.com/ludo-assets/api/68f97e86657c680226e7a504-f315f52bb2200802cd805e5d61d284aa.mp3",
+   "text": "We _always_ hold the line."
+  },
+  "url": "https://storage.googleapis.com/ludo-assets/api/68f97e86657c680226e7a504-e9b9407c059b6157cb58ebf0ef609b56.mp3",
+  "v": 1
+ },
+ "lab111_emph_advisor_l1_plain_t1": {
+  "credits": 1,
+  "endpoint": "/audio/speech",
+  "file": "review/v111_lab/emph/advisor_l1_plain_t1.mp3",
+  "id": "lab111_emph_advisor_l1_plain_t1",
+  "job": "4c694f20-365f-4314-8c32-22bbe5edba84",
+  "params": {
+   "sample": "https://storage.googleapis.com/ludo-assets/api/68f97e86657c680226e7a504-f315f52bb2200802cd805e5d61d284aa.mp3",
+   "text": "We always hold the line."
+  },
+  "url": "https://storage.googleapis.com/ludo-assets/api/68f97e86657c680226e7a504-77d13b3070763cd03fbf563b6242a520.mp3",
+  "v": 1
+ },
+ "lab111_emph_advisor_l1_stars_t1": {
+  "credits": 1,
+  "endpoint": "/audio/speech",
+  "file": "review/v111_lab/emph/advisor_l1_stars_t1.mp3",
+  "id": "lab111_emph_advisor_l1_stars_t1",
+  "job": "22074253-7a87-41d7-bd9c-c70b11c5422f",
+  "params": {
+   "sample": "https://storage.googleapis.com/ludo-assets/api/68f97e86657c680226e7a504-f315f52bb2200802cd805e5d61d284aa.mp3",
+   "text": "We *always* hold the line."
+  },
+  "url": "https://storage.googleapis.com/ludo-assets/api/68f97e86657c680226e7a504-ef7b1d25d760e6e1f958baf92a2db965.mp3",
+  "v": 1
+ },
+ "lab111_emph_quill_l1_caps_t1": {
+  "credits": 1,
+  "endpoint": "/audio/speech",
+  "file": "review/v111_lab/emph/quill_l1_caps_t1.mp3",
+  "id": "lab111_emph_quill_l1_caps_t1",
+  "job": "fa4f4c2d-13a3-4dca-8c0e-a298e94b2c9a",
+  "params": {
+   "sample": "https://storage.googleapis.com/ludo-assets/api/68f97e86657c680226e7a504-cf9f39d78debf0feb86cb518794fa307.mp3",
+   "text": "Now you PAY for it."
+  },
+  "url": "https://storage.googleapis.com/ludo-assets/api/68f97e86657c680226e7a504-11d795ae6e92b58923f0b65ef0635828.mp3",
+  "v": 1
+ },
+ "lab111_emph_quill_l1_italic_underscore_t1": {
+  "credits": 1,
+  "endpoint": "/audio/speech",
+  "file": "review/v111_lab/emph/quill_l1_italic_underscore_t1.mp3",
+  "id": "lab111_emph_quill_l1_italic_underscore_t1",
+  "job": "a0c1a904-20c6-4ef7-806f-4cd59dfb5707",
+  "params": {
+   "sample": "https://storage.googleapis.com/ludo-assets/api/68f97e86657c680226e7a504-cf9f39d78debf0feb86cb518794fa307.mp3",
+   "text": "Now you _pay_ for it."
+  },
+  "url": "https://storage.googleapis.com/ludo-assets/api/68f97e86657c680226e7a504-f6ebbc68a43d4236d636161c1a750957.mp3",
+  "v": 1
+ },
+ "lab111_emph_quill_l1_plain_t1": {
+  "credits": 1,
+  "endpoint": "/audio/speech",
+  "file": "review/v111_lab/emph/quill_l1_plain_t1.mp3",
+  "id": "lab111_emph_quill_l1_plain_t1",
+  "job": "cfbfe10a-cf9e-45ff-9c3c-4cdb18b12e31",
+  "params": {
+   "sample": "https://storage.googleapis.com/ludo-assets/api/68f97e86657c680226e7a504-cf9f39d78debf0feb86cb518794fa307.mp3",
+   "text": "Now you pay for it."
+  },
+  "url": "https://storage.googleapis.com/ludo-assets/api/68f97e86657c680226e7a504-3b5bfd22709ff9a35d07b1d50624c985.mp3",
+  "v": 1
+ },
+ "lab111_emph_quill_l1_stars_t1": {
+  "credits": 1,
+  "endpoint": "/audio/speech",
+  "file": "review/v111_lab/emph/quill_l1_stars_t1.mp3",
+  "id": "lab111_emph_quill_l1_stars_t1",
+  "job": "6c210e8a-dd1a-4c5b-a681-70d6fe090aae",
+  "params": {
+   "sample": "https://storage.googleapis.com/ludo-assets/api/68f97e86657c680226e7a504-cf9f39d78debf0feb86cb518794fa307.mp3",
+   "text": "Now you *pay* for it."
+  },
+  "url": "https://storage.googleapis.com/ludo-assets/api/68f97e86657c680226e7a504-eaa316e586a8d4db85a9347d12e9713d.mp3",
+  "v": 1
+ },
+ "lab111_emph_varek_l1_caps_t1": {
+  "credits": 1,
+  "endpoint": "/audio/speech",
+  "file": "review/v111_lab/emph/varek_l1_caps_t1.mp3",
+  "id": "lab111_emph_varek_l1_caps_t1",
+  "job": "3e8388d8-cd05-419f-9953-a3a77f5363b9",
+  "params": {
+   "sample": "https://storage.googleapis.com/ludo-assets/api/68f97e86657c680226e7a504-c13808872f9c05429740345041b30464.mp3",
+   "text": "You will NOT keep it."
+  },
+  "url": "https://storage.googleapis.com/ludo-assets/api/68f97e86657c680226e7a504-d83437ddd80bab07992cdb903acc3650.mp3",
+  "v": 1
+ },
+ "lab111_emph_varek_l1_italic_underscore_t1": {
+  "credits": 1,
+  "endpoint": "/audio/speech",
+  "file": "review/v111_lab/emph/varek_l1_italic_underscore_t1.mp3",
+  "id": "lab111_emph_varek_l1_italic_underscore_t1",
+  "job": "5a898d5e-2d4e-4dc1-aa16-50001f72b2d0",
+  "params": {
+   "sample": "https://storage.googleapis.com/ludo-assets/api/68f97e86657c680226e7a504-c13808872f9c05429740345041b30464.mp3",
+   "text": "You will _not_ keep it."
+  },
+  "url": "https://storage.googleapis.com/ludo-assets/api/68f97e86657c680226e7a504-86002a3df8e2290f543a97b77cc6406d.mp3",
+  "v": 1
+ },
+ "lab111_emph_varek_l1_plain_t1": {
+  "credits": 1,
+  "endpoint": "/audio/speech",
+  "file": "review/v111_lab/emph/varek_l1_plain_t1.mp3",
+  "id": "lab111_emph_varek_l1_plain_t1",
+  "job": "a7004a38-e6b2-4c09-91d1-cee7cfb46028",
+  "params": {
+   "sample": "https://storage.googleapis.com/ludo-assets/api/68f97e86657c680226e7a504-c13808872f9c05429740345041b30464.mp3",
+   "text": "You will not keep it."
+  },
+  "url": "https://storage.googleapis.com/ludo-assets/api/68f97e86657c680226e7a504-0dfb5f84810b0610bf83fb315abd04da.mp3",
+  "v": 1
+ },
+ "lab111_emph_varek_l1_stars_t1": {
+  "credits": 1,
+  "endpoint": "/audio/speech",
+  "file": "review/v111_lab/emph/varek_l1_stars_t1.mp3",
+  "id": "lab111_emph_varek_l1_stars_t1",
+  "job": "4ed28f0d-82d4-4162-ad34-31bacb2230ad",
+  "params": {
+   "sample": "https://storage.googleapis.com/ludo-assets/api/68f97e86657c680226e7a504-c13808872f9c05429740345041b30464.mp3",
+   "text": "You will *not* keep it."
+  },
+  "url": "https://storage.googleapis.com/ludo-assets/api/68f97e86657c680226e7a504-7f39e0e18ea9a9a6d397f07c7090f3aa.mp3",
+  "v": 1
+ },
+ "lab111_emph_ysolde_l1_caps_t1": {
+  "credits": 1,
+  "endpoint": "/audio/speech",
+  "file": "review/v111_lab/emph/ysolde_l1_caps_t1.mp3",
+  "id": "lab111_emph_ysolde_l1_caps_t1",
+  "job": "23975e5f-a447-40b9-a00f-999bc942d0c3",
+  "params": {
+   "sample": "https://storage.googleapis.com/ludo-assets/api/68f97e86657c680226e7a504-5b72130f6ba93ae92d9d0b97b043ffeb.mp3",
+   "text": "That is MY capital."
+  },
+  "url": "https://storage.googleapis.com/ludo-assets/api/68f97e86657c680226e7a504-76d56f6a42ed3ea4b77b25116caa7cb9.mp3",
+  "v": 1
+ },
+ "lab111_emph_ysolde_l1_italic_underscore_t1": {
+  "credits": 1,
+  "endpoint": "/audio/speech",
+  "file": "review/v111_lab/emph/ysolde_l1_italic_underscore_t1.mp3",
+  "id": "lab111_emph_ysolde_l1_italic_underscore_t1",
+  "job": "e9ec8650-daad-478f-a31a-586f6fbd83bf",
+  "params": {
+   "sample": "https://storage.googleapis.com/ludo-assets/api/68f97e86657c680226e7a504-5b72130f6ba93ae92d9d0b97b043ffeb.mp3",
+   "text": "That is _my_ capital."
+  },
+  "url": "https://storage.googleapis.com/ludo-assets/api/68f97e86657c680226e7a504-f199a34e5640b0f16e1ae302a412f996.mp3",
+  "v": 1
+ },
+ "lab111_emph_ysolde_l1_plain_t1": {
+  "credits": 1,
+  "endpoint": "/audio/speech",
+  "file": "review/v111_lab/emph/ysolde_l1_plain_t1.mp3",
+  "id": "lab111_emph_ysolde_l1_plain_t1",
+  "job": "c3e2b0ae-7363-4e1e-aafb-ae22d035d570",
+  "params": {
+   "sample": "https://storage.googleapis.com/ludo-assets/api/68f97e86657c680226e7a504-5b72130f6ba93ae92d9d0b97b043ffeb.mp3",
+   "text": "That is my capital."
+  },
+  "url": "https://storage.googleapis.com/ludo-assets/api/68f97e86657c680226e7a504-ca6da1d2d6f2fcb994e885cf4310401c.mp3",
+  "v": 1
+ },
+ "lab111_emph_ysolde_l1_stars_t1": {
+  "credits": 1,
+  "endpoint": "/audio/speech",
+  "file": "review/v111_lab/emph/ysolde_l1_stars_t1.mp3",
+  "id": "lab111_emph_ysolde_l1_stars_t1",
+  "job": "814e7b47-4850-4d6b-a3a7-8626c7293b1b",
+  "params": {
+   "sample": "https://storage.googleapis.com/ludo-assets/api/68f97e86657c680226e7a504-5b72130f6ba93ae92d9d0b97b043ffeb.mp3",
+   "text": "That is *my* capital."
+  },
+  "url": "https://storage.googleapis.com/ludo-assets/api/68f97e86657c680226e7a504-f21a38d30fa9e2c257d3b3926aac5607.mp3",
+  "v": 1
+ },
+ "lab111_fall_advisor_l1_bang_t1": {
+  "credits": 1,
+  "endpoint": "/audio/speech",
+  "file": "review/v111_lab/fall/advisor_l1_bang_t1.mp3",
+  "id": "lab111_fall_advisor_l1_bang_t1",
+  "job": "185b7de5-7658-432d-bd58-7803afe7e915",
+  "params": {
+   "sample": "https://storage.googleapis.com/ludo-assets/api/68f97e86657c680226e7a504-f315f52bb2200802cd805e5d61d284aa.mp3",
+   "text": "Your call, Commander!"
+  },
+  "url": "https://storage.googleapis.com/ludo-assets/api/68f97e86657c680226e7a504-c04e2ed63c7c272e1e6b40ede4ef2ecc.mp3",
+  "v": 1
+ },
+ "lab111_fall_advisor_l1_bang_t2": {
+  "credits": 1,
+  "endpoint": "/audio/speech",
+  "file": "review/v111_lab/fall/advisor_l1_bang_t2.mp3",
+  "id": "lab111_fall_advisor_l1_bang_t2",
+  "job": "c3206ef3-7c90-49cb-930c-b7f45acbbe35",
+  "params": {
+   "sample": "https://storage.googleapis.com/ludo-assets/api/68f97e86657c680226e7a504-f315f52bb2200802cd805e5d61d284aa.mp3",
+   "text": "Your call, Commander!"
+  },
+  "url": "https://storage.googleapis.com/ludo-assets/api/68f97e86657c680226e7a504-3ec5a82ddcfc2340d1f0a17489027217.mp3",
+  "v": 1
+ },
+ "lab111_fall_advisor_l1_ellipsis_t1": {
+  "credits": 1,
+  "endpoint": "/audio/speech",
+  "file": "review/v111_lab/fall/advisor_l1_ellipsis_t1.mp3",
+  "id": "lab111_fall_advisor_l1_ellipsis_t1",
+  "job": "02b97423-a857-495c-92a4-45585ef6f46f",
+  "params": {
+   "sample": "https://storage.googleapis.com/ludo-assets/api/68f97e86657c680226e7a504-f315f52bb2200802cd805e5d61d284aa.mp3",
+   "text": "Your call, Commander..."
+  },
+  "url": "https://storage.googleapis.com/ludo-assets/api/68f97e86657c680226e7a504-5c542f8ede970fa21fe30dbeff6d9672.mp3",
+  "v": 1
+ },
+ "lab111_fall_advisor_l1_ellipsis_t2": {
+  "credits": 1,
+  "endpoint": "/audio/speech",
+  "file": "review/v111_lab/fall/advisor_l1_ellipsis_t2.mp3",
+  "id": "lab111_fall_advisor_l1_ellipsis_t2",
+  "job": "c846c11d-6fc3-4d4f-9e02-4c301c89dddd",
+  "params": {
+   "sample": "https://storage.googleapis.com/ludo-assets/api/68f97e86657c680226e7a504-f315f52bb2200802cd805e5d61d284aa.mp3",
+   "text": "Your call, Commander..."
+  },
+  "url": "https://storage.googleapis.com/ludo-assets/api/68f97e86657c680226e7a504-ca97bc12e89101a76750ffe0bf14d0b5.mp3",
+  "v": 1
+ },
+ "lab111_fall_advisor_l1_period_t1": {
+  "credits": 1,
+  "endpoint": "/audio/speech",
+  "file": "review/v111_lab/fall/advisor_l1_period_t1.mp3",
+  "id": "lab111_fall_advisor_l1_period_t1",
+  "job": "48bdd15d-2431-4cc2-ba7a-1662bb373405",
+  "params": {
+   "sample": "https://storage.googleapis.com/ludo-assets/api/68f97e86657c680226e7a504-f315f52bb2200802cd805e5d61d284aa.mp3",
+   "text": "Your call, Commander."
+  },
+  "url": "https://storage.googleapis.com/ludo-assets/api/68f97e86657c680226e7a504-3e8cef06515a25ca3f18e9d24891204e.mp3",
+  "v": 1
+ },
+ "lab111_fall_advisor_l1_period_t2": {
+  "credits": 1,
+  "endpoint": "/audio/speech",
+  "file": "review/v111_lab/fall/advisor_l1_period_t2.mp3",
+  "id": "lab111_fall_advisor_l1_period_t2",
+  "job": "4ac48834-c27e-4a36-847d-fc0090072983",
+  "params": {
+   "sample": "https://storage.googleapis.com/ludo-assets/api/68f97e86657c680226e7a504-f315f52bb2200802cd805e5d61d284aa.mp3",
+   "text": "Your call, Commander."
+  },
+  "url": "https://storage.googleapis.com/ludo-assets/api/68f97e86657c680226e7a504-159233765672926ac547ac34b7e350ba.mp3",
+  "v": 1
+ },
+ "lab111_fall_advisor_l2_bang_t1": {
+  "credits": 1,
+  "endpoint": "/audio/speech",
+  "file": "review/v111_lab/fall/advisor_l2_bang_t1.mp3",
+  "id": "lab111_fall_advisor_l2_bang_t1",
+  "job": "e4f53ea1-e33e-41b5-8874-382fb5e4aa94",
+  "params": {
+   "sample": "https://storage.googleapis.com/ludo-assets/api/68f97e86657c680226e7a504-f315f52bb2200802cd805e5d61d284aa.mp3",
+   "text": "The capital has fallen, Commander!"
+  },
+  "url": "https://storage.googleapis.com/ludo-assets/api/68f97e86657c680226e7a504-53aafe758b545a4b6061e82880bab6ae.mp3",
+  "v": 1
+ },
+ "lab111_fall_advisor_l2_bang_t2": {
+  "credits": 1,
+  "endpoint": "/audio/speech",
+  "file": "review/v111_lab/fall/advisor_l2_bang_t2.mp3",
+  "id": "lab111_fall_advisor_l2_bang_t2",
+  "job": "40c3d780-f0ec-4543-aec2-87173589efad",
+  "params": {
+   "sample": "https://storage.googleapis.com/ludo-assets/api/68f97e86657c680226e7a504-f315f52bb2200802cd805e5d61d284aa.mp3",
+   "text": "The capital has fallen, Commander!"
+  },
+  "url": "https://storage.googleapis.com/ludo-assets/api/68f97e86657c680226e7a504-84875535e56d41c0b71c1a31819b5deb.mp3",
+  "v": 1
+ },
+ "lab111_fall_advisor_l2_ellipsis_t1": {
+  "credits": 1,
+  "endpoint": "/audio/speech",
+  "file": "review/v111_lab/fall/advisor_l2_ellipsis_t1.mp3",
+  "id": "lab111_fall_advisor_l2_ellipsis_t1",
+  "job": "c7d90c3e-eb08-40f5-b5df-fecfdc831f6f",
+  "params": {
+   "sample": "https://storage.googleapis.com/ludo-assets/api/68f97e86657c680226e7a504-f315f52bb2200802cd805e5d61d284aa.mp3",
+   "text": "The capital has fallen, Commander..."
+  },
+  "url": "https://storage.googleapis.com/ludo-assets/api/68f97e86657c680226e7a504-d501b560e9b555ab5c6dbdacd3218eae.mp3",
+  "v": 1
+ },
+ "lab111_fall_advisor_l2_ellipsis_t2": {
+  "credits": 1,
+  "endpoint": "/audio/speech",
+  "file": "review/v111_lab/fall/advisor_l2_ellipsis_t2.mp3",
+  "id": "lab111_fall_advisor_l2_ellipsis_t2",
+  "job": "9e344076-61a4-41b8-834b-3facfbc4289d",
+  "params": {
+   "sample": "https://storage.googleapis.com/ludo-assets/api/68f97e86657c680226e7a504-f315f52bb2200802cd805e5d61d284aa.mp3",
+   "text": "The capital has fallen, Commander..."
+  },
+  "url": "https://storage.googleapis.com/ludo-assets/api/68f97e86657c680226e7a504-4da15407ecafbdfcaaf47d29af749888.mp3",
+  "v": 1
+ },
+ "lab111_fall_advisor_l2_period_t1": {
+  "credits": 1,
+  "endpoint": "/audio/speech",
+  "file": "review/v111_lab/fall/advisor_l2_period_t1.mp3",
+  "id": "lab111_fall_advisor_l2_period_t1",
+  "job": "83346a8a-5a4d-4bf2-bcd1-ac14a158c267",
+  "params": {
+   "sample": "https://storage.googleapis.com/ludo-assets/api/68f97e86657c680226e7a504-f315f52bb2200802cd805e5d61d284aa.mp3",
+   "text": "The capital has fallen, Commander."
+  },
+  "url": "https://storage.googleapis.com/ludo-assets/api/68f97e86657c680226e7a504-bfdbf6da0b699b27b2daba504a5bfe47.mp3",
+  "v": 1
+ },
+ "lab111_fall_advisor_l2_period_t2": {
+  "credits": 1,
+  "endpoint": "/audio/speech",
+  "file": "review/v111_lab/fall/advisor_l2_period_t2.mp3",
+  "id": "lab111_fall_advisor_l2_period_t2",
+  "job": "9f709224-db24-4a66-a4d6-2876f3d96b68",
+  "params": {
+   "sample": "https://storage.googleapis.com/ludo-assets/api/68f97e86657c680226e7a504-f315f52bb2200802cd805e5d61d284aa.mp3",
+   "text": "The capital has fallen, Commander."
+  },
+  "url": "https://storage.googleapis.com/ludo-assets/api/68f97e86657c680226e7a504-6538526793ed9c4ad62cf893d588aa15.mp3",
+  "v": 1
+ },
+ "lab111_fall_quill_l1_bang_t1": {
+  "credits": 1,
+  "endpoint": "/audio/speech",
+  "file": "review/v111_lab/fall/quill_l1_bang_t1.mp3",
+  "id": "lab111_fall_quill_l1_bang_t1",
+  "job": "1326387f-6920-418c-8840-a50ae2477059",
+  "params": {
+   "sample": "https://storage.googleapis.com/ludo-assets/api/68f97e86657c680226e7a504-cf9f39d78debf0feb86cb518794fa307.mp3",
+   "text": "Nobody leaves my shop without paying!"
+  },
+  "url": "https://storage.googleapis.com/ludo-assets/api/68f97e86657c680226e7a504-8c06f54eb64f3de1b9239bb70f13c558.mp3",
+  "v": 1
+ },
+ "lab111_fall_quill_l1_bang_t2": {
+  "credits": 1,
+  "endpoint": "/audio/speech",
+  "file": "review/v111_lab/fall/quill_l1_bang_t2.mp3",
+  "id": "lab111_fall_quill_l1_bang_t2",
+  "job": "98114553-c09d-4ebe-8424-a90638bd70d4",
+  "params": {
+   "sample": "https://storage.googleapis.com/ludo-assets/api/68f97e86657c680226e7a504-cf9f39d78debf0feb86cb518794fa307.mp3",
+   "text": "Nobody leaves my shop without paying!"
+  },
+  "url": "https://storage.googleapis.com/ludo-assets/api/68f97e86657c680226e7a504-7f7ea3304d307032141dcd4d346ed3f0.mp3",
+  "v": 1
+ },
+ "lab111_fall_quill_l1_ellipsis_t1": {
+  "credits": 1,
+  "endpoint": "/audio/speech",
+  "file": "review/v111_lab/fall/quill_l1_ellipsis_t1.mp3",
+  "id": "lab111_fall_quill_l1_ellipsis_t1",
+  "job": "0e1a9f06-4902-4c42-9d73-7bb1c0aaff0b",
+  "params": {
+   "sample": "https://storage.googleapis.com/ludo-assets/api/68f97e86657c680226e7a504-cf9f39d78debf0feb86cb518794fa307.mp3",
+   "text": "Nobody leaves my shop without paying..."
+  },
+  "url": "https://storage.googleapis.com/ludo-assets/api/68f97e86657c680226e7a504-1ffe0bfdfa3df8f45608eb6c7ef19663.mp3",
+  "v": 1
+ },
+ "lab111_fall_quill_l1_ellipsis_t2": {
+  "credits": 1,
+  "endpoint": "/audio/speech",
+  "file": "review/v111_lab/fall/quill_l1_ellipsis_t2.mp3",
+  "id": "lab111_fall_quill_l1_ellipsis_t2",
+  "job": "d8752a6d-aaa8-4f0a-ade8-4838358b28f4",
+  "params": {
+   "sample": "https://storage.googleapis.com/ludo-assets/api/68f97e86657c680226e7a504-cf9f39d78debf0feb86cb518794fa307.mp3",
+   "text": "Nobody leaves my shop without paying..."
+  },
+  "url": "https://storage.googleapis.com/ludo-assets/api/68f97e86657c680226e7a504-e3dcbcfec725b2570cfa81ef132c3ae1.mp3",
+  "v": 1
+ },
+ "lab111_fall_quill_l1_period_t1": {
+  "credits": 1,
+  "endpoint": "/audio/speech",
+  "file": "review/v111_lab/fall/quill_l1_period_t1.mp3",
+  "id": "lab111_fall_quill_l1_period_t1",
+  "job": "2f29730a-797c-4d70-bca5-946b09806ccd",
+  "params": {
+   "sample": "https://storage.googleapis.com/ludo-assets/api/68f97e86657c680226e7a504-cf9f39d78debf0feb86cb518794fa307.mp3",
+   "text": "Nobody leaves my shop without paying."
+  },
+  "url": "https://storage.googleapis.com/ludo-assets/api/68f97e86657c680226e7a504-b70d62be63a048fe6fc919139a6480b5.mp3",
+  "v": 1
+ },
+ "lab111_fall_quill_l1_period_t2": {
+  "credits": 1,
+  "endpoint": "/audio/speech",
+  "file": "review/v111_lab/fall/quill_l1_period_t2.mp3",
+  "id": "lab111_fall_quill_l1_period_t2",
+  "job": "38baa553-9c90-4681-9651-b1e3c439c018",
+  "params": {
+   "sample": "https://storage.googleapis.com/ludo-assets/api/68f97e86657c680226e7a504-cf9f39d78debf0feb86cb518794fa307.mp3",
+   "text": "Nobody leaves my shop without paying."
+  },
+  "url": "https://storage.googleapis.com/ludo-assets/api/68f97e86657c680226e7a504-4022089816e78786eb1ae73ee33043cf.mp3",
+  "v": 1
+ },
+ "lab111_fall_quill_l2_bang_t1": {
+  "credits": 1,
+  "endpoint": "/audio/speech",
+  "file": "review/v111_lab/fall/quill_l2_bang_t1.mp3",
+  "id": "lab111_fall_quill_l2_bang_t1",
+  "job": "3e8e09a3-83a8-4914-ba1b-f044bc77eb89",
+  "params": {
+   "sample": "https://storage.googleapis.com/ludo-assets/api/68f97e86657c680226e7a504-cf9f39d78debf0feb86cb518794fa307.mp3",
+   "text": "The market has turned, lads!"
+  },
+  "url": "https://storage.googleapis.com/ludo-assets/api/68f97e86657c680226e7a504-3aa69624f944921c978987e3bf37be2b.mp3",
+  "v": 1
+ },
+ "lab111_fall_quill_l2_bang_t2": {
+  "credits": 1,
+  "endpoint": "/audio/speech",
+  "file": "review/v111_lab/fall/quill_l2_bang_t2.mp3",
+  "id": "lab111_fall_quill_l2_bang_t2",
+  "job": "5fe74b02-7127-46fa-8bc3-ea21fbda3da7",
+  "params": {
+   "sample": "https://storage.googleapis.com/ludo-assets/api/68f97e86657c680226e7a504-cf9f39d78debf0feb86cb518794fa307.mp3",
+   "text": "The market has turned, lads!"
+  },
+  "url": "https://storage.googleapis.com/ludo-assets/api/68f97e86657c680226e7a504-1d341af2f5b5ad06a2beb4ea65151387.mp3",
+  "v": 1
+ },
+ "lab111_fall_quill_l2_ellipsis_t1": {
+  "credits": 1,
+  "endpoint": "/audio/speech",
+  "file": "review/v111_lab/fall/quill_l2_ellipsis_t1.mp3",
+  "id": "lab111_fall_quill_l2_ellipsis_t1",
+  "job": "03633ba7-3251-41c7-b331-2e7d5b526b28",
+  "params": {
+   "sample": "https://storage.googleapis.com/ludo-assets/api/68f97e86657c680226e7a504-cf9f39d78debf0feb86cb518794fa307.mp3",
+   "text": "The market has turned, lads..."
+  },
+  "url": "https://storage.googleapis.com/ludo-assets/api/68f97e86657c680226e7a504-987e07ee0d5fb6ae565fd2d315236a2b.mp3",
+  "v": 1
+ },
+ "lab111_fall_quill_l2_ellipsis_t2": {
+  "credits": 1,
+  "endpoint": "/audio/speech",
+  "file": "review/v111_lab/fall/quill_l2_ellipsis_t2.mp3",
+  "id": "lab111_fall_quill_l2_ellipsis_t2",
+  "job": "f42971db-3946-4def-a6ad-a4184b6f9642",
+  "params": {
+   "sample": "https://storage.googleapis.com/ludo-assets/api/68f97e86657c680226e7a504-cf9f39d78debf0feb86cb518794fa307.mp3",
+   "text": "The market has turned, lads..."
+  },
+  "url": "https://storage.googleapis.com/ludo-assets/api/68f97e86657c680226e7a504-5336c36d3c5b25f86eb9e0064bbfb00c.mp3",
+  "v": 1
+ },
+ "lab111_fall_quill_l2_period_t1": {
+  "credits": 1,
+  "endpoint": "/audio/speech",
+  "file": "review/v111_lab/fall/quill_l2_period_t1.mp3",
+  "id": "lab111_fall_quill_l2_period_t1",
+  "job": "0027168e-558e-4dbc-b4bb-15fb0d6910ab",
+  "params": {
+   "sample": "https://storage.googleapis.com/ludo-assets/api/68f97e86657c680226e7a504-cf9f39d78debf0feb86cb518794fa307.mp3",
+   "text": "The market has turned, lads."
+  },
+  "url": "https://storage.googleapis.com/ludo-assets/api/68f97e86657c680226e7a504-31c38aa759feba3bdfd4e4b3f7ecac3a.mp3",
+  "v": 1
+ },
+ "lab111_fall_quill_l2_period_t2": {
+  "credits": 1,
+  "endpoint": "/audio/speech",
+  "file": "review/v111_lab/fall/quill_l2_period_t2.mp3",
+  "id": "lab111_fall_quill_l2_period_t2",
+  "job": "befee4e6-827d-48bc-93e9-e8c3b6b88a21",
+  "params": {
+   "sample": "https://storage.googleapis.com/ludo-assets/api/68f97e86657c680226e7a504-cf9f39d78debf0feb86cb518794fa307.mp3",
+   "text": "The market has turned, lads."
+  },
+  "url": "https://storage.googleapis.com/ludo-assets/api/68f97e86657c680226e7a504-bd85220c44c2ad6fd521963d0d87eb6f.mp3",
+  "v": 1
+ },
+ "lab111_fall_varek_l1_bang_t1": {
+  "credits": 1,
+  "endpoint": "/audio/speech",
+  "file": "review/v111_lab/fall/varek_l1_bang_t1.mp3",
+  "id": "lab111_fall_varek_l1_bang_t1",
+  "job": "d5bf7078-1203-4ca0-b214-00f3823efee6",
+  "params": {
+   "sample": "https://storage.googleapis.com/ludo-assets/api/68f97e86657c680226e7a504-c13808872f9c05429740345041b30464.mp3",
+   "text": "A setback. They will pay for it in blood!"
+  },
+  "url": "https://storage.googleapis.com/ludo-assets/api/68f97e86657c680226e7a504-63d5c0004e61b4d03ada2caf24a1fd9f.mp3",
+  "v": 1
+ },
+ "lab111_fall_varek_l1_bang_t2": {
+  "credits": 1,
+  "endpoint": "/audio/speech",
+  "file": "review/v111_lab/fall/varek_l1_bang_t2.mp3",
+  "id": "lab111_fall_varek_l1_bang_t2",
+  "job": "12dcf600-ed69-4c47-b565-1cf018c06126",
+  "params": {
+   "sample": "https://storage.googleapis.com/ludo-assets/api/68f97e86657c680226e7a504-c13808872f9c05429740345041b30464.mp3",
+   "text": "A setback. They will pay for it in blood!"
+  },
+  "url": "https://storage.googleapis.com/ludo-assets/api/68f97e86657c680226e7a504-7262dcdfd6f005faa4cc5d00f11b06ca.mp3",
+  "v": 1
+ },
+ "lab111_fall_varek_l1_ellipsis_t1": {
+  "credits": 1,
+  "endpoint": "/audio/speech",
+  "file": "review/v111_lab/fall/varek_l1_ellipsis_t1.mp3",
+  "id": "lab111_fall_varek_l1_ellipsis_t1",
+  "job": "a8eb26f4-c774-4cb6-8f82-1ec6f33a49a2",
+  "params": {
+   "sample": "https://storage.googleapis.com/ludo-assets/api/68f97e86657c680226e7a504-c13808872f9c05429740345041b30464.mp3",
+   "text": "A setback. They will pay for it in blood..."
+  },
+  "url": "https://storage.googleapis.com/ludo-assets/api/68f97e86657c680226e7a504-cd3d1b3a56f6f9d372a0a07a065d3572.mp3",
+  "v": 1
+ },
+ "lab111_fall_varek_l1_ellipsis_t2": {
+  "credits": 1,
+  "endpoint": "/audio/speech",
+  "file": "review/v111_lab/fall/varek_l1_ellipsis_t2.mp3",
+  "id": "lab111_fall_varek_l1_ellipsis_t2",
+  "job": "6bb8c335-9e45-4498-b745-2baf8790ff1e",
+  "params": {
+   "sample": "https://storage.googleapis.com/ludo-assets/api/68f97e86657c680226e7a504-c13808872f9c05429740345041b30464.mp3",
+   "text": "A setback. They will pay for it in blood..."
+  },
+  "url": "https://storage.googleapis.com/ludo-assets/api/68f97e86657c680226e7a504-dfef1edc32769ed6c2ebc3b05a28ce4d.mp3",
+  "v": 1
+ },
+ "lab111_fall_varek_l1_period_t1": {
+  "credits": 1,
+  "endpoint": "/audio/speech",
+  "file": "review/v111_lab/fall/varek_l1_period_t1.mp3",
+  "id": "lab111_fall_varek_l1_period_t1",
+  "job": "cd769aca-cba1-4877-89fd-7434cd2cc463",
+  "params": {
+   "sample": "https://storage.googleapis.com/ludo-assets/api/68f97e86657c680226e7a504-c13808872f9c05429740345041b30464.mp3",
+   "text": "A setback. They will pay for it in blood."
+  },
+  "url": "https://storage.googleapis.com/ludo-assets/api/68f97e86657c680226e7a504-a1cf7732bd8183c39a2732127d9f8eb4.mp3",
+  "v": 1
+ },
+ "lab111_fall_varek_l1_period_t2": {
+  "credits": 1,
+  "endpoint": "/audio/speech",
+  "file": "review/v111_lab/fall/varek_l1_period_t2.mp3",
+  "id": "lab111_fall_varek_l1_period_t2",
+  "job": "f81ddeec-53ae-4ab4-a5ca-9ecf923b43aa",
+  "params": {
+   "sample": "https://storage.googleapis.com/ludo-assets/api/68f97e86657c680226e7a504-c13808872f9c05429740345041b30464.mp3",
+   "text": "A setback. They will pay for it in blood."
+  },
+  "url": "https://storage.googleapis.com/ludo-assets/api/68f97e86657c680226e7a504-44987cdb74490484971510060a4f6ea1.mp3",
+  "v": 1
+ },
+ "lab111_fall_varek_l2_bang_t1": {
+  "credits": 1,
+  "endpoint": "/audio/speech",
+  "file": "review/v111_lab/fall/varek_l2_bang_t1.mp3",
+  "id": "lab111_fall_varek_l2_bang_t1",
+  "job": "80ee786f-5ebd-482e-8908-6bd2b0d2d8b5",
+  "params": {
+   "sample": "https://storage.googleapis.com/ludo-assets/api/68f97e86657c680226e7a504-c13808872f9c05429740345041b30464.mp3",
+   "text": "The world is mine. It always was!"
+  },
+  "url": "https://storage.googleapis.com/ludo-assets/api/68f97e86657c680226e7a504-896f8f347ee76018fb0777cd8aa0d9da.mp3",
+  "v": 1
+ },
+ "lab111_fall_varek_l2_bang_t2": {
+  "credits": 1,
+  "endpoint": "/audio/speech",
+  "file": "review/v111_lab/fall/varek_l2_bang_t2.mp3",
+  "id": "lab111_fall_varek_l2_bang_t2",
+  "job": "0da97118-e191-4c67-a8af-38609a9a3a32",
+  "params": {
+   "sample": "https://storage.googleapis.com/ludo-assets/api/68f97e86657c680226e7a504-c13808872f9c05429740345041b30464.mp3",
+   "text": "The world is mine. It always was!"
+  },
+  "url": "https://storage.googleapis.com/ludo-assets/api/68f97e86657c680226e7a504-194d67844d825c6dc970e2dccbb9e632.mp3",
+  "v": 1
+ },
+ "lab111_fall_varek_l2_ellipsis_t1": {
+  "credits": 1,
+  "endpoint": "/audio/speech",
+  "file": "review/v111_lab/fall/varek_l2_ellipsis_t1.mp3",
+  "id": "lab111_fall_varek_l2_ellipsis_t1",
+  "job": "29c761c9-c152-41bc-a08b-cc6786127b37",
+  "params": {
+   "sample": "https://storage.googleapis.com/ludo-assets/api/68f97e86657c680226e7a504-c13808872f9c05429740345041b30464.mp3",
+   "text": "The world is mine. It always was..."
+  },
+  "url": "https://storage.googleapis.com/ludo-assets/api/68f97e86657c680226e7a504-63772fd3809533e8c79a867dedc879fa.mp3",
+  "v": 1
+ },
+ "lab111_fall_varek_l2_ellipsis_t2": {
+  "credits": 1,
+  "endpoint": "/audio/speech",
+  "file": "review/v111_lab/fall/varek_l2_ellipsis_t2.mp3",
+  "id": "lab111_fall_varek_l2_ellipsis_t2",
+  "job": "cc75e9fd-1fc7-40db-aff7-d033d3e6b5f8",
+  "params": {
+   "sample": "https://storage.googleapis.com/ludo-assets/api/68f97e86657c680226e7a504-c13808872f9c05429740345041b30464.mp3",
+   "text": "The world is mine. It always was..."
+  },
+  "url": "https://storage.googleapis.com/ludo-assets/api/68f97e86657c680226e7a504-d499174cfbef51bced6b7d869e065fba.mp3",
+  "v": 1
+ },
+ "lab111_fall_varek_l2_period_t1": {
+  "credits": 1,
+  "endpoint": "/audio/speech",
+  "file": "review/v111_lab/fall/varek_l2_period_t1.mp3",
+  "id": "lab111_fall_varek_l2_period_t1",
+  "job": "9ee8a794-bfa6-49ca-ae82-ce365dc2490e",
+  "params": {
+   "sample": "https://storage.googleapis.com/ludo-assets/api/68f97e86657c680226e7a504-c13808872f9c05429740345041b30464.mp3",
+   "text": "The world is mine. It always was."
+  },
+  "url": "https://storage.googleapis.com/ludo-assets/api/68f97e86657c680226e7a504-2df909cd52f65037ac8299890f79796e.mp3",
+  "v": 1
+ },
+ "lab111_fall_varek_l2_period_t2": {
+  "credits": 1,
+  "endpoint": "/audio/speech",
+  "file": "review/v111_lab/fall/varek_l2_period_t2.mp3",
+  "id": "lab111_fall_varek_l2_period_t2",
+  "job": "f76244c7-7afc-45f7-aa69-53ee5c0041e4",
+  "params": {
+   "sample": "https://storage.googleapis.com/ludo-assets/api/68f97e86657c680226e7a504-c13808872f9c05429740345041b30464.mp3",
+   "text": "The world is mine. It always was."
+  },
+  "url": "https://storage.googleapis.com/ludo-assets/api/68f97e86657c680226e7a504-6bf3cf89fc1e7b9f91c8e9e502cdeabb.mp3",
+  "v": 1
+ },
+ "lab111_fall_ysolde_l1_bang_t1": {
+  "credits": 1,
+  "endpoint": "/audio/speech",
+  "file": "review/v111_lab/fall/ysolde_l1_bang_t1.mp3",
+  "id": "lab111_fall_ysolde_l1_bang_t1",
+  "job": "83e985f7-1f7d-415c-bd5a-101cbda8e634",
+  "params": {
+   "sample": "https://storage.googleapis.com/ludo-assets/api/68f97e86657c680226e7a504-5b72130f6ba93ae92d9d0b97b043ffeb.mp3",
+   "text": "You will pay for that!"
+  },
+  "url": "https://storage.googleapis.com/ludo-assets/api/68f97e86657c680226e7a504-cf37575ee574283976d1839027149b53.mp3",
+  "v": 1
+ },
+ "lab111_fall_ysolde_l1_bang_t2": {
+  "credits": 1,
+  "endpoint": "/audio/speech",
+  "file": "review/v111_lab/fall/ysolde_l1_bang_t2.mp3",
+  "id": "lab111_fall_ysolde_l1_bang_t2",
+  "job": "ac4493f8-b2e1-44ec-ab9f-ddd7e57aaaa4",
+  "params": {
+   "sample": "https://storage.googleapis.com/ludo-assets/api/68f97e86657c680226e7a504-5b72130f6ba93ae92d9d0b97b043ffeb.mp3",
+   "text": "You will pay for that!"
+  },
+  "url": "https://storage.googleapis.com/ludo-assets/api/68f97e86657c680226e7a504-57c90de0733e604fb222e2798f5a11bc.mp3",
+  "v": 1
+ },
+ "lab111_fall_ysolde_l1_ellipsis_t1": {
+  "credits": 1,
+  "endpoint": "/audio/speech",
+  "file": "review/v111_lab/fall/ysolde_l1_ellipsis_t1.mp3",
+  "id": "lab111_fall_ysolde_l1_ellipsis_t1",
+  "job": "2848cef5-8ff0-4f6f-aa05-8fe04389e717",
+  "params": {
+   "sample": "https://storage.googleapis.com/ludo-assets/api/68f97e86657c680226e7a504-5b72130f6ba93ae92d9d0b97b043ffeb.mp3",
+   "text": "You will pay for that..."
+  },
+  "url": "https://storage.googleapis.com/ludo-assets/api/68f97e86657c680226e7a504-944566ee60afd1e8bdb4acd5c40c052d.mp3",
+  "v": 1
+ },
+ "lab111_fall_ysolde_l1_ellipsis_t2": {
+  "credits": 1,
+  "endpoint": "/audio/speech",
+  "file": "review/v111_lab/fall/ysolde_l1_ellipsis_t2.mp3",
+  "id": "lab111_fall_ysolde_l1_ellipsis_t2",
+  "job": "427a952a-d493-494a-a32d-3cd1abee79a8",
+  "params": {
+   "sample": "https://storage.googleapis.com/ludo-assets/api/68f97e86657c680226e7a504-5b72130f6ba93ae92d9d0b97b043ffeb.mp3",
+   "text": "You will pay for that..."
+  },
+  "url": "https://storage.googleapis.com/ludo-assets/api/68f97e86657c680226e7a504-08892813ba34b5bbe3553ddbcfa6f908.mp3",
+  "v": 1
+ },
+ "lab111_fall_ysolde_l1_period_t1": {
+  "credits": 1,
+  "endpoint": "/audio/speech",
+  "file": "review/v111_lab/fall/ysolde_l1_period_t1.mp3",
+  "id": "lab111_fall_ysolde_l1_period_t1",
+  "job": "90ea2323-8e3b-4228-a35a-5bc6a089e1f0",
+  "params": {
+   "sample": "https://storage.googleapis.com/ludo-assets/api/68f97e86657c680226e7a504-5b72130f6ba93ae92d9d0b97b043ffeb.mp3",
+   "text": "You will pay for that."
+  },
+  "url": "https://storage.googleapis.com/ludo-assets/api/68f97e86657c680226e7a504-6740eb2b17902e9a45d0918e24909673.mp3",
+  "v": 1
+ },
+ "lab111_fall_ysolde_l1_period_t2": {
+  "credits": 1,
+  "endpoint": "/audio/speech",
+  "file": "review/v111_lab/fall/ysolde_l1_period_t2.mp3",
+  "id": "lab111_fall_ysolde_l1_period_t2",
+  "job": "81a0e49f-6502-488a-8ab5-ec56cbbeb2cb",
+  "params": {
+   "sample": "https://storage.googleapis.com/ludo-assets/api/68f97e86657c680226e7a504-5b72130f6ba93ae92d9d0b97b043ffeb.mp3",
+   "text": "You will pay for that."
+  },
+  "url": "https://storage.googleapis.com/ludo-assets/api/68f97e86657c680226e7a504-151a0242d0c2d8caeaef4ead9a0581f8.mp3",
+  "v": 1
+ },
+ "lab111_fall_ysolde_l2_bang_t1": {
+  "credits": 1,
+  "endpoint": "/audio/speech",
+  "file": "review/v111_lab/fall/ysolde_l2_bang_t1.mp3",
+  "id": "lab111_fall_ysolde_l2_bang_t1",
+  "job": "55b262a8-04bc-41c5-ab08-ae9f8f0bb666",
+  "params": {
+   "sample": "https://storage.googleapis.com/ludo-assets/api/68f97e86657c680226e7a504-5b72130f6ba93ae92d9d0b97b043ffeb.mp3",
+   "text": "Every land at this table will fly my banner!"
+  },
+  "url": "https://storage.googleapis.com/ludo-assets/api/68f97e86657c680226e7a504-b275ffe034bc677d9497c0e81299603e.mp3",
+  "v": 1
+ },
+ "lab111_fall_ysolde_l2_bang_t2": {
+  "credits": 1,
+  "endpoint": "/audio/speech",
+  "file": "review/v111_lab/fall/ysolde_l2_bang_t2.mp3",
+  "id": "lab111_fall_ysolde_l2_bang_t2",
+  "job": "768498ca-f34a-4ecd-8622-79896fc6a32d",
+  "params": {
+   "sample": "https://storage.googleapis.com/ludo-assets/api/68f97e86657c680226e7a504-5b72130f6ba93ae92d9d0b97b043ffeb.mp3",
+   "text": "Every land at this table will fly my banner!"
+  },
+  "url": "https://storage.googleapis.com/ludo-assets/api/68f97e86657c680226e7a504-21a64e020b1b8475843c32c6be121798.mp3",
+  "v": 1
+ },
+ "lab111_fall_ysolde_l2_ellipsis_t1": {
+  "credits": 1,
+  "endpoint": "/audio/speech",
+  "file": "review/v111_lab/fall/ysolde_l2_ellipsis_t1.mp3",
+  "id": "lab111_fall_ysolde_l2_ellipsis_t1",
+  "job": "32bf825b-e375-42b8-ae31-20de32fe9e4f",
+  "params": {
+   "sample": "https://storage.googleapis.com/ludo-assets/api/68f97e86657c680226e7a504-5b72130f6ba93ae92d9d0b97b043ffeb.mp3",
+   "text": "Every land at this table will fly my banner..."
+  },
+  "url": "https://storage.googleapis.com/ludo-assets/api/68f97e86657c680226e7a504-ea7a1074f281f11b3b2c48d63c45ce54.mp3",
+  "v": 1
+ },
+ "lab111_fall_ysolde_l2_ellipsis_t2": {
+  "credits": 1,
+  "endpoint": "/audio/speech",
+  "file": "review/v111_lab/fall/ysolde_l2_ellipsis_t2.mp3",
+  "id": "lab111_fall_ysolde_l2_ellipsis_t2",
+  "job": "eaa0029c-47cd-415e-8fb6-6f66327bbb47",
+  "params": {
+   "sample": "https://storage.googleapis.com/ludo-assets/api/68f97e86657c680226e7a504-5b72130f6ba93ae92d9d0b97b043ffeb.mp3",
+   "text": "Every land at this table will fly my banner..."
+  },
+  "url": "https://storage.googleapis.com/ludo-assets/api/68f97e86657c680226e7a504-f93d46c9a4b0027448e480aed44a82c0.mp3",
+  "v": 1
+ },
+ "lab111_fall_ysolde_l2_period_t1": {
+  "credits": 1,
+  "endpoint": "/audio/speech",
+  "file": "review/v111_lab/fall/ysolde_l2_period_t1.mp3",
+  "id": "lab111_fall_ysolde_l2_period_t1",
+  "job": "32023c56-a9db-4b9c-a3c2-d73e8e85c905",
+  "params": {
+   "sample": "https://storage.googleapis.com/ludo-assets/api/68f97e86657c680226e7a504-5b72130f6ba93ae92d9d0b97b043ffeb.mp3",
+   "text": "Every land at this table will fly my banner."
+  },
+  "url": "https://storage.googleapis.com/ludo-assets/api/68f97e86657c680226e7a504-0de7de43a71a41a3879d545209142720.mp3",
+  "v": 1
+ },
+ "lab111_fall_ysolde_l2_period_t2": {
+  "credits": 1,
+  "endpoint": "/audio/speech",
+  "file": "review/v111_lab/fall/ysolde_l2_period_t2.mp3",
+  "id": "lab111_fall_ysolde_l2_period_t2",
+  "job": "f2e630e0-c25d-49c9-8f6c-1f7840eccd50",
+  "params": {
+   "sample": "https://storage.googleapis.com/ludo-assets/api/68f97e86657c680226e7a504-5b72130f6ba93ae92d9d0b97b043ffeb.mp3",
+   "text": "Every land at this table will fly my banner."
+  },
+  "url": "https://storage.googleapis.com/ludo-assets/api/68f97e86657c680226e7a504-c41c41fa0e8bae022aaf6beca74da379.mp3",
+  "v": 1
+ },
+ "lab111_pause2_advisor_l1_bracket_t1": {
+  "credits": 1,
+  "endpoint": "/audio/speech",
+  "file": "review/v111_lab/pause2/advisor_l1_bracket_t1.mp3",
+  "id": "lab111_pause2_advisor_l1_bracket_t1",
+  "job": "0a6ac2d3-e148-46f5-a0e8-53cd7856deb0",
+  "params": {
+   "sample": "https://storage.googleapis.com/ludo-assets/api/68f97e86657c680226e7a504-f315f52bb2200802cd805e5d61d284aa.mp3",
+   "text": "The line held. [pause] Now we advance."
+  },
+  "url": "https://storage.googleapis.com/ludo-assets/api/68f97e86657c680226e7a504-4d2212bc6240c46d76d2c093db91851f.mp3",
+  "v": 1
+ },
+ "lab111_pause2_advisor_l1_break_tag_t1": {
+  "credits": 1,
+  "endpoint": "/audio/speech",
+  "file": "review/v111_lab/pause2/advisor_l1_break_tag_t1.mp3",
+  "id": "lab111_pause2_advisor_l1_break_tag_t1",
+  "job": "1f467eed-699a-4089-8196-e2a4d9a5cba6",
+  "params": {
+   "sample": "https://storage.googleapis.com/ludo-assets/api/68f97e86657c680226e7a504-f315f52bb2200802cd805e5d61d284aa.mp3",
+   "text": "The line held. <break time=\"0.8s\" /> Now we advance."
+  },
+  "url": "https://storage.googleapis.com/ludo-assets/api/68f97e86657c680226e7a504-30cd5341c6688b48be5cb6a1281faea6.mp3",
+  "v": 1
+ },
+ "lab111_pause2_advisor_l1_double_ellipsis_t1": {
+  "credits": 1,
+  "endpoint": "/audio/speech",
+  "file": "review/v111_lab/pause2/advisor_l1_double_ellipsis_t1.mp3",
+  "id": "lab111_pause2_advisor_l1_double_ellipsis_t1",
+  "job": "2d95bfe7-8980-413d-9ef4-35d4b926eacc",
+  "params": {
+   "sample": "https://storage.googleapis.com/ludo-assets/api/68f97e86657c680226e7a504-f315f52bb2200802cd805e5d61d284aa.mp3",
+   "text": "The line held...... Now we advance."
+  },
+  "url": "https://storage.googleapis.com/ludo-assets/api/68f97e86657c680226e7a504-204baf96e5052fbfc2b6d95a2105a19f.mp3",
+  "v": 1
+ },
+ "lab111_pause2_advisor_l1_stop_ellipsis_t1": {
+  "credits": 1,
+  "endpoint": "/audio/speech",
+  "file": "review/v111_lab/pause2/advisor_l1_stop_ellipsis_t1.mp3",
+  "id": "lab111_pause2_advisor_l1_stop_ellipsis_t1",
+  "job": "b490b441-6e09-414b-828f-225c2f68f8ac",
+  "params": {
+   "sample": "https://storage.googleapis.com/ludo-assets/api/68f97e86657c680226e7a504-f315f52bb2200802cd805e5d61d284aa.mp3",
+   "text": "The line held. ... Now we advance."
+  },
+  "url": "https://storage.googleapis.com/ludo-assets/api/68f97e86657c680226e7a504-d2fb424d088eed7f3f7fa5997f2d0ec6.mp3",
+  "v": 1
+ },
+ "lab111_pause2_advisor_l1_stop_ellipsis_t2": {
+  "credits": 1,
+  "endpoint": "/audio/speech",
+  "file": "review/v111_lab/pause2/advisor_l1_stop_ellipsis_t2.mp3",
+  "id": "lab111_pause2_advisor_l1_stop_ellipsis_t2",
+  "job": "2eed3a83-4f5f-459d-ac61-9ddfbb04fc95",
+  "params": {
+   "sample": "https://storage.googleapis.com/ludo-assets/api/68f97e86657c680226e7a504-f315f52bb2200802cd805e5d61d284aa.mp3",
+   "text": "The line held. ... Now we advance."
+  },
+  "url": "https://storage.googleapis.com/ludo-assets/api/68f97e86657c680226e7a504-658f8e7fc00346140ede1f97822cebf2.mp3",
+  "v": 1
+ },
+ "lab111_pause2_advisor_l2_bracket_t1": {
+  "credits": 1,
+  "endpoint": "/audio/speech",
+  "file": "review/v111_lab/pause2/advisor_l2_bracket_t1.mp3",
+  "id": "lab111_pause2_advisor_l2_bracket_t1",
+  "job": "f6533f3d-611b-4893-8309-8d55336a4895",
+  "params": {
+   "sample": "https://storage.googleapis.com/ludo-assets/api/68f97e86657c680226e7a504-f315f52bb2200802cd805e5d61d284aa.mp3",
+   "text": "Orders sealed. [pause] Now we see who flinches."
+  },
+  "url": "https://storage.googleapis.com/ludo-assets/api/68f97e86657c680226e7a504-998cad4aa816c346979fd28fcb3c1763.mp3",
+  "v": 1
+ },
+ "lab111_pause2_advisor_l2_break_tag_t1": {
+  "credits": 1,
+  "endpoint": "/audio/speech",
+  "file": "review/v111_lab/pause2/advisor_l2_break_tag_t1.mp3",
+  "id": "lab111_pause2_advisor_l2_break_tag_t1",
+  "job": "788b7545-b2c6-4dbc-b1d7-d7c0a53d9417",
+  "params": {
+   "sample": "https://storage.googleapis.com/ludo-assets/api/68f97e86657c680226e7a504-f315f52bb2200802cd805e5d61d284aa.mp3",
+   "text": "Orders sealed. <break time=\"0.8s\" /> Now we see who flinches."
+  },
+  "url": "https://storage.googleapis.com/ludo-assets/api/68f97e86657c680226e7a504-34d21cb4d45cdc5b8519356ed303cc35.mp3",
+  "v": 1
+ },
+ "lab111_pause2_advisor_l2_double_ellipsis_t1": {
+  "credits": 1,
+  "endpoint": "/audio/speech",
+  "file": "review/v111_lab/pause2/advisor_l2_double_ellipsis_t1.mp3",
+  "id": "lab111_pause2_advisor_l2_double_ellipsis_t1",
+  "job": "69a064d1-b068-4dc7-b29c-381a8a530080",
+  "params": {
+   "sample": "https://storage.googleapis.com/ludo-assets/api/68f97e86657c680226e7a504-f315f52bb2200802cd805e5d61d284aa.mp3",
+   "text": "Orders sealed...... Now we see who flinches."
+  },
+  "url": "https://storage.googleapis.com/ludo-assets/api/68f97e86657c680226e7a504-cb8c541add767e68065f9e857f046a16.mp3",
+  "v": 1
+ },
+ "lab111_pause2_advisor_l2_stop_ellipsis_t1": {
+  "credits": 1,
+  "endpoint": "/audio/speech",
+  "file": "review/v111_lab/pause2/advisor_l2_stop_ellipsis_t1.mp3",
+  "id": "lab111_pause2_advisor_l2_stop_ellipsis_t1",
+  "job": "2e56b07d-45f0-40a2-b10f-a18f5981a5ad",
+  "params": {
+   "sample": "https://storage.googleapis.com/ludo-assets/api/68f97e86657c680226e7a504-f315f52bb2200802cd805e5d61d284aa.mp3",
+   "text": "Orders sealed. ... Now we see who flinches."
+  },
+  "url": "https://storage.googleapis.com/ludo-assets/api/68f97e86657c680226e7a504-a25868e1b7bb713104f7f579f7db4e1b.mp3",
+  "v": 1
+ },
+ "lab111_pause2_advisor_l2_stop_ellipsis_t2": {
+  "credits": 1,
+  "endpoint": "/audio/speech",
+  "file": "review/v111_lab/pause2/advisor_l2_stop_ellipsis_t2.mp3",
+  "id": "lab111_pause2_advisor_l2_stop_ellipsis_t2",
+  "job": "47d862b6-2e65-43ec-a3da-5f3297e82b90",
+  "params": {
+   "sample": "https://storage.googleapis.com/ludo-assets/api/68f97e86657c680226e7a504-f315f52bb2200802cd805e5d61d284aa.mp3",
+   "text": "Orders sealed. ... Now we see who flinches."
+  },
+  "url": "https://storage.googleapis.com/ludo-assets/api/68f97e86657c680226e7a504-b08dec7695c9c7445a9982e75a64b984.mp3",
+  "v": 1
+ },
+ "lab111_pause2_advisor_l3_bracket_t1": {
+  "credits": 1,
+  "endpoint": "/audio/speech",
+  "file": "review/v111_lab/pause2/advisor_l3_bracket_t1.mp3",
+  "id": "lab111_pause2_advisor_l3_bracket_t1",
+  "job": "6d13b051-e688-4b94-90ab-ecd6f0d620be",
+  "params": {
+   "sample": "https://storage.googleapis.com/ludo-assets/api/68f97e86657c680226e7a504-f315f52bb2200802cd805e5d61d284aa.mp3",
+   "text": "We have lost the river crossing, Commander. [pause] We will take it back."
+  },
+  "url": "https://storage.googleapis.com/ludo-assets/api/68f97e86657c680226e7a504-648cfa60fb98870f645e78cb9828a876.mp3",
+  "v": 1
+ },
+ "lab111_pause2_advisor_l3_break_tag_t1": {
+  "credits": 1,
+  "endpoint": "/audio/speech",
+  "file": "review/v111_lab/pause2/advisor_l3_break_tag_t1.mp3",
+  "id": "lab111_pause2_advisor_l3_break_tag_t1",
+  "job": "650153ad-ebb0-4119-ae1e-9063003067e5",
+  "params": {
+   "sample": "https://storage.googleapis.com/ludo-assets/api/68f97e86657c680226e7a504-f315f52bb2200802cd805e5d61d284aa.mp3",
+   "text": "We have lost the river crossing, Commander. <break time=\"0.8s\" /> We will take it back."
+  },
+  "url": "https://storage.googleapis.com/ludo-assets/api/68f97e86657c680226e7a504-8599de561f480273366c3e482dea79dc.mp3",
+  "v": 1
+ },
+ "lab111_pause2_advisor_l3_double_ellipsis_t1": {
+  "credits": 1,
+  "endpoint": "/audio/speech",
+  "file": "review/v111_lab/pause2/advisor_l3_double_ellipsis_t1.mp3",
+  "id": "lab111_pause2_advisor_l3_double_ellipsis_t1",
+  "job": "7a86e0e3-9111-4698-b19d-12c7490e105d",
+  "params": {
+   "sample": "https://storage.googleapis.com/ludo-assets/api/68f97e86657c680226e7a504-f315f52bb2200802cd805e5d61d284aa.mp3",
+   "text": "We have lost the river crossing, Commander...... We will take it back."
+  },
+  "url": "https://storage.googleapis.com/ludo-assets/api/68f97e86657c680226e7a504-58c7c51403267475b59ed2a5dc5a6a15.mp3",
+  "v": 1
+ },
+ "lab111_pause2_advisor_l3_stop_ellipsis_t1": {
+  "credits": 1,
+  "endpoint": "/audio/speech",
+  "file": "review/v111_lab/pause2/advisor_l3_stop_ellipsis_t1.mp3",
+  "id": "lab111_pause2_advisor_l3_stop_ellipsis_t1",
+  "job": "34d1475c-edfc-4a06-9f56-c9a3a7b51c7d",
+  "params": {
+   "sample": "https://storage.googleapis.com/ludo-assets/api/68f97e86657c680226e7a504-f315f52bb2200802cd805e5d61d284aa.mp3",
+   "text": "We have lost the river crossing, Commander. ... We will take it back."
+  },
+  "url": "https://storage.googleapis.com/ludo-assets/api/68f97e86657c680226e7a504-a3143b30353b27e131702f8f8c3fa4c7.mp3",
+  "v": 1
+ },
+ "lab111_pause2_advisor_l3_stop_ellipsis_t2": {
+  "credits": 1,
+  "endpoint": "/audio/speech",
+  "file": "review/v111_lab/pause2/advisor_l3_stop_ellipsis_t2.mp3",
+  "id": "lab111_pause2_advisor_l3_stop_ellipsis_t2",
+  "job": "1dddb1a9-8a46-4622-b109-a355373a24df",
+  "params": {
+   "sample": "https://storage.googleapis.com/ludo-assets/api/68f97e86657c680226e7a504-f315f52bb2200802cd805e5d61d284aa.mp3",
+   "text": "We have lost the river crossing, Commander. ... We will take it back."
+  },
+  "url": "https://storage.googleapis.com/ludo-assets/api/68f97e86657c680226e7a504-376ea6a69192de39bfdcf4994a0cce6e.mp3",
+  "v": 1
+ },
+ "lab111_pause2_quill_l1_bracket_t1": {
+  "credits": 1,
+  "endpoint": "/audio/speech",
+  "file": "review/v111_lab/pause2/quill_l1_bracket_t1.mp3",
+  "id": "lab111_pause2_quill_l1_bracket_t1",
+  "job": "d7fdbd2b-7bb0-4e38-abf1-74e724408820",
+  "params": {
+   "sample": "https://storage.googleapis.com/ludo-assets/api/68f97e86657c680226e7a504-cf9f39d78debf0feb86cb518794fa307.mp3",
+   "text": "Cut our losses, lads. [pause] Back to the ships."
+  },
+  "url": "https://storage.googleapis.com/ludo-assets/api/68f97e86657c680226e7a504-afdace3bfa5b8ab3692c71ae99e90c89.mp3",
+  "v": 1
+ },
+ "lab111_pause2_quill_l1_break_tag_t1": {
+  "credits": 1,
+  "endpoint": "/audio/speech",
+  "file": "review/v111_lab/pause2/quill_l1_break_tag_t1.mp3",
+  "id": "lab111_pause2_quill_l1_break_tag_t1",
+  "job": "10031b58-3477-4377-81cc-04722d84255b",
+  "params": {
+   "sample": "https://storage.googleapis.com/ludo-assets/api/68f97e86657c680226e7a504-cf9f39d78debf0feb86cb518794fa307.mp3",
+   "text": "Cut our losses, lads. <break time=\"0.8s\" /> Back to the ships."
+  },
+  "url": "https://storage.googleapis.com/ludo-assets/api/68f97e86657c680226e7a504-a90dba6b4b3795dab359470b392d6ff3.mp3",
+  "v": 1
+ },
+ "lab111_pause2_quill_l1_double_ellipsis_t1": {
+  "credits": 1,
+  "endpoint": "/audio/speech",
+  "file": "review/v111_lab/pause2/quill_l1_double_ellipsis_t1.mp3",
+  "id": "lab111_pause2_quill_l1_double_ellipsis_t1",
+  "job": "47ec0a29-b5ff-42b5-ac96-661020fcbba4",
+  "params": {
+   "sample": "https://storage.googleapis.com/ludo-assets/api/68f97e86657c680226e7a504-cf9f39d78debf0feb86cb518794fa307.mp3",
+   "text": "Cut our losses, lads...... Back to the ships."
+  },
+  "url": "https://storage.googleapis.com/ludo-assets/api/68f97e86657c680226e7a504-9d0e7097a303e6ed826a602cba0cf5cb.mp3",
+  "v": 1
+ },
+ "lab111_pause2_quill_l1_stop_ellipsis_t1": {
+  "credits": 1,
+  "endpoint": "/audio/speech",
+  "file": "review/v111_lab/pause2/quill_l1_stop_ellipsis_t1.mp3",
+  "id": "lab111_pause2_quill_l1_stop_ellipsis_t1",
+  "job": "60ee179d-6b82-4f04-9c08-e781b25bd636",
+  "params": {
+   "sample": "https://storage.googleapis.com/ludo-assets/api/68f97e86657c680226e7a504-cf9f39d78debf0feb86cb518794fa307.mp3",
+   "text": "Cut our losses, lads. ... Back to the ships."
+  },
+  "url": "https://storage.googleapis.com/ludo-assets/api/68f97e86657c680226e7a504-4a1f4c5e1b94ff1a5bb2f692e6063534.mp3",
+  "v": 1
+ },
+ "lab111_pause2_quill_l1_stop_ellipsis_t2": {
+  "credits": 1,
+  "endpoint": "/audio/speech",
+  "file": "review/v111_lab/pause2/quill_l1_stop_ellipsis_t2.mp3",
+  "id": "lab111_pause2_quill_l1_stop_ellipsis_t2",
+  "job": "608251a9-e7e7-4a5b-8edc-ce702b69e9f9",
+  "params": {
+   "sample": "https://storage.googleapis.com/ludo-assets/api/68f97e86657c680226e7a504-cf9f39d78debf0feb86cb518794fa307.mp3",
+   "text": "Cut our losses, lads. ... Back to the ships."
+  },
+  "url": "https://storage.googleapis.com/ludo-assets/api/68f97e86657c680226e7a504-6c707820770a8ff92805c4f3c9c27d9f.mp3",
+  "v": 1
+ },
+ "lab111_pause2_quill_l2_bracket_t1": {
+  "credits": 1,
+  "endpoint": "/audio/speech",
+  "file": "review/v111_lab/pause2/quill_l2_bracket_t1.mp3",
+  "id": "lab111_pause2_quill_l2_bracket_t1",
+  "job": "826bc7fa-246b-44d5-b8b6-a9f093b540cb",
+  "params": {
+   "sample": "https://storage.googleapis.com/ludo-assets/api/68f97e86657c680226e7a504-cf9f39d78debf0feb86cb518794fa307.mp3",
+   "text": "Unguarded goods. [pause] Finders keepers."
+  },
+  "url": "https://storage.googleapis.com/ludo-assets/api/68f97e86657c680226e7a504-237ed4ef313522c08943ec10252e6483.mp3",
+  "v": 1
+ },
+ "lab111_pause2_quill_l2_break_tag_t1": {
+  "credits": 1,
+  "endpoint": "/audio/speech",
+  "file": "review/v111_lab/pause2/quill_l2_break_tag_t1.mp3",
+  "id": "lab111_pause2_quill_l2_break_tag_t1",
+  "job": "f7916d78-b100-4445-8120-1420ac99b9d0",
+  "params": {
+   "sample": "https://storage.googleapis.com/ludo-assets/api/68f97e86657c680226e7a504-cf9f39d78debf0feb86cb518794fa307.mp3",
+   "text": "Unguarded goods. <break time=\"0.8s\" /> Finders keepers."
+  },
+  "url": "https://storage.googleapis.com/ludo-assets/api/68f97e86657c680226e7a504-56a0e4cc53bc02c950f2471e36f05de0.mp3",
+  "v": 1
+ },
+ "lab111_pause2_quill_l2_double_ellipsis_t1": {
+  "credits": 1,
+  "endpoint": "/audio/speech",
+  "file": "review/v111_lab/pause2/quill_l2_double_ellipsis_t1.mp3",
+  "id": "lab111_pause2_quill_l2_double_ellipsis_t1",
+  "job": "325903eb-da1a-4218-bc4f-498cd3b5f52d",
+  "params": {
+   "sample": "https://storage.googleapis.com/ludo-assets/api/68f97e86657c680226e7a504-cf9f39d78debf0feb86cb518794fa307.mp3",
+   "text": "Unguarded goods...... Finders keepers."
+  },
+  "url": "https://storage.googleapis.com/ludo-assets/api/68f97e86657c680226e7a504-b7894aec307e28ec1a13b8a953fb1d60.mp3",
+  "v": 1
+ },
+ "lab111_pause2_quill_l2_stop_ellipsis_t1": {
+  "credits": 1,
+  "endpoint": "/audio/speech",
+  "file": "review/v111_lab/pause2/quill_l2_stop_ellipsis_t1.mp3",
+  "id": "lab111_pause2_quill_l2_stop_ellipsis_t1",
+  "job": "132c8c78-9eef-4a10-a0f3-3a622f4e800e",
+  "params": {
+   "sample": "https://storage.googleapis.com/ludo-assets/api/68f97e86657c680226e7a504-cf9f39d78debf0feb86cb518794fa307.mp3",
+   "text": "Unguarded goods. ... Finders keepers."
+  },
+  "url": "https://storage.googleapis.com/ludo-assets/api/68f97e86657c680226e7a504-f24322eb298a12c2d3783fd52d37e143.mp3",
+  "v": 1
+ },
+ "lab111_pause2_quill_l2_stop_ellipsis_t2": {
+  "credits": 1,
+  "endpoint": "/audio/speech",
+  "file": "review/v111_lab/pause2/quill_l2_stop_ellipsis_t2.mp3",
+  "id": "lab111_pause2_quill_l2_stop_ellipsis_t2",
+  "job": "02da5c0c-61ad-45cf-8e99-7aa9ea18dbf8",
+  "params": {
+   "sample": "https://storage.googleapis.com/ludo-assets/api/68f97e86657c680226e7a504-cf9f39d78debf0feb86cb518794fa307.mp3",
+   "text": "Unguarded goods. ... Finders keepers."
+  },
+  "url": "https://storage.googleapis.com/ludo-assets/api/68f97e86657c680226e7a504-ee77b12d15300cf9754f700ee9c340e8.mp3",
+  "v": 1
+ },
+ "lab111_pause2_quill_l3_bracket_t1": {
+  "credits": 1,
+  "endpoint": "/audio/speech",
+  "file": "review/v111_lab/pause2/quill_l3_bracket_t1.mp3",
+  "id": "lab111_pause2_quill_l3_bracket_t1",
+  "job": "7a8a6deb-613a-458d-9e4c-fef2559c5853",
+  "params": {
+   "sample": "https://storage.googleapis.com/ludo-assets/api/68f97e86657c680226e7a504-cf9f39d78debf0feb86cb518794fa307.mp3",
+   "text": "Everything has its price. [pause] Now you pay."
+  },
+  "url": "https://storage.googleapis.com/ludo-assets/api/68f97e86657c680226e7a504-825d1248222cf3a2836f8ed238278b17.mp3",
+  "v": 1
+ },
+ "lab111_pause2_quill_l3_break_tag_t1": {
+  "credits": 1,
+  "endpoint": "/audio/speech",
+  "file": "review/v111_lab/pause2/quill_l3_break_tag_t1.mp3",
+  "id": "lab111_pause2_quill_l3_break_tag_t1",
+  "job": "3056a66b-8f31-4614-b00e-6bf442629de8",
+  "params": {
+   "sample": "https://storage.googleapis.com/ludo-assets/api/68f97e86657c680226e7a504-cf9f39d78debf0feb86cb518794fa307.mp3",
+   "text": "Everything has its price. <break time=\"0.8s\" /> Now you pay."
+  },
+  "url": "https://storage.googleapis.com/ludo-assets/api/68f97e86657c680226e7a504-c8de02bad4a3c063fac5664cda0c12a9.mp3",
+  "v": 1
+ },
+ "lab111_pause2_quill_l3_double_ellipsis_t1": {
+  "credits": 1,
+  "endpoint": "/audio/speech",
+  "file": "review/v111_lab/pause2/quill_l3_double_ellipsis_t1.mp3",
+  "id": "lab111_pause2_quill_l3_double_ellipsis_t1",
+  "job": "5a5cb863-0c0d-47a8-a5b4-5819482a53a1",
+  "params": {
+   "sample": "https://storage.googleapis.com/ludo-assets/api/68f97e86657c680226e7a504-cf9f39d78debf0feb86cb518794fa307.mp3",
+   "text": "Everything has its price...... Now you pay."
+  },
+  "url": "https://storage.googleapis.com/ludo-assets/api/68f97e86657c680226e7a504-ff8d224cdfa86958bf2b9f93ee6677f1.mp3",
+  "v": 1
+ },
+ "lab111_pause2_quill_l3_stop_ellipsis_t1": {
+  "credits": 1,
+  "endpoint": "/audio/speech",
+  "file": "review/v111_lab/pause2/quill_l3_stop_ellipsis_t1.mp3",
+  "id": "lab111_pause2_quill_l3_stop_ellipsis_t1",
+  "job": "0dfc2506-84c4-4344-a181-c16afc057986",
+  "params": {
+   "sample": "https://storage.googleapis.com/ludo-assets/api/68f97e86657c680226e7a504-cf9f39d78debf0feb86cb518794fa307.mp3",
+   "text": "Everything has its price. ... Now you pay."
+  },
+  "url": "https://storage.googleapis.com/ludo-assets/api/68f97e86657c680226e7a504-93121871ba290a96986eca145837926c.mp3",
+  "v": 1
+ },
+ "lab111_pause2_quill_l3_stop_ellipsis_t2": {
+  "credits": 1,
+  "endpoint": "/audio/speech",
+  "file": "review/v111_lab/pause2/quill_l3_stop_ellipsis_t2.mp3",
+  "id": "lab111_pause2_quill_l3_stop_ellipsis_t2",
+  "job": "18917e59-c5bc-4ffa-ac94-fcc6e6112723",
+  "params": {
+   "sample": "https://storage.googleapis.com/ludo-assets/api/68f97e86657c680226e7a504-cf9f39d78debf0feb86cb518794fa307.mp3",
+   "text": "Everything has its price. ... Now you pay."
+  },
+  "url": "https://storage.googleapis.com/ludo-assets/api/68f97e86657c680226e7a504-63d9426d69389f14d85986937dfb181f.mp3",
+  "v": 1
+ },
+ "lab111_pause2_varek_l1_bracket_t1": {
+  "credits": 1,
+  "endpoint": "/audio/speech",
+  "file": "review/v111_lab/pause2/varek_l1_bracket_t1.mp3",
+  "id": "lab111_pause2_varek_l1_bracket_t1",
+  "job": "3d4c6051-b1b5-4f27-8e2c-a0dbec3f3a20",
+  "params": {
+   "sample": "https://storage.googleapis.com/ludo-assets/api/68f97e86657c680226e7a504-c13808872f9c05429740345041b30464.mp3",
+   "text": "Fall back. [pause] We return at dawn."
+  },
+  "url": "https://storage.googleapis.com/ludo-assets/api/68f97e86657c680226e7a504-ed84931728f1d2c22d33072cbdac22e9.mp3",
+  "v": 1
+ },
+ "lab111_pause2_varek_l1_break_tag_t1": {
+  "credits": 1,
+  "endpoint": "/audio/speech",
+  "file": "review/v111_lab/pause2/varek_l1_break_tag_t1.mp3",
+  "id": "lab111_pause2_varek_l1_break_tag_t1",
+  "job": "dcec2126-a68c-49d2-ba6f-8308ac33a767",
+  "params": {
+   "sample": "https://storage.googleapis.com/ludo-assets/api/68f97e86657c680226e7a504-c13808872f9c05429740345041b30464.mp3",
+   "text": "Fall back. <break time=\"0.8s\" /> We return at dawn."
+  },
+  "url": "https://storage.googleapis.com/ludo-assets/api/68f97e86657c680226e7a504-4d8f24442b3dc85680e6e2f861789196.mp3",
+  "v": 1
+ },
+ "lab111_pause2_varek_l1_double_ellipsis_t1": {
+  "credits": 1,
+  "endpoint": "/audio/speech",
+  "file": "review/v111_lab/pause2/varek_l1_double_ellipsis_t1.mp3",
+  "id": "lab111_pause2_varek_l1_double_ellipsis_t1",
+  "job": "270eccf0-88e8-4495-b887-606a41165d54",
+  "params": {
+   "sample": "https://storage.googleapis.com/ludo-assets/api/68f97e86657c680226e7a504-c13808872f9c05429740345041b30464.mp3",
+   "text": "Fall back...... We return at dawn."
+  },
+  "url": "https://storage.googleapis.com/ludo-assets/api/68f97e86657c680226e7a504-190e948853c3c8436087b113abd74aad.mp3",
+  "v": 1
+ },
+ "lab111_pause2_varek_l1_stop_ellipsis_t1": {
+  "credits": 1,
+  "endpoint": "/audio/speech",
+  "file": "review/v111_lab/pause2/varek_l1_stop_ellipsis_t1.mp3",
+  "id": "lab111_pause2_varek_l1_stop_ellipsis_t1",
+  "job": "aa1d906c-66b7-41ac-944c-7f4cb1f79bff",
+  "params": {
+   "sample": "https://storage.googleapis.com/ludo-assets/api/68f97e86657c680226e7a504-c13808872f9c05429740345041b30464.mp3",
+   "text": "Fall back. ... We return at dawn."
+  },
+  "url": "https://storage.googleapis.com/ludo-assets/api/68f97e86657c680226e7a504-3d5655482129977e46f8c86b0d662122.mp3",
+  "v": 1
+ },
+ "lab111_pause2_varek_l1_stop_ellipsis_t2": {
+  "credits": 1,
+  "endpoint": "/audio/speech",
+  "file": "review/v111_lab/pause2/varek_l1_stop_ellipsis_t2.mp3",
+  "id": "lab111_pause2_varek_l1_stop_ellipsis_t2",
+  "job": "8260c872-74ee-46de-934d-98b360517a7a",
+  "params": {
+   "sample": "https://storage.googleapis.com/ludo-assets/api/68f97e86657c680226e7a504-c13808872f9c05429740345041b30464.mp3",
+   "text": "Fall back. ... We return at dawn."
+  },
+  "url": "https://storage.googleapis.com/ludo-assets/api/68f97e86657c680226e7a504-2e47b350e142b2e769cee1c995466cee.mp3",
+  "v": 1
+ },
+ "lab111_pause2_varek_l2_bracket_t1": {
+  "credits": 1,
+  "endpoint": "/audio/speech",
+  "file": "review/v111_lab/pause2/varek_l2_bracket_t1.mp3",
+  "id": "lab111_pause2_varek_l2_bracket_t1",
+  "job": "43013bc3-fd57-458d-b7ba-933078db58a8",
+  "params": {
+   "sample": "https://storage.googleapis.com/ludo-assets/api/68f97e86657c680226e7a504-c13808872f9c05429740345041b30464.mp3",
+   "text": "As expected. [pause] Strike."
+  },
+  "url": "https://storage.googleapis.com/ludo-assets/api/68f97e86657c680226e7a504-be9ee6ac13fef0df23f47c0ae889be15.mp3",
+  "v": 1
+ },
+ "lab111_pause2_varek_l2_break_tag_t1": {
+  "credits": 1,
+  "endpoint": "/audio/speech",
+  "file": "review/v111_lab/pause2/varek_l2_break_tag_t1.mp3",
+  "id": "lab111_pause2_varek_l2_break_tag_t1",
+  "job": "3dfddc7e-b939-423f-adc9-ec87e627016f",
+  "params": {
+   "sample": "https://storage.googleapis.com/ludo-assets/api/68f97e86657c680226e7a504-c13808872f9c05429740345041b30464.mp3",
+   "text": "As expected. <break time=\"0.8s\" /> Strike."
+  },
+  "url": "https://storage.googleapis.com/ludo-assets/api/68f97e86657c680226e7a504-06c03382436bded05de545886ae6e3ff.mp3",
+  "v": 1
+ },
+ "lab111_pause2_varek_l2_double_ellipsis_t1": {
+  "credits": 1,
+  "endpoint": "/audio/speech",
+  "file": "review/v111_lab/pause2/varek_l2_double_ellipsis_t1.mp3",
+  "id": "lab111_pause2_varek_l2_double_ellipsis_t1",
+  "job": "41923fb7-884c-4c51-afb7-1b0d3c527f96",
+  "params": {
+   "sample": "https://storage.googleapis.com/ludo-assets/api/68f97e86657c680226e7a504-c13808872f9c05429740345041b30464.mp3",
+   "text": "As expected...... Strike."
+  },
+  "url": "https://storage.googleapis.com/ludo-assets/api/68f97e86657c680226e7a504-907d2b4f1a290f2a70a85013d70f6efa.mp3",
+  "v": 1
+ },
+ "lab111_pause2_varek_l2_stop_ellipsis_t1": {
+  "credits": 1,
+  "endpoint": "/audio/speech",
+  "file": "review/v111_lab/pause2/varek_l2_stop_ellipsis_t1.mp3",
+  "id": "lab111_pause2_varek_l2_stop_ellipsis_t1",
+  "job": "3bc9e6a8-ae6b-4de0-844e-00605c189a39",
+  "params": {
+   "sample": "https://storage.googleapis.com/ludo-assets/api/68f97e86657c680226e7a504-c13808872f9c05429740345041b30464.mp3",
+   "text": "As expected. ... Strike."
+  },
+  "url": "https://storage.googleapis.com/ludo-assets/api/68f97e86657c680226e7a504-9fdd16072eeb267831d5e7f9e37edf1e.mp3",
+  "v": 1
+ },
+ "lab111_pause2_varek_l2_stop_ellipsis_t2": {
+  "credits": 1,
+  "endpoint": "/audio/speech",
+  "file": "review/v111_lab/pause2/varek_l2_stop_ellipsis_t2.mp3",
+  "id": "lab111_pause2_varek_l2_stop_ellipsis_t2",
+  "job": "60b54ec5-6a69-4568-93cd-08b3d229a311",
+  "params": {
+   "sample": "https://storage.googleapis.com/ludo-assets/api/68f97e86657c680226e7a504-c13808872f9c05429740345041b30464.mp3",
+   "text": "As expected. ... Strike."
+  },
+  "url": "https://storage.googleapis.com/ludo-assets/api/68f97e86657c680226e7a504-e904d9ca4f0e2db8ffd7d818b26cb1d9.mp3",
+  "v": 1
+ },
+ "lab111_pause2_varek_l3_bracket_t1": {
+  "credits": 1,
+  "endpoint": "/audio/speech",
+  "file": "review/v111_lab/pause2/varek_l3_bracket_t1.mp3",
+  "id": "lab111_pause2_varek_l3_bracket_t1",
+  "job": "5600add7-3aa4-42b1-9301-2eb8d151735b",
+  "params": {
+   "sample": "https://storage.googleapis.com/ludo-assets/api/68f97e86657c680226e7a504-c13808872f9c05429740345041b30464.mp3",
+   "text": "I have buried a hundred generals. [pause] You will be the next."
+  },
+  "url": "https://storage.googleapis.com/ludo-assets/api/68f97e86657c680226e7a504-b40996d3f44cb64ae18c24e08f2a81d4.mp3",
+  "v": 1
+ },
+ "lab111_pause2_varek_l3_break_tag_t1": {
+  "credits": 1,
+  "endpoint": "/audio/speech",
+  "file": "review/v111_lab/pause2/varek_l3_break_tag_t1.mp3",
+  "id": "lab111_pause2_varek_l3_break_tag_t1",
+  "job": "3e14b6e6-f340-497d-a9c8-cdb0e0a3c40d",
+  "params": {
+   "sample": "https://storage.googleapis.com/ludo-assets/api/68f97e86657c680226e7a504-c13808872f9c05429740345041b30464.mp3",
+   "text": "I have buried a hundred generals. <break time=\"0.8s\" /> You will be the next."
+  },
+  "url": "https://storage.googleapis.com/ludo-assets/api/68f97e86657c680226e7a504-acd48e9e9807e2a0e346f1d50b3d020d.mp3",
+  "v": 1
+ },
+ "lab111_pause2_varek_l3_double_ellipsis_t1": {
+  "credits": 1,
+  "endpoint": "/audio/speech",
+  "file": "review/v111_lab/pause2/varek_l3_double_ellipsis_t1.mp3",
+  "id": "lab111_pause2_varek_l3_double_ellipsis_t1",
+  "job": "e5fb142f-e473-4a64-9f24-2d9d50bb83da",
+  "params": {
+   "sample": "https://storage.googleapis.com/ludo-assets/api/68f97e86657c680226e7a504-c13808872f9c05429740345041b30464.mp3",
+   "text": "I have buried a hundred generals...... You will be the next."
+  },
+  "url": "https://storage.googleapis.com/ludo-assets/api/68f97e86657c680226e7a504-864a39ce66511b5c5198f14b1d1e73f2.mp3",
+  "v": 1
+ },
+ "lab111_pause2_varek_l3_stop_ellipsis_t1": {
+  "credits": 1,
+  "endpoint": "/audio/speech",
+  "file": "review/v111_lab/pause2/varek_l3_stop_ellipsis_t1.mp3",
+  "id": "lab111_pause2_varek_l3_stop_ellipsis_t1",
+  "job": "78bea7a0-9540-47d8-a95f-c9779087b9bc",
+  "params": {
+   "sample": "https://storage.googleapis.com/ludo-assets/api/68f97e86657c680226e7a504-c13808872f9c05429740345041b30464.mp3",
+   "text": "I have buried a hundred generals. ... You will be the next."
+  },
+  "url": "https://storage.googleapis.com/ludo-assets/api/68f97e86657c680226e7a504-ffbdc49b4c67c8200ef0611ddd341a24.mp3",
+  "v": 1
+ },
+ "lab111_pause2_varek_l3_stop_ellipsis_t2": {
+  "credits": 1,
+  "endpoint": "/audio/speech",
+  "file": "review/v111_lab/pause2/varek_l3_stop_ellipsis_t2.mp3",
+  "id": "lab111_pause2_varek_l3_stop_ellipsis_t2",
+  "job": "40ce10b7-0c32-4f2e-be7d-dc2712434e55",
+  "params": {
+   "sample": "https://storage.googleapis.com/ludo-assets/api/68f97e86657c680226e7a504-c13808872f9c05429740345041b30464.mp3",
+   "text": "I have buried a hundred generals. ... You will be the next."
+  },
+  "url": "https://storage.googleapis.com/ludo-assets/api/68f97e86657c680226e7a504-3dd1b0f785efdc57f5596656d37a24b2.mp3",
+  "v": 1
+ },
+ "lab111_pause2_ysolde_l1_bracket_t1": {
+  "credits": 1,
+  "endpoint": "/audio/speech",
+  "file": "review/v111_lab/pause2/ysolde_l1_bracket_t1.mp3",
+  "id": "lab111_pause2_ysolde_l1_bracket_t1",
+  "job": "b36dd895-ed5a-4479-bd50-ab5aeae095d2",
+  "params": {
+   "sample": "https://storage.googleapis.com/ludo-assets/api/68f97e86657c680226e7a504-5b72130f6ba93ae92d9d0b97b043ffeb.mp3",
+   "text": "Withdraw. [pause] I will remember this."
+  },
+  "url": "https://storage.googleapis.com/ludo-assets/api/68f97e86657c680226e7a504-ca07ad2991410c589872bbcbf93ac80a.mp3",
+  "v": 1
+ },
+ "lab111_pause2_ysolde_l1_break_tag_t1": {
+  "credits": 1,
+  "endpoint": "/audio/speech",
+  "file": "review/v111_lab/pause2/ysolde_l1_break_tag_t1.mp3",
+  "id": "lab111_pause2_ysolde_l1_break_tag_t1",
+  "job": "bfdb6abc-3130-4513-8339-37164b5793a7",
+  "params": {
+   "sample": "https://storage.googleapis.com/ludo-assets/api/68f97e86657c680226e7a504-5b72130f6ba93ae92d9d0b97b043ffeb.mp3",
+   "text": "Withdraw. <break time=\"0.8s\" /> I will remember this."
+  },
+  "url": "https://storage.googleapis.com/ludo-assets/api/68f97e86657c680226e7a504-c6a19b3e298ac347725b0a093e2c717e.mp3",
+  "v": 1
+ },
+ "lab111_pause2_ysolde_l1_double_ellipsis_t1": {
+  "credits": 1,
+  "endpoint": "/audio/speech",
+  "file": "review/v111_lab/pause2/ysolde_l1_double_ellipsis_t1.mp3",
+  "id": "lab111_pause2_ysolde_l1_double_ellipsis_t1",
+  "job": "03e40928-c5ec-4381-95ef-bc94f5fc7dd0",
+  "params": {
+   "sample": "https://storage.googleapis.com/ludo-assets/api/68f97e86657c680226e7a504-5b72130f6ba93ae92d9d0b97b043ffeb.mp3",
+   "text": "Withdraw...... I will remember this."
+  },
+  "url": "https://storage.googleapis.com/ludo-assets/api/68f97e86657c680226e7a504-78eefde88b1d4a605b2a50069756312f.mp3",
+  "v": 1
+ },
+ "lab111_pause2_ysolde_l1_stop_ellipsis_t1": {
+  "credits": 1,
+  "endpoint": "/audio/speech",
+  "file": "review/v111_lab/pause2/ysolde_l1_stop_ellipsis_t1.mp3",
+  "id": "lab111_pause2_ysolde_l1_stop_ellipsis_t1",
+  "job": "402b70c1-8319-4fe3-8c86-a75b5bc2349a",
+  "params": {
+   "sample": "https://storage.googleapis.com/ludo-assets/api/68f97e86657c680226e7a504-5b72130f6ba93ae92d9d0b97b043ffeb.mp3",
+   "text": "Withdraw. ... I will remember this."
+  },
+  "url": "https://storage.googleapis.com/ludo-assets/api/68f97e86657c680226e7a504-fcb0bcae90b8297870321a333c6ed083.mp3",
+  "v": 1
+ },
+ "lab111_pause2_ysolde_l1_stop_ellipsis_t2": {
+  "credits": 1,
+  "endpoint": "/audio/speech",
+  "file": "review/v111_lab/pause2/ysolde_l1_stop_ellipsis_t2.mp3",
+  "id": "lab111_pause2_ysolde_l1_stop_ellipsis_t2",
+  "job": "de619e09-5afe-4664-b3db-a3294d1820e7",
+  "params": {
+   "sample": "https://storage.googleapis.com/ludo-assets/api/68f97e86657c680226e7a504-5b72130f6ba93ae92d9d0b97b043ffeb.mp3",
+   "text": "Withdraw. ... I will remember this."
+  },
+  "url": "https://storage.googleapis.com/ludo-assets/api/68f97e86657c680226e7a504-06353752e83d41ce219f5ed3e367b80c.mp3",
+  "v": 1
+ },
+ "lab111_pause2_ysolde_l2_bracket_t1": {
+  "credits": 1,
+  "endpoint": "/audio/speech",
+  "file": "review/v111_lab/pause2/ysolde_l2_bracket_t1.mp3",
+  "id": "lab111_pause2_ysolde_l2_bracket_t1",
+  "job": "98fb570d-20c1-4d01-bca4-3d06034ca8e1",
+  "params": {
+   "sample": "https://storage.googleapis.com/ludo-assets/api/68f97e86657c680226e7a504-5b72130f6ba93ae92d9d0b97b043ffeb.mp3",
+   "text": "You left it undefended. [pause] How generous."
+  },
+  "url": "https://storage.googleapis.com/ludo-assets/api/68f97e86657c680226e7a504-fb3afbd9e0b56b4ee8ed76b198434ca6.mp3",
+  "v": 1
+ },
+ "lab111_pause2_ysolde_l2_break_tag_t1": {
+  "credits": 1,
+  "endpoint": "/audio/speech",
+  "file": "review/v111_lab/pause2/ysolde_l2_break_tag_t1.mp3",
+  "id": "lab111_pause2_ysolde_l2_break_tag_t1",
+  "job": "9dab4875-3519-4e4c-b8ad-a0a2abd1da26",
+  "params": {
+   "sample": "https://storage.googleapis.com/ludo-assets/api/68f97e86657c680226e7a504-5b72130f6ba93ae92d9d0b97b043ffeb.mp3",
+   "text": "You left it undefended. <break time=\"0.8s\" /> How generous."
+  },
+  "url": "https://storage.googleapis.com/ludo-assets/api/68f97e86657c680226e7a504-6cc4259086cedc21ab10167722a4a3ff.mp3",
+  "v": 1
+ },
+ "lab111_pause2_ysolde_l2_double_ellipsis_t1": {
+  "credits": 1,
+  "endpoint": "/audio/speech",
+  "file": "review/v111_lab/pause2/ysolde_l2_double_ellipsis_t1.mp3",
+  "id": "lab111_pause2_ysolde_l2_double_ellipsis_t1",
+  "job": "5f04d0c4-ce87-4fa9-9dd8-027b4de449ab",
+  "params": {
+   "sample": "https://storage.googleapis.com/ludo-assets/api/68f97e86657c680226e7a504-5b72130f6ba93ae92d9d0b97b043ffeb.mp3",
+   "text": "You left it undefended...... How generous."
+  },
+  "url": "https://storage.googleapis.com/ludo-assets/api/68f97e86657c680226e7a504-fe3720fc6264548a62ae0d0bc7e7e502.mp3",
+  "v": 1
+ },
+ "lab111_pause2_ysolde_l2_stop_ellipsis_t1": {
+  "credits": 1,
+  "endpoint": "/audio/speech",
+  "file": "review/v111_lab/pause2/ysolde_l2_stop_ellipsis_t1.mp3",
+  "id": "lab111_pause2_ysolde_l2_stop_ellipsis_t1",
+  "job": "1c8d7ba4-89ce-4d23-b6d9-d27e9102020c",
+  "params": {
+   "sample": "https://storage.googleapis.com/ludo-assets/api/68f97e86657c680226e7a504-5b72130f6ba93ae92d9d0b97b043ffeb.mp3",
+   "text": "You left it undefended. ... How generous."
+  },
+  "url": "https://storage.googleapis.com/ludo-assets/api/68f97e86657c680226e7a504-61297b8b8c755e8034ff48323ad9cbfe.mp3",
+  "v": 1
+ },
+ "lab111_pause2_ysolde_l2_stop_ellipsis_t2": {
+  "credits": 1,
+  "endpoint": "/audio/speech",
+  "file": "review/v111_lab/pause2/ysolde_l2_stop_ellipsis_t2.mp3",
+  "id": "lab111_pause2_ysolde_l2_stop_ellipsis_t2",
+  "job": "d4c8d81e-e8f2-47a8-b76b-f68858ead28c",
+  "params": {
+   "sample": "https://storage.googleapis.com/ludo-assets/api/68f97e86657c680226e7a504-5b72130f6ba93ae92d9d0b97b043ffeb.mp3",
+   "text": "You left it undefended. ... How generous."
+  },
+  "url": "https://storage.googleapis.com/ludo-assets/api/68f97e86657c680226e7a504-b3d85e7bc56f47d7aa7e2f17d9c6b75d.mp3",
+  "v": 1
+ },
+ "lab111_pause2_ysolde_l3_bracket_t1": {
+  "credits": 1,
+  "endpoint": "/audio/speech",
+  "file": "review/v111_lab/pause2/ysolde_l3_bracket_t1.mp3",
+  "id": "lab111_pause2_ysolde_l3_bracket_t1",
+  "job": "9893b0a2-cf0b-4fdf-b8b1-b7a3c5758c2f",
+  "params": {
+   "sample": "https://storage.googleapis.com/ludo-assets/api/68f97e86657c680226e7a504-5b72130f6ba93ae92d9d0b97b043ffeb.mp3",
+   "text": "Kneel. [pause] The empire is mine."
+  },
+  "url": "https://storage.googleapis.com/ludo-assets/api/68f97e86657c680226e7a504-6ec396f2e3fee2560eccd1aa42e08a74.mp3",
+  "v": 1
+ },
+ "lab111_pause2_ysolde_l3_break_tag_t1": {
+  "credits": 1,
+  "endpoint": "/audio/speech",
+  "file": "review/v111_lab/pause2/ysolde_l3_break_tag_t1.mp3",
+  "id": "lab111_pause2_ysolde_l3_break_tag_t1",
+  "job": "52510ef8-4e02-48e1-a42e-c697d0952d57",
+  "params": {
+   "sample": "https://storage.googleapis.com/ludo-assets/api/68f97e86657c680226e7a504-5b72130f6ba93ae92d9d0b97b043ffeb.mp3",
+   "text": "Kneel. <break time=\"0.8s\" /> The empire is mine."
+  },
+  "url": "https://storage.googleapis.com/ludo-assets/api/68f97e86657c680226e7a504-05f378609392315bd53922740d3ed641.mp3",
+  "v": 1
+ },
+ "lab111_pause2_ysolde_l3_double_ellipsis_t1": {
+  "credits": 1,
+  "endpoint": "/audio/speech",
+  "file": "review/v111_lab/pause2/ysolde_l3_double_ellipsis_t1.mp3",
+  "id": "lab111_pause2_ysolde_l3_double_ellipsis_t1",
+  "job": "b3717153-2a28-4131-829d-8828aa6d3707",
+  "params": {
+   "sample": "https://storage.googleapis.com/ludo-assets/api/68f97e86657c680226e7a504-5b72130f6ba93ae92d9d0b97b043ffeb.mp3",
+   "text": "Kneel...... The empire is mine."
+  },
+  "url": "https://storage.googleapis.com/ludo-assets/api/68f97e86657c680226e7a504-cbfba6b136f406a514373e8e9b9b48d0.mp3",
+  "v": 1
+ },
+ "lab111_pause2_ysolde_l3_stop_ellipsis_t1": {
+  "credits": 1,
+  "endpoint": "/audio/speech",
+  "file": "review/v111_lab/pause2/ysolde_l3_stop_ellipsis_t1.mp3",
+  "id": "lab111_pause2_ysolde_l3_stop_ellipsis_t1",
+  "job": "d7c5fc3c-f7e6-47cf-a225-de5fbb47dc9e",
+  "params": {
+   "sample": "https://storage.googleapis.com/ludo-assets/api/68f97e86657c680226e7a504-5b72130f6ba93ae92d9d0b97b043ffeb.mp3",
+   "text": "Kneel. ... The empire is mine."
+  },
+  "url": "https://storage.googleapis.com/ludo-assets/api/68f97e86657c680226e7a504-415406e9f96cb478883f9eaac8451122.mp3",
+  "v": 1
+ },
+ "lab111_pause2_ysolde_l3_stop_ellipsis_t2": {
+  "credits": 1,
+  "endpoint": "/audio/speech",
+  "file": "review/v111_lab/pause2/ysolde_l3_stop_ellipsis_t2.mp3",
+  "id": "lab111_pause2_ysolde_l3_stop_ellipsis_t2",
+  "job": "e0b8f392-ba84-4e4f-b6ad-6faf078b3e9d",
+  "params": {
+   "sample": "https://storage.googleapis.com/ludo-assets/api/68f97e86657c680226e7a504-5b72130f6ba93ae92d9d0b97b043ffeb.mp3",
+   "text": "Kneel. ... The empire is mine."
+  },
+  "url": "https://storage.googleapis.com/ludo-assets/api/68f97e86657c680226e7a504-22b1945dfa931a6b7d14212a6ec25052.mp3",
+  "v": 1
+ },
+ "lab111_pause_advisor_l1_dash_t1": {
+  "credits": 1,
+  "endpoint": "/audio/speech",
+  "file": "review/v111_lab/pause/advisor_l1_dash_t1.mp3",
+  "id": "lab111_pause_advisor_l1_dash_t1",
+  "job": "61b09108-c88d-4ba1-ba50-0f5f5cedc366",
+  "params": {
+   "sample": "https://storage.googleapis.com/ludo-assets/api/68f97e86657c680226e7a504-f315f52bb2200802cd805e5d61d284aa.mp3",
+   "text": "The line held \u2014 Now we advance."
+  },
+  "url": "https://storage.googleapis.com/ludo-assets/api/68f97e86657c680226e7a504-69b137bc205f80053abb7fe036249c35.mp3",
+  "v": 1
+ },
+ "lab111_pause_advisor_l1_dash_t2": {
+  "credits": 1,
+  "endpoint": "/audio/speech",
+  "file": "review/v111_lab/pause/advisor_l1_dash_t2.mp3",
+  "id": "lab111_pause_advisor_l1_dash_t2",
+  "job": "2da95481-e7f2-4a3d-ac6d-b35a2c99dc59",
+  "params": {
+   "sample": "https://storage.googleapis.com/ludo-assets/api/68f97e86657c680226e7a504-f315f52bb2200802cd805e5d61d284aa.mp3",
+   "text": "The line held \u2014 Now we advance."
+  },
+  "url": "https://storage.googleapis.com/ludo-assets/api/68f97e86657c680226e7a504-3055a65b7618c85a5e7636007f9b7706.mp3",
+  "v": 1
+ },
+ "lab111_pause_advisor_l1_ellipsis_t1": {
+  "credits": 1,
+  "endpoint": "/audio/speech",
+  "file": "review/v111_lab/pause/advisor_l1_ellipsis_t1.mp3",
+  "id": "lab111_pause_advisor_l1_ellipsis_t1",
+  "job": "905b1ffc-4af2-4728-957d-1063d04f4364",
+  "params": {
+   "sample": "https://storage.googleapis.com/ludo-assets/api/68f97e86657c680226e7a504-f315f52bb2200802cd805e5d61d284aa.mp3",
+   "text": "The line held... Now we advance."
+  },
+  "url": "https://storage.googleapis.com/ludo-assets/api/68f97e86657c680226e7a504-244e2fea4f71eb8e5c228996df432a50.mp3",
+  "v": 1
+ },
+ "lab111_pause_advisor_l1_ellipsis_t2": {
+  "credits": 1,
+  "endpoint": "/audio/speech",
+  "file": "review/v111_lab/pause/advisor_l1_ellipsis_t2.mp3",
+  "id": "lab111_pause_advisor_l1_ellipsis_t2",
+  "job": "dd7f4986-2c8a-429f-a66f-3c6e929ec99b",
+  "params": {
+   "sample": "https://storage.googleapis.com/ludo-assets/api/68f97e86657c680226e7a504-f315f52bb2200802cd805e5d61d284aa.mp3",
+   "text": "The line held... Now we advance."
+  },
+  "url": "https://storage.googleapis.com/ludo-assets/api/68f97e86657c680226e7a504-cab17d01fdcefef3f0bb7b3e61b2c439.mp3",
+  "v": 1
+ },
+ "lab111_pause_advisor_l1_para_t1": {
+  "credits": 1,
+  "endpoint": "/audio/speech",
+  "file": "review/v111_lab/pause/advisor_l1_para_t1.mp3",
+  "id": "lab111_pause_advisor_l1_para_t1",
+  "job": "c267001d-59dc-41f1-b0c8-d58208991b39",
+  "params": {
+   "sample": "https://storage.googleapis.com/ludo-assets/api/68f97e86657c680226e7a504-f315f52bb2200802cd805e5d61d284aa.mp3",
+   "text": "The line held.\n\nNow we advance."
+  },
+  "url": "https://storage.googleapis.com/ludo-assets/api/68f97e86657c680226e7a504-5e2548d1393ced2c249434c46be0b44f.mp3",
+  "v": 1
+ },
+ "lab111_pause_advisor_l1_para_t2": {
+  "credits": 1,
+  "endpoint": "/audio/speech",
+  "file": "review/v111_lab/pause/advisor_l1_para_t2.mp3",
+  "id": "lab111_pause_advisor_l1_para_t2",
+  "job": "3bbf5b30-b685-4727-b1f6-a1694b7b2f46",
+  "params": {
+   "sample": "https://storage.googleapis.com/ludo-assets/api/68f97e86657c680226e7a504-f315f52bb2200802cd805e5d61d284aa.mp3",
+   "text": "The line held.\n\nNow we advance."
+  },
+  "url": "https://storage.googleapis.com/ludo-assets/api/68f97e86657c680226e7a504-33676d7f631a5a09dfce329fd5c6b4e2.mp3",
+  "v": 1
+ },
+ "lab111_pause_advisor_l1_period_t1": {
+  "credits": 1,
+  "endpoint": "/audio/speech",
+  "file": "review/v111_lab/pause/advisor_l1_period_t1.mp3",
+  "id": "lab111_pause_advisor_l1_period_t1",
+  "job": "c9e4724b-1cbb-4ff0-8739-97c0a3f013d7",
+  "params": {
+   "sample": "https://storage.googleapis.com/ludo-assets/api/68f97e86657c680226e7a504-f315f52bb2200802cd805e5d61d284aa.mp3",
+   "text": "The line held. Now we advance."
+  },
+  "url": "https://storage.googleapis.com/ludo-assets/api/68f97e86657c680226e7a504-834b923cf47bba6dd4af136da37eff5f.mp3",
+  "v": 1
+ },
+ "lab111_pause_advisor_l1_period_t2": {
+  "credits": 1,
+  "endpoint": "/audio/speech",
+  "file": "review/v111_lab/pause/advisor_l1_period_t2.mp3",
+  "id": "lab111_pause_advisor_l1_period_t2",
+  "job": "23297ecc-1221-415d-bbba-7396df7ae0b9",
+  "params": {
+   "sample": "https://storage.googleapis.com/ludo-assets/api/68f97e86657c680226e7a504-f315f52bb2200802cd805e5d61d284aa.mp3",
+   "text": "The line held. Now we advance."
+  },
+  "url": "https://storage.googleapis.com/ludo-assets/api/68f97e86657c680226e7a504-9bfa565fbd9d6540d49301451cd63219.mp3",
+  "v": 1
+ },
+ "lab111_pause_advisor_l2_dash_t1": {
+  "credits": 1,
+  "endpoint": "/audio/speech",
+  "file": "review/v111_lab/pause/advisor_l2_dash_t1.mp3",
+  "id": "lab111_pause_advisor_l2_dash_t1",
+  "job": "28ed4240-20a5-4df1-be7e-5d1433809fae",
+  "params": {
+   "sample": "https://storage.googleapis.com/ludo-assets/api/68f97e86657c680226e7a504-f315f52bb2200802cd805e5d61d284aa.mp3",
+   "text": "Orders sealed \u2014 Now we see who flinches."
+  },
+  "url": "https://storage.googleapis.com/ludo-assets/api/68f97e86657c680226e7a504-daeaec68915001be89e9285bc1a4208f.mp3",
+  "v": 1
+ },
+ "lab111_pause_advisor_l2_dash_t2": {
+  "credits": 1,
+  "endpoint": "/audio/speech",
+  "file": "review/v111_lab/pause/advisor_l2_dash_t2.mp3",
+  "id": "lab111_pause_advisor_l2_dash_t2",
+  "job": "02ac2343-717a-4dbc-b291-8c13eb0357e3",
+  "params": {
+   "sample": "https://storage.googleapis.com/ludo-assets/api/68f97e86657c680226e7a504-f315f52bb2200802cd805e5d61d284aa.mp3",
+   "text": "Orders sealed \u2014 Now we see who flinches."
+  },
+  "url": "https://storage.googleapis.com/ludo-assets/api/68f97e86657c680226e7a504-e9b22b1771c43acbd2af108b1a8ee65d.mp3",
+  "v": 1
+ },
+ "lab111_pause_advisor_l2_ellipsis_t1": {
+  "credits": 1,
+  "endpoint": "/audio/speech",
+  "file": "review/v111_lab/pause/advisor_l2_ellipsis_t1.mp3",
+  "id": "lab111_pause_advisor_l2_ellipsis_t1",
+  "job": "f9caf4c6-372d-4dcd-847d-16e0aa8734d7",
+  "params": {
+   "sample": "https://storage.googleapis.com/ludo-assets/api/68f97e86657c680226e7a504-f315f52bb2200802cd805e5d61d284aa.mp3",
+   "text": "Orders sealed... Now we see who flinches."
+  },
+  "url": "https://storage.googleapis.com/ludo-assets/api/68f97e86657c680226e7a504-8e6ddb01b5571a782b1a5284f32074ea.mp3",
+  "v": 1
+ },
+ "lab111_pause_advisor_l2_ellipsis_t2": {
+  "credits": 1,
+  "endpoint": "/audio/speech",
+  "file": "review/v111_lab/pause/advisor_l2_ellipsis_t2.mp3",
+  "id": "lab111_pause_advisor_l2_ellipsis_t2",
+  "job": "f1c7043e-3ef9-4783-b4e9-d3c7fce6ba7f",
+  "params": {
+   "sample": "https://storage.googleapis.com/ludo-assets/api/68f97e86657c680226e7a504-f315f52bb2200802cd805e5d61d284aa.mp3",
+   "text": "Orders sealed... Now we see who flinches."
+  },
+  "url": "https://storage.googleapis.com/ludo-assets/api/68f97e86657c680226e7a504-b1e9b0ddf49b778b314f6e06be892702.mp3",
+  "v": 1
+ },
+ "lab111_pause_advisor_l2_para_t1": {
+  "credits": 1,
+  "endpoint": "/audio/speech",
+  "file": "review/v111_lab/pause/advisor_l2_para_t1.mp3",
+  "id": "lab111_pause_advisor_l2_para_t1",
+  "job": "7d1831f4-967e-4d92-a3c9-7f69b270f29a",
+  "params": {
+   "sample": "https://storage.googleapis.com/ludo-assets/api/68f97e86657c680226e7a504-f315f52bb2200802cd805e5d61d284aa.mp3",
+   "text": "Orders sealed.\n\nNow we see who flinches."
+  },
+  "url": "https://storage.googleapis.com/ludo-assets/api/68f97e86657c680226e7a504-5a7471fb2157d7e6d77d5458f2ba40ed.mp3",
+  "v": 1
+ },
+ "lab111_pause_advisor_l2_para_t2": {
+  "credits": 1,
+  "endpoint": "/audio/speech",
+  "file": "review/v111_lab/pause/advisor_l2_para_t2.mp3",
+  "id": "lab111_pause_advisor_l2_para_t2",
+  "job": "8e2cc192-fc4c-47c2-af6d-5f3d30c716d8",
+  "params": {
+   "sample": "https://storage.googleapis.com/ludo-assets/api/68f97e86657c680226e7a504-f315f52bb2200802cd805e5d61d284aa.mp3",
+   "text": "Orders sealed.\n\nNow we see who flinches."
+  },
+  "url": "https://storage.googleapis.com/ludo-assets/api/68f97e86657c680226e7a504-1af619a16eaf14b2bbd3177ff29e79a0.mp3",
+  "v": 1
+ },
+ "lab111_pause_advisor_l2_period_t1": {
+  "credits": 1,
+  "endpoint": "/audio/speech",
+  "file": "review/v111_lab/pause/advisor_l2_period_t1.mp3",
+  "id": "lab111_pause_advisor_l2_period_t1",
+  "job": "5a1f6892-9856-411d-b481-4bdbcf50e89b",
+  "params": {
+   "sample": "https://storage.googleapis.com/ludo-assets/api/68f97e86657c680226e7a504-f315f52bb2200802cd805e5d61d284aa.mp3",
+   "text": "Orders sealed. Now we see who flinches."
+  },
+  "url": "https://storage.googleapis.com/ludo-assets/api/68f97e86657c680226e7a504-3d91df82ca0d2355a8ac36d330fe15fe.mp3",
+  "v": 1
+ },
+ "lab111_pause_advisor_l2_period_t2": {
+  "credits": 1,
+  "endpoint": "/audio/speech",
+  "file": "review/v111_lab/pause/advisor_l2_period_t2.mp3",
+  "id": "lab111_pause_advisor_l2_period_t2",
+  "job": "6a9b97ea-1c39-4f15-8409-90ef75156601",
+  "params": {
+   "sample": "https://storage.googleapis.com/ludo-assets/api/68f97e86657c680226e7a504-f315f52bb2200802cd805e5d61d284aa.mp3",
+   "text": "Orders sealed. Now we see who flinches."
+  },
+  "url": "https://storage.googleapis.com/ludo-assets/api/68f97e86657c680226e7a504-41e394cf65d3b9ca4c9578cbbd52dae1.mp3",
+  "v": 1
+ },
+ "lab111_pause_advisor_l3_dash_t1": {
+  "credits": 1,
+  "endpoint": "/audio/speech",
+  "file": "review/v111_lab/pause/advisor_l3_dash_t1.mp3",
+  "id": "lab111_pause_advisor_l3_dash_t1",
+  "job": "7f6b4713-4436-4b29-97b9-c37d40e73ff5",
+  "params": {
+   "sample": "https://storage.googleapis.com/ludo-assets/api/68f97e86657c680226e7a504-f315f52bb2200802cd805e5d61d284aa.mp3",
+   "text": "We have lost the river crossing, Commander \u2014 We will take it back."
+  },
+  "url": "https://storage.googleapis.com/ludo-assets/api/68f97e86657c680226e7a504-5dd7c54690064ee1c449156dc38a24d0.mp3",
+  "v": 1
+ },
+ "lab111_pause_advisor_l3_dash_t2": {
+  "credits": 1,
+  "endpoint": "/audio/speech",
+  "file": "review/v111_lab/pause/advisor_l3_dash_t2.mp3",
+  "id": "lab111_pause_advisor_l3_dash_t2",
+  "job": "447ace85-3759-48eb-bc2c-59be49830840",
+  "params": {
+   "sample": "https://storage.googleapis.com/ludo-assets/api/68f97e86657c680226e7a504-f315f52bb2200802cd805e5d61d284aa.mp3",
+   "text": "We have lost the river crossing, Commander \u2014 We will take it back."
+  },
+  "url": "https://storage.googleapis.com/ludo-assets/api/68f97e86657c680226e7a504-7fd60775f0c42298d62e889db20c652f.mp3",
+  "v": 1
+ },
+ "lab111_pause_advisor_l3_ellipsis_t1": {
+  "credits": 1,
+  "endpoint": "/audio/speech",
+  "file": "review/v111_lab/pause/advisor_l3_ellipsis_t1.mp3",
+  "id": "lab111_pause_advisor_l3_ellipsis_t1",
+  "job": "ebfe53df-9e52-4e18-98a5-01945ff1ebd1",
+  "params": {
+   "sample": "https://storage.googleapis.com/ludo-assets/api/68f97e86657c680226e7a504-f315f52bb2200802cd805e5d61d284aa.mp3",
+   "text": "We have lost the river crossing, Commander... We will take it back."
+  },
+  "url": "https://storage.googleapis.com/ludo-assets/api/68f97e86657c680226e7a504-ec35754a5dfcde0112bc6968bb1abdb5.mp3",
+  "v": 1
+ },
+ "lab111_pause_advisor_l3_ellipsis_t2": {
+  "credits": 1,
+  "endpoint": "/audio/speech",
+  "file": "review/v111_lab/pause/advisor_l3_ellipsis_t2.mp3",
+  "id": "lab111_pause_advisor_l3_ellipsis_t2",
+  "job": "f98d5a32-e9cb-4fd3-906e-9b59c76ad524",
+  "params": {
+   "sample": "https://storage.googleapis.com/ludo-assets/api/68f97e86657c680226e7a504-f315f52bb2200802cd805e5d61d284aa.mp3",
+   "text": "We have lost the river crossing, Commander... We will take it back."
+  },
+  "url": "https://storage.googleapis.com/ludo-assets/api/68f97e86657c680226e7a504-4da4b500d09e20cf6a544b928d80a743.mp3",
+  "v": 1
+ },
+ "lab111_pause_advisor_l3_para_t1": {
+  "credits": 1,
+  "endpoint": "/audio/speech",
+  "file": "review/v111_lab/pause/advisor_l3_para_t1.mp3",
+  "id": "lab111_pause_advisor_l3_para_t1",
+  "job": "04a39a7b-66d6-43bb-acd2-e1520666e249",
+  "params": {
+   "sample": "https://storage.googleapis.com/ludo-assets/api/68f97e86657c680226e7a504-f315f52bb2200802cd805e5d61d284aa.mp3",
+   "text": "We have lost the river crossing, Commander.\n\nWe will take it back."
+  },
+  "url": "https://storage.googleapis.com/ludo-assets/api/68f97e86657c680226e7a504-1f1468ea2fb1c0ce90a8c6547ad25553.mp3",
+  "v": 1
+ },
+ "lab111_pause_advisor_l3_para_t2": {
+  "credits": 1,
+  "endpoint": "/audio/speech",
+  "file": "review/v111_lab/pause/advisor_l3_para_t2.mp3",
+  "id": "lab111_pause_advisor_l3_para_t2",
+  "job": "32bb9b10-85e0-46ce-b4e1-e3e4aff49b1b",
+  "params": {
+   "sample": "https://storage.googleapis.com/ludo-assets/api/68f97e86657c680226e7a504-f315f52bb2200802cd805e5d61d284aa.mp3",
+   "text": "We have lost the river crossing, Commander.\n\nWe will take it back."
+  },
+  "url": "https://storage.googleapis.com/ludo-assets/api/68f97e86657c680226e7a504-daa6949b8eb1ce3536e15858a7858837.mp3",
+  "v": 1
+ },
+ "lab111_pause_advisor_l3_period_t1": {
+  "credits": 1,
+  "endpoint": "/audio/speech",
+  "file": "review/v111_lab/pause/advisor_l3_period_t1.mp3",
+  "id": "lab111_pause_advisor_l3_period_t1",
+  "job": "380c048d-553c-49df-b2d7-f08cbbd302ae",
+  "params": {
+   "sample": "https://storage.googleapis.com/ludo-assets/api/68f97e86657c680226e7a504-f315f52bb2200802cd805e5d61d284aa.mp3",
+   "text": "We have lost the river crossing, Commander. We will take it back."
+  },
+  "url": "https://storage.googleapis.com/ludo-assets/api/68f97e86657c680226e7a504-e0bd7f1d02974bd5a69b986ac5db0673.mp3",
+  "v": 1
+ },
+ "lab111_pause_advisor_l3_period_t2": {
+  "credits": 1,
+  "endpoint": "/audio/speech",
+  "file": "review/v111_lab/pause/advisor_l3_period_t2.mp3",
+  "id": "lab111_pause_advisor_l3_period_t2",
+  "job": "b17b87f6-6e6f-40a5-890c-259552ef2c0e",
+  "params": {
+   "sample": "https://storage.googleapis.com/ludo-assets/api/68f97e86657c680226e7a504-f315f52bb2200802cd805e5d61d284aa.mp3",
+   "text": "We have lost the river crossing, Commander. We will take it back."
+  },
+  "url": "https://storage.googleapis.com/ludo-assets/api/68f97e86657c680226e7a504-90a1691b283ebb0ebcfbe56e106767fe.mp3",
+  "v": 1
+ },
+ "lab111_pause_quill_l1_dash_t1": {
+  "credits": 1,
+  "endpoint": "/audio/speech",
+  "file": "review/v111_lab/pause/quill_l1_dash_t1.mp3",
+  "id": "lab111_pause_quill_l1_dash_t1",
+  "job": "21523564-6cf3-4cbc-8262-d40a645e2d75",
+  "params": {
+   "sample": "https://storage.googleapis.com/ludo-assets/api/68f97e86657c680226e7a504-cf9f39d78debf0feb86cb518794fa307.mp3",
+   "text": "Cut our losses, lads \u2014 Back to the ships."
+  },
+  "url": "https://storage.googleapis.com/ludo-assets/api/68f97e86657c680226e7a504-e0659b01c0b7f83163f886008559a0cd.mp3",
+  "v": 1
+ },
+ "lab111_pause_quill_l1_dash_t2": {
+  "credits": 1,
+  "endpoint": "/audio/speech",
+  "file": "review/v111_lab/pause/quill_l1_dash_t2.mp3",
+  "id": "lab111_pause_quill_l1_dash_t2",
+  "job": "ed137474-0f79-4933-b678-7549229e32c2",
+  "params": {
+   "sample": "https://storage.googleapis.com/ludo-assets/api/68f97e86657c680226e7a504-cf9f39d78debf0feb86cb518794fa307.mp3",
+   "text": "Cut our losses, lads \u2014 Back to the ships."
+  },
+  "url": "https://storage.googleapis.com/ludo-assets/api/68f97e86657c680226e7a504-5b2124fa23bccaa8c32a59c53e3f43e2.mp3",
+  "v": 1
+ },
+ "lab111_pause_quill_l1_ellipsis_t1": {
+  "credits": 1,
+  "endpoint": "/audio/speech",
+  "file": "review/v111_lab/pause/quill_l1_ellipsis_t1.mp3",
+  "id": "lab111_pause_quill_l1_ellipsis_t1",
+  "job": "aba81dc1-c7d0-4b0b-9bff-3f7c9f76f7de",
+  "params": {
+   "sample": "https://storage.googleapis.com/ludo-assets/api/68f97e86657c680226e7a504-cf9f39d78debf0feb86cb518794fa307.mp3",
+   "text": "Cut our losses, lads... Back to the ships."
+  },
+  "url": "https://storage.googleapis.com/ludo-assets/api/68f97e86657c680226e7a504-6d1b1447b2863346ef2fd78569a19382.mp3",
+  "v": 1
+ },
+ "lab111_pause_quill_l1_ellipsis_t2": {
+  "credits": 1,
+  "endpoint": "/audio/speech",
+  "file": "review/v111_lab/pause/quill_l1_ellipsis_t2.mp3",
+  "id": "lab111_pause_quill_l1_ellipsis_t2",
+  "job": "4022c3ba-1b50-488c-b09a-69fc7e3404e5",
+  "params": {
+   "sample": "https://storage.googleapis.com/ludo-assets/api/68f97e86657c680226e7a504-cf9f39d78debf0feb86cb518794fa307.mp3",
+   "text": "Cut our losses, lads... Back to the ships."
+  },
+  "url": "https://storage.googleapis.com/ludo-assets/api/68f97e86657c680226e7a504-866d38febc9bb4d0c331d55ebf29c1d7.mp3",
+  "v": 1
+ },
+ "lab111_pause_quill_l1_para_t1": {
+  "credits": 1,
+  "endpoint": "/audio/speech",
+  "file": "review/v111_lab/pause/quill_l1_para_t1.mp3",
+  "id": "lab111_pause_quill_l1_para_t1",
+  "job": "4ab10338-3993-4757-873e-2483a8e6cc61",
+  "params": {
+   "sample": "https://storage.googleapis.com/ludo-assets/api/68f97e86657c680226e7a504-cf9f39d78debf0feb86cb518794fa307.mp3",
+   "text": "Cut our losses, lads.\n\nBack to the ships."
+  },
+  "url": "https://storage.googleapis.com/ludo-assets/api/68f97e86657c680226e7a504-86ee4b70ac4468749c414c204bc2b449.mp3",
+  "v": 1
+ },
+ "lab111_pause_quill_l1_para_t2": {
+  "credits": 1,
+  "endpoint": "/audio/speech",
+  "file": "review/v111_lab/pause/quill_l1_para_t2.mp3",
+  "id": "lab111_pause_quill_l1_para_t2",
+  "job": "2db60733-642a-47b3-964e-7ac955cbc61f",
+  "params": {
+   "sample": "https://storage.googleapis.com/ludo-assets/api/68f97e86657c680226e7a504-cf9f39d78debf0feb86cb518794fa307.mp3",
+   "text": "Cut our losses, lads.\n\nBack to the ships."
+  },
+  "url": "https://storage.googleapis.com/ludo-assets/api/68f97e86657c680226e7a504-fa44ee2558e0438272ca709b48e821bb.mp3",
+  "v": 1
+ },
+ "lab111_pause_quill_l1_period_t1": {
+  "credits": 1,
+  "endpoint": "/audio/speech",
+  "file": "review/v111_lab/pause/quill_l1_period_t1.mp3",
+  "id": "lab111_pause_quill_l1_period_t1",
+  "job": "8fd99b16-1966-47dc-8a9b-99458a493b68",
+  "params": {
+   "sample": "https://storage.googleapis.com/ludo-assets/api/68f97e86657c680226e7a504-cf9f39d78debf0feb86cb518794fa307.mp3",
+   "text": "Cut our losses, lads. Back to the ships."
+  },
+  "url": "https://storage.googleapis.com/ludo-assets/api/68f97e86657c680226e7a504-4ce20a97a18b067b9188593e6097e4f7.mp3",
+  "v": 1
+ },
+ "lab111_pause_quill_l1_period_t2": {
+  "credits": 1,
+  "endpoint": "/audio/speech",
+  "file": "review/v111_lab/pause/quill_l1_period_t2.mp3",
+  "id": "lab111_pause_quill_l1_period_t2",
+  "job": "559453d7-8941-4ef4-b025-741fcfc480b5",
+  "params": {
+   "sample": "https://storage.googleapis.com/ludo-assets/api/68f97e86657c680226e7a504-cf9f39d78debf0feb86cb518794fa307.mp3",
+   "text": "Cut our losses, lads. Back to the ships."
+  },
+  "url": "https://storage.googleapis.com/ludo-assets/api/68f97e86657c680226e7a504-1616ab55308875da32b854d14028b40e.mp3",
+  "v": 1
+ },
+ "lab111_pause_quill_l2_dash_t1": {
+  "credits": 1,
+  "endpoint": "/audio/speech",
+  "file": "review/v111_lab/pause/quill_l2_dash_t1.mp3",
+  "id": "lab111_pause_quill_l2_dash_t1",
+  "job": "06566a69-3829-4700-95a7-e9411bd46287",
+  "params": {
+   "sample": "https://storage.googleapis.com/ludo-assets/api/68f97e86657c680226e7a504-cf9f39d78debf0feb86cb518794fa307.mp3",
+   "text": "Unguarded goods \u2014 Finders keepers."
+  },
+  "url": "https://storage.googleapis.com/ludo-assets/api/68f97e86657c680226e7a504-c5a3667d4a4dc737bce07b051223f3e9.mp3",
+  "v": 1
+ },
+ "lab111_pause_quill_l2_dash_t2": {
+  "credits": 1,
+  "endpoint": "/audio/speech",
+  "file": "review/v111_lab/pause/quill_l2_dash_t2.mp3",
+  "id": "lab111_pause_quill_l2_dash_t2",
+  "job": "aca433b5-5965-4954-bcfe-7edf0dacbe1b",
+  "params": {
+   "sample": "https://storage.googleapis.com/ludo-assets/api/68f97e86657c680226e7a504-cf9f39d78debf0feb86cb518794fa307.mp3",
+   "text": "Unguarded goods \u2014 Finders keepers."
+  },
+  "url": "https://storage.googleapis.com/ludo-assets/api/68f97e86657c680226e7a504-b58e5e23d6ac695d305d028ea67d49a7.mp3",
+  "v": 1
+ },
+ "lab111_pause_quill_l2_ellipsis_t1": {
+  "credits": 1,
+  "endpoint": "/audio/speech",
+  "file": "review/v111_lab/pause/quill_l2_ellipsis_t1.mp3",
+  "id": "lab111_pause_quill_l2_ellipsis_t1",
+  "job": "3668ba8e-5f30-42cc-9a54-8900e9025656",
+  "params": {
+   "sample": "https://storage.googleapis.com/ludo-assets/api/68f97e86657c680226e7a504-cf9f39d78debf0feb86cb518794fa307.mp3",
+   "text": "Unguarded goods... Finders keepers."
+  },
+  "url": "https://storage.googleapis.com/ludo-assets/api/68f97e86657c680226e7a504-0641b5d905a595fe3d63dd1587b39ea2.mp3",
+  "v": 1
+ },
+ "lab111_pause_quill_l2_ellipsis_t2": {
+  "credits": 1,
+  "endpoint": "/audio/speech",
+  "file": "review/v111_lab/pause/quill_l2_ellipsis_t2.mp3",
+  "id": "lab111_pause_quill_l2_ellipsis_t2",
+  "job": "f51e320e-f87e-4b21-b397-9a2a9335e630",
+  "params": {
+   "sample": "https://storage.googleapis.com/ludo-assets/api/68f97e86657c680226e7a504-cf9f39d78debf0feb86cb518794fa307.mp3",
+   "text": "Unguarded goods... Finders keepers."
+  },
+  "url": "https://storage.googleapis.com/ludo-assets/api/68f97e86657c680226e7a504-149e7d671e88824b4f055d72c2d76847.mp3",
+  "v": 1
+ },
+ "lab111_pause_quill_l2_para_t1": {
+  "credits": 1,
+  "endpoint": "/audio/speech",
+  "file": "review/v111_lab/pause/quill_l2_para_t1.mp3",
+  "id": "lab111_pause_quill_l2_para_t1",
+  "job": "03a64fea-a759-4301-b6a8-464d37622a83",
+  "params": {
+   "sample": "https://storage.googleapis.com/ludo-assets/api/68f97e86657c680226e7a504-cf9f39d78debf0feb86cb518794fa307.mp3",
+   "text": "Unguarded goods.\n\nFinders keepers."
+  },
+  "url": "https://storage.googleapis.com/ludo-assets/api/68f97e86657c680226e7a504-37026fac003e041978efb28e217d2f6a.mp3",
+  "v": 1
+ },
+ "lab111_pause_quill_l2_para_t2": {
+  "credits": 1,
+  "endpoint": "/audio/speech",
+  "file": "review/v111_lab/pause/quill_l2_para_t2.mp3",
+  "id": "lab111_pause_quill_l2_para_t2",
+  "job": "19b5af3a-cf42-4fd5-ace6-3b28ae1d823b",
+  "params": {
+   "sample": "https://storage.googleapis.com/ludo-assets/api/68f97e86657c680226e7a504-cf9f39d78debf0feb86cb518794fa307.mp3",
+   "text": "Unguarded goods.\n\nFinders keepers."
+  },
+  "url": "https://storage.googleapis.com/ludo-assets/api/68f97e86657c680226e7a504-272a8e0f03db94ae3231295d01f4c8c7.mp3",
+  "v": 1
+ },
+ "lab111_pause_quill_l2_period_t1": {
+  "credits": 1,
+  "endpoint": "/audio/speech",
+  "file": "review/v111_lab/pause/quill_l2_period_t1.mp3",
+  "id": "lab111_pause_quill_l2_period_t1",
+  "job": "0ea03762-5745-4e7e-99a0-0f0ce49ee852",
+  "params": {
+   "sample": "https://storage.googleapis.com/ludo-assets/api/68f97e86657c680226e7a504-cf9f39d78debf0feb86cb518794fa307.mp3",
+   "text": "Unguarded goods. Finders keepers."
+  },
+  "url": "https://storage.googleapis.com/ludo-assets/api/68f97e86657c680226e7a504-10967251aa1a3e2a1562046f1259ec69.mp3",
+  "v": 1
+ },
+ "lab111_pause_quill_l2_period_t2": {
+  "credits": 1,
+  "endpoint": "/audio/speech",
+  "file": "review/v111_lab/pause/quill_l2_period_t2.mp3",
+  "id": "lab111_pause_quill_l2_period_t2",
+  "job": "42839076-62e3-45fd-a685-c429ed222ee3",
+  "params": {
+   "sample": "https://storage.googleapis.com/ludo-assets/api/68f97e86657c680226e7a504-cf9f39d78debf0feb86cb518794fa307.mp3",
+   "text": "Unguarded goods. Finders keepers."
+  },
+  "url": "https://storage.googleapis.com/ludo-assets/api/68f97e86657c680226e7a504-50fa7d8947e9939e2106fd9bec24ab73.mp3",
+  "v": 1
+ },
+ "lab111_pause_quill_l3_dash_t1": {
+  "credits": 1,
+  "endpoint": "/audio/speech",
+  "file": "review/v111_lab/pause/quill_l3_dash_t1.mp3",
+  "id": "lab111_pause_quill_l3_dash_t1",
+  "job": "2b6ba0b5-af43-4ff5-a658-ab19b791b5dc",
+  "params": {
+   "sample": "https://storage.googleapis.com/ludo-assets/api/68f97e86657c680226e7a504-cf9f39d78debf0feb86cb518794fa307.mp3",
+   "text": "Everything has its price \u2014 Now you pay."
+  },
+  "url": "https://storage.googleapis.com/ludo-assets/api/68f97e86657c680226e7a504-3a62fd76e9f8f6ef76f0d17489d689e9.mp3",
+  "v": 1
+ },
+ "lab111_pause_quill_l3_dash_t2": {
+  "credits": 1,
+  "endpoint": "/audio/speech",
+  "file": "review/v111_lab/pause/quill_l3_dash_t2.mp3",
+  "id": "lab111_pause_quill_l3_dash_t2",
+  "job": "da48c367-9d2b-4436-8399-50fe343cecfc",
+  "params": {
+   "sample": "https://storage.googleapis.com/ludo-assets/api/68f97e86657c680226e7a504-cf9f39d78debf0feb86cb518794fa307.mp3",
+   "text": "Everything has its price \u2014 Now you pay."
+  },
+  "url": "https://storage.googleapis.com/ludo-assets/api/68f97e86657c680226e7a504-b2d9413ce6e2182f04637d4677837002.mp3",
+  "v": 1
+ },
+ "lab111_pause_quill_l3_ellipsis_t1": {
+  "credits": 1,
+  "endpoint": "/audio/speech",
+  "file": "review/v111_lab/pause/quill_l3_ellipsis_t1.mp3",
+  "id": "lab111_pause_quill_l3_ellipsis_t1",
+  "job": "a798039c-d3be-4741-b873-69756d633041",
+  "params": {
+   "sample": "https://storage.googleapis.com/ludo-assets/api/68f97e86657c680226e7a504-cf9f39d78debf0feb86cb518794fa307.mp3",
+   "text": "Everything has its price... Now you pay."
+  },
+  "url": "https://storage.googleapis.com/ludo-assets/api/68f97e86657c680226e7a504-8cfc05b05fa28404a096d2fab3b85958.mp3",
+  "v": 1
+ },
+ "lab111_pause_quill_l3_ellipsis_t2": {
+  "credits": 1,
+  "endpoint": "/audio/speech",
+  "file": "review/v111_lab/pause/quill_l3_ellipsis_t2.mp3",
+  "id": "lab111_pause_quill_l3_ellipsis_t2",
+  "job": "898b9173-af36-445c-af4e-233d0d987e5f",
+  "params": {
+   "sample": "https://storage.googleapis.com/ludo-assets/api/68f97e86657c680226e7a504-cf9f39d78debf0feb86cb518794fa307.mp3",
+   "text": "Everything has its price... Now you pay."
+  },
+  "url": "https://storage.googleapis.com/ludo-assets/api/68f97e86657c680226e7a504-d1655af55400626de2f43cd31fa5c33c.mp3",
+  "v": 1
+ },
+ "lab111_pause_quill_l3_para_t1": {
+  "credits": 1,
+  "endpoint": "/audio/speech",
+  "file": "review/v111_lab/pause/quill_l3_para_t1.mp3",
+  "id": "lab111_pause_quill_l3_para_t1",
+  "job": "8378d44c-84ae-415a-826c-a7af90f3f4ce",
+  "params": {
+   "sample": "https://storage.googleapis.com/ludo-assets/api/68f97e86657c680226e7a504-cf9f39d78debf0feb86cb518794fa307.mp3",
+   "text": "Everything has its price.\n\nNow you pay."
+  },
+  "url": "https://storage.googleapis.com/ludo-assets/api/68f97e86657c680226e7a504-2c0b01ad4b2278c187aaa4ed41bcace0.mp3",
+  "v": 1
+ },
+ "lab111_pause_quill_l3_para_t2": {
+  "credits": 1,
+  "endpoint": "/audio/speech",
+  "file": "review/v111_lab/pause/quill_l3_para_t2.mp3",
+  "id": "lab111_pause_quill_l3_para_t2",
+  "job": "326072a1-bd46-4e6a-9ab9-ebeac9c1d98f",
+  "params": {
+   "sample": "https://storage.googleapis.com/ludo-assets/api/68f97e86657c680226e7a504-cf9f39d78debf0feb86cb518794fa307.mp3",
+   "text": "Everything has its price.\n\nNow you pay."
+  },
+  "url": "https://storage.googleapis.com/ludo-assets/api/68f97e86657c680226e7a504-dd40392e37fde12d61e2d27fa3c1cc7c.mp3",
+  "v": 1
+ },
+ "lab111_pause_quill_l3_period_t1": {
+  "credits": 1,
+  "endpoint": "/audio/speech",
+  "file": "review/v111_lab/pause/quill_l3_period_t1.mp3",
+  "id": "lab111_pause_quill_l3_period_t1",
+  "job": "2882eb86-e0b0-485e-8c4e-2067507b6c32",
+  "params": {
+   "sample": "https://storage.googleapis.com/ludo-assets/api/68f97e86657c680226e7a504-cf9f39d78debf0feb86cb518794fa307.mp3",
+   "text": "Everything has its price. Now you pay."
+  },
+  "url": "https://storage.googleapis.com/ludo-assets/api/68f97e86657c680226e7a504-7260800bd2b473e79d9e495c9ff263aa.mp3",
+  "v": 1
+ },
+ "lab111_pause_quill_l3_period_t2": {
+  "credits": 1,
+  "endpoint": "/audio/speech",
+  "file": "review/v111_lab/pause/quill_l3_period_t2.mp3",
+  "id": "lab111_pause_quill_l3_period_t2",
+  "job": "0bdfb8b4-f854-418d-a4b0-107d0aeba467",
+  "params": {
+   "sample": "https://storage.googleapis.com/ludo-assets/api/68f97e86657c680226e7a504-cf9f39d78debf0feb86cb518794fa307.mp3",
+   "text": "Everything has its price. Now you pay."
+  },
+  "url": "https://storage.googleapis.com/ludo-assets/api/68f97e86657c680226e7a504-f90a4ce083fcbb58ec41536a95caa56f.mp3",
+  "v": 1
+ },
+ "lab111_pause_varek_l1_dash_t1": {
+  "credits": 1,
+  "endpoint": "/audio/speech",
+  "file": "review/v111_lab/pause/varek_l1_dash_t1.mp3",
+  "id": "lab111_pause_varek_l1_dash_t1",
+  "job": "c2336911-d3c2-4010-808c-23a02bfb3801",
+  "params": {
+   "sample": "https://storage.googleapis.com/ludo-assets/api/68f97e86657c680226e7a504-c13808872f9c05429740345041b30464.mp3",
+   "text": "Fall back \u2014 We return at dawn."
+  },
+  "url": "https://storage.googleapis.com/ludo-assets/api/68f97e86657c680226e7a504-7968966359035cb1a03d8b863b9c8892.mp3",
+  "v": 1
+ },
+ "lab111_pause_varek_l1_dash_t2": {
+  "credits": 1,
+  "endpoint": "/audio/speech",
+  "file": "review/v111_lab/pause/varek_l1_dash_t2.mp3",
+  "id": "lab111_pause_varek_l1_dash_t2",
+  "job": "a7083057-14f1-40c0-a679-f45ad24a0c1f",
+  "params": {
+   "sample": "https://storage.googleapis.com/ludo-assets/api/68f97e86657c680226e7a504-c13808872f9c05429740345041b30464.mp3",
+   "text": "Fall back \u2014 We return at dawn."
+  },
+  "url": "https://storage.googleapis.com/ludo-assets/api/68f97e86657c680226e7a504-f06b6cb80702d4e7005ae0278b4e99df.mp3",
+  "v": 1
+ },
+ "lab111_pause_varek_l1_ellipsis_t1": {
+  "credits": 1,
+  "endpoint": "/audio/speech",
+  "file": "review/v111_lab/pause/varek_l1_ellipsis_t1.mp3",
+  "id": "lab111_pause_varek_l1_ellipsis_t1",
+  "job": "362fda05-4817-4d97-8053-4fcb95b8a3e7",
+  "params": {
+   "sample": "https://storage.googleapis.com/ludo-assets/api/68f97e86657c680226e7a504-c13808872f9c05429740345041b30464.mp3",
+   "text": "Fall back... We return at dawn."
+  },
+  "url": "https://storage.googleapis.com/ludo-assets/api/68f97e86657c680226e7a504-9a8d05e609d06ed8251c3bcde5f0fc62.mp3",
+  "v": 1
+ },
+ "lab111_pause_varek_l1_ellipsis_t2": {
+  "credits": 1,
+  "endpoint": "/audio/speech",
+  "file": "review/v111_lab/pause/varek_l1_ellipsis_t2.mp3",
+  "id": "lab111_pause_varek_l1_ellipsis_t2",
+  "job": "06ca02b3-3740-473d-ac7a-279ecc4c7d39",
+  "params": {
+   "sample": "https://storage.googleapis.com/ludo-assets/api/68f97e86657c680226e7a504-c13808872f9c05429740345041b30464.mp3",
+   "text": "Fall back... We return at dawn."
+  },
+  "url": "https://storage.googleapis.com/ludo-assets/api/68f97e86657c680226e7a504-b12c67904c4d6f6b1b34f79ec06a8c43.mp3",
+  "v": 1
+ },
+ "lab111_pause_varek_l1_para_t1": {
+  "credits": 1,
+  "endpoint": "/audio/speech",
+  "file": "review/v111_lab/pause/varek_l1_para_t1.mp3",
+  "id": "lab111_pause_varek_l1_para_t1",
+  "job": "720fd6bf-46d8-4ffb-9b4f-cc0c93d84eed",
+  "params": {
+   "sample": "https://storage.googleapis.com/ludo-assets/api/68f97e86657c680226e7a504-c13808872f9c05429740345041b30464.mp3",
+   "text": "Fall back.\n\nWe return at dawn."
+  },
+  "url": "https://storage.googleapis.com/ludo-assets/api/68f97e86657c680226e7a504-4456313d9f1bbc9ef6abaaa1a4708851.mp3",
+  "v": 1
+ },
+ "lab111_pause_varek_l1_para_t2": {
+  "credits": 1,
+  "endpoint": "/audio/speech",
+  "file": "review/v111_lab/pause/varek_l1_para_t2.mp3",
+  "id": "lab111_pause_varek_l1_para_t2",
+  "job": "2555494f-3d07-46d8-91b4-52a3a0b1d9a2",
+  "params": {
+   "sample": "https://storage.googleapis.com/ludo-assets/api/68f97e86657c680226e7a504-c13808872f9c05429740345041b30464.mp3",
+   "text": "Fall back.\n\nWe return at dawn."
+  },
+  "url": "https://storage.googleapis.com/ludo-assets/api/68f97e86657c680226e7a504-756147baa595a53803ec22e898f3bcd9.mp3",
+  "v": 1
+ },
+ "lab111_pause_varek_l1_period_t1": {
+  "credits": 1,
+  "endpoint": "/audio/speech",
+  "file": "review/v111_lab/pause/varek_l1_period_t1.mp3",
+  "id": "lab111_pause_varek_l1_period_t1",
+  "job": "70da608c-6a8e-4586-b050-7749093292e1",
+  "params": {
+   "sample": "https://storage.googleapis.com/ludo-assets/api/68f97e86657c680226e7a504-c13808872f9c05429740345041b30464.mp3",
+   "text": "Fall back. We return at dawn."
+  },
+  "url": "https://storage.googleapis.com/ludo-assets/api/68f97e86657c680226e7a504-9abba15072924e498560df914bd7437c.mp3",
+  "v": 1
+ },
+ "lab111_pause_varek_l1_period_t2": {
+  "credits": 1,
+  "endpoint": "/audio/speech",
+  "file": "review/v111_lab/pause/varek_l1_period_t2.mp3",
+  "id": "lab111_pause_varek_l1_period_t2",
+  "job": "d8efc714-ecff-41b7-9839-1aff8bb68b2b",
+  "params": {
+   "sample": "https://storage.googleapis.com/ludo-assets/api/68f97e86657c680226e7a504-c13808872f9c05429740345041b30464.mp3",
+   "text": "Fall back. We return at dawn."
+  },
+  "url": "https://storage.googleapis.com/ludo-assets/api/68f97e86657c680226e7a504-7943d4971ec2350cbe195ca46e2bfb92.mp3",
+  "v": 1
+ },
+ "lab111_pause_varek_l2_dash_t1": {
+  "credits": 1,
+  "endpoint": "/audio/speech",
+  "file": "review/v111_lab/pause/varek_l2_dash_t1.mp3",
+  "id": "lab111_pause_varek_l2_dash_t1",
+  "job": "1dcaf3a1-0404-4585-a453-98b52e10586e",
+  "params": {
+   "sample": "https://storage.googleapis.com/ludo-assets/api/68f97e86657c680226e7a504-c13808872f9c05429740345041b30464.mp3",
+   "text": "As expected \u2014 Strike."
+  },
+  "url": "https://storage.googleapis.com/ludo-assets/api/68f97e86657c680226e7a504-b56de7715df9bfb9393a0fe99d32521b.mp3",
+  "v": 1
+ },
+ "lab111_pause_varek_l2_dash_t2": {
+  "credits": 1,
+  "endpoint": "/audio/speech",
+  "file": "review/v111_lab/pause/varek_l2_dash_t2.mp3",
+  "id": "lab111_pause_varek_l2_dash_t2",
+  "job": "1e32380f-feed-499e-8966-b3b6bac7c798",
+  "params": {
+   "sample": "https://storage.googleapis.com/ludo-assets/api/68f97e86657c680226e7a504-c13808872f9c05429740345041b30464.mp3",
+   "text": "As expected \u2014 Strike."
+  },
+  "url": "https://storage.googleapis.com/ludo-assets/api/68f97e86657c680226e7a504-d695f1b25edffbc5388c6c447e4cd895.mp3",
+  "v": 1
+ },
+ "lab111_pause_varek_l2_ellipsis_t1": {
+  "credits": 1,
+  "endpoint": "/audio/speech",
+  "file": "review/v111_lab/pause/varek_l2_ellipsis_t1.mp3",
+  "id": "lab111_pause_varek_l2_ellipsis_t1",
+  "job": "bbfe0540-59bf-4a13-b018-d880e63ac1d4",
+  "params": {
+   "sample": "https://storage.googleapis.com/ludo-assets/api/68f97e86657c680226e7a504-c13808872f9c05429740345041b30464.mp3",
+   "text": "As expected... Strike."
+  },
+  "url": "https://storage.googleapis.com/ludo-assets/api/68f97e86657c680226e7a504-2606a1ab23cfb1b224133f666118116f.mp3",
+  "v": 1
+ },
+ "lab111_pause_varek_l2_ellipsis_t2": {
+  "credits": 1,
+  "endpoint": "/audio/speech",
+  "file": "review/v111_lab/pause/varek_l2_ellipsis_t2.mp3",
+  "id": "lab111_pause_varek_l2_ellipsis_t2",
+  "job": "8c512b3d-6f26-45a4-8e96-9d98a9b40639",
+  "params": {
+   "sample": "https://storage.googleapis.com/ludo-assets/api/68f97e86657c680226e7a504-c13808872f9c05429740345041b30464.mp3",
+   "text": "As expected... Strike."
+  },
+  "url": "https://storage.googleapis.com/ludo-assets/api/68f97e86657c680226e7a504-abed60a03b20911d11ed3d7964b544cb.mp3",
+  "v": 1
+ },
+ "lab111_pause_varek_l2_para_t1": {
+  "credits": 1,
+  "endpoint": "/audio/speech",
+  "file": "review/v111_lab/pause/varek_l2_para_t1.mp3",
+  "id": "lab111_pause_varek_l2_para_t1",
+  "job": "24c96c39-3d17-40b7-a369-9e36b4fd60ca",
+  "params": {
+   "sample": "https://storage.googleapis.com/ludo-assets/api/68f97e86657c680226e7a504-c13808872f9c05429740345041b30464.mp3",
+   "text": "As expected.\n\nStrike."
+  },
+  "url": "https://storage.googleapis.com/ludo-assets/api/68f97e86657c680226e7a504-562de5cdb931fc7c8260fa600e49ccaf.mp3",
+  "v": 1
+ },
+ "lab111_pause_varek_l2_para_t2": {
+  "credits": 1,
+  "endpoint": "/audio/speech",
+  "file": "review/v111_lab/pause/varek_l2_para_t2.mp3",
+  "id": "lab111_pause_varek_l2_para_t2",
+  "job": "0f468e68-3abc-4256-be3b-60fe4e80849e",
+  "params": {
+   "sample": "https://storage.googleapis.com/ludo-assets/api/68f97e86657c680226e7a504-c13808872f9c05429740345041b30464.mp3",
+   "text": "As expected.\n\nStrike."
+  },
+  "url": "https://storage.googleapis.com/ludo-assets/api/68f97e86657c680226e7a504-5359f5a4aa749da07f973d5bc8cf5f00.mp3",
+  "v": 1
+ },
+ "lab111_pause_varek_l2_period_t1": {
+  "credits": 1,
+  "endpoint": "/audio/speech",
+  "file": "review/v111_lab/pause/varek_l2_period_t1.mp3",
+  "id": "lab111_pause_varek_l2_period_t1",
+  "job": "53787fcf-746f-436e-93c6-290c8f4abd55",
+  "params": {
+   "sample": "https://storage.googleapis.com/ludo-assets/api/68f97e86657c680226e7a504-c13808872f9c05429740345041b30464.mp3",
+   "text": "As expected. Strike."
+  },
+  "url": "https://storage.googleapis.com/ludo-assets/api/68f97e86657c680226e7a504-7765b1fb1e62d2d5d2534f799912a016.mp3",
+  "v": 1
+ },
+ "lab111_pause_varek_l2_period_t2": {
+  "credits": 1,
+  "endpoint": "/audio/speech",
+  "file": "review/v111_lab/pause/varek_l2_period_t2.mp3",
+  "id": "lab111_pause_varek_l2_period_t2",
+  "job": "6ee5c101-f9d9-450a-a731-2ea20442aaf1",
+  "params": {
+   "sample": "https://storage.googleapis.com/ludo-assets/api/68f97e86657c680226e7a504-c13808872f9c05429740345041b30464.mp3",
+   "text": "As expected. Strike."
+  },
+  "url": "https://storage.googleapis.com/ludo-assets/api/68f97e86657c680226e7a504-b80d4a5ef18dbbcb1305139fd9ad0b01.mp3",
+  "v": 1
+ },
+ "lab111_pause_varek_l3_dash_t1": {
+  "credits": 1,
+  "endpoint": "/audio/speech",
+  "file": "review/v111_lab/pause/varek_l3_dash_t1.mp3",
+  "id": "lab111_pause_varek_l3_dash_t1",
+  "job": "678f119c-4190-4bed-aab0-f6087807dcd1",
+  "params": {
+   "sample": "https://storage.googleapis.com/ludo-assets/api/68f97e86657c680226e7a504-c13808872f9c05429740345041b30464.mp3",
+   "text": "I have buried a hundred generals \u2014 You will be the next."
+  },
+  "url": "https://storage.googleapis.com/ludo-assets/api/68f97e86657c680226e7a504-ee770d5fc5fe8ae7d50ff9dfbfa1ea42.mp3",
+  "v": 1
+ },
+ "lab111_pause_varek_l3_dash_t2": {
+  "credits": 1,
+  "endpoint": "/audio/speech",
+  "file": "review/v111_lab/pause/varek_l3_dash_t2.mp3",
+  "id": "lab111_pause_varek_l3_dash_t2",
+  "job": "8e8a49b7-4bd8-4228-a9aa-d9478db9964a",
+  "params": {
+   "sample": "https://storage.googleapis.com/ludo-assets/api/68f97e86657c680226e7a504-c13808872f9c05429740345041b30464.mp3",
+   "text": "I have buried a hundred generals \u2014 You will be the next."
+  },
+  "url": "https://storage.googleapis.com/ludo-assets/api/68f97e86657c680226e7a504-a68d2922944c297a2b3161f4bd51afd3.mp3",
+  "v": 1
+ },
+ "lab111_pause_varek_l3_ellipsis_t1": {
+  "credits": 1,
+  "endpoint": "/audio/speech",
+  "file": "review/v111_lab/pause/varek_l3_ellipsis_t1.mp3",
+  "id": "lab111_pause_varek_l3_ellipsis_t1",
+  "job": "6a79ac52-f581-4ae0-aa14-2ac3730f438c",
+  "params": {
+   "sample": "https://storage.googleapis.com/ludo-assets/api/68f97e86657c680226e7a504-c13808872f9c05429740345041b30464.mp3",
+   "text": "I have buried a hundred generals... You will be the next."
+  },
+  "url": "https://storage.googleapis.com/ludo-assets/api/68f97e86657c680226e7a504-1e20c386f7ce21061a70fdb0d5b67810.mp3",
+  "v": 1
+ },
+ "lab111_pause_varek_l3_ellipsis_t2": {
+  "credits": 1,
+  "endpoint": "/audio/speech",
+  "file": "review/v111_lab/pause/varek_l3_ellipsis_t2.mp3",
+  "id": "lab111_pause_varek_l3_ellipsis_t2",
+  "job": "5208bd6e-fdb2-4c4c-91c5-2cdcfda8879f",
+  "params": {
+   "sample": "https://storage.googleapis.com/ludo-assets/api/68f97e86657c680226e7a504-c13808872f9c05429740345041b30464.mp3",
+   "text": "I have buried a hundred generals... You will be the next."
+  },
+  "url": "https://storage.googleapis.com/ludo-assets/api/68f97e86657c680226e7a504-0eb6b7521672db57595f184e74eee2c4.mp3",
+  "v": 1
+ },
+ "lab111_pause_varek_l3_para_t1": {
+  "credits": 1,
+  "endpoint": "/audio/speech",
+  "file": "review/v111_lab/pause/varek_l3_para_t1.mp3",
+  "id": "lab111_pause_varek_l3_para_t1",
+  "job": "5439c95d-bd21-48b5-9f29-a002d1dafd2a",
+  "params": {
+   "sample": "https://storage.googleapis.com/ludo-assets/api/68f97e86657c680226e7a504-c13808872f9c05429740345041b30464.mp3",
+   "text": "I have buried a hundred generals.\n\nYou will be the next."
+  },
+  "url": "https://storage.googleapis.com/ludo-assets/api/68f97e86657c680226e7a504-aaf4a7ceea5128abd01f542124af3f63.mp3",
+  "v": 1
+ },
+ "lab111_pause_varek_l3_para_t2": {
+  "credits": 1,
+  "endpoint": "/audio/speech",
+  "file": "review/v111_lab/pause/varek_l3_para_t2.mp3",
+  "id": "lab111_pause_varek_l3_para_t2",
+  "job": "31d88002-374d-43df-b036-d0efc2e6dfeb",
+  "params": {
+   "sample": "https://storage.googleapis.com/ludo-assets/api/68f97e86657c680226e7a504-c13808872f9c05429740345041b30464.mp3",
+   "text": "I have buried a hundred generals.\n\nYou will be the next."
+  },
+  "url": "https://storage.googleapis.com/ludo-assets/api/68f97e86657c680226e7a504-4922db6c02532b4223949764fcdde235.mp3",
+  "v": 1
+ },
+ "lab111_pause_varek_l3_period_t1": {
+  "credits": 1,
+  "endpoint": "/audio/speech",
+  "file": "review/v111_lab/pause/varek_l3_period_t1.mp3",
+  "id": "lab111_pause_varek_l3_period_t1",
+  "job": "e4e023fe-37cd-4ea6-beed-333de06531e0",
+  "params": {
+   "sample": "https://storage.googleapis.com/ludo-assets/api/68f97e86657c680226e7a504-c13808872f9c05429740345041b30464.mp3",
+   "text": "I have buried a hundred generals. You will be the next."
+  },
+  "url": "https://storage.googleapis.com/ludo-assets/api/68f97e86657c680226e7a504-a54e2ec79543c3701fdfcf816aa494ca.mp3",
+  "v": 1
+ },
+ "lab111_pause_varek_l3_period_t2": {
+  "credits": 1,
+  "endpoint": "/audio/speech",
+  "file": "review/v111_lab/pause/varek_l3_period_t2.mp3",
+  "id": "lab111_pause_varek_l3_period_t2",
+  "job": "b2672c6f-aa5c-4dd1-8553-8304be84a483",
+  "params": {
+   "sample": "https://storage.googleapis.com/ludo-assets/api/68f97e86657c680226e7a504-c13808872f9c05429740345041b30464.mp3",
+   "text": "I have buried a hundred generals. You will be the next."
+  },
+  "url": "https://storage.googleapis.com/ludo-assets/api/68f97e86657c680226e7a504-7c4343d54fe2420118da18d8899ff662.mp3",
+  "v": 1
+ },
+ "lab111_pause_ysolde_l1_dash_t1": {
+  "credits": 1,
+  "endpoint": "/audio/speech",
+  "file": "review/v111_lab/pause/ysolde_l1_dash_t1.mp3",
+  "id": "lab111_pause_ysolde_l1_dash_t1",
+  "job": "f48a786a-b3a9-4901-aac3-3c4196541a2f",
+  "params": {
+   "sample": "https://storage.googleapis.com/ludo-assets/api/68f97e86657c680226e7a504-5b72130f6ba93ae92d9d0b97b043ffeb.mp3",
+   "text": "Withdraw \u2014 I will remember this."
+  },
+  "url": "https://storage.googleapis.com/ludo-assets/api/68f97e86657c680226e7a504-9a9ce89bf94b58cc8a04a1e4e6271f4b.mp3",
+  "v": 1
+ },
+ "lab111_pause_ysolde_l1_dash_t2": {
+  "credits": 1,
+  "endpoint": "/audio/speech",
+  "file": "review/v111_lab/pause/ysolde_l1_dash_t2.mp3",
+  "id": "lab111_pause_ysolde_l1_dash_t2",
+  "job": "d669e6cd-c3ca-4090-a42d-9f344edbc582",
+  "params": {
+   "sample": "https://storage.googleapis.com/ludo-assets/api/68f97e86657c680226e7a504-5b72130f6ba93ae92d9d0b97b043ffeb.mp3",
+   "text": "Withdraw \u2014 I will remember this."
+  },
+  "url": "https://storage.googleapis.com/ludo-assets/api/68f97e86657c680226e7a504-f2afb05bd32b83658eb27e411391f213.mp3",
+  "v": 1
+ },
+ "lab111_pause_ysolde_l1_ellipsis_t1": {
+  "credits": 1,
+  "endpoint": "/audio/speech",
+  "file": "review/v111_lab/pause/ysolde_l1_ellipsis_t1.mp3",
+  "id": "lab111_pause_ysolde_l1_ellipsis_t1",
+  "job": "1bb5f19d-cbda-4ae1-a91b-0da79282b0d5",
+  "params": {
+   "sample": "https://storage.googleapis.com/ludo-assets/api/68f97e86657c680226e7a504-5b72130f6ba93ae92d9d0b97b043ffeb.mp3",
+   "text": "Withdraw... I will remember this."
+  },
+  "url": "https://storage.googleapis.com/ludo-assets/api/68f97e86657c680226e7a504-c4f482ef497892d3e8dd2cb2c7314b9a.mp3",
+  "v": 1
+ },
+ "lab111_pause_ysolde_l1_ellipsis_t2": {
+  "credits": 1,
+  "endpoint": "/audio/speech",
+  "file": "review/v111_lab/pause/ysolde_l1_ellipsis_t2.mp3",
+  "id": "lab111_pause_ysolde_l1_ellipsis_t2",
+  "job": "f707c847-71c7-4d24-a92e-cd1086d5d695",
+  "params": {
+   "sample": "https://storage.googleapis.com/ludo-assets/api/68f97e86657c680226e7a504-5b72130f6ba93ae92d9d0b97b043ffeb.mp3",
+   "text": "Withdraw... I will remember this."
+  },
+  "url": "https://storage.googleapis.com/ludo-assets/api/68f97e86657c680226e7a504-8cacff7ba13bf55b37660c111e1e6a77.mp3",
+  "v": 1
+ },
+ "lab111_pause_ysolde_l1_para_t1": {
+  "credits": 1,
+  "endpoint": "/audio/speech",
+  "file": "review/v111_lab/pause/ysolde_l1_para_t1.mp3",
+  "id": "lab111_pause_ysolde_l1_para_t1",
+  "job": "291e2329-e189-4903-8084-2e1642c5f273",
+  "params": {
+   "sample": "https://storage.googleapis.com/ludo-assets/api/68f97e86657c680226e7a504-5b72130f6ba93ae92d9d0b97b043ffeb.mp3",
+   "text": "Withdraw.\n\nI will remember this."
+  },
+  "url": "https://storage.googleapis.com/ludo-assets/api/68f97e86657c680226e7a504-d838b159a3e53855fd07d425a404fc21.mp3",
+  "v": 1
+ },
+ "lab111_pause_ysolde_l1_para_t2": {
+  "credits": 1,
+  "endpoint": "/audio/speech",
+  "file": "review/v111_lab/pause/ysolde_l1_para_t2.mp3",
+  "id": "lab111_pause_ysolde_l1_para_t2",
+  "job": "527aee23-5408-467f-8188-18d6cf2b7369",
+  "params": {
+   "sample": "https://storage.googleapis.com/ludo-assets/api/68f97e86657c680226e7a504-5b72130f6ba93ae92d9d0b97b043ffeb.mp3",
+   "text": "Withdraw.\n\nI will remember this."
+  },
+  "url": "https://storage.googleapis.com/ludo-assets/api/68f97e86657c680226e7a504-de3bc694beaedb4f62293724e43ed38c.mp3",
+  "v": 1
+ },
+ "lab111_pause_ysolde_l1_period_t1": {
+  "credits": 1,
+  "endpoint": "/audio/speech",
+  "file": "review/v111_lab/pause/ysolde_l1_period_t1.mp3",
+  "id": "lab111_pause_ysolde_l1_period_t1",
+  "job": "3b859797-1def-4e9f-b830-204f4f4d23c9",
+  "params": {
+   "sample": "https://storage.googleapis.com/ludo-assets/api/68f97e86657c680226e7a504-5b72130f6ba93ae92d9d0b97b043ffeb.mp3",
+   "text": "Withdraw. I will remember this."
+  },
+  "url": "https://storage.googleapis.com/ludo-assets/api/68f97e86657c680226e7a504-faaefda00f220fc8da599267d3e08c94.mp3",
+  "v": 1
+ },
+ "lab111_pause_ysolde_l1_period_t2": {
+  "credits": 1,
+  "endpoint": "/audio/speech",
+  "file": "review/v111_lab/pause/ysolde_l1_period_t2.mp3",
+  "id": "lab111_pause_ysolde_l1_period_t2",
+  "job": "ad413746-448e-4b00-aade-15e8f8b053ab",
+  "params": {
+   "sample": "https://storage.googleapis.com/ludo-assets/api/68f97e86657c680226e7a504-5b72130f6ba93ae92d9d0b97b043ffeb.mp3",
+   "text": "Withdraw. I will remember this."
+  },
+  "url": "https://storage.googleapis.com/ludo-assets/api/68f97e86657c680226e7a504-3c62bf6fa26b94bfbb4c904aa14b1a68.mp3",
+  "v": 1
+ },
+ "lab111_pause_ysolde_l2_dash_t1": {
+  "credits": 1,
+  "endpoint": "/audio/speech",
+  "file": "review/v111_lab/pause/ysolde_l2_dash_t1.mp3",
+  "id": "lab111_pause_ysolde_l2_dash_t1",
+  "job": "1af8f29a-24fb-4c83-8bfc-3b04cc33f57c",
+  "params": {
+   "sample": "https://storage.googleapis.com/ludo-assets/api/68f97e86657c680226e7a504-5b72130f6ba93ae92d9d0b97b043ffeb.mp3",
+   "text": "You left it undefended \u2014 How generous."
+  },
+  "url": "https://storage.googleapis.com/ludo-assets/api/68f97e86657c680226e7a504-f61b9d5b622fbaf5cedb13f70df23dd1.mp3",
+  "v": 1
+ },
+ "lab111_pause_ysolde_l2_dash_t2": {
+  "credits": 1,
+  "endpoint": "/audio/speech",
+  "file": "review/v111_lab/pause/ysolde_l2_dash_t2.mp3",
+  "id": "lab111_pause_ysolde_l2_dash_t2",
+  "job": "6e6dcfef-f19a-4d19-a1ec-ff4f3cfb6c2f",
+  "params": {
+   "sample": "https://storage.googleapis.com/ludo-assets/api/68f97e86657c680226e7a504-5b72130f6ba93ae92d9d0b97b043ffeb.mp3",
+   "text": "You left it undefended \u2014 How generous."
+  },
+  "url": "https://storage.googleapis.com/ludo-assets/api/68f97e86657c680226e7a504-c4736718dafc9dba4c6b74ee18fa38f9.mp3",
+  "v": 1
+ },
+ "lab111_pause_ysolde_l2_ellipsis_t1": {
+  "credits": 1,
+  "endpoint": "/audio/speech",
+  "file": "review/v111_lab/pause/ysolde_l2_ellipsis_t1.mp3",
+  "id": "lab111_pause_ysolde_l2_ellipsis_t1",
+  "job": "336715b4-d48b-4f64-8536-dde2f09d67ff",
+  "params": {
+   "sample": "https://storage.googleapis.com/ludo-assets/api/68f97e86657c680226e7a504-5b72130f6ba93ae92d9d0b97b043ffeb.mp3",
+   "text": "You left it undefended... How generous."
+  },
+  "url": "https://storage.googleapis.com/ludo-assets/api/68f97e86657c680226e7a504-f0e192a8c09e0aadd4a880843e255a05.mp3",
+  "v": 1
+ },
+ "lab111_pause_ysolde_l2_ellipsis_t2": {
+  "credits": 1,
+  "endpoint": "/audio/speech",
+  "file": "review/v111_lab/pause/ysolde_l2_ellipsis_t2.mp3",
+  "id": "lab111_pause_ysolde_l2_ellipsis_t2",
+  "job": "d03065fc-9871-4737-93fb-ee0bcd128431",
+  "params": {
+   "sample": "https://storage.googleapis.com/ludo-assets/api/68f97e86657c680226e7a504-5b72130f6ba93ae92d9d0b97b043ffeb.mp3",
+   "text": "You left it undefended... How generous."
+  },
+  "url": "https://storage.googleapis.com/ludo-assets/api/68f97e86657c680226e7a504-f7415928c420555fc4c00d7db96d7b05.mp3",
+  "v": 1
+ },
+ "lab111_pause_ysolde_l2_para_t1": {
+  "credits": 1,
+  "endpoint": "/audio/speech",
+  "file": "review/v111_lab/pause/ysolde_l2_para_t1.mp3",
+  "id": "lab111_pause_ysolde_l2_para_t1",
+  "job": "62717c18-123d-4c0b-87d5-d84da676c886",
+  "params": {
+   "sample": "https://storage.googleapis.com/ludo-assets/api/68f97e86657c680226e7a504-5b72130f6ba93ae92d9d0b97b043ffeb.mp3",
+   "text": "You left it undefended.\n\nHow generous."
+  },
+  "url": "https://storage.googleapis.com/ludo-assets/api/68f97e86657c680226e7a504-4181fb25dab7afca31c922d0adeb702f.mp3",
+  "v": 1
+ },
+ "lab111_pause_ysolde_l2_para_t2": {
+  "credits": 1,
+  "endpoint": "/audio/speech",
+  "file": "review/v111_lab/pause/ysolde_l2_para_t2.mp3",
+  "id": "lab111_pause_ysolde_l2_para_t2",
+  "job": "ed37e7e4-62a7-45f2-a54b-3ca1a0e1f449",
+  "params": {
+   "sample": "https://storage.googleapis.com/ludo-assets/api/68f97e86657c680226e7a504-5b72130f6ba93ae92d9d0b97b043ffeb.mp3",
+   "text": "You left it undefended.\n\nHow generous."
+  },
+  "url": "https://storage.googleapis.com/ludo-assets/api/68f97e86657c680226e7a504-e30f1ac6e64a145158b0c8b184d35064.mp3",
+  "v": 1
+ },
+ "lab111_pause_ysolde_l2_period_t1": {
+  "credits": 1,
+  "endpoint": "/audio/speech",
+  "file": "review/v111_lab/pause/ysolde_l2_period_t1.mp3",
+  "id": "lab111_pause_ysolde_l2_period_t1",
+  "job": "a918bea1-6068-4907-9334-7287924fd4f9",
+  "params": {
+   "sample": "https://storage.googleapis.com/ludo-assets/api/68f97e86657c680226e7a504-5b72130f6ba93ae92d9d0b97b043ffeb.mp3",
+   "text": "You left it undefended. How generous."
+  },
+  "url": "https://storage.googleapis.com/ludo-assets/api/68f97e86657c680226e7a504-7995932b1811fe9b38ba8ba6a0574ed5.mp3",
+  "v": 1
+ },
+ "lab111_pause_ysolde_l2_period_t2": {
+  "credits": 1,
+  "endpoint": "/audio/speech",
+  "file": "review/v111_lab/pause/ysolde_l2_period_t2.mp3",
+  "id": "lab111_pause_ysolde_l2_period_t2",
+  "job": "f3a7db67-9c19-4e46-a42a-25a1cb78dfee",
+  "params": {
+   "sample": "https://storage.googleapis.com/ludo-assets/api/68f97e86657c680226e7a504-5b72130f6ba93ae92d9d0b97b043ffeb.mp3",
+   "text": "You left it undefended. How generous."
+  },
+  "url": "https://storage.googleapis.com/ludo-assets/api/68f97e86657c680226e7a504-bfdac5208626d2f485df04c59cd8a8f6.mp3",
+  "v": 1
+ },
+ "lab111_pause_ysolde_l3_dash_t1": {
+  "credits": 1,
+  "endpoint": "/audio/speech",
+  "file": "review/v111_lab/pause/ysolde_l3_dash_t1.mp3",
+  "id": "lab111_pause_ysolde_l3_dash_t1",
+  "job": "0c39737a-2a9c-4cdb-9c33-dfe66bb145e7",
+  "params": {
+   "sample": "https://storage.googleapis.com/ludo-assets/api/68f97e86657c680226e7a504-5b72130f6ba93ae92d9d0b97b043ffeb.mp3",
+   "text": "Kneel \u2014 The empire is mine."
+  },
+  "url": "https://storage.googleapis.com/ludo-assets/api/68f97e86657c680226e7a504-3ec1cc56effd9f9cff480d2a9ba9af20.mp3",
+  "v": 1
+ },
+ "lab111_pause_ysolde_l3_dash_t2": {
+  "credits": 1,
+  "endpoint": "/audio/speech",
+  "file": "review/v111_lab/pause/ysolde_l3_dash_t2.mp3",
+  "id": "lab111_pause_ysolde_l3_dash_t2",
+  "job": "697689e1-c405-4edf-9202-ea132322ab90",
+  "params": {
+   "sample": "https://storage.googleapis.com/ludo-assets/api/68f97e86657c680226e7a504-5b72130f6ba93ae92d9d0b97b043ffeb.mp3",
+   "text": "Kneel \u2014 The empire is mine."
+  },
+  "url": "https://storage.googleapis.com/ludo-assets/api/68f97e86657c680226e7a504-f7d9a574f2d3c27b34eee589fce6fee9.mp3",
+  "v": 1
+ },
+ "lab111_pause_ysolde_l3_ellipsis_t1": {
+  "credits": 1,
+  "endpoint": "/audio/speech",
+  "file": "review/v111_lab/pause/ysolde_l3_ellipsis_t1.mp3",
+  "id": "lab111_pause_ysolde_l3_ellipsis_t1",
+  "job": "0b4d9bfa-87c8-48a5-8922-8449e8760c48",
+  "params": {
+   "sample": "https://storage.googleapis.com/ludo-assets/api/68f97e86657c680226e7a504-5b72130f6ba93ae92d9d0b97b043ffeb.mp3",
+   "text": "Kneel... The empire is mine."
+  },
+  "url": "https://storage.googleapis.com/ludo-assets/api/68f97e86657c680226e7a504-0836f7534e3d6477d3383f64e5c57922.mp3",
+  "v": 1
+ },
+ "lab111_pause_ysolde_l3_ellipsis_t2": {
+  "credits": 1,
+  "endpoint": "/audio/speech",
+  "file": "review/v111_lab/pause/ysolde_l3_ellipsis_t2.mp3",
+  "id": "lab111_pause_ysolde_l3_ellipsis_t2",
+  "job": "7d1f673f-b75a-4baa-8c14-57db25bef988",
+  "params": {
+   "sample": "https://storage.googleapis.com/ludo-assets/api/68f97e86657c680226e7a504-5b72130f6ba93ae92d9d0b97b043ffeb.mp3",
+   "text": "Kneel... The empire is mine."
+  },
+  "url": "https://storage.googleapis.com/ludo-assets/api/68f97e86657c680226e7a504-7b99760392ecd922562d273bc69ef53c.mp3",
+  "v": 1
+ },
+ "lab111_pause_ysolde_l3_para_t1": {
+  "credits": 1,
+  "endpoint": "/audio/speech",
+  "file": "review/v111_lab/pause/ysolde_l3_para_t1.mp3",
+  "id": "lab111_pause_ysolde_l3_para_t1",
+  "job": "b46252b2-d00a-4f9f-9d23-7249a73d305a",
+  "params": {
+   "sample": "https://storage.googleapis.com/ludo-assets/api/68f97e86657c680226e7a504-5b72130f6ba93ae92d9d0b97b043ffeb.mp3",
+   "text": "Kneel.\n\nThe empire is mine."
+  },
+  "url": "https://storage.googleapis.com/ludo-assets/api/68f97e86657c680226e7a504-8650a480d9a1e422c8c53dc3da461e37.mp3",
+  "v": 1
+ },
+ "lab111_pause_ysolde_l3_para_t2": {
+  "credits": 1,
+  "endpoint": "/audio/speech",
+  "file": "review/v111_lab/pause/ysolde_l3_para_t2.mp3",
+  "id": "lab111_pause_ysolde_l3_para_t2",
+  "job": "45efb2ae-c8ba-4aa0-8d0c-466d9d415b29",
+  "params": {
+   "sample": "https://storage.googleapis.com/ludo-assets/api/68f97e86657c680226e7a504-5b72130f6ba93ae92d9d0b97b043ffeb.mp3",
+   "text": "Kneel.\n\nThe empire is mine."
+  },
+  "url": "https://storage.googleapis.com/ludo-assets/api/68f97e86657c680226e7a504-3373eb28a3932446a9b2321f5e9893d3.mp3",
+  "v": 1
+ },
+ "lab111_pause_ysolde_l3_period_t1": {
+  "credits": 1,
+  "endpoint": "/audio/speech",
+  "file": "review/v111_lab/pause/ysolde_l3_period_t1.mp3",
+  "id": "lab111_pause_ysolde_l3_period_t1",
+  "job": "68008b30-a150-4e22-8e75-52b08267220c",
+  "params": {
+   "sample": "https://storage.googleapis.com/ludo-assets/api/68f97e86657c680226e7a504-5b72130f6ba93ae92d9d0b97b043ffeb.mp3",
+   "text": "Kneel. The empire is mine."
+  },
+  "url": "https://storage.googleapis.com/ludo-assets/api/68f97e86657c680226e7a504-331a1f6d72b45df1915c9c76591b4471.mp3",
+  "v": 1
+ },
+ "lab111_pause_ysolde_l3_period_t2": {
+  "credits": 1,
+  "endpoint": "/audio/speech",
+  "file": "review/v111_lab/pause/ysolde_l3_period_t2.mp3",
+  "id": "lab111_pause_ysolde_l3_period_t2",
+  "job": "ffebd554-8da9-4aab-a052-ca173e0e4d8a",
+  "params": {
+   "sample": "https://storage.googleapis.com/ludo-assets/api/68f97e86657c680226e7a504-5b72130f6ba93ae92d9d0b97b043ffeb.mp3",
+   "text": "Kneel. The empire is mine."
+  },
+  "url": "https://storage.googleapis.com/ludo-assets/api/68f97e86657c680226e7a504-8156c9cfd87bccb41b8c7151ed50d822.mp3",
+  "v": 1
+ },
+ "lab111_steer_ysolde_l1_sample_normal_t1": {
+  "credits": 1,
+  "endpoint": "/audio/speech",
+  "file": "review/v111_lab/steer/ysolde_l1_sample_normal_t1.mp3",
+  "id": "lab111_steer_ysolde_l1_sample_normal_t1",
+  "job": "d9e3d881-3911-4222-b4ec-889803b57413",
+  "params": {
+   "sample": "https://storage.googleapis.com/ludo-assets/api/68f97e86657c680226e7a504-5b72130f6ba93ae92d9d0b97b043ffeb.mp3",
+   "text": "Guard your doors. I am coming for them."
+  },
+  "url": "https://storage.googleapis.com/ludo-assets/api/68f97e86657c680226e7a504-3d2f104e1ddbf36d08d8efe59e6675c7.mp3",
+  "v": 1
+ },
+ "lab111_steer_ysolde_l1_sample_normal_t2": {
+  "credits": 1,
+  "endpoint": "/audio/speech",
+  "file": "review/v111_lab/steer/ysolde_l1_sample_normal_t2.mp3",
+  "id": "lab111_steer_ysolde_l1_sample_normal_t2",
+  "job": "1d4246b8-dbd2-40d6-8676-4da71c82da2d",
+  "params": {
+   "sample": "https://storage.googleapis.com/ludo-assets/api/68f97e86657c680226e7a504-5b72130f6ba93ae92d9d0b97b043ffeb.mp3",
+   "text": "Guard your doors. I am coming for them."
+  },
+  "url": "https://storage.googleapis.com/ludo-assets/api/68f97e86657c680226e7a504-9614291b96f3316d3e241b875dcb54fd.mp3",
+  "v": 1
+ },
+ "lab111_steer_ysolde_l1_sample_retreat_v2_t1": {
+  "credits": 1,
+  "endpoint": "/audio/speech",
+  "file": "review/v111_lab/steer/ysolde_l1_sample_retreat_v2_t1.mp3",
+  "id": "lab111_steer_ysolde_l1_sample_retreat_v2_t1",
+  "job": "bf956220-a26d-4c8d-b760-d4c03914ca7f",
+  "params": {
+   "sample": "data:audio/mpeg;base64,SUQzBAAAAAAAIlRTU...(base64 of assets/voice13/ysolde/retreat_v2.mp3)",
+   "text": "Guard your doors. I am coming for them."
+  },
+  "url": "https://storage.googleapis.com/ludo-assets/api/68f97e86657c680226e7a504-d79677c06d33a311acaee05433ef01b2.mp3",
+  "v": 1
+ },
+ "lab111_steer_ysolde_l1_sample_retreat_v2_t2": {
+  "credits": 1,
+  "endpoint": "/audio/speech",
+  "file": "review/v111_lab/steer/ysolde_l1_sample_retreat_v2_t2.mp3",
+  "id": "lab111_steer_ysolde_l1_sample_retreat_v2_t2",
+  "job": "3132805b-d02a-402c-bcfd-3cf4ab028111",
+  "params": {
+   "sample": "data:audio/mpeg;base64,SUQzBAAAAAAAIlRTU...(base64 of assets/voice13/ysolde/retreat_v2.mp3)",
+   "text": "Guard your doors. I am coming for them."
+  },
+  "url": "https://storage.googleapis.com/ludo-assets/api/68f97e86657c680226e7a504-ad5f6cd99f682654dfbef941f471fde0.mp3",
+  "v": 1
+ },
+ "lab111_steer_ysolde_l2_sample_normal_t1": {
+  "credits": 1,
+  "endpoint": "/audio/speech",
+  "file": "review/v111_lab/steer/ysolde_l2_sample_normal_t1.mp3",
+  "id": "lab111_steer_ysolde_l2_sample_normal_t1",
+  "job": "d3c0d343-7dc2-4e60-a1c8-75ba39490418",
+  "params": {
+   "sample": "https://storage.googleapis.com/ludo-assets/api/68f97e86657c680226e7a504-5b72130f6ba93ae92d9d0b97b043ffeb.mp3",
+   "text": "Run, if you like. I will find you."
+  },
+  "url": "https://storage.googleapis.com/ludo-assets/api/68f97e86657c680226e7a504-a26e44ea83a2b3e57193350b4f57a701.mp3",
+  "v": 1
+ },
+ "lab111_steer_ysolde_l2_sample_normal_t2": {
+  "credits": 1,
+  "endpoint": "/audio/speech",
+  "file": "review/v111_lab/steer/ysolde_l2_sample_normal_t2.mp3",
+  "id": "lab111_steer_ysolde_l2_sample_normal_t2",
+  "job": "01a8b664-f515-48f3-8d80-5dde5826082e",
+  "params": {
+   "sample": "https://storage.googleapis.com/ludo-assets/api/68f97e86657c680226e7a504-5b72130f6ba93ae92d9d0b97b043ffeb.mp3",
+   "text": "Run, if you like. I will find you."
+  },
+  "url": "https://storage.googleapis.com/ludo-assets/api/68f97e86657c680226e7a504-00b89a7bef927ef4c88551c1c81c9465.mp3",
+  "v": 1
+ },
+ "lab111_steer_ysolde_l2_sample_retreat_v2_t1": {
+  "credits": 1,
+  "endpoint": "/audio/speech",
+  "file": "review/v111_lab/steer/ysolde_l2_sample_retreat_v2_t1.mp3",
+  "id": "lab111_steer_ysolde_l2_sample_retreat_v2_t1",
+  "job": "59766eca-214a-4e33-94ff-feff5a804cb7",
+  "params": {
+   "sample": "data:audio/mpeg;base64,SUQzBAAAAAAAIlRTU...(base64 of assets/voice13/ysolde/retreat_v2.mp3)",
+   "text": "Run, if you like. I will find you."
+  },
+  "url": "https://storage.googleapis.com/ludo-assets/api/68f97e86657c680226e7a504-6666bd3cf876d41ecbaa1162216b3dc9.mp3",
+  "v": 1
+ },
+ "lab111_steer_ysolde_l2_sample_retreat_v2_t2": {
+  "credits": 1,
+  "endpoint": "/audio/speech",
+  "file": "review/v111_lab/steer/ysolde_l2_sample_retreat_v2_t2.mp3",
+  "id": "lab111_steer_ysolde_l2_sample_retreat_v2_t2",
+  "job": "0f385e8d-d5bd-430c-b23c-cc8bcea3c6f2",
+  "params": {
+   "sample": "data:audio/mpeg;base64,SUQzBAAAAAAAIlRTU...(base64 of assets/voice13/ysolde/retreat_v2.mp3)",
+   "text": "Run, if you like. I will find you."
+  },
+  "url": "https://storage.googleapis.com/ludo-assets/api/68f97e86657c680226e7a504-27ff1e3063add59e04e572398ac1a5f0.mp3",
+  "v": 1
+ },
  "line18_advisor_bad_roll_v2": {
   "credits": 1,
   "endpoint": "/audio/speech",
@@ -3497,16 +6461,23 @@
     "job": "023f3a85-a80c-4d1e-92c7-b0de26ec3529",
     "url": "https://storage.googleapis.com/ludo-assets/api/68f97e86657c680226e7a504-26d458a151da305a355704390c3b97af.mp3",
     "v": 1
+   },
+   {
+    "credits": 1,
+    "endpoint": "/audio/speech",
+    "job": "73d1d7bb-602e-44e8-8bf6-0ff9743988bb",
+    "url": "https://storage.googleapis.com/ludo-assets/api/68f97e86657c680226e7a504-a683ccc2cf8b8c99728bac474b7de798.mp3",
+    "v": 2
    }
   ],
   "id": "line18_advisor_surges_v3",
-  "job": "73d1d7bb-602e-44e8-8bf6-0ff9743988bb",
+  "job": "ec3aad59-74b8-4de3-81a3-2e0321461a9c",
   "params": {
    "sample": "https://storage.googleapis.com/ludo-assets/api/68f97e86657c680226e7a504-f315f52bb2200802cd805e5d61d284aa.mp3",
-   "text": "Here come the surges. Steady now."
+   "text": "Here come the surges."
   },
-  "url": "https://storage.googleapis.com/ludo-assets/api/68f97e86657c680226e7a504-a683ccc2cf8b8c99728bac474b7de798.mp3",
-  "v": 2
+  "url": "https://storage.googleapis.com/ludo-assets/api/68f97e86657c680226e7a504-434456af6a2041320670663c73daa89d.mp3",
+  "v": 3
  },
  "line18_advisor_unplaced_v2": {
   "credits": 1,
@@ -3754,16 +6725,23 @@
     "job": "79b6f3d4-ed8f-4359-86f7-ddf053f68648",
     "url": "https://storage.googleapis.com/ludo-assets/api/68f97e86657c680226e7a504-749e92bcb7e9dcd11502dd83dd4e13df.mp3",
     "v": 1
+   },
+   {
+    "credits": 1,
+    "endpoint": "/audio/speech",
+    "job": "98043807-6302-4e53-ab9f-b30ed2f7e04b",
+    "url": "https://storage.googleapis.com/ludo-assets/api/68f97e86657c680226e7a504-c933992537b1abd42ba2fa9620482719.mp3",
+    "v": 2
    }
   ],
   "id": "line18_advisor_walkin_us_v4",
-  "job": "98043807-6302-4e53-ab9f-b30ed2f7e04b",
+  "job": "1b90b027-3bc7-4cbc-99ed-45dcf5d54439",
   "params": {
    "sample": "https://storage.googleapis.com/ludo-assets/api/68f97e86657c680226e7a504-f315f52bb2200802cd805e5d61d284aa.mp3",
-   "text": "Empty! Oh, that is careless of them. Ours now."
+   "text": "Empty! Oh, that is careless of them."
   },
-  "url": "https://storage.googleapis.com/ludo-assets/api/68f97e86657c680226e7a504-c933992537b1abd42ba2fa9620482719.mp3",
-  "v": 2
+  "url": "https://storage.googleapis.com/ludo-assets/api/68f97e86657c680226e7a504-a6f3ba104e41e958c992be9911591051.mp3",
+  "v": 3
  },
  "line18_hask_attack_v2": {
   "credits": 1,
@@ -4496,16 +7474,23 @@
     "job": "e703ca8e-9cdf-4239-866f-e27178570035",
     "url": "https://storage.googleapis.com/ludo-assets/api/68f97e86657c680226e7a504-be1cc634a99c20f7d035c5af6ac83fa3.mp3",
     "v": 1
+   },
+   {
+    "credits": 1,
+    "endpoint": "/audio/speech",
+    "job": "fa2a032d-60c9-44b1-b261-501f3837863f",
+    "url": "https://storage.googleapis.com/ludo-assets/api/68f97e86657c680226e7a504-2a1e9d999f9c82e133c90ba4060aed0a.mp3",
+    "v": 2
    }
   ],
   "id": "line18_imre_lose_v3",
-  "job": "fa2a032d-60c9-44b1-b261-501f3837863f",
+  "job": "b7c92c36-970e-4afd-9a5a-93958d84cbb0",
   "params": {
    "sample": "https://storage.googleapis.com/ludo-assets/api/68f97e86657c680226e7a504-19c95d3411c64cbe9552b17ed229dd62.mp3",
    "text": "A variance. It will even out."
   },
-  "url": "https://storage.googleapis.com/ludo-assets/api/68f97e86657c680226e7a504-2a1e9d999f9c82e133c90ba4060aed0a.mp3",
-  "v": 2
+  "url": "https://storage.googleapis.com/ludo-assets/api/68f97e86657c680226e7a504-0ceebbcd67c463200bdf63a6e2acf525.mp3",
+  "v": 3
  },
  "line18_imre_lose_v4": {
   "credits": 1,
@@ -4797,16 +7782,23 @@
     "job": "7081551d-6e60-4101-a580-d2484de81345",
     "url": "https://storage.googleapis.com/ludo-assets/api/68f97e86657c680226e7a504-fb534c36c912f973a1425a8b428c1b61.mp3",
     "v": 1
+   },
+   {
+    "credits": 1,
+    "endpoint": "/audio/speech",
+    "job": "d048207a-bef4-4f67-8ee2-1354fbf4115b",
+    "url": "https://storage.googleapis.com/ludo-assets/api/68f97e86657c680226e7a504-8c789ac03d36ed4e6e7f8ee85d7e82eb.mp3",
+    "v": 2
    }
   ],
   "id": "line18_oren_capital_lost_v2",
-  "job": "d048207a-bef4-4f67-8ee2-1354fbf4115b",
+  "job": "81d867ae-b04e-4d50-b91c-57733d4f3db1",
   "params": {
    "sample": "https://storage.googleapis.com/ludo-assets/api/68f97e86657c680226e7a504-16bb9be7264ac7447951d98e8147e99e.mp3",
-   "text": "They took my capital? I was using that!"
+   "text": "They took my capital? I was using *that*!"
   },
-  "url": "https://storage.googleapis.com/ludo-assets/api/68f97e86657c680226e7a504-8c789ac03d36ed4e6e7f8ee85d7e82eb.mp3",
-  "v": 2
+  "url": "https://storage.googleapis.com/ludo-assets/api/68f97e86657c680226e7a504-0fda137837dfb6e18e92e4e63c0d8092.mp3",
+  "v": 3
  },
  "line18_oren_capital_lost_v3": {
   "credits": 1,
@@ -4854,16 +7846,23 @@
     "job": "96f1ef35-e044-469a-83ee-8e960186ca28",
     "url": "https://storage.googleapis.com/ludo-assets/api/68f97e86657c680226e7a504-e9b1ed4fa0219085cb0934b8a49d5f91.mp3",
     "v": 1
+   },
+   {
+    "credits": 1,
+    "endpoint": "/audio/speech",
+    "job": "55b6a89f-0d96-4ecf-b9cb-74c58ddec9e5",
+    "url": "https://storage.googleapis.com/ludo-assets/api/68f97e86657c680226e7a504-b62cd10c77ee7dec2d8d6dcab100350e.mp3",
+    "v": 2
    }
   ],
   "id": "line18_oren_capital_took_v2",
-  "job": "55b6a89f-0d96-4ecf-b9cb-74c58ddec9e5",
+  "job": "0b9d6582-a2da-4cfe-9b9d-ed4b8363312b",
   "params": {
    "sample": "https://storage.googleapis.com/ludo-assets/api/68f97e86657c680226e7a504-16bb9be7264ac7447951d98e8147e99e.mp3",
-   "text": "Your capital! Is it mine? It is mine!"
+   "text": "Your capital! Is it mine? It *IS* mine!"
   },
-  "url": "https://storage.googleapis.com/ludo-assets/api/68f97e86657c680226e7a504-b62cd10c77ee7dec2d8d6dcab100350e.mp3",
-  "v": 2
+  "url": "https://storage.googleapis.com/ludo-assets/api/68f97e86657c680226e7a504-4e50b566e787c006a91ead8237932d73.mp3",
+  "v": 3
  },
  "line18_oren_capital_took_v3": {
   "credits": 1,
@@ -6332,16 +9331,23 @@
     "job": "12cb6aee-eaef-46b9-be91-c42c68f9aa33",
     "url": "https://storage.googleapis.com/ludo-assets/api/68f97e86657c680226e7a504-9fddff08d204e32284e1d4a87e10b45b.mp3",
     "v": 1
+   },
+   {
+    "credits": 1,
+    "endpoint": "/audio/speech",
+    "job": "a90433c8-b567-4863-b26d-e16af4cabac9",
+    "url": "https://storage.googleapis.com/ludo-assets/api/68f97e86657c680226e7a504-a5b0168d0fd5e11dc33f63c19b4ecb64.mp3",
+    "v": 2
    }
   ],
   "id": "line18_ysolde_capital_lost",
-  "job": "a90433c8-b567-4863-b26d-e16af4cabac9",
+  "job": "5ea01553-5447-4498-a455-91f84242e3c8",
   "params": {
    "sample": "https://storage.googleapis.com/ludo-assets/api/68f97e86657c680226e7a504-5b72130f6ba93ae92d9d0b97b043ffeb.mp3",
-   "text": "They dare to sit in *my* capital?"
+   "text": "They dare to sit in *my*, capital?"
   },
-  "url": "https://storage.googleapis.com/ludo-assets/api/68f97e86657c680226e7a504-a5b0168d0fd5e11dc33f63c19b4ecb64.mp3",
-  "v": 2
+  "url": "https://storage.googleapis.com/ludo-assets/api/68f97e86657c680226e7a504-7dcc019254d4fe801fc0037473fc92ab.mp3",
+  "v": 3
  },
  "line18_ysolde_capital_lost_v2": {
   "credits": 1,
@@ -11258,8 +14264,17 @@
   "credits": 17.5,
   "endpoint": "/assets/video/references",
   "file": "assets/raw/video/cut_eliminated_480.mp4",
+  "history": [
+   {
+    "credits": 17.5,
+    "endpoint": "/assets/video/references",
+    "job": "bd9726b9-eddc-497e-b710-bf55b8e94344",
+    "url": "https://storage.googleapis.com/ludo-assets/api/Curgv0zLEZt6MFdd2Z6Oc_minimax-h3.mp4",
+    "v": 1
+   }
+  ],
   "id": "v19_cut_eliminated",
-  "job": "bd9726b9-eddc-497e-b710-bf55b8e94344",
+  "job": "4e945858-2b44-4de6-806e-6e8edb9fc2c7",
   "params": {
    "aspect_ratio": "ar_16_9",
    "duration": 7,
@@ -11270,27 +14285,59 @@
    "model": "griffin",
    "prompt": "Image 1 is a captured frontier fort. In the fort from Image 1, victorious red-coated Napoleonic infantry tear down the enemy's green regimental colours from the flagpole; the flag falls into the mud and is trampled under marching boots, while a long column of disarmed enemy prisoners in green coats from Image 2 is marched away under guard with fixed bayonets. Grey overcast light, drifting smoke. Slow tracking shot. Sound: a steady drum beat, tramping boots, a bugle call, wind, a distant church bell. No spoken words, no dialogue, no narration: only music and sound effects. Painterly oil-painting look matching the reference images, Napoleonic era, 1810s."
   },
-  "url": "https://storage.googleapis.com/ludo-assets/api/Curgv0zLEZt6MFdd2Z6Oc_minimax-h3.mp4",
-  "v": 1
+  "url": "https://storage.googleapis.com/ludo-assets/api/rvKr9rjc4XIl6FwxDGlVD_minimax-h3.mp4",
+  "v": 2
  },
  "v19_cut_eliminated_up": {
   "credits": 1.4,
   "endpoint": "/assets/video/upscale",
   "file": "assets/raw/video/cut_eliminated.mp4",
+  "history": [
+   {
+    "credits": 1.4,
+    "endpoint": "/assets/video/upscale",
+    "job": "940bf17f-8291-4029-9752-0d3091e7d039",
+    "url": "https://storage.googleapis.com/ludo-assets/api/b2af9079bbae9b024e8a6c30922d34de.mp4",
+    "v": 1
+   }
+  ],
   "id": "v19_cut_eliminated_up",
-  "job": "940bf17f-8291-4029-9752-0d3091e7d039",
+  "job": "7e578687-4f80-45bd-880d-d6509282b2b4",
   "params": {
-   "video": "https://storage.googleapis.com/ludo-assets/api/Curgv0zLEZt6MFdd2Z6Oc_minimax-h3.mp4"
+   "video": "https://storage.googleapis.com/ludo-assets/api/rvKr9rjc4XIl6FwxDGlVD_minimax-h3.mp4"
   },
-  "url": "https://storage.googleapis.com/ludo-assets/api/b2af9079bbae9b024e8a6c30922d34de.mp4",
-  "v": 1
+  "url": "https://storage.googleapis.com/ludo-assets/api/1b3c55ee9873692276032108eeb1bf33.mp4",
+  "v": 2
  },
  "v19_cut_intro": {
   "credits": 17.5,
   "endpoint": "/assets/video/references",
   "file": "assets/raw/video/cut_intro_480.mp4",
+  "history": [
+   {
+    "credits": 17.5,
+    "endpoint": "/assets/video/references",
+    "job": "7e18a9d4-5ddf-4c7f-b4d6-d8767a627220",
+    "url": "https://storage.googleapis.com/ludo-assets/api/W_KKgk_tQjYpHJeiCVXyZ_minimax-h3.mp4",
+    "v": 1
+   },
+   {
+    "credits": 17.5,
+    "endpoint": "/assets/video/references",
+    "job": "f9f83ef3-0004-401d-8e9b-06b0890a0dd0",
+    "url": "https://storage.googleapis.com/ludo-assets/api/AXfMaaMg9mvxr1pr4UaiH_minimax-h3.mp4",
+    "v": 2
+   },
+   {
+    "credits": 17.5,
+    "endpoint": "/assets/video/references",
+    "job": "c8e263c7-c231-4abd-a346-f1724c264b45",
+    "url": "https://storage.googleapis.com/ludo-assets/api/hVeCj7BErCsA1YubwyDS1_minimax-h3.mp4",
+    "v": 3
+   }
+  ],
   "id": "v19_cut_intro",
-  "job": "7e18a9d4-5ddf-4c7f-b4d6-d8767a627220",
+  "job": "b1e84250-9d79-4c2d-905e-40abd02a08cc",
   "params": {
    "aspect_ratio": "ar_16_9",
    "duration": 7,
@@ -11301,20 +14348,36 @@
    "model": "griffin",
    "prompt": "Image 1 is the imperial war room, Image 2 is the old field marshal. Dawn: pale golden light spills through the tall windows of the war room from Image 1 onto the great map table and its tin soldiers. The doors open and two dust-stained couriers in blue hussar jackets hurry in and lay sealed dispatches on the map. The field marshal from Image 2, standing at the window with his hands clasped behind his back, turns slowly to face the camera with a grave, knowing look, silent. Slow push-in camera. Sound: a lone snare drum and a low rising brass theme, hurried footsteps, rustling paper, distant gulls and a harbour bell. No spoken words, no dialogue, no narration: only music and sound effects. Painterly oil-painting look matching the reference images, Napoleonic era, 1810s."
   },
-  "url": "https://storage.googleapis.com/ludo-assets/api/W_KKgk_tQjYpHJeiCVXyZ_minimax-h3.mp4",
-  "v": 1
+  "url": "https://storage.googleapis.com/ludo-assets/api/4LHLxbZIPbY0-T_Yho7VC_minimax-h3.mp4",
+  "v": 4
  },
  "v19_cut_intro_up": {
   "credits": 1.4,
   "endpoint": "/assets/video/upscale",
   "file": "assets/raw/video/cut_intro.mp4",
+  "history": [
+   {
+    "credits": 1.4,
+    "endpoint": "/assets/video/upscale",
+    "job": "7922542f-f879-46e4-b15c-f8648c5a173e",
+    "url": "https://storage.googleapis.com/ludo-assets/api/436b50704c391fe2c72da086a58fb4c6.mp4",
+    "v": 1
+   },
+   {
+    "credits": 1.4,
+    "endpoint": "/assets/video/upscale",
+    "job": "9ea87d80-c3c2-4893-b592-e3831917103f",
+    "url": "https://storage.googleapis.com/ludo-assets/api/d9384551c0642f36ac51bc7561125ce2.mp4",
+    "v": 2
+   }
+  ],
   "id": "v19_cut_intro_up",
-  "job": "7922542f-f879-46e4-b15c-f8648c5a173e",
+  "job": "7d3bc726-80ec-448b-a73b-ca0b1202f8f0",
   "params": {
-   "video": "https://storage.googleapis.com/ludo-assets/api/W_KKgk_tQjYpHJeiCVXyZ_minimax-h3.mp4"
+   "video": "https://storage.googleapis.com/ludo-assets/api/hVeCj7BErCsA1YubwyDS1_minimax-h3.mp4"
   },
-  "url": "https://storage.googleapis.com/ludo-assets/api/436b50704c391fe2c72da086a58fb4c6.mp4",
-  "v": 1
+  "url": "https://storage.googleapis.com/ludo-assets/api/1c43b60a9f5458b8fe5291bf45e6ca32.mp4",
+  "v": 3
  },
  "v19_cut_victory": {
   "credits": 17.5,
@@ -11445,19 +14508,28 @@
   "video_url": "https://storage.googleapis.com/ludo-assets/api/db21bbde0ecbc7d2867f1e7a8f742a4a.mp4"
  },
  "v19_fx_capital_fire": {
-  "credits": 4.3,
+  "credits": 4.5,
   "endpoint": "/assets/sprite/animate",
   "file": "assets/raw/v19/fx/capital_fire.webp",
+  "history": [
+   {
+    "credits": 4.3,
+    "endpoint": "/assets/sprite/animate",
+    "job": "e82f003e-050d-4d81-b9fc-9c57604ddf50",
+    "url": "https://storage.googleapis.com/ludo-assets/api/b244fe50e4b962ff510558ab44fed7b9.webp",
+    "v": 1
+   }
+  ],
   "id": "v19_fx_capital_fire",
-  "job": "e82f003e-050d-4d81-b9fc-9c57604ddf50",
+  "job": "6a1dfee8-c0a2-4880-bcd6-66b3935aaeac",
   "params": {
    "crop": false,
    "duration": 3,
-   "final_image": "https://storage.googleapis.com/ludo-assets/api/debbf3bccd8a01461fa00ee9383dd536.webp",
+   "final_image": "https://storage.googleapis.com/ludo-assets/api/e5cbe1e38057b03be6b5948f08186b17.webp",
    "frame_size": 384,
    "frames": 25,
    "image_type": "sprite-vfx",
-   "initial_image": "https://storage.googleapis.com/ludo-assets/api/debbf3bccd8a01461fa00ee9383dd536.webp",
+   "initial_image": "https://storage.googleapis.com/ludo-assets/api/e5cbe1e38057b03be6b5948f08186b17.webp",
    "loop": false,
    "margin_ratio_horizontal": 0.25,
    "margin_ratio_mode": "manual",
@@ -11465,9 +14537,9 @@
    "model": "forge",
    "motion_prompt": "the flames flicker and leap continuously, embers float upward and the smoke rolls, an endless steady blaze"
   },
-  "url": "https://storage.googleapis.com/ludo-assets/api/b244fe50e4b962ff510558ab44fed7b9.webp",
-  "v": 1,
-  "video_url": "https://storage.googleapis.com/ludo-assets/api/53eb7cda299b2fee461ed8c5f0da8461.mp4"
+  "url": "https://storage.googleapis.com/ludo-assets/api/f19bc7a5b49e0fbbc40753093b7c27ac.webp",
+  "v": 2,
+  "video_url": "https://storage.googleapis.com/ludo-assets/api/d5c169087f51a5a85f8c2fabde4033dc.mp4"
  },
  "v19_fx_dust_kick": {
   "credits": 4,
@@ -11521,15 +14593,24 @@
   "credits": 4,
   "endpoint": "/assets/sprite/animate",
   "file": "assets/raw/v19/fx/fuse_spark.webp",
+  "history": [
+   {
+    "credits": 4,
+    "endpoint": "/assets/sprite/animate",
+    "job": "900a81b9-d188-4c5e-9d65-fe523fa20749",
+    "url": "https://storage.googleapis.com/ludo-assets/api/dffbb9225b2742299922b9f8d852244a.webp",
+    "v": 1
+   }
+  ],
   "id": "v19_fx_fuse_spark",
-  "job": "900a81b9-d188-4c5e-9d65-fe523fa20749",
+  "job": "cbda5ce1-a9e8-4f55-99be-a667ed2e289a",
   "params": {
    "crop": false,
    "duration": 1.5,
    "frame_size": 384,
    "frames": 16,
    "image_type": "sprite-vfx",
-   "initial_image": "https://storage.googleapis.com/ludo-assets/api/a6da62658ae2686933b7d3b8552615eb.webp",
+   "initial_image": "https://storage.googleapis.com/ludo-assets/api/70e2158a371386da93227592567c448c.webp",
    "loop": false,
    "margin_ratio_horizontal": 0.25,
    "margin_ratio_mode": "manual",
@@ -11537,9 +14618,9 @@
    "model": "forge",
    "motion_prompt": "the spark sputters and crackles, throwing out tiny sparks, the wisp of smoke curls up"
   },
-  "url": "https://storage.googleapis.com/ludo-assets/api/dffbb9225b2742299922b9f8d852244a.webp",
-  "v": 1,
-  "video_url": "https://storage.googleapis.com/ludo-assets/api/0a2a1548b01fa31e328b5bd48bb35ce6.mp4"
+  "url": "https://storage.googleapis.com/ludo-assets/api/19810a34f3bc28dcb76b171f5efa434d.webp",
+  "v": 2,
+  "video_url": "https://storage.googleapis.com/ludo-assets/api/ac638145556d71514c4243869417ed01.mp4"
  },
  "v19_fx_smoke_musket": {
   "credits": 4,
@@ -11609,8 +14690,17 @@
   "credits": 0.5,
   "endpoint": "/assets/image",
   "file": "assets/raw/v19/fx/capital_fire_src.webp",
+  "history": [
+   {
+    "credits": 0.5,
+    "endpoint": "/assets/image",
+    "job": "3c48dd30-3589-43f5-a71c-7f017c8fe069",
+    "url": "https://storage.googleapis.com/ludo-assets/api/debbf3bccd8a01461fa00ee9383dd536.webp",
+    "v": 1
+   }
+  ],
   "id": "v19_fxsrc_capital_fire",
-  "job": "3c48dd30-3589-43f5-a71c-7f017c8fe069",
+  "job": "32666f3e-8332-457f-ac2c-41025cfe875f",
   "params": {
    "art_style": "Digital Painting",
    "aspect_ratio": "ar_1_1",
@@ -11620,8 +14710,8 @@
    "perspective": "Any perspective",
    "prompt": "A large blaze of tall orange and yellow flames with glowing embers and dark smoke rising above, the fire of a burning city, no buildings, painterly oil-paint brushwork"
   },
-  "url": "https://storage.googleapis.com/ludo-assets/api/debbf3bccd8a01461fa00ee9383dd536.webp",
-  "v": 1
+  "url": "https://storage.googleapis.com/ludo-assets/api/e5cbe1e38057b03be6b5948f08186b17.webp",
+  "v": 2
  },
  "v19_fxsrc_dust_kick": {
   "credits": 0.5,
@@ -11663,8 +14753,17 @@
   "credits": 0.5,
   "endpoint": "/assets/image",
   "file": "assets/raw/v19/fx/fuse_spark_src.webp",
+  "history": [
+   {
+    "credits": 0.5,
+    "endpoint": "/assets/image",
+    "job": "dfb941dd-3b9c-4025-96f2-c7be0b4bafff",
+    "url": "https://storage.googleapis.com/ludo-assets/api/a6da62658ae2686933b7d3b8552615eb.webp",
+    "v": 1
+   }
+  ],
   "id": "v19_fxsrc_fuse_spark",
-  "job": "dfb941dd-3b9c-4025-96f2-c7be0b4bafff",
+  "job": "95690eea-89ff-4950-abc1-9df4132265fb",
   "params": {
    "art_style": "Digital Painting",
    "aspect_ratio": "ar_1_1",
@@ -11674,8 +14773,8 @@
    "perspective": "Any perspective",
    "prompt": "A sputtering cannon-fuse spark: a small bright white-yellow core throwing out tiny orange sparks and a thin wisp of grey smoke, painterly"
   },
-  "url": "https://storage.googleapis.com/ludo-assets/api/a6da62658ae2686933b7d3b8552615eb.webp",
-  "v": 1
+  "url": "https://storage.googleapis.com/ludo-assets/api/70e2158a371386da93227592567c448c.webp",
+  "v": 2
  },
  "v19_fxsrc_smoke_musket": {
   "credits": 0.5,
@@ -11717,8 +14816,17 @@
   "credits": 0.5,
   "endpoint": "/assets/image",
   "file": "assets/raw/v19/dice/howto_fortune.webp",
+  "history": [
+   {
+    "credits": 0.5,
+    "endpoint": "/assets/image",
+    "job": "56ac8179-37b1-4822-b40f-b55b5c5ba376",
+    "url": "https://storage.googleapis.com/ludo-assets/api/6a8cd5879c404c25d3d3ca6b23ca90d2.webp",
+    "v": 1
+   }
+  ],
   "id": "v19_howto_fortune",
-  "job": "56ac8179-37b1-4822-b40f-b55b5c5ba376",
+  "job": "e7cd67e1-a320-421f-8eff-8be8859350e6",
   "params": {
    "art_style": "Digital Painting",
    "aspect_ratio": "ar_16_9",
@@ -11728,8 +14836,8 @@
    "perspective": "Any perspective",
    "prompt": "A Napoleonic-era commander in a dark blue greatcoat with gold epaulettes leans over a candlelit war table covered with maps and tin soldiers; behind him rises a translucent, ghostly Lady Fortune, a classical goddess in flowing robes turning a great spoked wheel of fortune, who tips a single falling ivory die onto the map with one finger; through the open tent behind, regiments of line infantry in shakos and white crossbelts with muskets and fixed bayonets stand in ranks under their colours, 1810s, no armour, no knights, dramatic golden candlelight. Grand imperial oil painting in the tradition of 18th-century history painting and Age of Sail maritime art, rich glazes, dramatic golden light and deep shadow, palette of imperial crimson, royal navy blue, burnished gold, ivory and gunpowder grey, heroic and triumphant, no text, no letters, no watermark"
   },
-  "url": "https://storage.googleapis.com/ludo-assets/api/6a8cd5879c404c25d3d3ca6b23ca90d2.webp",
-  "v": 1
+  "url": "https://storage.googleapis.com/ludo-assets/api/8d5603b2a8b58db8f8c70d72e4a28286.webp",
+  "v": 2
  },
  "v19_kf_cannon_fire": {
   "credits": 4.2,
@@ -11853,11 +14961,20 @@
   "video_url": "https://storage.googleapis.com/ludo-assets/api/00838d44660771c334c81d3648bfdea0.mp4"
  },
  "v19_kf_soldier_kneel_volley": {
-  "credits": 4.1,
+  "credits": 4,
   "endpoint": "/assets/sprite/animate-keyframes",
   "file": "assets/raw/v19/battle/soldier_kneel_volley_kf.webp",
+  "history": [
+   {
+    "credits": 4.1,
+    "endpoint": "/assets/sprite/animate-keyframes",
+    "job": "21222b82-add4-41bd-9a35-b576a4f47ac6",
+    "url": "https://storage.googleapis.com/ludo-assets/api/d3d856c6cc595bd033e0173a6d9ed3ad.webp",
+    "v": 1
+   }
+  ],
   "id": "v19_kf_soldier_kneel_volley",
-  "job": "21222b82-add4-41bd-9a35-b576a4f47ac6",
+  "job": "4f580d3b-feec-49a2-9dcb-c44edef0a51f",
   "params": {
    "crop": false,
    "duration": 3,
@@ -11871,16 +14988,25 @@
    "model": "forge",
    "motion_prompt": "drops to one knee and aims the musket to the right, jolts back with one sharp recoil, then stands back up with the musket at the shoulder, no smoke"
   },
-  "url": "https://storage.googleapis.com/ludo-assets/api/d3d856c6cc595bd033e0173a6d9ed3ad.webp",
-  "v": 1,
-  "video_url": "https://storage.googleapis.com/ludo-assets/api/dc920e05b3e95a2098e2639337b5ab50.mp4"
+  "url": "https://storage.googleapis.com/ludo-assets/api/f6ddcfb3e715a4ed4a9617d80c44dd73.webp",
+  "v": 2,
+  "video_url": "https://storage.googleapis.com/ludo-assets/api/de8eb79ca6ae664548c01089a22093be.mp4"
  },
  "v19_kf_soldier_reload": {
-  "credits": 4.1,
+  "credits": 4.2,
   "endpoint": "/assets/sprite/animate-keyframes",
   "file": "assets/raw/v19/battle/soldier_reload_kf.webp",
+  "history": [
+   {
+    "credits": 4.1,
+    "endpoint": "/assets/sprite/animate-keyframes",
+    "job": "e353586b-67f9-4425-bfb1-b75b65ece5ed",
+    "url": "https://storage.googleapis.com/ludo-assets/api/13627e6651e3919bf1b165df761d4e77.webp",
+    "v": 1
+   }
+  ],
   "id": "v19_kf_soldier_reload",
-  "job": "e353586b-67f9-4425-bfb1-b75b65ece5ed",
+  "job": "0a8afc8c-456f-49d3-8ecb-3ed3fcd9acac",
   "params": {
    "crop": false,
    "duration": 3,
@@ -11894,16 +15020,25 @@
    "model": "forge",
    "motion_prompt": "brings the musket upright in front of him, bites a cartridge, rams the ramrod down the barrel twice, then shoulders the musket again"
   },
-  "url": "https://storage.googleapis.com/ludo-assets/api/13627e6651e3919bf1b165df761d4e77.webp",
-  "v": 1,
-  "video_url": "https://storage.googleapis.com/ludo-assets/api/ced94f594ec0eae61a9fc2035b542bf2.mp4"
+  "url": "https://storage.googleapis.com/ludo-assets/api/ec0b9b31af6b6c6f94e6d034b2e0116a.webp",
+  "v": 2,
+  "video_url": "https://storage.googleapis.com/ludo-assets/api/baa41ea1dc725b040b34af34de806ced.mp4"
  },
  "v19_kf_soldier_volley": {
-  "credits": 4,
+  "credits": 4.3,
   "endpoint": "/assets/sprite/animate-keyframes",
   "file": "assets/raw/v19/battle/soldier_volley_kf.webp",
+  "history": [
+   {
+    "credits": 4,
+    "endpoint": "/assets/sprite/animate-keyframes",
+    "job": "4adc4085-da6b-42d8-b731-6ee556e7259a",
+    "url": "https://storage.googleapis.com/ludo-assets/api/a81fd740bb7c6d78680ac2143352466b.webp",
+    "v": 2
+   }
+  ],
   "id": "v19_kf_soldier_volley",
-  "job": "4adc4085-da6b-42d8-b731-6ee556e7259a",
+  "job": "0c73b257-3ef3-4caa-bec7-ead9dfacff95",
   "params": {
    "crop": false,
    "duration": 3,
@@ -11917,9 +15052,9 @@
    "model": "forge",
    "motion_prompt": "raises the musket to his shoulder and aims it straight ahead to the right, his shoulder kicks back slightly with the recoil, then he lowers the musket back to his shoulder; he stays in side view facing right the whole time and never turns around"
   },
-  "url": "https://storage.googleapis.com/ludo-assets/api/a81fd740bb7c6d78680ac2143352466b.webp",
-  "v": 2,
-  "video_url": "https://storage.googleapis.com/ludo-assets/api/98263261aa867c7de9073f4d53a3d2a5.mp4"
+  "url": "https://storage.googleapis.com/ludo-assets/api/be7206f951faba75655ef57cc160b384.webp",
+  "v": 3,
+  "video_url": "https://storage.googleapis.com/ludo-assets/api/64b2251f884b1fbdbd34c4c478e651fe.mp4"
  },
  "v19_model_cannon": {
   "credits": 3,
@@ -12678,23 +15813,32 @@
   "video_url": "https://storage.googleapis.com/ludo-assets/api/6b532ee74096b311e041bda6b4ffca08.mp4"
  },
  "v19_var_grenadier_volley": {
-  "audio_url": "https://storage.googleapis.com/ludo-assets/api/474d3565c0a5dc817e4a8ab26e8d8541.mp3",
-  "credits": 7,
+  "audio_url": "https://storage.googleapis.com/ludo-assets/api/bc12eb70279e7c16d7081a4e02824034.mp3",
+  "credits": 8.1,
   "endpoint": "/assets/sprite/edit",
   "file": "assets/raw/v19/battle/grenadier_volley_kf.webp",
+  "history": [
+   {
+    "credits": 7,
+    "endpoint": "/assets/sprite/edit",
+    "job": "94f494fc-f5ca-4dc9-8fb8-2a1fab7d0a28",
+    "url": "https://storage.googleapis.com/ludo-assets/api/5e6aec8764c9844112a7bcfe82cce52e.webp",
+    "v": 2
+   }
+  ],
   "id": "v19_var_grenadier_volley",
-  "job": "94f494fc-f5ca-4dc9-8fb8-2a1fab7d0a28",
+  "job": "0d9b014a-227c-4968-b028-5fcb88ea44cd",
   "params": {
    "edit_mode": "prompt",
    "prompt": "Make him a grenadier: a tall bearskin cap instead of the shako. Keep the plain white tin finish and exactly the same motion.",
-   "spritesheet_url": "https://storage.googleapis.com/ludo-assets/api/a81fd740bb7c6d78680ac2143352466b.webp"
+   "spritesheet_url": "https://storage.googleapis.com/ludo-assets/api/be7206f951faba75655ef57cc160b384.webp"
   },
   "side_files": [
    "assets/raw/v19/battle/grenadier_volley_kf_audio.mp3"
   ],
-  "url": "https://storage.googleapis.com/ludo-assets/api/5e6aec8764c9844112a7bcfe82cce52e.webp",
-  "v": 2,
-  "video_url": "https://storage.googleapis.com/ludo-assets/api/182e99185091dacbd90c605efd0c9ddb.mp4"
+  "url": "https://storage.googleapis.com/ludo-assets/api/025b9de2793f243028f2459821d4860d.webp",
+  "v": 3,
+  "video_url": "https://storage.googleapis.com/ludo-assets/api/ae7e0b7fa5e5c811324ff32f52861b1a.mp4"
  },
  "v19_vid_defeat": {
   "credits": 12,
@@ -12796,8 +15940,17 @@
   "credits": 1,
   "endpoint": "/assets/sprite/rotate",
   "file": "assets/raw/v19/views/infantry_q.webp",
+  "history": [
+   {
+    "credits": 1,
+    "endpoint": "/assets/sprite/rotate",
+    "job": "03127181-6fbe-404e-8eb0-41be1c92c4ef",
+    "url": "https://storage.googleapis.com/ludo-assets/api/b3f297d13df9b44d91264834f16309ab.webp",
+    "v": 1
+   }
+  ],
   "id": "v19_view_infantry",
-  "job": "03127181-6fbe-404e-8eb0-41be1c92c4ef",
+  "job": "67dbafaf-d032-49a4-9e72-bec70c4c7fd2",
   "params": {
    "camera_elevation": 30,
    "camera_rotation": 45,
@@ -12808,8 +15961,8 @@
    "assets/raw/v19/views/infantry_q_0.webp",
    "assets/raw/v19/views/infantry_q_1.webp"
   ],
-  "url": "https://storage.googleapis.com/ludo-assets/api/b3f297d13df9b44d91264834f16309ab.webp",
-  "v": 1
+  "url": "https://storage.googleapis.com/ludo-assets/api/9d779eda0e57cbaa3d436c5015ee0f96.webp",
+  "v": 2
  },
  "voice2_hask": {
   "credits": 1,

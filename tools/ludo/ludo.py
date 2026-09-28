@@ -6,6 +6,7 @@
     python3 tools/ludo/ludo.py --force id ...
     python3 tools/ludo/ludo.py --jobs 8 id ...   # a pool of 8 jobs in flight instead of one per lane
     python3 tools/ludo/ludo.py --account         # the credit balance (free)
+    python3 tools/ludo/ludo.py --takes 3 id ...  # speech/voice/sfx: 3 takes (extras in .takes/)
 
 Reads LUDO_API_KEY from the environment or .env.local. Idempotent: an asset whose
 output file exists is skipped, and every job carries a stable request_id so a
@@ -285,6 +286,37 @@ def sheet_result(asset, res, out_base, downloads):
     return url, extra
 
 
+def spoken(asset):
+    """What the voice is asked to say: `speak` when set (the words plus performance marks a
+    review note asked for: pauses, *stress*), else the line's `text` (its subtitle)."""
+    return asset.get("speak") or asset["text"]
+
+
+TAKE_KINDS = ("speech", "voice", "sfx")
+
+
+def take_out(out, k):
+    """Take k (2, 3, ...) of an asset sits beside it: <dir>/.takes/<name>.t<k>.<ext>."""
+    return os.path.join(os.path.dirname(out), ".takes", "%s.t%d" % (os.path.basename(out), k))
+
+
+def with_takes(assets, n=None):
+    """Every speech, voice or sfx asset plus its extra takes (`takes` in the manifest, or
+    --takes N for this run): the same prompt rolled again under its own id `<id>~t<k>`, so each
+    take has its own request id and ledger entry and a rerun skips the takes already made."""
+    out = []
+    for a in assets:
+        out.append(a)
+        k_max = int(n if n is not None else a.get("takes", 1))
+        if a.get("kind") not in TAKE_KINDS or "~t" in a["id"]:
+            continue
+        for k in range(2, k_max + 1):
+            t = dict(a, id="%s~t%d" % (a["id"], k), out=take_out(a["out"], k))
+            MANIFEST_V[t["id"]] = int(a.get("v", 1))
+            out.append(t)
+    return out
+
+
 def build(asset, style, force):
     aid = asset["id"]
     out_base = os.path.join(ROOT, asset["out"])
@@ -334,7 +366,7 @@ def build(asset, style, force):
             extra = {"cols": res.get("num_cols"), "rows": res.get("num_rows"), "frames": res.get("num_frames")}
         endpoint = "/assets/sprite/animate"
     elif kind == "voice":
-        params = {"voice_description": asset["describe"], "text": asset["text"], "type": "human",
+        params = {"voice_description": asset["describe"], "text": spoken(asset), "type": "human",
                   "augment_prompt": asset.get("augment", True)}
         job = run_job("/audio/voice", params, rid)
         charged(calls, "/audio/voice", job)
@@ -342,7 +374,7 @@ def build(asset, style, force):
         endpoint = "/audio/voice"
     elif kind == "speech":
         sample = ledger_url(asset["voice"])
-        params = {"text": asset["text"], "sample": sample}
+        params = {"text": spoken(asset), "sample": sample}
         job = run_job("/audio/speech", params, rid)
         charged(calls, "/audio/speech", job)
         url = result_urls(job["result"])[0]
@@ -566,6 +598,11 @@ def main(argv):
         i = argv.index("--jobs")
         jobs = int(argv[i + 1])
         argv = argv[:i] + argv[i + 2:]
+    takes = None
+    if "--takes" in argv:
+        i = argv.index("--takes")
+        takes = int(argv[i + 1])
+        argv = argv[:i] + argv[i + 2:]
     wanted = [a for a in argv if not a.startswith("--")]
     man = json.load(open(MANIFEST))
     for a in man["assets"]:
@@ -574,6 +611,7 @@ def main(argv):
     assets = man["assets"]
     if wanted:
         assets = [a for a in assets if a["id"] in wanted]
+    assets = with_takes(assets, takes)
     if jobs > 0:
         ## a pool that starts assets in manifest order: a dependency always starts before
         ## whatever waits on it, so the waits can never fill the pool and deadlock

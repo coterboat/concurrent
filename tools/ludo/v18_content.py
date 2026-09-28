@@ -10,16 +10,27 @@ the game when it has been accepted in the review tool.
     python3 tools/ludo/v18_content.py --install  # apply the accepted takes and import them into Godot
                                                  #   (--dry-run: only list what would be copied)
     python3 tools/ludo/v18_content.py --regen    # re-roll every rejected take (edited words kept)
+                                                 #   --takes N: N takes of each (default 3; pick one)
+                                                 #   --no-notes: ignore the review notes
 
 The last two are also the review table's "Install accepted" and "Redo rejected" buttons: the
 batch.json that --batch writes declares them as actions.
 
 A take's file is <key>.mp3 for take 1 and <key>_v<n>.mp3 after; lines.json holds a list.
+
+v1.11: a redo reads the review note. The words stay (they are the subtitle); the note becomes
+performance marks in what the voice is asked to say (the manifest's `speak`, see
+tools/ludo/notes.py and docs/PROMPTING.md). Each redo rolls 3 takes to pick from, and keeps the
+rejected one beside them (review/<batch>/<who>/.takes/) so the table can play them side by side.
 """
 import json
 import os
+import re
 import subprocess
 import sys
+
+sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
+import notes  # noqa: E402
 
 ROOT = os.path.abspath(os.path.join(os.path.dirname(__file__), "..", ".."))
 MAN = os.path.join(os.path.dirname(__file__), "manifest.json")
@@ -296,6 +307,8 @@ def write_manifest():
              "out": "review/%s/%s/%s" % (BATCH, who, name)}
         o = old.get(e["id"])
         e["v"] = int(o.get("v", 1)) + (1 if o.get("text") != text else 0) if o else 1
+        if o and o.get("speak") and o.get("text") == text:
+            e["speak"] = o["speak"]  ## the delivery a review note asked for
         old[e["id"]] = e
     for e in EXTRA:
         o = old.get(e["id"])
@@ -328,12 +341,26 @@ def actions():
          "options": [{"flag": "--dry-run", "label": "Dry run", "type": "bool", "default": False,
                       "help": "Only list what would be copied; no Godot import"}]},
         {"id": "regen", "kind": "regen", "label": "Redo rejected",
-         "help": "Regenerate every rejected take with Ludo (spends credits); reworded lines use the new words",
-         "cmd": cmd + ["--regen"], "spends": True},
+         "help": "Regenerate every rejected take with Ludo (spends credits). Reworded lines use the new words; "
+                 "each note becomes direction for the voice (pauses, stress, a falling end: Claude writes it "
+                 "when the claude command is installed). You pick from the new takes.",
+         "cmd": cmd + ["--regen"], "spends": True,
+         "options": [{"flag": "--takes", "label": "Takes per line", "type": "int", "default": 3, "min": 1, "max": 5,
+                      "help": "Roll each rejected line this many times (about 1 credit each) and pick the best"},
+                     {"flag": "--no-notes", "label": "Ignore the notes", "type": "bool", "default": False,
+                      "help": "A plain re-roll: the same words, no direction from the notes"}]},
     ]
 
 
+SPEAK = {}  ## manifest id -> what the voice was asked to say, when a note changed it
+
+
 def write_batch():
+    SPEAK.update({a["id"]: a["speak"] for a in json.load(open(MAN))["assets"] if a.get("speak")})
+    try:
+        info = json.load(open(take_info_path()))
+    except (OSError, ValueError):
+        info = {}
     items = []
     for who, key, i, name, text in plan():
         f = None
@@ -344,7 +371,9 @@ def write_batch():
                       "label": "%s · take %d" % (key, i + 1), "text": text,
                       "file": f or "%s/%s.mp3" % (who, name), "target": target_of(who, name),
                       "meta": {"voice": voice_of(who), "manifest_id": mid(who, name), "key": key,
-                               "context": CONTEXT.get(key, "")}})
+                               "context": CONTEXT.get(key, ""), "speak": SPEAK.get(mid(who, name), ""),
+                               "take_info": {k: v for k, v in info.items() if k.startswith("%s/%s." % (who, name))
+                                             or k.startswith("%s/.takes/%s." % (who, name))}}})
     os.makedirs(BATCH_DIR, exist_ok=True)
     out = os.path.join(BATCH_DIR, "batch.json")
     with open(out + ".tmp", "w") as f:  ## the review table may be reading it: swap it in whole
@@ -354,17 +383,108 @@ def write_batch():
     print("batch: %d takes (%d with audio)" % (len(items), sum(1 for it in items if os.path.exists(os.path.join(BATCH_DIR, it["file"])))))
 
 
+def arg_int(flag, default):
+    if flag in sys.argv:
+        try:
+            return int(sys.argv[sys.argv.index(flag) + 1])
+        except (IndexError, ValueError):
+            pass
+    return default
+
+
+def take_info_path():
+    return os.path.join(BATCH_DIR, "take_info.json")
+
+
+def describe(m):
+    """A take's measurements in a few words for its chip in the review table."""
+    parts = []
+    s = m.get("end_slope_st")
+    if s is not None:
+        parts.append(("falls %.1f st" % -s) if s < -0.5 else ("rises %.1f st" % s) if s > 0.5 else "level end")
+    if m.get("gap") is not None and m["gap"] >= 0.15:
+        parts.append("pause %.2f s" % m["gap"])
+    return ", ".join(parts)
+
+
+def want_of(note):
+    """What a note asks the measurements to prefer (voice_measure.rank), if anything."""
+    t = set(notes.themes(note or ""))
+    return "fall" if "fall" in t else "pause" if "pause" in t else "lower" if "pitch" in t else None
+
+
+def rank_takes(rows, wants):
+    """The speech lab found no punctuation that makes a line end falling, and the pause mark adds
+    less than two takes of the same text differ by. So measure the new takes: when a line's note
+    asked for a falling end, more pause or a lower voice, the best-measured take becomes take 1
+    (the rest follow in order), and every take's chip says what was measured."""
+    try:
+        import voice_measure as vm
+    except ImportError:
+        return
+    import glob
+    import shutil
+    import tempfile
+    try:
+        info = json.load(open(take_info_path()))
+    except (OSError, ValueError):
+        info = {}
+    for who, name, aid in rows:
+        d = os.path.join(BATCH_DIR, who)
+        main = next((os.path.join(d, name + e) for e in (".mp3", ".wav", ".ogg") if os.path.exists(os.path.join(d, name + e))), None)
+        if not main:
+            continue
+        slots = [main] + sorted(glob.glob(os.path.join(d, ".takes", name + ".t[0-9]*")), key=lambda p: int(re.search(r"\.t(\d+)\.", p).group(1)))
+        want = wants.get(aid)
+        ranked = vm.rank(slots, want or "fall")
+        if want and len({os.path.splitext(p)[1] for p in slots}) == 1 and [r["path"] for r in ranked] != slots:
+            tmp = tempfile.mkdtemp(prefix="takes_")
+            staged = []
+            for i, r in enumerate(ranked):
+                t = os.path.join(tmp, "%d%s" % (i, os.path.splitext(r["path"])[1]))
+                shutil.copy2(r["path"], t)
+                staged.append(t)
+            for t, slot in zip(staged, slots):
+                os.replace(t, slot)
+            shutil.rmtree(tmp, ignore_errors=True)
+            print("  ranked %s by %s: take 1 is the best-measured (%s)" % (aid, want, describe(ranked[0])))
+        else:
+            ranked = sorted(ranked, key=lambda r: slots.index(r["path"]))
+        for slot, r in zip(slots, ranked):
+            info[os.path.relpath(slot, BATCH_DIR).replace(os.sep, "/")] = describe(r)
+        for old in glob.glob(os.path.join(d, ".takes", name + ".r[0-9]*")):  ## the rejected ones, to compare
+            info[os.path.relpath(old, BATCH_DIR).replace(os.sep, "/")] = describe(vm.measure(old))
+    json.dump(info, open(take_info_path(), "w"), indent=0)
+
+
+def keep_rejected(who, name):
+    """Move the rejected take aside (<who>/.takes/<name>.r<N>.<ext>, N counting the rounds), so
+    the table can play it next to the new takes, and the new take 1 lands in its place."""
+    d = os.path.join(BATCH_DIR, who)
+    for ext in (".mp3", ".wav", ".ogg"):
+        src = os.path.join(d, name + ext)
+        if os.path.exists(src):
+            tdir = os.path.join(d, ".takes")
+            os.makedirs(tdir, exist_ok=True)
+            n = 1 + sum(1 for f in os.listdir(tdir) if f.startswith(name + ".r"))
+            os.replace(src, os.path.join(tdir, "%s.r%d%s" % (name, n, ext)))
+            return
+
+
 def regen():
-    """Re-roll every rejected take: new words if the reviewer fixed them, a new take either way."""
+    """Re-roll every rejected take: new words if the reviewer fixed them, direction from the note,
+    and a few takes to pick from."""
     path = os.path.join(BATCH_DIR, "rejected.json")
     if not os.path.exists(path):
         print("nothing rejected (run: python3 tools/review/review.py apply %s)" % BATCH)
         return
+    takes = max(1, min(5, arg_int("--takes", 3)))
+    use_notes = "--no-notes" not in sys.argv
     rejected = json.load(open(path))
     man = json.load(open(MAN))
     by = {a["id"]: a for a in man["assets"]}
     d = json.load(open(LINES_JSON))
-    todo = []
+    todo, directed, wants = [], [], {}
     for r in rejected:
         m = r.get("meta", {})
         aid = m.get("manifest_id")
@@ -384,17 +504,37 @@ def regen():
             ## and in the script's own table, so a re-run does not undo it
             print("  words changed: %s -> %r" % (aid, new_text))
             e["text"] = new_text
+            e.pop("speak", None)  ## new words: the old direction no longer fits them
             rows = json.load(open(PLAN))
             for row in rows:
                 if mid(row[0], row[3]) == aid:
                     row[4] = new_text
             json.dump(rows, open(PLAN, "w"), indent=0, ensure_ascii=False)
+        wants[aid] = want_of(r.get("note")) if use_notes else None
+        if use_notes and notes.meaningful(r.get("note")):
+            directed.append({"id": aid, "text": e["text"], "speak": e.get("speak"), "note": r["note"],
+                             "who": aid.split("_")[1], "context": m.get("context", "")})
         e["v"] = int(e.get("v", 1)) + 1
         todo.append(aid)
+    if directed:
+        print("reading %d note%s%s..." % (len(directed), "s" if len(directed) != 1 else "",
+                                          " with Claude" if notes.claude_bin() else ""), flush=True)
+        for aid, (speak, why, how) in notes.rewrite_speech(directed).items():
+            e = by[aid]
+            if speak != e["text"]:
+                e["speak"] = speak
+            else:
+                e.pop("speak", None)
+            print("  direction (%s): %s: %r%s" % (how, aid, speak, "  (" + why + ")" if why else ""))
     json.dump(man, open(MAN, "w"), indent=1)
     json.dump(d, open(LINES_JSON, "w"), indent=1, ensure_ascii=False)
     if todo:
-        subprocess.run([sys.executable, os.path.join(os.path.dirname(__file__), "ludo.py")] + todo, check=False)
+        for row in plan():
+            if mid(row[0], row[3]) in todo:
+                keep_rejected(row[0], row[3])
+        print("rolling %d line%s, %d take%s each" % (len(todo), "s" if len(todo) != 1 else "", takes, "s" if takes != 1 else ""), flush=True)
+        subprocess.run([sys.executable, os.path.join(os.path.dirname(__file__), "ludo.py"), "--takes", str(takes)] + todo, check=False)
+        rank_takes([(row[0], row[3], mid(row[0], row[3])) for row in plan() if mid(row[0], row[3]) in todo], wants)
         write_batch()
 
 

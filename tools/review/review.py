@@ -13,6 +13,7 @@ Commands:
     apply  <batch> [--dry-run]      copy accepted files to their targets, write rejected.json
     new    <batch> --title "..."    scaffold an empty batch
     sample [--force]                build the review/_sample demo batch
+    lessons [--write docs/PROMPTING.md]  what every review so far says about the prompts
 
 Standard library only. See tools/review/README.md.
 """
@@ -209,6 +210,96 @@ def companion_video(d: Path, item: dict) -> Path | None:
     return None
 
 
+## v1.11: takes. A generator may roll an item more than once. The extra takes sit beside its
+## file in a .takes/ folder: <stem>.t2.mp3, <stem>.t3.mp3 (more rolls of the same take) and
+## <stem>.r1.mp3, r2... (takes rejected in earlier rounds, higher is newer). A batch may also
+## list them itself as `takes`. Accepting one records it as the item's `pick`, and install,
+## "in game" and reconcile all use the pick.
+TAKE_TAG_RE = re.compile(r"^(t|r)(\d{1,3})$")
+MEDIA_EXTS = {e for e in CONTENT_TYPES if e != ".json"}
+
+
+def item_takes(d: Path, item: dict) -> list[dict]:
+    """The item's candidates, its own file first: [{file, label, path}] (path is None when missing).
+    A generator may add a word on each (meta.take_info: {file: "falls 3.1 st"}), shown on its chip."""
+    out = _item_takes(d, item)
+    meta = item.get("meta") if isinstance(item.get("meta"), dict) else {}
+    info = meta.get("take_info") if isinstance(meta.get("take_info"), dict) else {}
+    for t in out:
+        if isinstance(info.get(t["file"]), str) and info[t["file"]]:
+            t["label"] += " · " + info[t["file"]][:40]
+    return out
+
+
+def _item_takes(d: Path, item: dict) -> list[dict]:
+    main = item_path(d, item)
+    root = d.resolve()
+    out = [{"file": item.get("file"), "label": str(item.get("take_label") or "take 1"),
+            "path": main if main is not None and main.is_file() else None}]
+    listed = item.get("takes")
+    if isinstance(listed, list):
+        for i, t in enumerate(listed):
+            rel = t.get("file") if isinstance(t, dict) else t
+            tp = batch_file(d, rel)
+            if tp is None:
+                continue
+            label = (t.get("label") if isinstance(t, dict) else None) or f"take {i + 2}"
+            out.append({"file": tp.relative_to(root).as_posix(), "label": str(label), "path": tp})
+        return out
+    if main is None or not (main.parent / ".takes").is_dir():
+        return out
+    found = []
+    for tp in (main.parent / ".takes").iterdir():
+        if not tp.is_file() or tp.suffix.lower() not in MEDIA_EXTS:
+            continue
+        stem, _, tag = tp.stem.rpartition(".")
+        m = TAKE_TAG_RE.match(tag)
+        if stem == main.stem and m:
+            found.append((m.group(1), int(m.group(2)), tp))
+    found.sort(key=lambda x: (x[0] != "t", x[1] if x[0] == "t" else -x[1]))
+    for kind, n, tp in found:
+        out.append({"file": tp.relative_to(root).as_posix(),
+                    "label": f"take {n}" if kind == "t" else f"rejected in round {n}", "path": tp})
+    return out
+
+
+def picked_path(d: Path, item: dict, entry: dict | None) -> Path | None:
+    """The file the verdict is about: the picked take when one was accepted, else the item's own."""
+    pick = entry.get("pick") if isinstance(entry, dict) else None
+    if isinstance(pick, str) and pick and pick != item.get("file"):
+        for t in item_takes(d, item)[1:]:
+            if t["file"] == pick and t["path"] is not None:
+                return t["path"]
+    return item_path(d, item)
+
+
+## "what's in the game now": the file an item replaces, when a browser can show it
+GAME_EXTS = {".mp3", ".wav", ".ogg", ".m4a", ".png", ".webp", ".jpg", ".jpeg", ".gif", ".mp4", ".webm"}
+
+
+def game_path(item: dict) -> Path | None:
+    meta = item.get("meta") if isinstance(item.get("meta"), dict) else {}
+    cands = [item.get("target")]
+    for pr in meta.get("install") or []:
+        if isinstance(pr, (list, tuple)) and len(pr) == 2:
+            cands.append(pr[1])
+    for t in cands:
+        p = _repo_target(t) if isinstance(t, str) else None
+        if p is None or not p.is_file() or p.suffix.lower() not in GAME_EXTS:
+            continue
+        if any(part.startswith(".") for part in p.relative_to(REPO.resolve()).parts):
+            continue  # never serve dotfiles or dot folders from the repo
+        return p
+    return None
+
+
+def same_file(a: Path | None, b: Path | None) -> bool:
+    try:
+        return a is not None and b is not None and a.stat().st_size == b.stat().st_size and filecmp.cmp(a, b, shallow=False)
+    except OSError:
+        return False
+
+
 def media_url(name: str, d: Path, p: Path, st=None) -> str:
     st = st or p.stat()
     rel = p.relative_to(d.resolve()).as_posix()
@@ -217,7 +308,7 @@ def media_url(name: str, d: Path, p: Path, st=None) -> str:
 
 def merge_item(name: str, d: Path, item: dict, entry: dict | None) -> dict:
     """batch item + its verdict entry + computed status."""
-    p = item_path(d, item)
+    p = picked_path(d, item, entry)
     exists = p is not None and p.is_file()
     st = p.stat() if exists else None
     entry = entry if isinstance(entry, dict) else {}
@@ -255,8 +346,24 @@ def merge_item(name: str, d: Path, item: dict, entry: dict | None) -> dict:
         exists=exists,
         mtime=st.st_mtime if st else None,
         size=st.st_size if st else None,
-        url=(f"/media/{quote(name)}/{quote(item['file'])}?v={st.st_mtime:.3f}" if st else None),
+        url=(media_url(name, d, p, st) if st else None),
+        src=(p.relative_to(d.resolve()).as_posix() if p is not None else None),
+        pick=(entry.get("pick") if p is not None and p != item_path(d, item) else None),
     )
+    takes = item_takes(d, item)
+    if len(takes) > 1:
+        rows = []
+        for t in takes:
+            tst = t["path"].stat() if t["path"] is not None else None
+            rows.append({"file": t["file"], "label": t["label"], "exists": tst is not None,
+                         "url": media_url(name, d, t["path"], tst) if tst else None,
+                         "mtime": tst.st_mtime if tst else None, "size": tst.st_size if tst else None,
+                         "picked": t["path"] is not None and t["path"] == p})
+        out["takes"] = rows
+    gp = game_path(item)
+    if gp is not None:
+        out["game_url"] = f"/game/{quote(name)}/{quote(item['id'])}?v={gp.stat().st_mtime:.3f}"
+        out["game_same"] = same_file(p if exists else None, gp)
     poster = batch_file(d, item.get("poster"))
     if poster is not None:
         out["poster_url"] = media_url(name, d, poster)
@@ -288,7 +395,168 @@ def summarize(items: list[dict]) -> dict:
     return c
 
 
-def decide(name: str, item_id: str, verdict=None, note=None, text=None) -> dict:
+## v1.11: lessons. Every note a reviewer writes is a lesson about the prompts. They are sorted into
+## themes (a note can have several), and the generators read the same themes to steer a re-roll.
+NOTE_THEMES = [
+    # (theme, what it asks for, pattern, kinds it applies to: None = any)
+    ("pause", "More pause between sentences", r"\bpause|spacing|space between|\bgaps?\b", ("audio",)),
+    ("fall", "Falling (downward) inflection", r"downward|inflect|cadence|descend|trail(s|ing)? down|end(s)? on", ("audio",)),
+    ("pitch", "Pitch too high", r"high[- ]?pitch|too high|pitched", ("audio",)),
+    ("feeling", "More feeling (menace, anger, smugness, conviction...)",
+     r"menac|anger|angry|smug|salty|annoy|conviction|stoic|satisf|confident|smarmy|furious|monotone|emotion|"
+     r"shout|under (his|her) breath|finality|gloat|sneer|sarcas", ("audio",)),
+    ("stress", "Stress a word", r"emphas|stress|\*\w+\*|\b[a-z]*[A-Z]{3,}[a-z]*\b", ("audio",)),
+    ("pace", "Pacing or delivery", r"\bpacing|\bfaster|\bslower|\bspeed|\bdelivery|\brushed|\bdrag", ("audio",)),
+    ("clipped", "Cut off at the end", r"cut off|cuts off|cutting off|cut out|clipped|truncat|blips", ("audio",)),
+    ("wrong_voice", "Doesn't sound like the character", r"voice\b.*\b(isn'?t|not)\b|isn'?t \w+'s voice|wrong voice|sounds like a", ("audio",)),
+    ("framing", "Cropped or out of frame", r"cut(s|ting)? (out|off)|cropp|out of frame|edges|sides|top of", ("image", "video")),
+    ("artifacts", "Artifacts, noise or invented objects", r"noise|artifact|invent|glitch|garbl|smear|melt|extra \w+|should not be there", None),
+    ("motion", "Motion snaps or jumps", r"snap|flip|jump|swirl|180|instant|pop(s|ping)?\b|one frame", ("image", "video")),
+    ("acting", "Expression or acting", r"smile|glassy|stare|staring|expression|acknowledg|warmly|knowing|eyes", ("image", "video")),
+    ("staging", "Staging: what the scene shows", r"flag|trampl|prisoner|already|march(ed|ing)?\b|scene|background", ("image", "video")),
+    ("detail", "Hard to read the details", r"hard to read|detail|blurr|muddy|resolution", ("image", "video")),
+    ("period", "Period or melody (music)", r"melod|fife|lyrics|instrument|tune|period|era\b", None),
+    ("redo", "Just roll again", r"^\s*(redo|re-?do|try again|again)[.!]?\s*$", None),
+    ("praise", "Praise", r"perfect|\bgreat\b|\blove\b|excellent|holy shit|nailed", None),
+]
+_THEME_RE = [(t, lbl, re.compile(pat, re.I if t != "stress" else 0), kinds) for t, lbl, pat, kinds in NOTE_THEMES]
+
+
+def note_themes(note: str, kind: str = "audio") -> list[str]:
+    """The themes a note touches, for an item of this kind (audio, image or video)."""
+    if not isinstance(note, str) or not note.strip():
+        return []
+    out = []
+    for t, _, rx, kinds in _THEME_RE:
+        if kinds is not None and kind not in kinds:
+            continue
+        if t == "stress" and re.search(r"emphas|stress", note, re.I):
+            out.append(t)
+            continue
+        if rx.search(note):
+            out.append(t)
+    return out
+
+
+def _item_notes(entry: dict) -> list[str]:
+    notes = [h.get("note") for h in entry.get("history") or [] if isinstance(h, dict) and h.get("note")]
+    if entry.get("note"):
+        notes.append(entry["note"])
+    seen, out = set(), []
+    for n in notes:
+        if n.strip().lower() not in seen:
+            seen.add(n.strip().lower())
+            out.append(n.strip())
+    return out
+
+
+def lessons() -> dict:
+    """Every batch's verdicts and notes, summed up: how often a first take is kept, by kind and by
+    group (a voice), and what the notes ask for, by theme, with examples."""
+    kinds: dict = {}
+    groups: dict = {}
+    themes = {t: {"theme": t, "label": lbl, "notes": 0, "fixed": 0, "open": 0, "kinds": {}, "examples": []}
+              for t, lbl, _, _ in NOTE_THEMES}
+    batches = 0
+    for name in list_batch_names():
+        try:
+            d, data = load_batch(name)
+            entries = load_review(d)["items"]
+        except ReviewError:
+            continue
+        if name.startswith("_") or name.endswith("_lab") or data.get("lab"):
+            continue  # the demo batch, and experiments (a lab's verdicts say which variant won, not which take)
+        batches += 1
+        for item in data.get("items", []):
+            e = entries.get(item.get("id"))
+            if not isinstance(e, dict):
+                continue
+            kind = item_kind(item)
+            v = e.get("verdict", "pending")
+            if v not in ("accept", "reject"):
+                continue
+            was_rejected = any(isinstance(h, dict) and h.get("verdict") == "reject" for h in e.get("history") or [])
+            rounds = 1 + sum(1 for h in e.get("history") or [] if isinstance(h, dict) and h.get("verdict") == "reject")
+            for bucket, key in ((kinds, kind), (groups, f"{kind}:{item.get('group') or '-'}")):
+                b = bucket.setdefault(key, {"decided": 0, "first_take": 0, "redone": 0, "open": 0, "rounds": 0})
+                b["decided"] += 1
+                if v == "accept":
+                    b["redone" if was_rejected else "first_take"] += 1
+                    b["rounds"] += rounds
+                else:
+                    b["open"] += 1
+            for note in _item_notes(e):
+                for t in note_themes(note, kind):
+                    th = themes[t]
+                    th["notes"] += 1
+                    th["kinds"][kind] = th["kinds"].get(kind, 0) + 1
+                    if t == "praise":
+                        pass  # nothing to fix
+                    elif v == "accept" and (was_rejected or e.get("note") != note):
+                        th["fixed"] += 1
+                    elif v == "reject":
+                        th["open"] += 1
+                    if len(th["examples"]) < 5:
+                        th["examples"].append({"batch": name, "id": item.get("id"), "group": item.get("group") or "",
+                                               "note": note, "status": v})
+    for bucket in (kinds, groups):
+        for b in bucket.values():
+            acc = b["first_take"] + b["redone"]
+            b["first_take_rate"] = round(b["first_take"] / b["decided"], 3) if b["decided"] else None
+            b["mean_rounds"] = round(b["rounds"] / acc, 2) if acc else None
+    ranked = sorted((t for t in themes.values() if t["notes"]), key=lambda t: -t["notes"])
+    return {"batches": batches, "kinds": kinds, "groups": groups, "themes": ranked,
+            "generated": datetime.now().isoformat(timespec="seconds")}
+
+
+LESSONS_BEGIN, LESSONS_END = "<!-- lessons:begin -->", "<!-- lessons:end -->"
+
+
+def lessons_markdown(ls: dict) -> str:
+    pct = lambda x: "–" if x is None else f"{round(x * 100)}%"
+    rows = ["| kind | decided | kept first take | redone, then kept | still rejected | rounds to keep |",
+            "|---|---|---|---|---|---|"]
+    for k, b in sorted(ls["kinds"].items(), key=lambda kv: -kv[1]["decided"]):
+        rows.append(f"| {k} | {b['decided']} | {b['first_take']} ({pct(b['first_take_rate'])}) | {b['redone']} | {b['open']} | {b['mean_rounds'] or '–'} |")
+    voices = [(g.split(":", 1)[1], b) for g, b in ls["groups"].items() if g.startswith("audio:") and b["decided"] >= 8]
+    vrow = ", ".join(f"{g} {pct(b['first_take_rate'])}" for g, b in sorted(voices, key=lambda x: x[1]["first_take_rate"] or 0))
+    th = ["| theme | notes | fixed by a redo | still open | e.g. |", "|---|---|---|---|---|"]
+    for t in ls["themes"]:
+        ex = t["examples"][0]["note"] if t["examples"] else ""
+        ex = (ex[:90] + "…") if len(ex) > 90 else ex
+        th.append(f"| {t['label']} | {t['notes']} | {t['fixed']} | {t['open']} | “{ex.replace('|', '/')}” |")
+    return "\n".join([LESSONS_BEGIN,
+                      f"_Generated by `python3 tools/review/review.py lessons --write docs/PROMPTING.md` from "
+                      f"{ls['batches']} review batches ({ls['generated'][:10]}). Don't edit by hand._", "",
+                      *rows, "", f"First takes kept, by voice (8+ decided): {vrow or '–'}.", "", *th, LESSONS_END])
+
+
+def cmd_lessons(args) -> int:
+    ls = lessons()
+    if args.json:
+        print(json.dumps(ls, indent=1))
+        return 0
+    md = lessons_markdown(ls)
+    if args.write:
+        path = Path(args.write)
+        text = path.read_text(encoding="utf-8") if path.exists() else ""
+        if LESSONS_BEGIN in text and LESSONS_END in text:
+            head, _, rest = text.partition(LESSONS_BEGIN)
+            _, _, tail = rest.partition(LESSONS_END)
+            text = head + md + tail
+        else:
+            text = text.rstrip() + "\n\n" + md + "\n"
+        path.write_text(text, encoding="utf-8")
+        print(f"wrote the lessons block in {path}")
+    else:
+        print(md)
+    return 0
+
+
+def decide(name: str, item_id: str, verdict=None, note=None, text=None, take=None) -> dict:
+    """A verdict, note or edit on an item. `take` (with accept) picks one of its takes."""
+    if take is not None and not isinstance(take, str):
+        raise ReviewError("take must be a file name")
     if verdict is not None and verdict not in VERDICTS:
         raise ReviewError(f"verdict must be one of {', '.join(VERDICTS)}")
     if note is not None and not isinstance(note, str):
@@ -306,8 +574,12 @@ def decide(name: str, item_id: str, verdict=None, note=None, text=None) -> dict:
         entry = dict(old)
         before = merge_item(name, d, item, old)
         p = item_path(d, item)
+        if verdict == "accept" and take and take != item.get("file"):
+            p = next((t["path"] for t in item_takes(d, item)[1:] if t["file"] == take), None)
+            if p is None:
+                raise ReviewError(f"{item_id} has no take {take!r}", 404)
         if verdict is not None:
-            if verdict == "accept" and not before["exists"]:
+            if verdict == "accept" and not (p is not None and p.is_file()):
                 raise ReviewError("the file is missing; can't accept it", 409)
             if before["regenerated"]:
                 # the file changed since this verdict: keep the old call as history
@@ -316,7 +588,11 @@ def decide(name: str, item_id: str, verdict=None, note=None, text=None) -> dict:
                 entry["note"] = ""
             entry["verdict"] = verdict
             entry["at"] = datetime.now().isoformat(timespec="seconds")
-            entry["file_mtime"] = p.stat().st_mtime if before["exists"] else None
+            entry["file_mtime"] = p.stat().st_mtime if p is not None and p.is_file() else None
+            if verdict == "accept" and p is not None and p != item_path(d, item):
+                entry["pick"] = p.relative_to(d.resolve()).as_posix()
+            else:
+                entry.pop("pick", None)  # the item's own file, or no take chosen at all
         if note is not None:
             entry["note"] = note.strip()
         if text is not None:
@@ -726,9 +1002,10 @@ def mark_installed(name: str, snapshot: dict) -> int:
     return n
 
 
-def _install_pairs(d: Path, item: dict) -> list[tuple[Path, Path]]:
+def _install_pairs(d: Path, item: dict, src: str | None = None) -> list[tuple[Path, Path]]:
     """(batch file, game file) pairs an accepted item installs: meta.install when the generator
-    lists them (a sheet and its json, a converted video), else the item's own file → target."""
+    lists them (a sheet and its json, a converted video), else the picked take (`src`, batch
+    relative; the item's own file when none) → target."""
     meta = item.get("meta") if isinstance(item.get("meta"), dict) else {}
     pairs = meta.get("install")
     out = []
@@ -737,7 +1014,7 @@ def _install_pairs(d: Path, item: dict) -> list[tuple[Path, Path]]:
             if isinstance(pr, (list, tuple)) and len(pr) == 2:
                 out.append((d / str(pr[0]), REPO / str(pr[1])))
     elif item.get("target"):
-        out.append((d / str(item["file"]), REPO / str(item["target"])))
+        out.append((d / str(src or item["file"]), REPO / str(item["target"])))
     return out
 
 
@@ -756,7 +1033,7 @@ def reconcile(name: str) -> int:
             m = merge_item(name, d, item, e)
             if m["status"] != "accept" or m["installed"] or m["mtime"] is None:
                 continue
-            pairs = _install_pairs(d, item)
+            pairs = _install_pairs(d, item, m.get("src"))
             if pairs and all(a.is_file() and b.is_file() and filecmp.cmp(a, b, shallow=False) for a, b in pairs):
                 e["installed"] = {"at": time.strftime("%Y-%m-%dT%H:%M:%S"), "file_mtime": m["mtime"], "found": True}
                 n += 1
@@ -969,6 +1246,16 @@ class Handler(BaseHTTPRequestHandler):
         if path.startswith("/api/batch/"):
             name = unquote(path[len("/api/batch/"):]).strip("/")
             return self._json(200, merged_batch(name), head)
+        if path == "/api/lessons":
+            return self._json(200, lessons(), head)
+        if path.startswith("/game/"):
+            name, _, iid = path[len("/game/"):].partition("/")
+            _, data = load_batch(unquote(name))
+            item = next((it for it in data["items"] if it.get("id") == unquote(iid)), None)
+            gp = game_path(item) if item else None
+            if gp is None:
+                return self._error(404, "nothing in the game for that item", head)
+            return self._send_file(gp, head)
         if path.startswith("/media/"):
             rest = path[len("/media/"):]
             name, _, rel = rest.partition("/")
@@ -1039,9 +1326,10 @@ class Handler(BaseHTTPRequestHandler):
             run = start_run(body["batch"], body["action"], body.get("options"))
             return self._json(200, {"ok": True, "run": run.info()})
         if not body.get("batch") or not body.get("id"):
-            return self._error(400, "need {batch, id, verdict?, note?, text?}")
+            return self._error(400, "need {batch, id, verdict?, note?, text?, take?}")
         item = decide(str(body["batch"]), str(body["id"]),
-                      verdict=body.get("verdict"), note=body.get("note"), text=body.get("text"))
+                      verdict=body.get("verdict"), note=body.get("note"), text=body.get("text"),
+                      take=body.get("take"))
         return self._json(200, {"ok": True, "item": item})
 
 
@@ -1153,7 +1441,7 @@ def cmd_apply(args) -> int:
             continue
         if it["status"] != "accept":
             continue
-        src = item_path(d, it)
+        src = (d / it["src"]).resolve() if it.get("src") else item_path(d, it)
         dest = _repo_target(it.get("target"))
         if dest is None:
             warnings.append(f"{it['id']}: target {it.get('target')!r} is missing or outside the repo — skipped")
@@ -1376,6 +1664,10 @@ def main(argv=None) -> int:
     p = sub.add_parser("reconcile", help="mark accepted takes whose installed copies already match as in the game")
     p.add_argument("batch", nargs="?")
     p.set_defaults(fn=lambda a: (print("\n".join(f"{nm}: {reconcile(nm)} marked in game" for nm in ([a.batch] if a.batch else list_batch_names()))) or 0))
+    p = sub.add_parser("lessons", help="what every review so far says about the prompts")
+    p.add_argument("--write", metavar="MD", help="replace the lessons block in this markdown file (docs/PROMPTING.md)")
+    p.add_argument("--json", action="store_true")
+    p.set_defaults(fn=cmd_lessons)
     p = sub.add_parser("new", help="scaffold an empty batch")
     p.add_argument("batch")
     p.add_argument("--title", default="")

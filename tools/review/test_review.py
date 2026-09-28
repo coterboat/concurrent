@@ -490,8 +490,114 @@ class ServerTests(unittest.TestCase):
         self.assertEqual((st, h["Content-Length"], body), (206, "100", b""))
 
 
+class TakesTests(unittest.TestCase):
+    """v1.11: several takes of an item, the pick, what the game has now, and the lessons."""
+
+    @classmethod
+    def setUpClass(cls):
+        R.ensure_review_root()
+        cls.name = TAG + "_takes"
+        out = f"review/{cls.name}/out"
+        cls.files = {"a/line.mp3": b"MAIN" * 50, "a/.takes/line.t2.mp3": b"TWO!" * 50, "a/.takes/line.t3.mp3": b"THRE" * 50,
+                     "a/.takes/line.r1.mp3": b"OLD1" * 50, "a/.takes/line.r2.mp3": b"OLD2" * 50,
+                     "a/.takes/other.t2.mp3": b"NOPE" * 50, "a/solo.mp3": b"SOLO" * 50,
+                     "out/solo.mp3": b"GAME" * 50, "out/secret.json": b"{}", "out/.hidden.mp3": b"HIDE"}
+        make_batch(cls.name, {"title": "takes", "items": [
+            {"id": "line", "kind": "audio", "file": "a/line.mp3", "target": f"{out}/line.mp3", "group": "varek"},
+            {"id": "solo", "kind": "audio", "file": "a/solo.mp3", "target": f"{out}/solo.mp3", "group": "varek"},
+            {"id": "json", "kind": "audio", "file": "a/solo.mp3", "target": f"{out}/secret.json"},
+            {"id": "dot", "kind": "audio", "file": "a/solo.mp3", "target": f"{out}/.hidden.mp3"},
+        ]}, cls.files)
+        cls.httpd = R.Server(("127.0.0.1", 0), R.Handler)
+        cls.base = f"http://127.0.0.1:{cls.httpd.server_address[1]}"
+        threading.Thread(target=cls.httpd.serve_forever, daemon=True).start()
+
+    @classmethod
+    def tearDownClass(cls):
+        cls.httpd.shutdown()
+        cls.httpd.server_close()
+        shutil.rmtree(R.REVIEW / cls.name, ignore_errors=True)
+
+    def item(self, iid):
+        return {it["id"]: it for it in R.merged_batch(self.name)["items"]}[iid]
+
+    def get(self, path):
+        try:
+            with urllib.request.urlopen(self.base + path, timeout=10) as r:
+                return r.status, r.read()
+        except urllib.error.HTTPError as e:
+            with e:
+                return e.code, e.read()
+
+    def test_takes_found_beside_the_file(self):
+        it = self.item("line")
+        self.assertEqual([t["file"] for t in it["takes"]],
+                         ["a/line.mp3", "a/.takes/line.t2.mp3", "a/.takes/line.t3.mp3", "a/.takes/line.r2.mp3", "a/.takes/line.r1.mp3"])
+        self.assertEqual([t["label"] for t in it["takes"]][:3], ["take 1", "take 2", "take 3"])
+        self.assertTrue(it["takes"][3]["label"].startswith("rejected"))
+        self.assertTrue(it["takes"][0]["picked"], "nothing picked yet: the item's own file")
+        self.assertNotIn("takes", self.item("solo"), "one file, no takes strip")
+
+    def test_accepting_a_take_picks_it_and_install_uses_it(self):
+        R.decide(self.name, "line", verdict="accept", take="a/.takes/line.t3.mp3")
+        it = self.item("line")
+        self.assertEqual((it["status"], it["pick"], it["src"]), ("accept", "a/.takes/line.t3.mp3", "a/.takes/line.t3.mp3"))
+        self.assertIn(".takes/line.t3.mp3", it["url"])
+        self.assertEqual([t["picked"] for t in it["takes"]], [False, False, True, False, False])
+        with self.assertRaises(R.ReviewError):
+            R.decide(self.name, "line", verdict="accept", take="a/.takes/other.t2.mp3")
+        R.cmd_apply(type("A", (), {"batch": self.name, "dry_run": False})())
+        game = R.REVIEW / self.name / "out" / "line.mp3"
+        self.assertEqual(game.read_bytes(), self.files["a/.takes/line.t3.mp3"], "install copies the pick")
+        self.assertEqual(R.reconcile(self.name), 1)
+        self.assertTrue(self.item("line")["installed"])
+        self.assertTrue(self.item("line")["game_same"])
+        ## rejecting drops the pick: a redo re-rolls the line
+        R.decide(self.name, "line", verdict="reject")
+        it = self.item("line")
+        self.assertIsNone(it["pick"])
+        self.assertEqual(it["src"], "a/line.mp3")
+        R.decide(self.name, "line", verdict="accept")
+        self.assertIsNone(self.item("line")["pick"], "accepting take 1 records no pick")
+
+    def test_the_game_copy_is_served_only_for_media(self):
+        it = self.item("solo")
+        self.assertTrue(it["game_url"].startswith(f"/game/{self.name}/solo?v="))
+        self.assertFalse(it["game_same"])
+        st, body = self.get(f"/game/{self.name}/solo")
+        self.assertEqual((st, body), (200, self.files["out/solo.mp3"]))
+        for iid in ("json", "dot"):
+            with self.subTest(iid=iid):
+                self.assertNotIn("game_url", self.item(iid))
+                self.assertEqual(self.get(f"/game/{self.name}/{iid}")[0], 404)
+        self.assertEqual(self.get(f"/game/{self.name}/nosuch")[0], 404)
+
+    def test_note_themes_and_lessons(self):
+        cases = {
+            "More pause between the sentences": {"pause"},
+            "Inflection is wrong - should be downwards. *always* should be emphasized": {"fall", "stress"},
+            "Needs more pause/spacing between the sentences.": {"pause"},
+            "make it sound like she's a smug asshole": {"feeling"},
+            "Redo": {"redo"},
+            "Last few blips of 'regiments' is cut off": {"clipped"},
+        }
+        for note, want in cases.items():
+            with self.subTest(note=note):
+                self.assertEqual(set(R.note_themes(note, "audio")), want)
+        self.assertEqual(R.note_themes("Cuts out the sides", "image"), ["framing"])
+        R.decide(self.name, "solo", verdict="reject", note="More pause between sentences")
+        ls = R.lessons()
+        pause = next(t for t in ls["themes"] if t["theme"] == "pause")
+        self.assertGreaterEqual(pause["notes"], 1)
+        self.assertGreaterEqual(ls["kinds"]["audio"]["open"], 1)
+        md = R.lessons_markdown(ls)
+        self.assertTrue(md.startswith(R.LESSONS_BEGIN) and md.endswith(R.LESSONS_END))
+        R.decide(self.name, "solo", verdict="pending", note="")
+
+
 if __name__ == "__main__":
     try:
         unittest.main(verbosity=2)
     finally:
         shutil.rmtree(R.REVIEW / TAG, ignore_errors=True)
+        shutil.rmtree(R.REVIEW / (TAG + "_takes"), ignore_errors=True)

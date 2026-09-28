@@ -4,8 +4,9 @@ A Napoleonic simultaneous-orders conquest game (Risk-like, everyone moves at onc
 Godot 4.5.1 / GDScript, made to be good enough for everyone to play (it began as a game
 for the owner and their dad). Art, audio and voices come from Ludo.ai. This file holds the
 rules of the road for working in the repo. `README.md` covers how to play,
-`docs/CHANGELOG.md` has every rule change and the evidence behind it, and
-`docs/ASSETS.md` covers the asset pipeline.
+`docs/CHANGELOG.md` has every rule change and the evidence behind it, `docs/ASSETS.md`
+covers the asset pipeline, `docs/PROMPTING.md` covers how we prompt for assets (and what the
+reviews taught us), and `PLAYTEST.md` is the testers' brief.
 
 ## The owner's standing instructions
 
@@ -31,9 +32,12 @@ rules of the road for working in the repo. `README.md` covers how to play,
 | Compile every script (seconds) | `$G --headless --path . --script res://tools/compile_check.gd` |
 | Full test suite | `./scripts/test.sh` → ends `CONCURRENT ok passed=N failed=0` (a few minutes) |
 | One test file | `$G --headless --path . --script res://tools/test_one.gd -- tests/test_v110.gd` |
-| Screenshot probes (windowed) | `SHOT_DIR=/some/dir ./scripts/shot.sh v18` (`calls`, `v13`…`v18`, `dice`, `input`) |
+| Screenshot probes (windowed) | `SHOT_DIR=/some/dir ./scripts/shot.sh v18` (`calls`, `input`, `dice`, `v13`…`v19`, `v110`, `v111`) |
 | AI arena (balance) | `$G --headless --path . --script res://tools/arena.gd -- map=known24 n=40 seats=general,veteran,recruit,hask deal=draft levee=3` |
 | Review table | `python3 tools/review/review.py serve --open` (port 8765) |
+| What the reviews taught us | `python3 tools/review/review.py lessons` (`W` in the table) |
+| Tool tests | `python3 tools/review/test_review.py && python3 tools/ludo/test_notes.py` |
+| Repo size | `./scripts/repo_size.sh` (plain git, no LFS: see `docs/ASSETS.md`, "Storage") |
 | Generate assets | `python3 tools/ludo/ludo.py <ids>` or a `tools/ludo/vNN_content.py` script |
 
 Arena switches: `rules=`, `deal=draft|random`, `levee=`, `capitals=0|1`, `fortune=0|1`,
@@ -47,6 +51,13 @@ points as noise.
 - A **playtest bot** (the owner's Grok agent) runs on every push to `main` and reports findings
   (e.g. "B1 … crash signal 11"). Treat its report as a bug list: reproduce, fix, and say which
   were fixed. It flags tooling bugs as well as game bugs.
+- **`PLAYTEST.md` is its brief:** how to get and run the whole game, what's by design, and per
+  version what changed and what to poke at (checklist step 7). Put there anything you want tested
+  on another machine. The arena's `fingerprint` line is a cross-machine determinism check.
+- **The owner's review notes are the other outside eyes.** `docs/PROMPTING.md` is the playbook
+  they built: read it before writing a line or a prompt. After a review round, run
+  `python3 tools/review/review.py lessons --write docs/PROMPTING.md` and fold any new pattern into
+  its rules.
 
 ## Gotchas that have bitten before
 
@@ -67,6 +78,15 @@ points as noise.
 - Probes run with films off (`tools/probe.gd` sets `motion = "paintings"`); `v19` turns them on.
 - `ready` is a member of every Control. Don't name a variable `ready` (a parse error that
   fails every script that preloads it).
+- **Media stays in plain git** so the playtest bot's clone is complete. Encode for size (Theora
+  `-q:v 5`, webp, mp3). When the history nears ~1 GB, raise the LFS migration with the owner
+  (`docs/ASSETS.md`, "Storage"). Don't start it without them.
+- **A firing or falling sheet needs its marks** (`shot`/`muzzle`, `down` in its json). A redo that
+  can't find them says "NO SHOT/FALL MARKS" in its review check. `v19_content.py --remark <name>`
+  re-reads them.
+- **Voice text carries direction.** `*stars*` and `...` in a line are for the voice; `Lines.text()`
+  strips the stars for subtitles. A note's direction goes in the manifest's `speak`, never into the
+  words.
 - Screens must fit **1440×900**: the setup screen (the Rules row replaced five rows for this)
   and the settings panel are near the limit. Screenshot-check after adding rows.
 
@@ -109,4 +129,7 @@ points as noise.
 5. Words: the How to Play page (`game/ui/howto_screen.gd`), `rules.gd` help, `README.md`,
    and a dated `docs/CHANGELOG.md` entry with the evidence.
 6. Voice lines, if a moment deserves one: add them to a `tools/ludo/vNN_content.py`, and
-   they reach the game through a review batch.
+   they reach the game through a review batch. Write them (and any prompt) by
+   `docs/PROMPTING.md`.
+7. After meaningful gameplay changes, update PLAYTEST.md with what changed and what to poke at,
+   or add a `playtest:` line to the commit message.

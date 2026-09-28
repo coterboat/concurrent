@@ -20,6 +20,11 @@ Ludo's capabilities and prices are in [LUDO_CAPABILITIES.md](LUDO_CAPABILITIES.m
      Godot.
    - **Redo rejected** regenerates the rejected takes. This spends credits, so it asks first.
      The new take lands on the same review file and comes back as "needs a listen".
+     Since v1.11 a redo reads the note: it becomes direction for a voice line and a rewritten
+     prompt for a picture or film (`tools/ludo/notes.py`, guided by
+     [PROMPTING.md](PROMPTING.md)). A voice redo rolls 3 takes into `.takes/` beside the file,
+     keeping the rejected one as `<name>.r<N>`; the table plays them side by side, and
+     accepting one records it as the item's **pick**, which install copies.
 
 Some releases also install straight into the game so the owner can judge an asset in
 place (video especially). The batch still lists each one, so a rejection sends it back
@@ -48,7 +53,13 @@ for another take. `git checkout` restores the previous version.
 
 ### Battle sprite sheets: `assets/battle/<name>.webp` + `.json`
 
-`{"cols", "rows", "fw", "fh", "frames", "ax", "ay", "fill", "order", "fps"?}`
+`{"cols", "rows", "fw", "fh", "frames", "ax", "ay", "fill", "order", "fps"?, "shot"?, "muzzle"?, "down"?}`
+
+- `shot`/`muzzle` (a firing sheet) and `down` (a fall) are read off the frames by
+  `v19_content.py` when it posts the sheet, and the battlefield times the flash and the fall to
+  them. A sheet whose marks can't be found says so in its review check ("NO SHOT/FALL MARKS"):
+  don't install it without them. `v19_content.py --remark <name>` re-reads them without touching
+  the sheet or its verdict.
 
 - `fw`/`fh` are the frame size.
 - `ax`/`ay` are the feet anchor, as a fraction of the frame.
@@ -130,3 +141,35 @@ been generated yet is simply skipped.
 
 - `tools/ludo/prep_sfx.py` trims and normalizes each one and registers it.
 - `Audio.has_sfx(name)` lets new code fall back to an older sound until the new one lands.
+
+## Storage: what goes in git (v1.11)
+
+Media is committed to plain git, not Git LFS. `./scripts/repo_size.sh` shows where it stands.
+On 27 Sep 2026: the history (a full clone) was 338 MB, the current files 267 MB, and old versions
+of assets only about 70 MB of it.
+
+Why not LFS yet:
+
+- **LFS doesn't make a clone smaller today.** It moves future versions of media out of git.
+  Switching now, without rewriting history, means a fresh clone downloads the 338 MB history
+  plus every current file again from LFS.
+- **LFS downloads are metered.** GitHub gives 10 GiB a month free. The playtest bot clones on
+  every push, 30–90 times a month at 270 MB or more each. Over the quota, LFS stops serving
+  files, and a clone gets 130-byte pointer files where the art should be.
+- **Half-adopting it is noisy.** Adding the LFS rules made 85 unchanged voice files show as
+  modified in a test clone.
+
+What keeps the size down instead:
+
+- Masters (`assets/raw/`) and review takes (`review/`) are gitignored. Only what the game uses
+  is committed.
+- Encode for size. Films are Theora at `-q:v 5` (the pipeline's setting since v1.11; a redo
+  used to write q7 at twice the size). Voices are mp3, and sheets and art are webp.
+- Look at a big asset before committing it: `./scripts/repo_size.sh` lists the largest.
+
+**When to switch:** when the history nears ~1 GB. Then it is one planned step that rewrites
+history: `git lfs migrate import --everything --include="*.png,*.webp,*.mp3,*.wav,*.ogv,*.glb"`,
+a force-push, re-clones everywhere, the bot set up with `git lfs install` and a persistent
+clone, and a pointer check in the probes. That needs the owner's go-ahead. `git-lfs` is already
+installed on the dev Mac (Homebrew).
+

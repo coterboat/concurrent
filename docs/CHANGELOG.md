@@ -2,6 +2,88 @@
 
 The bible says amendments come with a dated entry and the test or band that justified them. Everything below has both.
 
+## v1.11 — 27 Sep 2026: the review table learns
+
+No rule changes: games still play **rules 19**, and every save replays as before. This version is
+about how the game gets made, plus two fixes that came from it.
+
+### Notes that reach the next take
+
+The owner: "what are we doing to improve generation prompting over time?" Until now the honest
+answer was nothing systematic. A redo re-rolled the same text and ignored the note, and v1.8's
+redos were right as often as they were thanks to a fresh roll plus the owner's own word edits.
+Now:
+
+- **A redo reads the note** (`tools/ludo/notes.py`).
+  - **A voice line** keeps its words, which are the subtitle. The note becomes direction in what
+    the voice is asked to say (the manifest's `speak`, shown in the table as *spoken as*).
+  - **A picture, animation or film** gets its prompt rewritten, unless the owner edited the prompt
+    themselves.
+  - Claude writes both (`claude -p`, one call per redo, no tools) when the `claude` command is
+    installed. A rewrite that changes a line's words is refused, and the plain rules apply instead.
+- **Three takes per voice redo** (`ludo.py --takes N`, about 1 credit each), with the rejected take
+  kept beside them. In the table, `←`/`→` or `1`–`9` move between takes, `A` keeps the one you're
+  on (recorded as the item's `pick`; install, "In game" and reconcile use it), and `0` plays what
+  the game has now.
+- **Note chips.** The note box offers the notes written most often, in fixed wording, so they sort
+  into themes.
+- **Lessons** (`W`, `review.py lessons`) sums up every batch: first takes kept by kind and by voice,
+  and what the notes ask for. From 10 batches: voices keep 68% of first takes (Quill 40%, Varek
+  50%, the advisor 87%), pictures 79%, films 78%. The notes ask most for more feeling (18), more
+  pause between sentences (13) and a falling end (12).
+- **`docs/PROMPTING.md`**, the playbook: the loop, the voice rules, the cast, rules for pictures and
+  film drawn from the notes, costs, and the lessons block. The redo hands its sections to Claude.
+
+### The speech lab
+
+The cloned-voice endpoint takes only text and a sample, so the text is the only lever. What does
+it respond to? A measured test: 228 clips of four voices (228 credits; `tools/ludo/lab_speech.py`,
+batch `v111_lab`):
+
+- **Pause:** only an ellipsis works, `A... B.`: +0.10 s between sentences, longer in 75% of pairs.
+  Dashes and blank lines do nothing. `<break>` tags and `[pause]` are **read aloud**.
+- **A falling end can't be written.** The endings `.`, `...` and `!` differ by less than a third of
+  what two takes of the same text do, and `!` and `...` raise the whole line.
+- **Stars and CAPITALS** barely change a stressed word.
+- **Cloning from an emotional take** made endings rise.
+
+So a voice redo now **measures its takes** (`tools/ludo/voice_measure.py`, stdlib, about 0.3 s a
+clip). When the note asked for a falling end, more pause or a lower voice, the best-measured take
+becomes take 1, and each take's chip in the table says what was measured ("falls 3.1 st, pause
+0.49 s"). The rules are in `docs/PROMPTING.md`, which is also what Claude reads when it writes a
+redo's direction.
+
+### Fixes found on the way
+
+- **The redone volley sheets had lost their shot marks.** When the owner redid the standing and
+  kneeling volleys, the new moves began already aiming. The mark finder wanted a shouldered start,
+  found nothing (`marks {}` in the run log), and the install went ahead without them, so the flash
+  fell back to default timing. The finder now looks for the aim hold wherever it starts: the shot is
+  the last frame before the recoil (frame 7 standing, 11 kneeling). A sheet with no marks now says
+  "NO SHOT/FALL MARKS" in its review check, and `v19_content.py --remark` re-reads them without
+  touching the verdict. `tests/test_v111.gd` checks every firing sheet's marks, and the `v111`
+  probe shows the smoke leaving the muzzle.
+- **Speech bubbles showed `*stars*`.** Fifteen lines mark a stressed word for the voice, and the
+  bubble printed the stars. `Lines.text()` now strips them (`Lines.subtitle`).
+- **A redone film came back twice the size.** The pipeline encoded Theora at q7, while v1.10's
+  re-encode used q5. The pipeline now uses q5, and the eliminated film went from 7.7 to 4.6 MB.
+
+### Storage, and the playtest bot
+
+- **No Git LFS, for now** (`docs/ASSETS.md`, "Storage"). The packed history is 338 MB. The game as
+  it stands is 267 MB, and old versions of assets add only about 70 MB. LFS would make a fresh
+  clone download both. It would also meter the bot's clones (10 GiB a month free, at 30–90 pushes
+  a month), and serve pointer files once over quota. In a test clone, adding the LFS rules made
+  85 unchanged files show as modified. Plain git keeps every clone complete. `scripts/repo_size.sh`
+  watches the size; the switch comes when the history nears ~1 GB, with the owner.
+- **`PLAYTEST.md`** is the testers' brief: getting and running the whole game, what is by design,
+  and per version what changed and what to poke at. CLAUDE.md's feature checklist gained step 7
+  (update it after meaningful gameplay changes, or add a `playtest:` line to the commit).
+- **`arena.gd` prints a `fingerprint`**: a hash of every war's winner, length and final scores.
+  It should match on any machine, since saves are shared between players. The Mac's values are in
+  PLAYTEST.md.
+- The tracked `__pycache__` files are gone (and ignored).
+
 ## v1.10 — 27 Sep 2026: Fortune in every fight, the second wave, and nobody cut off
 
 New games play **rules 19**. v1.9 saves (rules 18) and older replay exactly as they were

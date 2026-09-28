@@ -236,6 +236,35 @@ main { display: flex; flex-direction: column; min-width: 0; height: 100vh; }
 .hist { margin-top: 6px; font: italic 12.5px/1.35 var(--serif); color: var(--ink-3); display: flex; gap: 8px; }
 .hist b { font-style: normal; color: var(--brass); }
 
+/* v1.11: takes, what the game has now, what the voice was asked to say, note chips, lessons */
+.speak { font: 12.5px/1.4 var(--mono); color: var(--ink-3); margin: 2px 0 0; overflow-wrap: anywhere; }
+.speak b { font: 700 10.5px var(--sans); letter-spacing: .14em; text-transform: uppercase; margin-right: 8px; color: #6f6857; }
+.takes { display: flex; flex-wrap: wrap; align-items: center; gap: 6px; margin-top: 8px; }
+.takes .tl { font: 700 10.5px var(--sans); letter-spacing: .14em; text-transform: uppercase; color: #6f6857; margin-right: 2px; }
+.tk { display: inline-flex; align-items: center; gap: 6px; height: 26px; padding: 0 10px; border-radius: 7px;
+  border: 1px solid var(--line-hi); background: var(--panel); color: var(--ink-2); font-size: 12px; }
+.tk kbd { margin-left: 0; opacity: .7; }
+.tk:disabled { opacity: .4; }
+.tk.on { border-color: var(--brass); color: var(--ink); box-shadow: 0 0 0 2px var(--brass-glow); }
+.tk.pk::after { content: "\2713"; color: var(--green-ink); font-weight: 700; }
+.tk.old { color: var(--red-ink); border-style: dashed; }
+.tk.game { border-color: var(--brass-2); color: var(--brass); }
+.tk.playing { background: rgba(217, 178, 95, .22); }
+.chips { display: flex; flex-wrap: wrap; gap: 5px; margin: 6px 0 2px; }
+.chip-n { border: 1px solid var(--line-hi); background: var(--panel); color: var(--ink-2); border-radius: 999px; padding: 2px 10px; font-size: 11.5px; }
+.chip-n:hover { border-color: var(--brass-2); color: var(--ink); }
+.lessons-panel { width: min(900px, 94vw); max-height: 90vh; overflow-y: auto; padding: 24px 26px 18px; }
+.lessons-panel h2 { margin: 0; font: 400 26px/1.15 var(--serif); }
+.lessons-panel h3 { margin: 18px 0 6px; font: 700 11px var(--sans); letter-spacing: .16em; text-transform: uppercase; color: var(--brass); }
+.ls-t { width: 100%; border-collapse: collapse; font-size: 13px; }
+.ls-t th { text-align: left; font: 700 10.5px var(--sans); letter-spacing: .12em; text-transform: uppercase; color: var(--ink-3); padding: 4px 8px; border-bottom: 1px solid var(--line-hi); }
+.ls-t td { padding: 6px 8px; border-bottom: 1px solid var(--line); vertical-align: top; }
+.ls-t td.n { font: 12.5px var(--mono); color: var(--ink-2); white-space: nowrap; }
+.ls-bar { display: inline-block; width: 90px; height: 7px; border-radius: 4px; background: var(--bg-deep); border: 1px solid var(--line); vertical-align: middle; margin-right: 8px; overflow: hidden; }
+.ls-bar i { display: block; height: 100%; background: linear-gradient(90deg, var(--brass-2), var(--brass)); }
+.ls-ex { color: var(--ink-3); font: italic 12.5px/1.4 var(--serif); }
+.ls-ex span { display: block; }
+
 .edit-in, .note-in {
   width: 100%; margin: 6px 0 2px; background: var(--bg-deep); color: var(--ink);
   border: 1px solid var(--brass-2); border-radius: 8px; padding: 9px 11px; outline: none;
@@ -565,6 +594,7 @@ main { display: flex; flex-direction: column; min-width: 0; height: 100vh; }
       <div class="spacer"></div>
       <button class="auto-chip" id="autoChip" title="Autoplay next (P)"><span>Autoplay</span><b id="autoChipSt">ON</b></button>
       <button class="auto-chip" id="loopChip" title="Loop videos (L)"><span>Loop video</span><b id="loopChipSt">OFF</b></button>
+      <button class="btn" id="lessonsBtn" title="What every review so far says about the prompts (W)">&#x270E; Lessons</button>
       <button class="btn" id="rescan" title="Re-read batch.json and pick up regenerated files">&#x21bb; Rescan</button>
     </header>
     <div class="actbar" id="actbar">
@@ -600,6 +630,7 @@ main { display: flex; flex-direction: column; min-width: 0; height: 100vh; }
       <span><kbd>U</kbd>back to pending</span>
       <span><kbd>J</kbd><kbd>K</kbd>next / prev</span>
       <span><kbd>P</kbd>autoplay</span>
+      <span><kbd>&larr;</kbd><kbd>&rarr;</kbd>takes <kbd>0</kbd>in game</span>
       <span><kbd>V</kbd>video <kbd>L</kbd>loop <kbd>Z</kbd>large</span>
       <span><kbd>F</kbd>finish</span>
       <span><kbd>O</kbd>log</span>
@@ -639,6 +670,16 @@ main { display: flex; flex-direction: column; min-width: 0; height: 100vh; }
   </div>
 </div>
 
+<div class="overlay" id="lessons" hidden>
+  <div class="panel lessons-panel" role="dialog" aria-modal="true" aria-labelledby="lsTitle">
+    <h2 id="lsTitle">What the reviews have taught us</h2>
+    <div class="fin-sub">Every verdict and note across all batches. A redo reads the same themes to steer the next take
+      (<code>tools/ludo/notes.py</code>); the playbook they feed is <code>docs/PROMPTING.md</code>.</div>
+    <div id="lsBody">Loading…</div>
+    <div class="fin-foot"><span><kbd>W</kbd>or <kbd>Esc</kbd>close</span></div>
+  </div>
+</div>
+
 <div class="overlay" id="help" hidden>
   <div class="help">
     <h2>Keys</h2>
@@ -650,6 +691,10 @@ main { display: flex; flex-direction: column; min-width: 0; height: 100vh; }
       <dt><kbd>A</kbd></dt><dd>Accept, then advance</dd>
       <dt><kbd>R</kbd></dt><dd>Reject, then advance</dd>
       <dt><kbd>U</kbd></dt><dd>Back to pending</dd>
+      <dt><kbd>&larr;</kbd><kbd>&rarr;</kbd></dt><dd>Previous / next take, when a line was rolled more than once (Accept keeps the one you are on)</dd>
+      <dt><kbd>1</kbd>–<kbd>9</kbd></dt><dd>Go to take N and play it</dd>
+      <dt><kbd>0</kbd></dt><dd>Play what the game has now (the file this one would replace)</dd>
+      <dt><kbd>W</kbd></dt><dd>Lessons: what every review so far says about the prompts</dd>
       <dt><kbd>E</kbd></dt><dd>Edit the line text for the re-roll (Enter saves and marks rejected, Esc cancels)</dd>
       <dt><kbd>N</kbd></dt><dd>Add or edit a note (Enter saves, Esc cancels)</dd>
       <dt><kbd>P</kbd></dt><dd>Toggle autoplay next (audio and video)</dd>
@@ -702,6 +747,8 @@ const S = {
   // actions + runs (null actions = this server predates them)
   actions: [], optVals: new Map(), finishFocus: null, confirmFor: null,
   run: null, runs: [], drawerOpen: false,
+  // v1.11: the take you're on per item (index into it.takes), and the item whose game copy is playing
+  take: new Map(), gameId: null,
 };
 
 /* ---------------------------------------------------------------- memory */
@@ -742,6 +789,30 @@ function post(path, body) {
     body: JSON.stringify(body || {}),
   });
 }
+
+/* ---------------------------------------------------------------- takes (v1.11) */
+// it.takes (from the server) lists every candidate, the item's own file first. The take you're on
+// stands in for the item (url, mtime, size, exists), so play, the length flag and the thumbnail follow
+// it, and Accept sends it as the pick.
+function takeIdx(it) {
+  if (!it.takes || !it.takes.length) return 0;
+  let i = S.take.get(it.id);
+  if (i == null || i >= it.takes.length) i = Math.max(0, it.takes.findIndex(t => t.picked));
+  return i;
+}
+function standIn(it) {
+  if (!it || !it.takes || !it.takes.length) return it;
+  const t = it.takes[takeIdx(it)];
+  if (t) { it.url = t.url; it.mtime = t.mtime; it.size = t.size; it.exists = !!t.exists; }
+  return it;
+}
+const NOTE_CHIPS = {
+  audio: ['More pause between sentences', 'Falling inflection at the end', 'Too high-pitched', 'More menace', 'Smug',
+    'More anger', 'More conviction', 'Stress *word*', 'Faster', 'Slower', 'Cut off at the end', 'Not their voice', 'Redo'],
+  image: ['Keep it all in frame', 'Clean up the noise', 'Invented objects', 'Motion snaps in one frame',
+    'Wrong expression', 'Hard to read the details', 'Redo'],
+  video: ['Keep it all in frame', 'Show how it ends', 'Wrong expression', 'Motion snaps', 'Artifacts', 'Redo'],
+};
 
 /* ---------------------------------------------------------------- helpers */
 const groupOf = it => String(it.group || '—');
@@ -956,10 +1027,14 @@ function rowHTML(it) {
     quote = `<div class="quote none">(no text)</div>`;
   }
   const ctx = it.meta && it.meta.context ? `<div class="when"><b>when</b>${esc(it.meta.context)}</div>` : '';
+  const sp = it.meta && it.meta.speak;
+  const speak = sp && sp !== displayText(it) ? `<div class="speak" title="What the voice was asked to say: the words plus the direction a note asked for"><b>spoken as</b>${esc(sp)}</div>` : '';
 
   let note = '';
   if (ed === 'note') {
+    const chips = NOTE_CHIPS[it.kind] || NOTE_CHIPS.image;
     note = `<input class="note-in" type="text" value="${esc(it.note)}" placeholder="What’s wrong, or what to change next time…" spellcheck="true">
+      <div class="chips">${chips.map(c => `<button class="chip-n" data-act="chip" data-t="${esc(c)}">${esc(c)}</button>`).join('')}</div>
       <div class="edit-bar"><span>Enter saves · Esc cancels</span><span class="sp"></span>
       <button data-act="edit-cancel">Cancel</button><button class="go note-go" data-act="edit-save">Save note</button></div>`;
   } else if (it.note && !it.regenerated) {
@@ -977,7 +1052,7 @@ function rowHTML(it) {
   return `<div class="lead">${lead}</div>
   <div class="body">
     <div class="head"><span class="label">${esc(it.label || it.id)}</span>${it.group ? `<span class="grp">${esc(it.group)}</span>` : ''}<span class="iid" title="${esc(it.id)}">${esc(it.id)}</span></div>
-    ${quote}${ctx}${trackHTML(it)}${stage}${note}${hist}
+    ${quote}${speak}${ctx}${trackHTML(it)}${takesHTML(it)}${stage}${note}${hist}
   </div>
   <div class="ctrl">
     <span class="pill">${esc(pillText(it))}</span>
@@ -991,6 +1066,94 @@ function rowHTML(it) {
       <button data-act="undo" title="Back to pending (U)">Undo<kbd>U</kbd></button>
     </div>
   </div>`;
+}
+
+function takesHTML(it) {
+  const many = it.takes && it.takes.length > 1;
+  const game = it.game_url && !it.game_same;  // the game's copy, when it differs from the take kept
+  if (!many && !game) return '';
+  const cur = takeIdx(it);
+  let h = many ? '<span class="tl">takes</span>' : '';
+  if (many) h += it.takes.map((t, i) => {
+    const cls = ['tk', i === cur ? 'on' : '', t.picked && it.status === 'accept' ? 'pk' : '', /^rejected/.test(t.label) ? 'old' : ''].filter(Boolean).join(' ');
+    return `<button class="${cls}" data-act="take" data-i="${i}" ${t.exists ? '' : 'disabled'} title="${esc(t.label)}${t.picked && it.status === 'accept' ? ' · the one you kept' : ''}">${i < 9 ? `<kbd>${i + 1}</kbd>` : ''}${esc(t.label)}</button>`;
+  }).join('');
+  if (game) {
+    const playing = S.gameId === it.id && !gplayer.paused;
+    h += `<button class="tk game${playing ? ' playing' : ''}" data-act="game" title="What the game has now: the file this one would replace (0)"><kbd>0</kbd>in game now</button>`;
+  }
+  return `<div class="takes">${h}</div>`;
+}
+function selectTake(id, i, play = true) {
+  const it = S.byId.get(id);
+  if (!it || !it.takes || i < 0 || i >= it.takes.length || !it.takes[i].exists) return;
+  S.take.set(id, i);
+  standIn(it);
+  renderRow(id, true);
+  if (S.viewerOpen && S.curId === id) renderViewer();
+  if (play && it.kind === 'audio') playFresh(it);
+}
+// the game's copy: played on its own player (audio), shown in the viewer (image), or opened (video)
+const gplayer = new Audio();
+gplayer.preload = 'none';
+function syncGame() {
+  for (const [id, el] of S.rows) {
+    const b = el.querySelector('.tk.game');
+    if (b) b.classList.toggle('playing', S.gameId === id && !gplayer.paused);
+  }
+}
+['play', 'pause', 'ended'].forEach(ev => gplayer.addEventListener(ev, syncGame));
+function playGame(id) {
+  const it = S.byId.get(id);
+  if (!it || !it.game_url) { toast('Nothing in the game for this one yet'); return; }
+  if (it.kind === 'image') { openViewer(id, 'game'); return; }
+  if (/\.(mp4|webm)(\?|$)/i.test(it.game_url.split('?')[0])) { window.open(it.game_url, '_blank', 'noopener'); return; }
+  if (S.gameId === id && !gplayer.paused) { gplayer.pause(); return; }
+  player.pause();
+  vplayer.pause();
+  S.gameId = id;
+  if (gplayer.getAttribute('src') !== it.game_url) gplayer.src = it.game_url;
+  else gplayer.currentTime = 0;
+  const pr = gplayer.play();
+  if (pr) pr.catch(err => { if (err.name !== 'AbortError') toast('Couldn’t play the game’s copy: ' + err.message, 'err'); });
+}
+function addChip(id, text) {
+  const el = S.rows.get(id), f = el && el.querySelector('input.note-in');
+  if (!f) return;
+  const v = f.value.trim();
+  f.value = v ? v + (/[.,;:!?]$/.test(v) ? ' ' : ', ') + text : text;
+  f.focus();
+  const w = f.value.lastIndexOf('*word*');
+  if (w >= 0) f.setSelectionRange(w + 1, w + 5);  // type the word over it
+  else f.setSelectionRange(f.value.length, f.value.length);
+}
+
+/* ---------------------------------------------------------------- lessons */
+async function openLessons() {
+  $('#lessons').hidden = false;
+  $('#lsBody').textContent = 'Reading every review…';
+  try {
+    $('#lsBody').innerHTML = lessonsHTML(await api('/api/lessons'));
+  } catch (e) {
+    $('#lsBody').textContent = 'Couldn’t read them: ' + e.message + ' (restart review.py serve after updating it)';
+  }
+}
+function closeLessons() { $('#lessons').hidden = true; }
+function lessonsHTML(d) {
+  const pct = x => x == null ? '–' : Math.round(x * 100) + '%';
+  const bar = x => `<span class="ls-bar"><i style="width:${Math.round((x || 0) * 100)}%"></i></span>`;
+  const kinds = Object.entries(d.kinds || {}).sort((a, b) => b[1].decided - a[1].decided);
+  let h = `<h3>First takes kept</h3><table class="ls-t"><tr><th>kind</th><th>decided</th><th>kept first time</th><th>redone, then kept</th><th>still rejected</th><th>rounds</th></tr>` +
+    kinds.map(([k, b]) => `<tr><td>${esc(k)}</td><td class="n">${b.decided}</td><td class="n">${bar(b.first_take_rate)}${b.first_take} (${pct(b.first_take_rate)})</td><td class="n">${b.redone}</td><td class="n">${b.open}</td><td class="n">${b.mean_rounds ?? '–'}</td></tr>`).join('') + '</table>';
+  const voices = Object.entries(d.groups || {}).filter(([g, b]) => g.startsWith('audio:') && b.decided >= 4)
+    .sort((a, b) => (a[1].first_take_rate ?? 0) - (b[1].first_take_rate ?? 0));
+  if (voices.length) h += `<h3>Sound, by voice or group</h3><table class="ls-t"><tr><th>voice</th><th>decided</th><th>kept first time</th><th>redone</th></tr>` +
+    voices.map(([g, b]) => `<tr><td>${esc(g.slice(6))}</td><td class="n">${b.decided}</td><td class="n">${bar(b.first_take_rate)}${pct(b.first_take_rate)}</td><td class="n">${b.redone}</td></tr>`).join('') + '</table>';
+  const th = d.themes || [];
+  h += `<h3>What the notes ask for</h3>` + (th.length ? `<table class="ls-t"><tr><th>theme</th><th>notes</th><th>fixed by a redo</th><th>open</th><th>for example</th></tr>` +
+    th.map(t => `<tr><td>${esc(t.label)}</td><td class="n">${t.notes}</td><td class="n">${t.theme === 'praise' ? '' : t.fixed}</td><td class="n">${t.theme === 'praise' ? '' : t.open}</td><td class="ls-ex">${t.examples.slice(0, 3).map(x => `<span>“${esc(x.note)}” <small>${esc(x.batch)} · ${esc(x.id)}</small></span>`).join('')}</td></tr>`).join('') + '</table>'
+    : '<p>No notes yet.</p>');
+  return h + `<p class="fin-sub">From ${d.batches} batches · ${esc((d.generated || '').replace('T', ' '))}</p>`;
 }
 
 function renderRow(id, force = false) {
@@ -1260,6 +1423,7 @@ function playFresh(it, frac = null) {
   const prevId = S.playingId;
   player.pause();
   vplayer.pause();  // one sound at a time
+  gplayer.pause();
   S.playingId = it.id;
   seekOnLoad = frac;
   player.src = it.url;
@@ -1647,6 +1811,7 @@ function decide(id, patch, { advance = false } = {}) {
   req.then(d => {
     if (batch !== S.batch || S.seq.get(id) !== n) return;
     Object.assign(it, d.item);
+    standIn(it);
     renderRow(id);
     renderCountsSoon();
   }).catch(err => {
@@ -1662,7 +1827,10 @@ function decide(id, patch, { advance = false } = {}) {
     S.inflight.set(id, (S.inflight.get(id) || 1) - 1);
   });
 }
-const accept = id => decide(id, { verdict: 'accept' }, { advance: true });
+const accept = id => {
+  const it = S.byId.get(id), t = it && it.takes && it.takes.length > 1 ? it.takes[takeIdx(it)] : null;
+  decide(id, t ? { verdict: 'accept', take: t.file } : { verdict: 'accept' }, { advance: true });
+};
 const reject = id => decide(id, { verdict: 'reject' }, { advance: true });
 const unmark = id => decide(id, { verdict: 'pending' });
 
@@ -1714,6 +1882,7 @@ function openViewer(id, mode) {
   const it = S.byId.get(id);
   if (!it) return;
   const canVid = stageShown(it) && vidPlayable(it), canImg = it.kind === 'image' && it.exists;
+  if (mode === 'game' && !(it.kind === 'image' && it.game_url)) return;
   if (!mode) mode = canVid ? 'video' : 'image';
   if (mode === 'video' && !canVid) mode = 'image';
   if (mode === 'image' && !canImg) { if (canVid) mode = 'video'; else return; }
@@ -1733,14 +1902,14 @@ function renderViewer() {
   if (vid) {
     loadVideo(it);  // mounts the shared player up here
   } else {
-    const img = $('#vimg');
-    if (img.getAttribute('src') !== it.url) img.src = it.url;
+    const img = $('#vimg'), src = S.viewerMode === 'game' ? it.game_url : it.url;
+    if (img.getAttribute('src') !== src) img.src = src;
     mountVideo();   // and back down to its row
   }
   $('#vlabel').textContent = it.label || it.id;
   const pill = $('#vpill');
-  pill.className = 'vpill s-' + it.status;
-  pill.textContent = pillText(it);
+  pill.className = 'vpill s-' + (S.viewerMode === 'game' ? 'installed' : it.status);
+  pill.textContent = S.viewerMode === 'game' ? 'In the game now' : pillText(it);
   $('#vtext').textContent = displayText(it);
 }
 function closeViewer() {
@@ -1781,6 +1950,8 @@ async function openBatch(name) {
     detachRun();
     loadRuns(name);
     S.items = d.items;
+    S.take.clear();
+    S.items.forEach(standIn);
     S.byId = new Map(S.items.map(it => [it.id, it]));
     const f = (S.mem.filt || {})[name] || {};
     S.tab = TAB_NAME[f.tab] ? f.tab : 'all';
@@ -1802,8 +1973,8 @@ async function openBatch(name) {
     const next = d.items.map(n => {
       const old = S.byId.get(n.id);
       if (old && (S.inflight.get(n.id) || 0) > 0) return old;
-      if (old) { for (const k of Object.keys(old)) if (!(k in n)) delete old[k]; Object.assign(old, n); return old; }
-      return n;
+      if (old) { for (const k of Object.keys(old)) if (!(k in n)) delete old[k]; Object.assign(old, n); return standIn(old); }
+      return standIn(n);
     });
     S.items = next;
     S.byId = new Map(next.map(it => [it.id, it]));
@@ -1979,11 +2150,27 @@ function openConfirm(a) {
   $('#cfBody').innerHTML = `<p><b>${esc(a.label)}</b> ${what}. <b>That spends Ludo credits.</b></p>` +
     (a.kind === 'regen' && !c.reject ? '<p>Nothing is rejected right now, so there may be nothing to redo.</p>' : '') +
     (c.pending ? `<p>${plural(c.pending, 'pending item', 'pending items')} won’t be touched.</p>` : '') +
-    `<p>The new takes overwrite the same files and come back here as <b>needs a listen</b>.</p>` +
+    takesNote(a, c) +
+    `<p>The new takes come back here as <b>needs a listen</b>.</p>` +
     `<code class="act-cmd">${esc(cmdPreview(a))}</code>`;
   $('#cfYes').textContent = a.kind === 'regen' && c.reject ? `Spend credits on ${c.reject}` : 'Spend credits and run';
   $('#confirm').hidden = false;
   $('#cfNo').focus();
+}
+// v1.11: a voice redo rolls several takes per line, and reads the notes
+function takesNote(a, c) {
+  const o = (a.options || []).find(x => x.flag === '--takes');
+  const noNotes = (a.options || []).find(x => x.flag === '--no-notes');
+  let h = '';
+  if (o && c.reject) {
+    const t = Number(optVal(a, o)) || 1;
+    h += `<p>${plural(t, 'take', 'takes')} of each: about <b>${c.reject * t} credits</b> for voice lines. You pick the best with <kbd>&larr;</kbd><kbd>&rarr;</kbd> and <kbd>A</kbd>.</p>`;
+  }
+  if (noNotes && !optVal(a, noNotes)) {
+    const noted = S.items.filter(it => it.status === 'reject' && it.note && !/^\s*(re-?do|try again|again)[.!]?\s*$/i.test(it.note)).length;
+    if (noted) h += `<p>${plural(noted, 'note', 'notes')} will steer the redo (Claude writes the direction when it is installed).</p>`;
+  }
+  return h;
 }
 function closeConfirm() {
   $('#confirm').hidden = true;
@@ -2172,6 +2359,9 @@ $('#list').addEventListener('click', e => {
     case 'note': startEdit(id, 'note'); break;
     case 'edit-save': commitEdit({ advance: false }); break;
     case 'edit-cancel': cancelEdit(); break;
+    case 'take': selectTake(id, +act.dataset.i, true); break;
+    case 'game': playGame(id); break;
+    case 'chip': addChip(id, act.dataset.t); break;
   }
 });
 $('#list').addEventListener('dblclick', e => {
@@ -2182,7 +2372,7 @@ $('#list').addEventListener('dblclick', e => {
 });
 // keep focus in the editor when its own Save / Cancel buttons are pressed
 $('#list').addEventListener('mousedown', e => {
-  if (e.target.closest('.edit-bar button')) e.preventDefault();
+  if (e.target.closest('.edit-bar button, .chips button')) e.preventDefault();
 });
 $('#list').addEventListener('input', e => {
   if (e.target.matches('textarea.edit-in')) autosize(e.target);
@@ -2246,6 +2436,8 @@ $('#autoChip').addEventListener('click', e => { e.currentTarget.blur(); toggleAu
 $('#loopChip').addEventListener('click', e => { e.currentTarget.blur(); toggleLoop(); });
 $('#helpBtn').addEventListener('click', e => { e.currentTarget.blur(); toggleHelp(); });
 $('#rescan').addEventListener('click', e => { e.currentTarget.blur(); rescan(); });
+$('#lessonsBtn').addEventListener('click', e => { e.currentTarget.blur(); openLessons(); });
+$('#lessons').addEventListener('click', e => { if (!e.target.closest('.lessons-panel')) closeLessons(); });
 $('#viewer').addEventListener('click', e => { if (!e.target.closest('img, video')) closeViewer(); });
 $('#help').addEventListener('click', e => { if (!e.target.closest('.help')) toggleHelp(false); });
 
@@ -2309,6 +2501,10 @@ document.addEventListener('keydown', e => {
     if (k === 'Escape') { e.preventDefault(); closeConfirm(); }
     return;  // Enter / Space act on the focused button (Cancel first)
   }
+  if (!$('#lessons').hidden) {
+    if (k === 'Escape' || k === 'w' || k === 'W') { e.preventDefault(); closeLessons(); }
+    return;
+  }
   if (!$('#finish').hidden) {
     if (k === 'Escape') { e.preventDefault(); closeFinish(); return; }
     if (isField(t)) return;
@@ -2328,7 +2524,7 @@ document.addEventListener('keydown', e => {
     vplayer.blur();
   }
   if (t && t.tagName === 'SELECT') {
-    if (/^[ajkruenpfolvz?]$/i.test(k) || k === 'Escape') t.blur(); else return;
+    if (/^[ajkruenpfolvzw0-9?]$/i.test(k) || k === 'Escape') t.blur(); else return;
   } else if (t && (t.tagName === 'TEXTAREA' || t.tagName === 'INPUT')) {
     return;
   }
@@ -2381,6 +2577,27 @@ document.addEventListener('keydown', e => {
       break;
     case 'Enter':
       e.preventDefault(); break;
+    case 'ArrowLeft': case 'ArrowRight': {
+      const it = id && S.byId.get(id);
+      if (it && it.takes && it.takes.length > 1) {
+        e.preventDefault();
+        const n = it.takes.length;
+        let i = takeIdx(it);
+        for (let step = 0; step < n; step++) {  // skip a missing take
+          i = (i + (k === 'ArrowRight' ? 1 : -1) + n) % n;
+          if (it.takes[i].exists) break;
+        }
+        selectTake(id, i, S.autoplay);
+      }
+      break;
+    }
+    case 'w': case 'W':
+      if (once) openLessons(); break;
+    default:
+      if (/^[0-9]$/.test(k) && id && once) {
+        e.preventDefault();
+        if (k === '0') playGame(id); else selectTake(id, +k - 1, true);
+      }
   }
 });
 

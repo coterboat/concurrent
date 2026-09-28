@@ -22,3 +22,6 @@ assets/ludo_ledger.json.tmp
 assets/raw/
 review/*/
 !review/.gdignore
+# Python caches
+__pycache__/
+*.pyc

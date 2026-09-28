@@ -25,6 +25,7 @@ After changing `review.py`, restart `serve`: the page is re-read on every load, 
 | `apply <batch> [--dry-run]` | Copies every **accepted** file to its `target`, then writes `review/<batch>/rejected.json`. |
 | `new <batch> --title "..."` | Creates an empty `batch.json`. |
 | `sample [--force]` | Rebuilds the `_sample` demo batch. `--force` wipes it and its verdicts. |
+| `lessons [--write MD] [--json]` | What every batch's verdicts and notes say: first takes kept by kind and by voice, and the note themes. `--write docs/PROMPTING.md` refreshes the block between `<!-- lessons:begin -->` and `<!-- lessons:end -->`. |
 
 `apply` creates the target folders it needs and skips files that are already identical, so it is safe to run again.
 If the target has a different extension from the source (for example, the target says `.mp3` but the file is `.wav`),
@@ -40,6 +41,10 @@ Items that were regenerated after their verdict are not copied until you have li
 | `A` | Accept, then move on |
 | `R` | Reject, then move on |
 | `U` | Set the item back to pending |
+| `←` / `→` | Previous / next take, when an item was rolled more than once. With autoplay on, each one plays. |
+| `1`–`9` | Go to take N and play it. `A` keeps the take you are on. |
+| `0` | Play (or show) what the game has now: the file this item would replace. |
+| `W` | Lessons: what every review so far says about the prompts |
 | `E` | Edit the line text for the re-roll. `Enter` saves the edit and marks the item **rejected**; `Esc` cancels. |
 | `N` | Add or edit a note. `Enter` saves, `Esc` cancels. |
 | `P` | Toggle **autoplay next** (on by default): after `A` or `R`, the next line or video starts playing |
@@ -61,6 +66,39 @@ Music, sound effects and video are never length-checked. Lengths are measured in
 - A clip is flagged as too short when it runs shorter than `words / 4.5` seconds. That usually means it was cut off.
 - Files that are missing or fail to load are flagged too.
 - Words inside `[brackets]` (audio tags) are not counted.
+
+## Takes, and what the game has now (v1.11)
+
+An item may have been rolled more than once. Its **takes** show as a strip under it: the item's own file first,
+then the others. `←`/`→` or `1`–`9` move between them and play them. **Accept** keeps the take you are on and
+records it as the item's `pick`, which **Install**, `apply`, **In game** and `reconcile` all use from then on.
+**Reject** rejects every take (the redo rolls new ones), and so does **Undo**, which clears the pick.
+
+The takes are found beside the item's file, in a `.takes/` folder:
+
+- `<stem>.t2.mp3`, `<stem>.t3.mp3`: more rolls of the same take (`ludo.py --takes N` writes these).
+- `<stem>.r1.mp3`, `r2`, …: takes rejected in earlier rounds, higher is newer (a voice redo moves the rejected
+  file here). They show dashed, as "rejected in round N", so a new take can be heard against the old one.
+
+A batch can also list them itself: `"takes": [{"file": "...", "label": "..."}]` on the item. A generator can put
+a few words on each take's chip with `meta.take_info` (`{"<file>": "falls 3.1 st, pause 0.49 s"}`). The voice redo
+does this: it measures every take (`tools/ludo/voice_measure.py`), and when the note asked for a falling end,
+more pause or a lower voice, it puts the best-measured take first.
+
+When an item's `target` (or its first `meta.install` destination) already exists in the game and differs from the
+take kept, the strip ends with **in game now** (`0`): it plays the game's copy, or shows it in the viewer for a
+picture. Only media files are served that way, never a dotfile or anything outside the repo.
+
+When a note changed what a voice was asked to say, `meta.speak` shows as **spoken as** under the line.
+
+## Notes that teach
+
+`N` opens the note with a row of **chips**: the notes the owner writes most, in the same words every time
+("More pause between sentences", "Falling inflection at the end", "Keep it all in frame"…). Click one to add it.
+"Stress \*word\*" selects *word* so you can type over it. Matching wording lets `lessons` sort notes into themes,
+and the redo reads the same themes (`tools/ludo/notes.py`): a voice line's note becomes direction in `speak`,
+a picture's note rewrites its prompt (Claude when the `claude` command is installed). **Lessons** (`W`) shows the
+totals, and `docs/PROMPTING.md` is the playbook they feed.
 
 ## Video
 
@@ -175,6 +213,7 @@ Everything lives in `review/<batch>/` at the repo root. `review/*/` is gitignore
 ```
 
 - `verdict` is `accept`, `reject` or `pending`. An item with no entry is pending.
+- `pick` (v1.11): the take that was accepted, relative to the batch folder, when it isn't the item's own file.
 - `file_mtime` is the file's mtime when the verdict was given. If the file on disk is newer, the item was regenerated: it counts as pending again ("needs a listen"), and the old verdict and note stay visible.
 - When you re-decide a regenerated item, the old verdict moves into a `history` list.
 
@@ -196,6 +235,8 @@ Everything lives in `review/<batch>/` at the repo root. `review/*/` is gitignore
    (and `note` as guidance) and the voice or model settings in `meta`.
    **Overwrite the same `file` path.** The newer mtime is what puts the item back in the queue as "needs a listen".
    Also update the item's `text` in `batch.json` if you used the edited wording.
+   To offer several takes, write the extras to `.takes/<stem>.t2.<ext>` and so on, and move the rejected file to
+   `.takes/<stem>.r<N>.<ext>` first so it can be compared (see [Takes](#takes-and-what-the-game-has-now-v111)).
 4. Repeat until nothing is rejected.
 
 `tools/ludo/v18_content.py` is a worked example: its `--batch` writes both actions, `--install [--dry-run]` applies and

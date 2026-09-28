@@ -137,7 +137,7 @@
 "surges",
 2,
 "surges_v3",
-"Here come the surges. Steady now."
+"Here come the surges."
 ],
 [
 "advisor",
@@ -291,7 +291,7 @@
 "walkin_us",
 3,
 "walkin_us_v4",
-"Empty! Oh, that is careless of them. Ours now."
+"Empty! Oh, that is careless of them."
 ],
 [
 "advisor",
@@ -991,7 +991,7 @@
 "capital_lost",
 0,
 "capital_lost",
-"They dare to sit in *my* capital?"
+"They dare to sit in *my*, capital?"
 ],
 [
 "ysolde",
@@ -1369,7 +1369,7 @@
 "capital_took",
 1,
 "capital_took_v2",
-"Your capital! Is it mine? It is mine!"
+"Your capital! Is it mine? It *IS* mine!"
 ],
 [
 "oren",
@@ -1390,7 +1390,7 @@
 "capital_lost",
 1,
 "capital_lost_v2",
-"They took my capital? I was using that!"
+"They took my capital? I was using *that*!"
 ],
 [
 "oren",

@@ -3993,9 +3993,9 @@
    "id": "line18_advisor_surges_v3",
    "kind": "speech",
    "voice": "voice_advisor",
-   "text": "Here come the surges. Steady now.",
+   "text": "Here come the surges.",
    "out": "review/v18_voices/advisor/surges_v3",
-   "v": 2
+   "v": 3
   },
   {
    "id": "line18_advisor_opening_good_v2",
@@ -4169,9 +4169,9 @@
    "id": "line18_advisor_walkin_us_v4",
    "kind": "speech",
    "voice": "voice_advisor",
-   "text": "Empty! Oh, that is careless of them. Ours now.",
+   "text": "Empty! Oh, that is careless of them.",
    "out": "review/v18_voices/advisor/walkin_us_v4",
-   "v": 2
+   "v": 3
   },
   {
    "id": "line18_advisor_walkin_them_v2",
@@ -4969,9 +4969,9 @@
    "id": "line18_ysolde_capital_lost",
    "kind": "speech",
    "voice": "voice2_ysolde",
-   "text": "They dare to sit in *my* capital?",
+   "text": "They dare to sit in *my*, capital?",
    "out": "review/v18_voices/ysolde/capital_lost",
-   "v": 2
+   "v": 3
   },
   {
    "id": "line18_ysolde_capital_lost_v2",
@@ -5401,9 +5401,9 @@
    "id": "line18_oren_capital_took_v2",
    "kind": "speech",
    "voice": "voice2_oren",
-   "text": "Your capital! Is it mine? It is mine!",
+   "text": "Your capital! Is it mine? It *IS* mine!",
    "out": "review/v18_voices/oren/capital_took_v2",
-   "v": 2
+   "v": 3
   },
   {
    "id": "line18_oren_capital_took_v3",
@@ -5425,9 +5425,9 @@
    "id": "line18_oren_capital_lost_v2",
    "kind": "speech",
    "voice": "voice2_oren",
-   "text": "They took my capital? I was using that!",
+   "text": "They took my capital? I was using *that*!",
    "out": "review/v18_voices/oren/capital_lost_v2",
-   "v": 2
+   "v": 3
   },
   {
    "id": "line18_oren_capital_lost_v3",
@@ -5755,7 +5755,7 @@
    "voice": "voice2_imre",
    "text": "A variance. It will even out.",
    "out": "review/v18_voices/imre/lose_v3",
-   "v": 2
+   "v": 3
   },
   {
    "id": "line18_imre_lose_v4",
@@ -6183,7 +6183,8 @@
    "aspect": "ar_16_9",
    "out": "assets/raw/v19/dice/howto_fortune",
    "prompt": "A Napoleonic-era commander in a dark blue greatcoat with gold epaulettes leans over a candlelit war table covered with maps and tin soldiers; behind him rises a translucent, ghostly Lady Fortune, a classical goddess in flowing robes turning a great spoked wheel of fortune, who tips a single falling ivory die onto the map with one finger; through the open tent behind, regiments of line infantry in shakos and white crossbelts with muskets and fixed bayonets stand in ranks under their colours, 1810s, no armour, no knights, dramatic golden candlelight",
-   "group": "G1"
+   "group": "G1",
+   "v": 2
   },
   {
    "id": "v19_pose_fallen",
@@ -6240,7 +6241,7 @@
    "crop": false,
    "prompt": "raises the musket to his shoulder and aims it straight ahead to the right, his shoulder kicks back slightly with the recoil, then he lowers the musket back to his shoulder; he stays in side view facing right the whole time and never turns around",
    "group": "G2",
-   "v": 2
+   "v": 3
   },
   {
    "id": "v19_kf_soldier_kneel_volley",
@@ -6256,7 +6257,8 @@
    "loop": false,
    "crop": false,
    "prompt": "drops to one knee and aims the musket to the right, jolts back with one sharp recoil, then stands back up with the musket at the shoulder, no smoke",
-   "group": "G2"
+   "group": "G2",
+   "v": 2
   },
   {
    "id": "v19_kf_soldier_charge",
@@ -6306,7 +6308,8 @@
    "loop": false,
    "crop": false,
    "prompt": "brings the musket upright in front of him, bites a cartridge, rams the ramrod down the barrel twice, then shoulders the musket again",
-   "group": "G2"
+   "group": "G2",
+   "v": 2
   },
   {
    "id": "v19_kf_soldier_fall",
@@ -6451,7 +6454,8 @@
    "style": false,
    "out": "assets/raw/v19/fx/capital_fire_src",
    "prompt": "A large blaze of tall orange and yellow flames with glowing embers and dark smoke rising above, the fire of a burning city, no buildings, painterly oil-paint brushwork",
-   "group": "G3"
+   "group": "G3",
+   "v": 2
   },
   {
    "id": "v19_fx_capital_fire",
@@ -6470,7 +6474,8 @@
    "out": "assets/raw/v19/fx/capital_fire",
    "prompt": "the flames flicker and leap continuously, embers float upward and the smoke rolls, an endless steady blaze",
    "group": "G3",
-   "from": "v19_fxsrc_capital_fire"
+   "from": "v19_fxsrc_capital_fire",
+   "v": 2
   },
   {
    "id": "v19_fxsrc_fuse_spark",
@@ -6480,7 +6485,8 @@
    "style": false,
    "out": "assets/raw/v19/fx/fuse_spark_src",
    "prompt": "A sputtering cannon-fuse spark: a small bright white-yellow core throwing out tiny orange sparks and a thin wisp of grey smoke, painterly",
-   "group": "G3"
+   "group": "G3",
+   "v": 2
   },
   {
    "id": "v19_fx_fuse_spark",
@@ -6499,7 +6505,8 @@
    "out": "assets/raw/v19/fx/fuse_spark",
    "prompt": "the spark sputters and crackles, throwing out tiny sparks, the wisp of smoke curls up",
    "group": "G3",
-   "from": "v19_fxsrc_fuse_spark"
+   "from": "v19_fxsrc_fuse_spark",
+   "v": 2
   },
   {
    "id": "v19_fxsrc_dust_kick",
@@ -6602,14 +6609,16 @@
    "aspect": "ar_16_9",
    "out": "assets/raw/video/cut_intro_480",
    "prompt": "Image 1 is the imperial war room, Image 2 is the old field marshal. Dawn: pale golden light spills through the tall windows of the war room from Image 1 onto the great map table and its tin soldiers. The doors open and two dust-stained couriers in blue hussar jackets hurry in and lay sealed dispatches on the map. The field marshal from Image 2, standing at the window with his hands clasped behind his back, turns slowly to face the camera with a grave, knowing look, silent. Slow push-in camera. Sound: a lone snare drum and a low rising brass theme, hurried footsteps, rustling paper, distant gulls and a harbour bell. No spoken words, no dialogue, no narration: only music and sound effects. Painterly oil-painting look matching the reference images, Napoleonic era, 1810s.",
-   "group": "G5"
+   "group": "G5",
+   "v": 4
   },
   {
    "id": "v19_cut_intro_up",
    "kind": "upscale",
    "source": "v19_cut_intro",
    "out": "assets/raw/video/cut_intro",
-   "group": "G5"
+   "group": "G5",
+   "v": 4
   },
   {
    "id": "v19_cut_capital_taken",
@@ -6665,14 +6674,16 @@
    "aspect": "ar_16_9",
    "out": "assets/raw/video/cut_eliminated_480",
    "prompt": "Image 1 is a captured frontier fort. In the fort from Image 1, victorious red-coated Napoleonic infantry tear down the enemy's green regimental colours from the flagpole; the flag falls into the mud and is trampled under marching boots, while a long column of disarmed enemy prisoners in green coats from Image 2 is marched away under guard with fixed bayonets. Grey overcast light, drifting smoke. Slow tracking shot. Sound: a steady drum beat, tramping boots, a bugle call, wind, a distant church bell. No spoken words, no dialogue, no narration: only music and sound effects. Painterly oil-painting look matching the reference images, Napoleonic era, 1810s.",
-   "group": "G5"
+   "group": "G5",
+   "v": 2
   },
   {
    "id": "v19_cut_eliminated_up",
    "kind": "upscale",
    "source": "v19_cut_eliminated",
    "out": "assets/raw/video/cut_eliminated",
-   "group": "G5"
+   "group": "G5",
+   "v": 2
   },
   {
    "id": "v19_cut_victory",
@@ -6923,7 +6934,7 @@
    "out": "assets/raw/v19/battle/grenadier_volley_kf",
    "prompt": "Make him a grenadier: a tall bearskin cap instead of the shako. Keep the plain white tin finish and exactly the same motion.",
    "group": "G9",
-   "v": 2
+   "v": 3
   },
   {
    "id": "v19_var_grenadier_charge",
@@ -6952,7 +6963,8 @@
    "elevation": 30,
    "n": 2,
    "out": "assets/raw/v19/views/infantry_q",
-   "group": "G10"
+   "group": "G10",
+   "v": 2
   },
   {
    "id": "v19_view_cavalry",

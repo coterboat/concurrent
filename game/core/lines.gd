@@ -34,7 +34,13 @@ static func text(who: String, key: String) -> String:
 	var t: Array = takes(who, key)
 	if t.is_empty():
 		return ""
-	return str(t[_choose(who, key)])
+	return subtitle(str(t[_choose(who, key)]))
+
+
+## v1.11: a line's words are also its performance directions: *stars* stress a word for the
+## voice. The subtitle keeps the words and drops the marks.
+static func subtitle(s: String) -> String:
+	return s.replace("*", "")
 
 
 static func has(who: String, key: String) -> bool:

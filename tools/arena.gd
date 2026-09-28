@@ -45,6 +45,7 @@ func _initialize() -> void:
 	var upsets := 0
 	var ms := 0.0
 	var lengths: Array = []
+	var fp: Array = [] ## v1.11: the determinism fingerprint
 	for i in n:
 		var map: Types.MapDef = Types.MapDef.from_file("res://maps/%s.json" % args["map"])
 		map.battle = str(args["battle"])
@@ -118,8 +119,12 @@ func _initialize() -> void:
 			if m <= 3.0:
 				close += 1
 		ms += float(r["planMs"])
+		fp.append("%s|%s|%s" % [str(r["winner"]), int(r["roundsPlayed"]), str(fin)])
 	lengths.sort()
 	print("map=%s seats=%s n=%s" % [args["map"], args["seats"], n])
+	## v1.11: every war's winner, length and final scores, hashed: the same on any machine, or the
+	## engine isn't deterministic there (PLAYTEST.md lists the Mac's fingerprints)
+	print("  fingerprint %s" % "\n".join(fp).md5_text().left(12))
 	print("  wins        %s" % wins)
 	print("  rounds      mean %.1f  median %s  domination %s/%s (before the last round %s)" % [float(rounds_total) / n, lengths[n / 2], early, n, before_last])
 	print("  walk-ins    %.2f per game" % (float(walks) / n))
