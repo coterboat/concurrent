@@ -2543,14 +2543,23 @@
   "credits": 1,
   "endpoint": "/audio/speech",
   "file": "review/v18_voices/advisor/capture_v3.mp3",
+  "history": [
+   {
+    "credits": 1,
+    "endpoint": "/audio/speech",
+    "job": "ecd174b6-d167-4181-9a89-b4b73e605426",
+    "url": "https://storage.googleapis.com/ludo-assets/api/68f97e86657c680226e7a504-282fe99ae117e7992fa0152c7b6e389f.mp3",
+    "v": 1
+   }
+  ],
   "id": "line18_advisor_capture_v3",
-  "job": "ecd174b6-d167-4181-9a89-b4b73e605426",
+  "job": "1d7a3fc0-6a7a-4b06-9877-5e080034a7ce",
   "params": {
    "sample": "https://storage.googleapis.com/ludo-assets/api/68f97e86657c680226e7a504-f315f52bb2200802cd805e5d61d284aa.mp3",
    "text": "Taken! Well fought, Commander."
   },
-  "url": "https://storage.googleapis.com/ludo-assets/api/68f97e86657c680226e7a504-282fe99ae117e7992fa0152c7b6e389f.mp3",
-  "v": 1
+  "url": "https://storage.googleapis.com/ludo-assets/api/68f97e86657c680226e7a504-2cb152677f9a127b06faf987007af1d5.mp3",
+  "v": 2
  },
  "line18_advisor_capture_v4": {
   "credits": 1,
@@ -2647,14 +2656,23 @@
   "credits": 1,
   "endpoint": "/audio/speech",
   "file": "review/v18_voices/advisor/close_hold.mp3",
+  "history": [
+   {
+    "credits": 1,
+    "endpoint": "/audio/speech",
+    "job": "f6d32f29-6079-4de5-ac07-f036d657fc9c",
+    "url": "https://storage.googleapis.com/ludo-assets/api/68f97e86657c680226e7a504-2a4be85a79b769dcb56c7ec0aa56519c.mp3",
+    "v": 1
+   }
+  ],
   "id": "line18_advisor_close_hold",
-  "job": "f6d32f29-6079-4de5-ac07-f036d657fc9c",
+  "job": "96cccf6f-011e-404a-a388-bf1088663cc6",
   "params": {
    "sample": "https://storage.googleapis.com/ludo-assets/api/68f97e86657c680226e7a504-f315f52bb2200802cd805e5d61d284aa.mp3",
    "text": "One soldier left on the walls, and he held! Remarkable."
   },
-  "url": "https://storage.googleapis.com/ludo-assets/api/68f97e86657c680226e7a504-2a4be85a79b769dcb56c7ec0aa56519c.mp3",
-  "v": 1
+  "url": "https://storage.googleapis.com/ludo-assets/api/68f97e86657c680226e7a504-baf05f60d2dd5cd10480421432fd0fb6.mp3",
+  "v": 2
  },
  "line18_advisor_close_hold_v2": {
   "credits": 1,
@@ -2972,14 +2990,23 @@
   "credits": 1,
   "endpoint": "/audio/speech",
   "file": "review/v18_voices/advisor/lost_land_v4.mp3",
+  "history": [
+   {
+    "credits": 1,
+    "endpoint": "/audio/speech",
+    "job": "3f6e38ed-cbe7-4584-b479-60daf3ef392d",
+    "url": "https://storage.googleapis.com/ludo-assets/api/68f97e86657c680226e7a504-eaaa25a1073c351859e0d5a9ede7958a.mp3",
+    "v": 1
+   }
+  ],
   "id": "line18_advisor_lost_land_v4",
-  "job": "3f6e38ed-cbe7-4584-b479-60daf3ef392d",
+  "job": "7e4ca528-2fc6-437c-a809-1b0df8888f88",
   "params": {
    "sample": "https://storage.googleapis.com/ludo-assets/api/68f97e86657c680226e7a504-f315f52bb2200802cd805e5d61d284aa.mp3",
    "text": "Gone. Mark it on the map, and mark who took it."
   },
-  "url": "https://storage.googleapis.com/ludo-assets/api/68f97e86657c680226e7a504-eaaa25a1073c351859e0d5a9ede7958a.mp3",
-  "v": 1
+  "url": "https://storage.googleapis.com/ludo-assets/api/68f97e86657c680226e7a504-6bd9738883e70066bcfd7d2c90407be9.mp3",
+  "v": 2
  },
  "line18_advisor_maneuver_v2": {
   "credits": 1,
@@ -2998,14 +3025,23 @@
   "credits": 1,
   "endpoint": "/audio/speech",
   "file": "review/v18_voices/advisor/maneuver_v3.mp3",
+  "history": [
+   {
+    "credits": 1,
+    "endpoint": "/audio/speech",
+    "job": "c6d36be2-97e7-4725-b8e6-c64d0506ef69",
+    "url": "https://storage.googleapis.com/ludo-assets/api/68f97e86657c680226e7a504-d4f6fedabfca70919bc7e711ddf076e9.mp3",
+    "v": 1
+   }
+  ],
   "id": "line18_advisor_maneuver_v3",
-  "job": "c6d36be2-97e7-4725-b8e6-c64d0506ef69",
+  "job": "cac57f13-0cda-4ba0-b145-5dcc07a38f1e",
   "params": {
    "sample": "https://storage.googleapis.com/ludo-assets/api/68f97e86657c680226e7a504-f315f52bb2200802cd805e5d61d284aa.mp3",
    "text": "A moment's peace. Use it. March the reserves up to the border."
   },
-  "url": "https://storage.googleapis.com/ludo-assets/api/68f97e86657c680226e7a504-d4f6fedabfca70919bc7e711ddf076e9.mp3",
-  "v": 1
+  "url": "https://storage.googleapis.com/ludo-assets/api/68f97e86657c680226e7a504-158c6d860a17f59d49b2c1a455b82105.mp3",
+  "v": 2
  },
  "line18_advisor_maneuver_v4": {
   "credits": 1,
@@ -3063,14 +3099,23 @@
   "credits": 1,
   "endpoint": "/audio/speech",
   "file": "review/v18_voices/advisor/opening_bad_v3.mp3",
+  "history": [
+   {
+    "credits": 1,
+    "endpoint": "/audio/speech",
+    "job": "d6facae3-dd68-406a-8859-b69dc8d2b9aa",
+    "url": "https://storage.googleapis.com/ludo-assets/api/68f97e86657c680226e7a504-708d62788c0c4d5ea9efbe68123e9978.mp3",
+    "v": 1
+   }
+  ],
   "id": "line18_advisor_opening_bad_v3",
-  "job": "d6facae3-dd68-406a-8859-b69dc8d2b9aa",
+  "job": "61b76c58-d31f-4c03-8694-edc9e9efdcd3",
   "params": {
    "sample": "https://storage.googleapis.com/ludo-assets/api/68f97e86657c680226e7a504-f315f52bb2200802cd805e5d61d284aa.mp3",
    "text": "They are giving as good as they get. Your call, Commander."
   },
-  "url": "https://storage.googleapis.com/ludo-assets/api/68f97e86657c680226e7a504-708d62788c0c4d5ea9efbe68123e9978.mp3",
-  "v": 1
+  "url": "https://storage.googleapis.com/ludo-assets/api/68f97e86657c680226e7a504-40ce9ba83bbad2db4b4255e459f476eb.mp3",
+  "v": 2
  },
  "line18_advisor_opening_bad_v4": {
   "credits": 1,
@@ -3388,14 +3433,23 @@
   "credits": 1,
   "endpoint": "/audio/speech",
   "file": "review/v18_voices/advisor/sealed_v4.mp3",
+  "history": [
+   {
+    "credits": 1,
+    "endpoint": "/audio/speech",
+    "job": "190b9c4a-343e-4913-9c58-f28f080d2ce5",
+    "url": "https://storage.googleapis.com/ludo-assets/api/68f97e86657c680226e7a504-709f98148e56040ddb587f74830f61d0.mp3",
+    "v": 1
+   }
+  ],
   "id": "line18_advisor_sealed_v4",
-  "job": "190b9c4a-343e-4913-9c58-f28f080d2ce5",
+  "job": "b8643639-14fd-47ec-a25c-8d09e33777b3",
   "params": {
    "sample": "https://storage.googleapis.com/ludo-assets/api/68f97e86657c680226e7a504-f315f52bb2200802cd805e5d61d284aa.mp3",
    "text": "Signed, sealed, and out of our hands. I do love this part."
   },
-  "url": "https://storage.googleapis.com/ludo-assets/api/68f97e86657c680226e7a504-709f98148e56040ddb587f74830f61d0.mp3",
-  "v": 1
+  "url": "https://storage.googleapis.com/ludo-assets/api/68f97e86657c680226e7a504-66b0bc9fba00f1dbdd28c8b6e11c1b69.mp3",
+  "v": 2
  },
  "line18_advisor_sealed_v5": {
   "credits": 1,
@@ -3414,27 +3468,45 @@
   "credits": 1,
   "endpoint": "/audio/speech",
   "file": "review/v18_voices/advisor/surges_v2.mp3",
+  "history": [
+   {
+    "credits": 1,
+    "endpoint": "/audio/speech",
+    "job": "5551826d-09e3-44d9-8c96-6b87cd00c01c",
+    "url": "https://storage.googleapis.com/ludo-assets/api/68f97e86657c680226e7a504-f4ebadbe65d0a819446fb674cb2144ae.mp3",
+    "v": 1
+   }
+  ],
   "id": "line18_advisor_surges_v2",
-  "job": "5551826d-09e3-44d9-8c96-6b87cd00c01c",
+  "job": "3e0bd1b3-48e8-430a-911f-ba7a2aaac47e",
   "params": {
    "sample": "https://storage.googleapis.com/ludo-assets/api/68f97e86657c680226e7a504-f315f52bb2200802cd805e5d61d284aa.mp3",
    "text": "The breakthroughs charge on! Hold on to your hat."
   },
-  "url": "https://storage.googleapis.com/ludo-assets/api/68f97e86657c680226e7a504-f4ebadbe65d0a819446fb674cb2144ae.mp3",
-  "v": 1
+  "url": "https://storage.googleapis.com/ludo-assets/api/68f97e86657c680226e7a504-d29af563a889750723e2ba95f0183aff.mp3",
+  "v": 2
  },
  "line18_advisor_surges_v3": {
   "credits": 1,
   "endpoint": "/audio/speech",
   "file": "review/v18_voices/advisor/surges_v3.mp3",
+  "history": [
+   {
+    "credits": 1,
+    "endpoint": "/audio/speech",
+    "job": "023f3a85-a80c-4d1e-92c7-b0de26ec3529",
+    "url": "https://storage.googleapis.com/ludo-assets/api/68f97e86657c680226e7a504-26d458a151da305a355704390c3b97af.mp3",
+    "v": 1
+   }
+  ],
   "id": "line18_advisor_surges_v3",
-  "job": "023f3a85-a80c-4d1e-92c7-b0de26ec3529",
+  "job": "73d1d7bb-602e-44e8-8bf6-0ff9743988bb",
   "params": {
    "sample": "https://storage.googleapis.com/ludo-assets/api/68f97e86657c680226e7a504-f315f52bb2200802cd805e5d61d284aa.mp3",
-   "text": "Here come the surges, all at once. Steady now."
+   "text": "Here come the surges. Steady now."
   },
-  "url": "https://storage.googleapis.com/ludo-assets/api/68f97e86657c680226e7a504-26d458a151da305a355704390c3b97af.mp3",
-  "v": 1
+  "url": "https://storage.googleapis.com/ludo-assets/api/68f97e86657c680226e7a504-a683ccc2cf8b8c99728bac474b7de798.mp3",
+  "v": 2
  },
  "line18_advisor_unplaced_v2": {
   "credits": 1,
@@ -3531,14 +3603,23 @@
   "credits": 1,
   "endpoint": "/audio/speech",
   "file": "review/v18_voices/advisor/upset_win.mp3",
+  "history": [
+   {
+    "credits": 1,
+    "endpoint": "/audio/speech",
+    "job": "02c931fd-ef44-4ca6-9557-061af7192c49",
+    "url": "https://storage.googleapis.com/ludo-assets/api/68f97e86657c680226e7a504-dcb03b68a725049544d46f96f74273b4.mp3",
+    "v": 1
+   }
+  ],
   "id": "line18_advisor_upset_win",
-  "job": "02c931fd-ef44-4ca6-9557-061af7192c49",
+  "job": "305fa3c7-35fe-433d-a8f4-a65728dae2b2",
   "params": {
    "sample": "https://storage.googleapis.com/ludo-assets/api/68f97e86657c680226e7a504-f315f52bb2200802cd805e5d61d284aa.mp3",
    "text": "Against all odds! I will not pretend I expected that."
   },
-  "url": "https://storage.googleapis.com/ludo-assets/api/68f97e86657c680226e7a504-dcb03b68a725049544d46f96f74273b4.mp3",
-  "v": 1
+  "url": "https://storage.googleapis.com/ludo-assets/api/68f97e86657c680226e7a504-ca71b7018dd0f3109b78ed934a48b6b7.mp3",
+  "v": 2
  },
  "line18_advisor_upset_win_v2": {
   "credits": 1,
@@ -3557,14 +3638,23 @@
   "credits": 1,
   "endpoint": "/audio/speech",
   "file": "review/v18_voices/advisor/upset_win_v3.mp3",
+  "history": [
+   {
+    "credits": 1,
+    "endpoint": "/audio/speech",
+    "job": "d9e0e3f1-b348-4622-8955-631ba89043e5",
+    "url": "https://storage.googleapis.com/ludo-assets/api/68f97e86657c680226e7a504-dac277b70db65396e507bb7ef178fb1f.mp3",
+    "v": 1
+   }
+  ],
   "id": "line18_advisor_upset_win_v3",
-  "job": "d9e0e3f1-b348-4622-8955-631ba89043e5",
+  "job": "faaaff0d-7621-4727-9d20-f0072e4aac04",
   "params": {
    "sample": "https://storage.googleapis.com/ludo-assets/api/68f97e86657c680226e7a504-f315f52bb2200802cd805e5d61d284aa.mp3",
-   "text": "That should not have worked. It worked! Marvellous!"
+   "text": "That should not have worked. But it did! Marvellous!"
   },
-  "url": "https://storage.googleapis.com/ludo-assets/api/68f97e86657c680226e7a504-dac277b70db65396e507bb7ef178fb1f.mp3",
-  "v": 1
+  "url": "https://storage.googleapis.com/ludo-assets/api/68f97e86657c680226e7a504-1810a123ec983a864a2f602c7719a052.mp3",
+  "v": 2
  },
  "line18_advisor_upset_win_v4": {
   "credits": 1,
@@ -3622,14 +3712,23 @@
   "credits": 1,
   "endpoint": "/audio/speech",
   "file": "review/v18_voices/advisor/walkin_us_v2.mp3",
+  "history": [
+   {
+    "credits": 1,
+    "endpoint": "/audio/speech",
+    "job": "e20bdaf3-68a0-478b-9d82-d22622b6e7d6",
+    "url": "https://storage.googleapis.com/ludo-assets/api/68f97e86657c680226e7a504-7131ec344c55c8d67367dbfd7ce97c59.mp3",
+    "v": 1
+   }
+  ],
   "id": "line18_advisor_walkin_us_v2",
-  "job": "e20bdaf3-68a0-478b-9d82-d22622b6e7d6",
+  "job": "76441ba7-df08-495c-9179-ee504130d5d6",
   "params": {
    "sample": "https://storage.googleapis.com/ludo-assets/api/68f97e86657c680226e7a504-f315f52bb2200802cd805e5d61d284aa.mp3",
    "text": "They left the door open and we walked right in. Splendid!"
   },
-  "url": "https://storage.googleapis.com/ludo-assets/api/68f97e86657c680226e7a504-7131ec344c55c8d67367dbfd7ce97c59.mp3",
-  "v": 1
+  "url": "https://storage.googleapis.com/ludo-assets/api/68f97e86657c680226e7a504-797b8d81659001d15eff37d3087eb406.mp3",
+  "v": 2
  },
  "line18_advisor_walkin_us_v3": {
   "credits": 1,
@@ -3648,14 +3747,23 @@
   "credits": 1,
   "endpoint": "/audio/speech",
   "file": "review/v18_voices/advisor/walkin_us_v4.mp3",
+  "history": [
+   {
+    "credits": 1,
+    "endpoint": "/audio/speech",
+    "job": "79b6f3d4-ed8f-4359-86f7-ddf053f68648",
+    "url": "https://storage.googleapis.com/ludo-assets/api/68f97e86657c680226e7a504-749e92bcb7e9dcd11502dd83dd4e13df.mp3",
+    "v": 1
+   }
+  ],
   "id": "line18_advisor_walkin_us_v4",
-  "job": "79b6f3d4-ed8f-4359-86f7-ddf053f68648",
+  "job": "98043807-6302-4e53-ab9f-b30ed2f7e04b",
   "params": {
    "sample": "https://storage.googleapis.com/ludo-assets/api/68f97e86657c680226e7a504-f315f52bb2200802cd805e5d61d284aa.mp3",
    "text": "Empty! Oh, that is careless of them. Ours now."
   },
-  "url": "https://storage.googleapis.com/ludo-assets/api/68f97e86657c680226e7a504-749e92bcb7e9dcd11502dd83dd4e13df.mp3",
-  "v": 1
+  "url": "https://storage.googleapis.com/ludo-assets/api/68f97e86657c680226e7a504-c933992537b1abd42ba2fa9620482719.mp3",
+  "v": 2
  },
  "line18_hask_attack_v2": {
   "credits": 1,
@@ -3700,27 +3808,45 @@
   "credits": 1,
   "endpoint": "/audio/speech",
   "file": "review/v18_voices/hask/capital_lost.mp3",
+  "history": [
+   {
+    "credits": 1,
+    "endpoint": "/audio/speech",
+    "job": "a029561f-ffb9-487f-8a6b-9fe518ac2186",
+    "url": "https://storage.googleapis.com/ludo-assets/api/68f97e86657c680226e7a504-479d8ecb876cc32e52a0e3e015c24f99.mp3",
+    "v": 1
+   }
+  ],
   "id": "line18_hask_capital_lost",
-  "job": "a029561f-ffb9-487f-8a6b-9fe518ac2186",
+  "job": "fc224ef8-b2aa-499a-917f-3bf9e02ffca2",
   "params": {
    "sample": "https://storage.googleapis.com/ludo-assets/api/68f97e86657c680226e7a504-3d2eec8e8b2e5a8f9142ab29d97cbcd7.mp3",
    "text": "They have taken my capital! Argh! To arms!"
   },
-  "url": "https://storage.googleapis.com/ludo-assets/api/68f97e86657c680226e7a504-479d8ecb876cc32e52a0e3e015c24f99.mp3",
-  "v": 1
+  "url": "https://storage.googleapis.com/ludo-assets/api/68f97e86657c680226e7a504-21147515fd40f3d816983c8548d89de9.mp3",
+  "v": 2
  },
  "line18_hask_capital_lost_v2": {
   "credits": 1,
   "endpoint": "/audio/speech",
   "file": "review/v18_voices/hask/capital_lost_v2.mp3",
+  "history": [
+   {
+    "credits": 1,
+    "endpoint": "/audio/speech",
+    "job": "4ffa9860-189a-456d-af46-0c550a20c39a",
+    "url": "https://storage.googleapis.com/ludo-assets/api/68f97e86657c680226e7a504-c8710ea3ef4a281fcacf6ab7565eb81d.mp3",
+    "v": 1
+   }
+  ],
   "id": "line18_hask_capital_lost_v2",
-  "job": "4ffa9860-189a-456d-af46-0c550a20c39a",
+  "job": "26b63c65-aff5-4dba-991d-6323c6d8f300",
   "params": {
    "sample": "https://storage.googleapis.com/ludo-assets/api/68f97e86657c680226e7a504-3d2eec8e8b2e5a8f9142ab29d97cbcd7.mp3",
    "text": "My hall! My beer! They will pay!"
   },
-  "url": "https://storage.googleapis.com/ludo-assets/api/68f97e86657c680226e7a504-c8710ea3ef4a281fcacf6ab7565eb81d.mp3",
-  "v": 1
+  "url": "https://storage.googleapis.com/ludo-assets/api/68f97e86657c680226e7a504-20a8ebbee8b814ada72c528cdde343b2.mp3",
+  "v": 2
  },
  "line18_hask_capital_lost_v3": {
   "credits": 1,
@@ -3752,14 +3878,23 @@
   "credits": 1,
   "endpoint": "/audio/speech",
   "file": "review/v18_voices/hask/capital_took_v2.mp3",
+  "history": [
+   {
+    "credits": 1,
+    "endpoint": "/audio/speech",
+    "job": "54abdb7f-5a50-456e-b4f4-9ecc0fc81321",
+    "url": "https://storage.googleapis.com/ludo-assets/api/68f97e86657c680226e7a504-019754d7845f6bf3cd1688af425f458a.mp3",
+    "v": 1
+   }
+  ],
   "id": "line18_hask_capital_took_v2",
-  "job": "54abdb7f-5a50-456e-b4f4-9ecc0fc81321",
+  "job": "25fbf673-822f-4704-ac23-ef23c1e28fa2",
   "params": {
    "sample": "https://storage.googleapis.com/ludo-assets/api/68f97e86657c680226e7a504-3d2eec8e8b2e5a8f9142ab29d97cbcd7.mp3",
-   "text": "The Bear sits on your throne now!"
+   "text": "The Bear sits on *your* throne now!"
   },
-  "url": "https://storage.googleapis.com/ludo-assets/api/68f97e86657c680226e7a504-019754d7845f6bf3cd1688af425f458a.mp3",
-  "v": 1
+  "url": "https://storage.googleapis.com/ludo-assets/api/68f97e86657c680226e7a504-db73dc20512a9ef521e4c3464e25de86.mp3",
+  "v": 2
  },
  "line18_hask_capital_took_v3": {
   "credits": 1,
@@ -3843,14 +3978,23 @@
   "credits": 1,
   "endpoint": "/audio/speech",
   "file": "review/v18_voices/hask/lose_v2.mp3",
+  "history": [
+   {
+    "credits": 1,
+    "endpoint": "/audio/speech",
+    "job": "a0d2cf4e-3812-42b8-b1a8-dbac4fd490c5",
+    "url": "https://storage.googleapis.com/ludo-assets/api/68f97e86657c680226e7a504-4853bb95eb78a76cb4cb56b120a63645.mp3",
+    "v": 1
+   }
+  ],
   "id": "line18_hask_lose_v2",
-  "job": "a0d2cf4e-3812-42b8-b1a8-dbac4fd490c5",
+  "job": "8762ad0c-7983-4962-97fd-782ab0189b66",
   "params": {
    "sample": "https://storage.googleapis.com/ludo-assets/api/68f97e86657c680226e7a504-3d2eec8e8b2e5a8f9142ab29d97cbcd7.mp3",
-   "text": "Argh! Lucky shot!"
+   "text": "Argh! Lucky shot."
   },
-  "url": "https://storage.googleapis.com/ludo-assets/api/68f97e86657c680226e7a504-4853bb95eb78a76cb4cb56b120a63645.mp3",
-  "v": 1
+  "url": "https://storage.googleapis.com/ludo-assets/api/68f97e86657c680226e7a504-6e8e799169211e5aadfcd7c8c8903820.mp3",
+  "v": 2
  },
  "line18_hask_lose_v3": {
   "credits": 1,
@@ -3869,14 +4013,23 @@
   "credits": 1,
   "endpoint": "/audio/speech",
   "file": "review/v18_voices/hask/lose_v4.mp3",
+  "history": [
+   {
+    "credits": 1,
+    "endpoint": "/audio/speech",
+    "job": "5c852f0d-ee63-4bae-b869-47277998535b",
+    "url": "https://storage.googleapis.com/ludo-assets/api/68f97e86657c680226e7a504-fad8e158b7b1b0ae1b8d432638b57f56.mp3",
+    "v": 1
+   }
+  ],
   "id": "line18_hask_lose_v4",
-  "job": "5c852f0d-ee63-4bae-b869-47277998535b",
+  "job": "46e7799f-1515-40ac-97cd-8e55df57e97a",
   "params": {
    "sample": "https://storage.googleapis.com/ludo-assets/api/68f97e86657c680226e7a504-3d2eec8e8b2e5a8f9142ab29d97cbcd7.mp3",
-   "text": "Grr. Patch the hull and go again."
+   "text": "Hrmph. Patch the hull and go again."
   },
-  "url": "https://storage.googleapis.com/ludo-assets/api/68f97e86657c680226e7a504-fad8e158b7b1b0ae1b8d432638b57f56.mp3",
-  "v": 1
+  "url": "https://storage.googleapis.com/ludo-assets/api/68f97e86657c680226e7a504-73d48966027bcae3eddd2919aef9e2da.mp3",
+  "v": 2
  },
  "line18_hask_reserves_v2": {
   "credits": 1,
@@ -3934,14 +4087,23 @@
   "credits": 1,
   "endpoint": "/audio/speech",
   "file": "review/v18_voices/hask/taunt.mp3",
+  "history": [
+   {
+    "credits": 1,
+    "endpoint": "/audio/speech",
+    "job": "dc065246-ae78-43ba-bbc0-49691e0065b4",
+    "url": "https://storage.googleapis.com/ludo-assets/api/68f97e86657c680226e7a504-7fc35c89886d3eaad66d5bf90cfa5cd4.mp3",
+    "v": 1
+   }
+  ],
   "id": "line18_hask_taunt",
-  "job": "dc065246-ae78-43ba-bbc0-49691e0065b4",
+  "job": "43696abb-a9cd-4b9d-87a7-695574ce5872",
   "params": {
    "sample": "https://storage.googleapis.com/ludo-assets/api/68f97e86657c680226e7a504-3d2eec8e8b2e5a8f9142ab29d97cbcd7.mp3",
-   "text": "I am coming for you, little general! Ha!"
+   "text": "I am coming for you, little general!"
   },
-  "url": "https://storage.googleapis.com/ludo-assets/api/68f97e86657c680226e7a504-7fc35c89886d3eaad66d5bf90cfa5cd4.mp3",
-  "v": 1
+  "url": "https://storage.googleapis.com/ludo-assets/api/68f97e86657c680226e7a504-0a0f35a7dfc0a61ca8c964e8498582bb.mp3",
+  "v": 2
  },
  "line18_hask_taunt_v2": {
   "credits": 1,
@@ -3960,53 +4122,89 @@
   "credits": 1,
   "endpoint": "/audio/speech",
   "file": "review/v18_voices/hask/taunt_v3.mp3",
+  "history": [
+   {
+    "credits": 1,
+    "endpoint": "/audio/speech",
+    "job": "2c7ebf2c-f71d-4ac0-bd3c-83f48a589297",
+    "url": "https://storage.googleapis.com/ludo-assets/api/68f97e86657c680226e7a504-1318b250f5ed49be44f85d91f14efafb.mp3",
+    "v": 1
+   }
+  ],
   "id": "line18_hask_taunt_v3",
-  "job": "2c7ebf2c-f71d-4ac0-bd3c-83f48a589297",
+  "job": "1436b7b4-7fec-4f89-8d09-052f0551f89c",
   "params": {
    "sample": "https://storage.googleapis.com/ludo-assets/api/68f97e86657c680226e7a504-3d2eec8e8b2e5a8f9142ab29d97cbcd7.mp3",
    "text": "The Bear smells your border, and it smells weak!"
   },
-  "url": "https://storage.googleapis.com/ludo-assets/api/68f97e86657c680226e7a504-1318b250f5ed49be44f85d91f14efafb.mp3",
-  "v": 1
+  "url": "https://storage.googleapis.com/ludo-assets/api/68f97e86657c680226e7a504-2319febf25989c3d7b35c28261748d33.mp3",
+  "v": 2
  },
  "line18_hask_taunt_v4": {
   "credits": 1,
   "endpoint": "/audio/speech",
   "file": "review/v18_voices/hask/taunt_v4.mp3",
+  "history": [
+   {
+    "credits": 1,
+    "endpoint": "/audio/speech",
+    "job": "84dab2ec-8a2f-41fc-82fd-6ecd3d6545d6",
+    "url": "https://storage.googleapis.com/ludo-assets/api/68f97e86657c680226e7a504-99784c7f5fff93ec1746f09cc042795c.mp3",
+    "v": 1
+   }
+  ],
   "id": "line18_hask_taunt_v4",
-  "job": "84dab2ec-8a2f-41fc-82fd-6ecd3d6545d6",
+  "job": "a001ac2f-af2c-405b-abd6-5358780d7ff5",
   "params": {
    "sample": "https://storage.googleapis.com/ludo-assets/api/68f97e86657c680226e7a504-3d2eec8e8b2e5a8f9142ab29d97cbcd7.mp3",
-   "text": "Run! Or do not. It is more fun if you do not!"
+   "text": "Run! Or do not. It is more *fun* if you don't."
   },
-  "url": "https://storage.googleapis.com/ludo-assets/api/68f97e86657c680226e7a504-99784c7f5fff93ec1746f09cc042795c.mp3",
-  "v": 1
+  "url": "https://storage.googleapis.com/ludo-assets/api/68f97e86657c680226e7a504-9b0c3912224ab0e5ad10ebce850cd834.mp3",
+  "v": 2
  },
  "line18_hask_walkin_v2": {
   "credits": 1,
   "endpoint": "/audio/speech",
   "file": "review/v18_voices/hask/walkin_v2.mp3",
+  "history": [
+   {
+    "credits": 1,
+    "endpoint": "/audio/speech",
+    "job": "00521f69-b9de-4913-aeee-4d9cad5f101b",
+    "url": "https://storage.googleapis.com/ludo-assets/api/68f97e86657c680226e7a504-ea0192752b402249f3df055718fa0798.mp3",
+    "v": 1
+   }
+  ],
   "id": "line18_hask_walkin_v2",
-  "job": "00521f69-b9de-4913-aeee-4d9cad5f101b",
+  "job": "c7778ad8-bcba-43c0-8e15-72f6e51f12dc",
   "params": {
    "sample": "https://storage.googleapis.com/ludo-assets/api/68f97e86657c680226e7a504-3d2eec8e8b2e5a8f9142ab29d97cbcd7.mp3",
-   "text": "Ha! Nobody on deck? I will take her!"
+   "text": "Ha! Nobody on deck?"
   },
-  "url": "https://storage.googleapis.com/ludo-assets/api/68f97e86657c680226e7a504-ea0192752b402249f3df055718fa0798.mp3",
-  "v": 1
+  "url": "https://storage.googleapis.com/ludo-assets/api/68f97e86657c680226e7a504-f4b68916ff7b14e7d434302b36a49781.mp3",
+  "v": 2
  },
  "line18_hask_walkin_v3": {
   "credits": 1,
   "endpoint": "/audio/speech",
   "file": "review/v18_voices/hask/walkin_v3.mp3",
+  "history": [
+   {
+    "credits": 1,
+    "endpoint": "/audio/speech",
+    "job": "a0e8fcff-5931-47cd-b534-6c3196a23a4b",
+    "url": "https://storage.googleapis.com/ludo-assets/api/68f97e86657c680226e7a504-e5014fe59066bf1c8e157bd9141554e5.mp3",
+    "v": 1
+   }
+  ],
   "id": "line18_hask_walkin_v3",
-  "job": "a0e8fcff-5931-47cd-b534-6c3196a23a4b",
+  "job": "f2c8c992-70d3-4951-89ca-56392efa0fcf",
   "params": {
    "sample": "https://storage.googleapis.com/ludo-assets/api/68f97e86657c680226e7a504-3d2eec8e8b2e5a8f9142ab29d97cbcd7.mp3",
    "text": "Empty? The Bear says thank you!"
   },
-  "url": "https://storage.googleapis.com/ludo-assets/api/68f97e86657c680226e7a504-e5014fe59066bf1c8e157bd9141554e5.mp3",
-  "v": 1
+  "url": "https://storage.googleapis.com/ludo-assets/api/68f97e86657c680226e7a504-6f8d710412679853ba538cba54855ea5.mp3",
+  "v": 2
  },
  "line18_hask_win_v2": {
   "credits": 1,
@@ -4038,14 +4236,23 @@
   "credits": 1,
   "endpoint": "/audio/speech",
   "file": "review/v18_voices/hask/win_v4.mp3",
+  "history": [
+   {
+    "credits": 1,
+    "endpoint": "/audio/speech",
+    "job": "d8d7a497-2d87-4359-aae3-be80f3f8cda3",
+    "url": "https://storage.googleapis.com/ludo-assets/api/68f97e86657c680226e7a504-c8b28e46f1d3dd4f4f40feb45e3bb569.mp3",
+    "v": 1
+   }
+  ],
   "id": "line18_hask_win_v4",
-  "job": "d8d7a497-2d87-4359-aae3-be80f3f8cda3",
+  "job": "4e2c3d4b-9bb6-4d48-830e-4279c7497b6b",
   "params": {
    "sample": "https://storage.googleapis.com/ludo-assets/api/68f97e86657c680226e7a504-3d2eec8e8b2e5a8f9142ab29d97cbcd7.mp3",
-   "text": "That is how the Bear does it!"
+   "text": "That is how the *Bear* does it!"
   },
-  "url": "https://storage.googleapis.com/ludo-assets/api/68f97e86657c680226e7a504-c8b28e46f1d3dd4f4f40feb45e3bb569.mp3",
-  "v": 1
+  "url": "https://storage.googleapis.com/ludo-assets/api/68f97e86657c680226e7a504-3aa0e51c252d56ecd8b293f5caa1fb90.mp3",
+  "v": 2
  },
  "line18_imre_attack_v2": {
   "credits": 1,
@@ -4077,27 +4284,45 @@
   "credits": 1,
   "endpoint": "/audio/speech",
   "file": "review/v18_voices/imre/attack_v4.mp3",
+  "history": [
+   {
+    "credits": 1,
+    "endpoint": "/audio/speech",
+    "job": "ca8b7bc3-621a-414f-862f-f0ef52a07ce1",
+    "url": "https://storage.googleapis.com/ludo-assets/api/68f97e86657c680226e7a504-f6c5aa9078d45694fdfbc27ada44eb83.mp3",
+    "v": 1
+   }
+  ],
   "id": "line18_imre_attack_v4",
-  "job": "ca8b7bc3-621a-414f-862f-f0ef52a07ce1",
+  "job": "19632b96-f359-4a91-bfe4-4647ab1968df",
   "params": {
    "sample": "https://storage.googleapis.com/ludo-assets/api/68f97e86657c680226e7a504-19c95d3411c64cbe9552b17ed229dd62.mp3",
-   "text": "They are exactly where I expected. Strike."
+   "text": "They are *exactly* where I expected. Strike."
   },
-  "url": "https://storage.googleapis.com/ludo-assets/api/68f97e86657c680226e7a504-f6c5aa9078d45694fdfbc27ada44eb83.mp3",
-  "v": 1
+  "url": "https://storage.googleapis.com/ludo-assets/api/68f97e86657c680226e7a504-a3f1af9030f7747296b767f545e83152.mp3",
+  "v": 2
  },
  "line18_imre_capital_lost": {
   "credits": 1,
   "endpoint": "/audio/speech",
   "file": "review/v18_voices/imre/capital_lost.mp3",
+  "history": [
+   {
+    "credits": 1,
+    "endpoint": "/audio/speech",
+    "job": "e535eb2b-fb3c-4b55-9002-d61492fa5df1",
+    "url": "https://storage.googleapis.com/ludo-assets/api/68f97e86657c680226e7a504-4a676ed60a42790b75c99167a445abff.mp3",
+    "v": 1
+   }
+  ],
   "id": "line18_imre_capital_lost",
-  "job": "e535eb2b-fb3c-4b55-9002-d61492fa5df1",
+  "job": "5d900cc9-f2ba-4dd0-b92a-374d1ace038f",
   "params": {
    "sample": "https://storage.googleapis.com/ludo-assets/api/68f97e86657c680226e7a504-19c95d3411c64cbe9552b17ed229dd62.mp3",
    "text": "My capital has fallen. Irritating."
   },
-  "url": "https://storage.googleapis.com/ludo-assets/api/68f97e86657c680226e7a504-4a676ed60a42790b75c99167a445abff.mp3",
-  "v": 1
+  "url": "https://storage.googleapis.com/ludo-assets/api/68f97e86657c680226e7a504-c96af0073363338a91044b3c235b05df.mp3",
+  "v": 2
  },
  "line18_imre_capital_lost_v2": {
   "credits": 1,
@@ -4155,14 +4380,23 @@
   "credits": 1,
   "endpoint": "/audio/speech",
   "file": "review/v18_voices/imre/capital_took_v3.mp3",
+  "history": [
+   {
+    "credits": 1,
+    "endpoint": "/audio/speech",
+    "job": "091f124d-18cb-4a25-a350-8f483c19b9d3",
+    "url": "https://storage.googleapis.com/ludo-assets/api/68f97e86657c680226e7a504-bc83917010aaaf9e26827cfcca5f141f.mp3",
+    "v": 1
+   }
+  ],
   "id": "line18_imre_capital_took_v3",
-  "job": "091f124d-18cb-4a25-a350-8f483c19b9d3",
+  "job": "f154942a-4974-42a4-9300-7e6671f97ffd",
   "params": {
    "sample": "https://storage.googleapis.com/ludo-assets/api/68f97e86657c680226e7a504-19c95d3411c64cbe9552b17ed229dd62.mp3",
-   "text": "Your treasury was poorly defended. I corrected that."
+   "text": "Your treasury was poorly defended. I corrected that :)."
   },
-  "url": "https://storage.googleapis.com/ludo-assets/api/68f97e86657c680226e7a504-bc83917010aaaf9e26827cfcca5f141f.mp3",
-  "v": 1
+  "url": "https://storage.googleapis.com/ludo-assets/api/68f97e86657c680226e7a504-d7a4a7fd9e2ad3194d5fc3a543a62e60.mp3",
+  "v": 2
  },
  "line18_imre_cash_v2": {
   "credits": 1,
@@ -4194,14 +4428,23 @@
   "credits": 1,
   "endpoint": "/audio/speech",
   "file": "review/v18_voices/imre/claim_v3.mp3",
+  "history": [
+   {
+    "credits": 1,
+    "endpoint": "/audio/speech",
+    "job": "560383cb-56db-4e58-adab-72321b2d71aa",
+    "url": "https://storage.googleapis.com/ludo-assets/api/68f97e86657c680226e7a504-497e6df1abdf1e4a3a190cf5bb3c9323.mp3",
+    "v": 1
+   }
+  ],
   "id": "line18_imre_claim_v3",
-  "job": "560383cb-56db-4e58-adab-72321b2d71aa",
+  "job": "cd83ba17-79db-4542-b8e0-c786bf3585bb",
   "params": {
    "sample": "https://storage.googleapis.com/ludo-assets/api/68f97e86657c680226e7a504-19c95d3411c64cbe9552b17ed229dd62.mp3",
-   "text": "That land. I have my reasons."
+   "text": "*That* land. I have my reasons."
   },
-  "url": "https://storage.googleapis.com/ludo-assets/api/68f97e86657c680226e7a504-497e6df1abdf1e4a3a190cf5bb3c9323.mp3",
-  "v": 1
+  "url": "https://storage.googleapis.com/ludo-assets/api/68f97e86657c680226e7a504-222a3203e01cfe4dd70ae1d2f6c26a00.mp3",
+  "v": 2
  },
  "line18_imre_fortune": {
   "credits": 1,
@@ -4246,14 +4489,23 @@
   "credits": 1,
   "endpoint": "/audio/speech",
   "file": "review/v18_voices/imre/lose_v3.mp3",
+  "history": [
+   {
+    "credits": 1,
+    "endpoint": "/audio/speech",
+    "job": "e703ca8e-9cdf-4239-866f-e27178570035",
+    "url": "https://storage.googleapis.com/ludo-assets/api/68f97e86657c680226e7a504-be1cc634a99c20f7d035c5af6ac83fa3.mp3",
+    "v": 1
+   }
+  ],
   "id": "line18_imre_lose_v3",
-  "job": "e703ca8e-9cdf-4239-866f-e27178570035",
+  "job": "fa2a032d-60c9-44b1-b261-501f3837863f",
   "params": {
    "sample": "https://storage.googleapis.com/ludo-assets/api/68f97e86657c680226e7a504-19c95d3411c64cbe9552b17ed229dd62.mp3",
    "text": "A variance. It will even out."
   },
-  "url": "https://storage.googleapis.com/ludo-assets/api/68f97e86657c680226e7a504-be1cc634a99c20f7d035c5af6ac83fa3.mp3",
-  "v": 1
+  "url": "https://storage.googleapis.com/ludo-assets/api/68f97e86657c680226e7a504-2a1e9d999f9c82e133c90ba4060aed0a.mp3",
+  "v": 2
  },
  "line18_imre_lose_v4": {
   "credits": 1,
@@ -4272,14 +4524,23 @@
   "credits": 1,
   "endpoint": "/audio/speech",
   "file": "review/v18_voices/imre/reserves_v2.mp3",
+  "history": [
+   {
+    "credits": 1,
+    "endpoint": "/audio/speech",
+    "job": "992189c3-6282-43a4-a94a-7d82ac7d6e61",
+    "url": "https://storage.googleapis.com/ludo-assets/api/68f97e86657c680226e7a504-28285aa981389448069cf76eb49b0c89.mp3",
+    "v": 1
+   }
+  ],
   "id": "line18_imre_reserves_v2",
-  "job": "992189c3-6282-43a4-a94a-7d82ac7d6e61",
+  "job": "35113146-95da-4da3-ae44-0392a1859c0c",
   "params": {
    "sample": "https://storage.googleapis.com/ludo-assets/api/68f97e86657c680226e7a504-19c95d3411c64cbe9552b17ed229dd62.mp3",
-   "text": "Now. The reserve."
+   "text": "Now comes the reserve."
   },
-  "url": "https://storage.googleapis.com/ludo-assets/api/68f97e86657c680226e7a504-28285aa981389448069cf76eb49b0c89.mp3",
-  "v": 1
+  "url": "https://storage.googleapis.com/ludo-assets/api/68f97e86657c680226e7a504-940e3b95627cd6bab7a5c18543204a51.mp3",
+  "v": 2
  },
  "line18_imre_reserves_v3": {
   "credits": 1,
@@ -4311,14 +4572,23 @@
   "credits": 1,
   "endpoint": "/audio/speech",
   "file": "review/v18_voices/imre/retreat_v3.mp3",
+  "history": [
+   {
+    "credits": 1,
+    "endpoint": "/audio/speech",
+    "job": "fcb583a7-73bf-4081-a577-6449141b49fd",
+    "url": "https://storage.googleapis.com/ludo-assets/api/68f97e86657c680226e7a504-1a84b5707deb7a1e9a9b87d7f6178976.mp3",
+    "v": 1
+   }
+  ],
   "id": "line18_imre_retreat_v3",
-  "job": "fcb583a7-73bf-4081-a577-6449141b49fd",
+  "job": "6638d6c6-b711-44fb-9a25-2f47ebea97ff",
   "params": {
    "sample": "https://storage.googleapis.com/ludo-assets/api/68f97e86657c680226e7a504-19c95d3411c64cbe9552b17ed229dd62.mp3",
    "text": "Preserve the fleet. Fall back."
   },
-  "url": "https://storage.googleapis.com/ludo-assets/api/68f97e86657c680226e7a504-1a84b5707deb7a1e9a9b87d7f6178976.mp3",
-  "v": 1
+  "url": "https://storage.googleapis.com/ludo-assets/api/68f97e86657c680226e7a504-9ce94675ebc9deff5a4907ac236ba073.mp3",
+  "v": 2
  },
  "line18_imre_taunt": {
   "credits": 1,
@@ -4363,27 +4633,45 @@
   "credits": 1,
   "endpoint": "/audio/speech",
   "file": "review/v18_voices/imre/taunt_v4.mp3",
+  "history": [
+   {
+    "credits": 1,
+    "endpoint": "/audio/speech",
+    "job": "0266845a-1fa9-4a4c-b511-f737db75529c",
+    "url": "https://storage.googleapis.com/ludo-assets/api/68f97e86657c680226e7a504-30a47a770d886ff56cb18230198dad22.mp3",
+    "v": 1
+   }
+  ],
   "id": "line18_imre_taunt_v4",
-  "job": "0266845a-1fa9-4a4c-b511-f737db75529c",
+  "job": "cd7ac8b8-94b3-41be-a03c-3742bfa36225",
   "params": {
    "sample": "https://storage.googleapis.com/ludo-assets/api/68f97e86657c680226e7a504-19c95d3411c64cbe9552b17ed229dd62.mp3",
    "text": "Check."
   },
-  "url": "https://storage.googleapis.com/ludo-assets/api/68f97e86657c680226e7a504-30a47a770d886ff56cb18230198dad22.mp3",
-  "v": 1
+  "url": "https://storage.googleapis.com/ludo-assets/api/68f97e86657c680226e7a504-35b46d6bfaa7ecd13a7dbbc9fed0bf2b.mp3",
+  "v": 2
  },
  "line18_imre_walkin_v2": {
   "credits": 1,
   "endpoint": "/audio/speech",
   "file": "review/v18_voices/imre/walkin_v2.mp3",
+  "history": [
+   {
+    "credits": 1,
+    "endpoint": "/audio/speech",
+    "job": "a53584ea-43d0-4327-830b-c6f01c6f2c46",
+    "url": "https://storage.googleapis.com/ludo-assets/api/68f97e86657c680226e7a504-65fb815b5a7f80f27442484c6623494a.mp3",
+    "v": 1
+   }
+  ],
   "id": "line18_imre_walkin_v2",
-  "job": "a53584ea-43d0-4327-830b-c6f01c6f2c46",
+  "job": "6f3d2d19-5b03-475b-82fd-c52a4be17862",
   "params": {
    "sample": "https://storage.googleapis.com/ludo-assets/api/68f97e86657c680226e7a504-19c95d3411c64cbe9552b17ed229dd62.mp3",
-   "text": "You left it open. I noticed."
+   "text": "You left it open."
   },
-  "url": "https://storage.googleapis.com/ludo-assets/api/68f97e86657c680226e7a504-65fb815b5a7f80f27442484c6623494a.mp3",
-  "v": 1
+  "url": "https://storage.googleapis.com/ludo-assets/api/68f97e86657c680226e7a504-fb7a28dc9d67271960ddea66d70895ee.mp3",
+  "v": 2
  },
  "line18_imre_walkin_v3": {
   "credits": 1,
@@ -4480,40 +4768,67 @@
   "credits": 1,
   "endpoint": "/audio/speech",
   "file": "review/v18_voices/oren/capital_lost.mp3",
+  "history": [
+   {
+    "credits": 1,
+    "endpoint": "/audio/speech",
+    "job": "95d8800d-8d3c-4daf-a246-5cadba6fe3b3",
+    "url": "https://storage.googleapis.com/ludo-assets/api/68f97e86657c680226e7a504-3c1c09f6aee0d44ea07e02b686355d1d.mp3",
+    "v": 1
+   }
+  ],
   "id": "line18_oren_capital_lost",
-  "job": "95d8800d-8d3c-4daf-a246-5cadba6fe3b3",
+  "job": "11799d28-d69c-4e5c-882f-0e8d56cacd00",
   "params": {
    "sample": "https://storage.googleapis.com/ludo-assets/api/68f97e86657c680226e7a504-16bb9be7264ac7447951d98e8147e99e.mp3",
-   "text": "My capital! Oh, Mother is going to be furious."
+   "text": "My capital?! Oh, Mother is going to be furious."
   },
-  "url": "https://storage.googleapis.com/ludo-assets/api/68f97e86657c680226e7a504-3c1c09f6aee0d44ea07e02b686355d1d.mp3",
-  "v": 1
+  "url": "https://storage.googleapis.com/ludo-assets/api/68f97e86657c680226e7a504-d6f8c0dc14cde6c5879229424000553a.mp3",
+  "v": 2
  },
  "line18_oren_capital_lost_v2": {
   "credits": 1,
   "endpoint": "/audio/speech",
   "file": "review/v18_voices/oren/capital_lost_v2.mp3",
+  "history": [
+   {
+    "credits": 1,
+    "endpoint": "/audio/speech",
+    "job": "7081551d-6e60-4101-a580-d2484de81345",
+    "url": "https://storage.googleapis.com/ludo-assets/api/68f97e86657c680226e7a504-fb534c36c912f973a1425a8b428c1b61.mp3",
+    "v": 1
+   }
+  ],
   "id": "line18_oren_capital_lost_v2",
-  "job": "7081551d-6e60-4101-a580-d2484de81345",
+  "job": "d048207a-bef4-4f67-8ee2-1354fbf4115b",
   "params": {
    "sample": "https://storage.googleapis.com/ludo-assets/api/68f97e86657c680226e7a504-16bb9be7264ac7447951d98e8147e99e.mp3",
    "text": "They took my capital? I was using that!"
   },
-  "url": "https://storage.googleapis.com/ludo-assets/api/68f97e86657c680226e7a504-fb534c36c912f973a1425a8b428c1b61.mp3",
-  "v": 1
+  "url": "https://storage.googleapis.com/ludo-assets/api/68f97e86657c680226e7a504-8c789ac03d36ed4e6e7f8ee85d7e82eb.mp3",
+  "v": 2
  },
  "line18_oren_capital_lost_v3": {
   "credits": 1,
   "endpoint": "/audio/speech",
   "file": "review/v18_voices/oren/capital_lost_v3.mp3",
+  "history": [
+   {
+    "credits": 1,
+    "endpoint": "/audio/speech",
+    "job": "a9eb0440-0e91-4df2-bd31-276a1c22862f",
+    "url": "https://storage.googleapis.com/ludo-assets/api/68f97e86657c680226e7a504-2ce55421c295f14f0dd69efbc648d747.mp3",
+    "v": 1
+   }
+  ],
   "id": "line18_oren_capital_lost_v3",
-  "job": "a9eb0440-0e91-4df2-bd31-276a1c22862f",
+  "job": "f06ba4e2-5241-4641-8602-fda2b4865e74",
   "params": {
    "sample": "https://storage.googleapis.com/ludo-assets/api/68f97e86657c680226e7a504-16bb9be7264ac7447951d98e8147e99e.mp3",
-   "text": "Right. New capital. Nobody panic. I am not panicking."
+   "text": "Right. New capital. Nobody panic. I'm not panicking!"
   },
-  "url": "https://storage.googleapis.com/ludo-assets/api/68f97e86657c680226e7a504-2ce55421c295f14f0dd69efbc648d747.mp3",
-  "v": 1
+  "url": "https://storage.googleapis.com/ludo-assets/api/68f97e86657c680226e7a504-d0cd8368dfd773a359dad6613ae4a6a4.mp3",
+  "v": 2
  },
  "line18_oren_capital_took": {
   "credits": 1,
@@ -4532,14 +4847,23 @@
   "credits": 1,
   "endpoint": "/audio/speech",
   "file": "review/v18_voices/oren/capital_took_v2.mp3",
+  "history": [
+   {
+    "credits": 1,
+    "endpoint": "/audio/speech",
+    "job": "96f1ef35-e044-469a-83ee-8e960186ca28",
+    "url": "https://storage.googleapis.com/ludo-assets/api/68f97e86657c680226e7a504-e9b1ed4fa0219085cb0934b8a49d5f91.mp3",
+    "v": 1
+   }
+  ],
   "id": "line18_oren_capital_took_v2",
-  "job": "96f1ef35-e044-469a-83ee-8e960186ca28",
+  "job": "55b6a89f-0d96-4ecf-b9cb-74c58ddec9e5",
   "params": {
    "sample": "https://storage.googleapis.com/ludo-assets/api/68f97e86657c680226e7a504-16bb9be7264ac7447951d98e8147e99e.mp3",
    "text": "Your capital! Is it mine? It is mine!"
   },
-  "url": "https://storage.googleapis.com/ludo-assets/api/68f97e86657c680226e7a504-e9b1ed4fa0219085cb0934b8a49d5f91.mp3",
-  "v": 1
+  "url": "https://storage.googleapis.com/ludo-assets/api/68f97e86657c680226e7a504-b62cd10c77ee7dec2d8d6dcab100350e.mp3",
+  "v": 2
  },
  "line18_oren_capital_took_v3": {
   "credits": 1,
@@ -4636,27 +4960,45 @@
   "credits": 1,
   "endpoint": "/audio/speech",
   "file": "review/v18_voices/oren/lose_v3.mp3",
+  "history": [
+   {
+    "credits": 1,
+    "endpoint": "/audio/speech",
+    "job": "58379ee7-4741-47f6-b36e-738b6d51f6bb",
+    "url": "https://storage.googleapis.com/ludo-assets/api/68f97e86657c680226e7a504-b43b0619903dc4edaab73fe6c90c80ce.mp3",
+    "v": 1
+   }
+  ],
   "id": "line18_oren_lose_v3",
-  "job": "58379ee7-4741-47f6-b36e-738b6d51f6bb",
+  "job": "8c7353ad-6802-4651-9b31-dc62b4c8a72a",
   "params": {
    "sample": "https://storage.googleapis.com/ludo-assets/api/68f97e86657c680226e7a504-16bb9be7264ac7447951d98e8147e99e.mp3",
    "text": "That is, hm. That is not ideal."
   },
-  "url": "https://storage.googleapis.com/ludo-assets/api/68f97e86657c680226e7a504-b43b0619903dc4edaab73fe6c90c80ce.mp3",
-  "v": 1
+  "url": "https://storage.googleapis.com/ludo-assets/api/68f97e86657c680226e7a504-408514dde8328b2f4739f3d50327df5b.mp3",
+  "v": 2
  },
  "line18_oren_lose_v4": {
   "credits": 1,
   "endpoint": "/audio/speech",
   "file": "review/v18_voices/oren/lose_v4.mp3",
+  "history": [
+   {
+    "credits": 1,
+    "endpoint": "/audio/speech",
+    "job": "40845819-944d-429e-b596-75fc89598166",
+    "url": "https://storage.googleapis.com/ludo-assets/api/68f97e86657c680226e7a504-ae20f94c155d0f4a07fd0917d8b6886e.mp3",
+    "v": 1
+   }
+  ],
   "id": "line18_oren_lose_v4",
-  "job": "40845819-944d-429e-b596-75fc89598166",
+  "job": "c8451fd9-75b2-4189-9c36-58f4abc88b6a",
   "params": {
    "sample": "https://storage.googleapis.com/ludo-assets/api/68f97e86657c680226e7a504-16bb9be7264ac7447951d98e8147e99e.mp3",
    "text": "Not fair! They cheated! Probably."
   },
-  "url": "https://storage.googleapis.com/ludo-assets/api/68f97e86657c680226e7a504-ae20f94c155d0f4a07fd0917d8b6886e.mp3",
-  "v": 1
+  "url": "https://storage.googleapis.com/ludo-assets/api/68f97e86657c680226e7a504-10d090b332b4cde67c480f3ebf82f323.mp3",
+  "v": 2
  },
  "line18_oren_reserves_v2": {
   "credits": 1,
@@ -4753,40 +5095,67 @@
   "credits": 1,
   "endpoint": "/audio/speech",
   "file": "review/v18_voices/oren/taunt_v4.mp3",
+  "history": [
+   {
+    "credits": 1,
+    "endpoint": "/audio/speech",
+    "job": "191cc26b-da65-4ae0-a291-b4812a07c3d9",
+    "url": "https://storage.googleapis.com/ludo-assets/api/68f97e86657c680226e7a504-5012e8392203c903dc7ca1e727ab8ca8.mp3",
+    "v": 1
+   }
+  ],
   "id": "line18_oren_taunt_v4",
-  "job": "191cc26b-da65-4ae0-a291-b4812a07c3d9",
+  "job": "81fd5682-1cdc-4a0f-abd6-c8ceb807872a",
   "params": {
    "sample": "https://storage.googleapis.com/ludo-assets/api/68f97e86657c680226e7a504-16bb9be7264ac7447951d98e8147e99e.mp3",
    "text": "I have a very fast horse, and it is pointed at you!"
   },
-  "url": "https://storage.googleapis.com/ludo-assets/api/68f97e86657c680226e7a504-5012e8392203c903dc7ca1e727ab8ca8.mp3",
-  "v": 1
+  "url": "https://storage.googleapis.com/ludo-assets/api/68f97e86657c680226e7a504-a2d5cafc1a98404c496896a448cb8e41.mp3",
+  "v": 2
  },
  "line18_oren_walkin_v2": {
   "credits": 1,
   "endpoint": "/audio/speech",
   "file": "review/v18_voices/oren/walkin_v2.mp3",
+  "history": [
+   {
+    "credits": 1,
+    "endpoint": "/audio/speech",
+    "job": "21971979-cb28-453c-9743-9674ee16c5d6",
+    "url": "https://storage.googleapis.com/ludo-assets/api/68f97e86657c680226e7a504-08f1f09ceb984e57452ddfd43a89f6b2.mp3",
+    "v": 1
+   }
+  ],
   "id": "line18_oren_walkin_v2",
-  "job": "21971979-cb28-453c-9743-9674ee16c5d6",
+  "job": "2977edeb-0ba0-431d-a7aa-29e6c19dbb35",
   "params": {
    "sample": "https://storage.googleapis.com/ludo-assets/api/68f97e86657c680226e7a504-16bb9be7264ac7447951d98e8147e99e.mp3",
-   "text": "Oh, it is empty! Mine, mine, mine!"
+   "text": "Oh, it's empty. Mine!"
   },
-  "url": "https://storage.googleapis.com/ludo-assets/api/68f97e86657c680226e7a504-08f1f09ceb984e57452ddfd43a89f6b2.mp3",
-  "v": 1
+  "url": "https://storage.googleapis.com/ludo-assets/api/68f97e86657c680226e7a504-84929273d2211cfab344987ab42864a0.mp3",
+  "v": 2
  },
  "line18_oren_walkin_v3": {
   "credits": 1,
   "endpoint": "/audio/speech",
   "file": "review/v18_voices/oren/walkin_v3.mp3",
+  "history": [
+   {
+    "credits": 1,
+    "endpoint": "/audio/speech",
+    "job": "1ddee25e-e8dd-40c1-b42a-145adea60ae1",
+    "url": "https://storage.googleapis.com/ludo-assets/api/68f97e86657c680226e7a504-bc72a7ee2544a8dd25eb3bd712444f71.mp3",
+    "v": 1
+   }
+  ],
   "id": "line18_oren_walkin_v3",
-  "job": "1ddee25e-e8dd-40c1-b42a-145adea60ae1",
+  "job": "9019ab7b-3dd3-42b2-a200-e35e916d418d",
   "params": {
    "sample": "https://storage.googleapis.com/ludo-assets/api/68f97e86657c680226e7a504-16bb9be7264ac7447951d98e8147e99e.mp3",
-   "text": "Nobody there? Brilliant!"
+   "text": "Nobody home? Brilliant!"
   },
-  "url": "https://storage.googleapis.com/ludo-assets/api/68f97e86657c680226e7a504-bc72a7ee2544a8dd25eb3bd712444f71.mp3",
-  "v": 1
+  "url": "https://storage.googleapis.com/ludo-assets/api/68f97e86657c680226e7a504-5c6c0ab34c035e5ebb51e5ef26e80de6.mp3",
+  "v": 2
  },
  "line18_oren_win_v2": {
   "credits": 1,
@@ -4831,14 +5200,23 @@
   "credits": 1,
   "endpoint": "/audio/speech",
   "file": "review/v18_voices/quill/attack_v2.mp3",
+  "history": [
+   {
+    "credits": 1,
+    "endpoint": "/audio/speech",
+    "job": "be3d87a1-2b3a-4016-823f-2d7d2e5511f2",
+    "url": "https://storage.googleapis.com/ludo-assets/api/68f97e86657c680226e7a504-f57d7f55918ac9156ac8b5e6b599a93a.mp3",
+    "v": 1
+   }
+  ],
   "id": "line18_quill_attack_v2",
-  "job": "be3d87a1-2b3a-4016-823f-2d7d2e5511f2",
+  "job": "765057b5-ff9a-427a-ad4e-9cd474523402",
   "params": {
    "sample": "https://storage.googleapis.com/ludo-assets/api/68f97e86657c680226e7a504-cf9f39d78debf0feb86cb518794fa307.mp3",
-   "text": "Right, lads. Go and repossess it."
+   "text": "Right lads. Go and repossess it!"
   },
-  "url": "https://storage.googleapis.com/ludo-assets/api/68f97e86657c680226e7a504-f57d7f55918ac9156ac8b5e6b599a93a.mp3",
-  "v": 1
+  "url": "https://storage.googleapis.com/ludo-assets/api/68f97e86657c680226e7a504-5ef1bd8695007cb927c8cc04ae5cac3b.mp3",
+  "v": 2
  },
  "line18_quill_attack_v3": {
   "credits": 1,
@@ -4909,79 +5287,133 @@
   "credits": 1,
   "endpoint": "/audio/speech",
   "file": "review/v18_voices/quill/capital_took.mp3",
+  "history": [
+   {
+    "credits": 1,
+    "endpoint": "/audio/speech",
+    "job": "0b865abc-9e21-42e6-bbd8-779781fa0dca",
+    "url": "https://storage.googleapis.com/ludo-assets/api/68f97e86657c680226e7a504-798d753483fafceeacfdf1d66b6aa06b.mp3",
+    "v": 1
+   }
+  ],
   "id": "line18_quill_capital_took",
-  "job": "0b865abc-9e21-42e6-bbd8-779781fa0dca",
+  "job": "c1ae11c4-708e-4c1b-9183-91df92107caf",
   "params": {
    "sample": "https://storage.googleapis.com/ludo-assets/api/68f97e86657c680226e7a504-cf9f39d78debf0feb86cb518794fa307.mp3",
-   "text": "Your treasury? Consider it audited."
+   "text": "Consider your treasury audited."
   },
-  "url": "https://storage.googleapis.com/ludo-assets/api/68f97e86657c680226e7a504-798d753483fafceeacfdf1d66b6aa06b.mp3",
-  "v": 1
+  "url": "https://storage.googleapis.com/ludo-assets/api/68f97e86657c680226e7a504-72df01af86a8a4c257e929c4cd60fda6.mp3",
+  "v": 2
  },
  "line18_quill_capital_took_v2": {
   "credits": 1,
   "endpoint": "/audio/speech",
   "file": "review/v18_voices/quill/capital_took_v2.mp3",
+  "history": [
+   {
+    "credits": 1,
+    "endpoint": "/audio/speech",
+    "job": "082006a3-5915-4a46-90cc-d04eb427a69a",
+    "url": "https://storage.googleapis.com/ludo-assets/api/68f97e86657c680226e7a504-8c2582e273fdfc9c8f68a6f0477aca12.mp3",
+    "v": 1
+   }
+  ],
   "id": "line18_quill_capital_took_v2",
-  "job": "082006a3-5915-4a46-90cc-d04eb427a69a",
+  "job": "392fb1f6-98a9-4b40-87c8-cd87368ae398",
   "params": {
    "sample": "https://storage.googleapis.com/ludo-assets/api/68f97e86657c680226e7a504-cf9f39d78debf0feb86cb518794fa307.mp3",
-   "text": "What a lovely capital. And such generous vaults!"
+   "text": "What a lovely capital. And such *generous* vaults."
   },
-  "url": "https://storage.googleapis.com/ludo-assets/api/68f97e86657c680226e7a504-8c2582e273fdfc9c8f68a6f0477aca12.mp3",
-  "v": 1
+  "url": "https://storage.googleapis.com/ludo-assets/api/68f97e86657c680226e7a504-e285e2a11e01b8c106b83773b6bb2fe4.mp3",
+  "v": 2
  },
  "line18_quill_capital_took_v3": {
   "credits": 1,
   "endpoint": "/audio/speech",
   "file": "review/v18_voices/quill/capital_took_v3.mp3",
+  "history": [
+   {
+    "credits": 1,
+    "endpoint": "/audio/speech",
+    "job": "61589bf1-a0e1-4931-9705-4325f623e2ff",
+    "url": "https://storage.googleapis.com/ludo-assets/api/68f97e86657c680226e7a504-cfcd6ed5e35e91aba0ba7ac6e4b72d87.mp3",
+    "v": 1
+   }
+  ],
   "id": "line18_quill_capital_took_v3",
-  "job": "61589bf1-a0e1-4931-9705-4325f623e2ff",
+  "job": "ab7ad6e4-76fa-4fd8-b23d-c5021d58ec34",
   "params": {
    "sample": "https://storage.googleapis.com/ludo-assets/api/68f97e86657c680226e7a504-cf9f39d78debf0feb86cb518794fa307.mp3",
    "text": "The Company thanks you for your contribution."
   },
-  "url": "https://storage.googleapis.com/ludo-assets/api/68f97e86657c680226e7a504-cfcd6ed5e35e91aba0ba7ac6e4b72d87.mp3",
-  "v": 1
+  "url": "https://storage.googleapis.com/ludo-assets/api/68f97e86657c680226e7a504-06388c870ee301fc335294f1f0351f0d.mp3",
+  "v": 2
  },
  "line18_quill_cash_v2": {
   "credits": 1,
   "endpoint": "/audio/speech",
   "file": "review/v18_voices/quill/cash_v2.mp3",
+  "history": [
+   {
+    "credits": 1,
+    "endpoint": "/audio/speech",
+    "job": "8ca064da-92df-4460-b1f0-39b69439481c",
+    "url": "https://storage.googleapis.com/ludo-assets/api/68f97e86657c680226e7a504-64f244a86dde59d241cfa2d43a2348ee.mp3",
+    "v": 1
+   }
+  ],
   "id": "line18_quill_cash_v2",
-  "job": "8ca064da-92df-4460-b1f0-39b69439481c",
+  "job": "69b50e48-f7b1-4089-8750-aea47435e7e6",
   "params": {
    "sample": "https://storage.googleapis.com/ludo-assets/api/68f97e86657c680226e7a504-cf9f39d78debf0feb86cb518794fa307.mp3",
    "text": "Cashing in my chips. With interest."
   },
-  "url": "https://storage.googleapis.com/ludo-assets/api/68f97e86657c680226e7a504-64f244a86dde59d241cfa2d43a2348ee.mp3",
-  "v": 1
+  "url": "https://storage.googleapis.com/ludo-assets/api/68f97e86657c680226e7a504-3a7489fb5bb1fd2b841015f812ed54b9.mp3",
+  "v": 2
  },
  "line18_quill_claim_v2": {
   "credits": 1,
   "endpoint": "/audio/speech",
   "file": "review/v18_voices/quill/claim_v2.mp3",
+  "history": [
+   {
+    "credits": 1,
+    "endpoint": "/audio/speech",
+    "job": "c7dcca75-5a87-4939-b65b-37c5eb3d646a",
+    "url": "https://storage.googleapis.com/ludo-assets/api/68f97e86657c680226e7a504-321c05946bacd6866c3655a735c7295a.mp3",
+    "v": 1
+   }
+  ],
   "id": "line18_quill_claim_v2",
-  "job": "c7dcca75-5a87-4939-b65b-37c5eb3d646a",
+  "job": "1610cee5-84cd-4e96-97d9-8fa00137182f",
   "params": {
    "sample": "https://storage.googleapis.com/ludo-assets/api/68f97e86657c680226e7a504-cf9f39d78debf0feb86cb518794fa307.mp3",
-   "text": "Prime real estate. I will take it."
+   "text": "Prime real estate. I'll take it."
   },
-  "url": "https://storage.googleapis.com/ludo-assets/api/68f97e86657c680226e7a504-321c05946bacd6866c3655a735c7295a.mp3",
-  "v": 1
+  "url": "https://storage.googleapis.com/ludo-assets/api/68f97e86657c680226e7a504-b1c242f0be25dc1ac4f70d41548df346.mp3",
+  "v": 2
  },
  "line18_quill_claim_v3": {
   "credits": 1,
   "endpoint": "/audio/speech",
   "file": "review/v18_voices/quill/claim_v3.mp3",
+  "history": [
+   {
+    "credits": 1,
+    "endpoint": "/audio/speech",
+    "job": "5b0f98fd-429a-4047-8072-a97b03d4c0df",
+    "url": "https://storage.googleapis.com/ludo-assets/api/68f97e86657c680226e7a504-8d65c27824cbca9ce0430968b08db986.mp3",
+    "v": 1
+   }
+  ],
   "id": "line18_quill_claim_v3",
-  "job": "5b0f98fd-429a-4047-8072-a97b03d4c0df",
+  "job": "c4daa7bc-d92a-4f3b-946f-b94502e5dcfb",
   "params": {
    "sample": "https://storage.googleapis.com/ludo-assets/api/68f97e86657c680226e7a504-cf9f39d78debf0feb86cb518794fa307.mp3",
    "text": "Location, location, location."
   },
-  "url": "https://storage.googleapis.com/ludo-assets/api/68f97e86657c680226e7a504-8d65c27824cbca9ce0430968b08db986.mp3",
-  "v": 1
+  "url": "https://storage.googleapis.com/ludo-assets/api/68f97e86657c680226e7a504-fd1bfd95b45675c094a7505350374b29.mp3",
+  "v": 2
  },
  "line18_quill_fortune": {
   "credits": 1,
@@ -5026,14 +5458,23 @@
   "credits": 1,
   "endpoint": "/audio/speech",
   "file": "review/v18_voices/quill/lose_v3.mp3",
+  "history": [
+   {
+    "credits": 1,
+    "endpoint": "/audio/speech",
+    "job": "11c8e995-51c8-4357-a32d-a0603e64c6c9",
+    "url": "https://storage.googleapis.com/ludo-assets/api/68f97e86657c680226e7a504-2e09b281797693ec47f0f8912a96598c.mp3",
+    "v": 1
+   }
+  ],
   "id": "line18_quill_lose_v3",
-  "job": "11c8e995-51c8-4357-a32d-a0603e64c6c9",
+  "job": "3fce4d77-8cd2-4f25-a662-24b56a5a0675",
   "params": {
    "sample": "https://storage.googleapis.com/ludo-assets/api/68f97e86657c680226e7a504-cf9f39d78debf0feb86cb518794fa307.mp3",
-   "text": "Well, that was a poor investment."
+   "text": "Well, *that* was a poor investment."
   },
-  "url": "https://storage.googleapis.com/ludo-assets/api/68f97e86657c680226e7a504-2e09b281797693ec47f0f8912a96598c.mp3",
-  "v": 1
+  "url": "https://storage.googleapis.com/ludo-assets/api/68f97e86657c680226e7a504-461da37ccfd5eeb90dc66b9d8162c6a0.mp3",
+  "v": 2
  },
  "line18_quill_lose_v4": {
   "credits": 1,
@@ -5052,92 +5493,155 @@
   "credits": 1,
   "endpoint": "/audio/speech",
   "file": "review/v18_voices/quill/reserves_v2.mp3",
+  "history": [
+   {
+    "credits": 1,
+    "endpoint": "/audio/speech",
+    "job": "ae5d5944-a307-4a16-a804-11961de12c0b",
+    "url": "https://storage.googleapis.com/ludo-assets/api/68f97e86657c680226e7a504-716652a06cf20c06cfbdf16935beb8d4.mp3",
+    "v": 1
+   }
+  ],
   "id": "line18_quill_reserves_v2",
-  "job": "ae5d5944-a307-4a16-a804-11961de12c0b",
+  "job": "6f8d300e-3b9f-4904-9757-80d50839b76b",
   "params": {
    "sample": "https://storage.googleapis.com/ludo-assets/api/68f97e86657c680226e7a504-cf9f39d78debf0feb86cb518794fa307.mp3",
-   "text": "Throw in the capital! All of it!"
+   "text": "Throw in our capital! All of it!"
   },
-  "url": "https://storage.googleapis.com/ludo-assets/api/68f97e86657c680226e7a504-716652a06cf20c06cfbdf16935beb8d4.mp3",
-  "v": 1
+  "url": "https://storage.googleapis.com/ludo-assets/api/68f97e86657c680226e7a504-fe0ccf37a5bd4860f34420a90b9b4fa9.mp3",
+  "v": 2
  },
  "line18_quill_reserves_v3": {
   "credits": 1,
   "endpoint": "/audio/speech",
   "file": "review/v18_voices/quill/reserves_v3.mp3",
+  "history": [
+   {
+    "credits": 1,
+    "endpoint": "/audio/speech",
+    "job": "852578ab-4d14-4f86-96a0-3e5172f5fd44",
+    "url": "https://storage.googleapis.com/ludo-assets/api/68f97e86657c680226e7a504-f44851768405f27358f900482f85695e.mp3",
+    "v": 1
+   }
+  ],
   "id": "line18_quill_reserves_v3",
-  "job": "852578ab-4d14-4f86-96a0-3e5172f5fd44",
+  "job": "c7d810d8-e4fd-4380-a262-47e60e9f64d3",
   "params": {
    "sample": "https://storage.googleapis.com/ludo-assets/api/68f97e86657c680226e7a504-cf9f39d78debf0feb86cb518794fa307.mp3",
    "text": "Double down, gentlemen!"
   },
-  "url": "https://storage.googleapis.com/ludo-assets/api/68f97e86657c680226e7a504-f44851768405f27358f900482f85695e.mp3",
-  "v": 1
+  "url": "https://storage.googleapis.com/ludo-assets/api/68f97e86657c680226e7a504-932cc8e85dfa99746cb40f1f849ae6d9.mp3",
+  "v": 2
  },
  "line18_quill_retreat_v2": {
   "credits": 1,
   "endpoint": "/audio/speech",
   "file": "review/v18_voices/quill/retreat_v2.mp3",
+  "history": [
+   {
+    "credits": 1,
+    "endpoint": "/audio/speech",
+    "job": "408ac239-35e1-498a-a33e-6018843ec486",
+    "url": "https://storage.googleapis.com/ludo-assets/api/68f97e86657c680226e7a504-d0f526ec292d177f648f06241d69ab54.mp3",
+    "v": 1
+   }
+  ],
   "id": "line18_quill_retreat_v2",
-  "job": "408ac239-35e1-498a-a33e-6018843ec486",
+  "job": "2e309b27-45ad-4b20-a626-9b49aa7940c7",
   "params": {
    "sample": "https://storage.googleapis.com/ludo-assets/api/68f97e86657c680226e7a504-cf9f39d78debf0feb86cb518794fa307.mp3",
    "text": "Pull out, lads. The market has turned."
   },
-  "url": "https://storage.googleapis.com/ludo-assets/api/68f97e86657c680226e7a504-d0f526ec292d177f648f06241d69ab54.mp3",
-  "v": 1
+  "url": "https://storage.googleapis.com/ludo-assets/api/68f97e86657c680226e7a504-dbb54ba81639597dfc33df1ffec0d451.mp3",
+  "v": 2
  },
  "line18_quill_retreat_v3": {
   "credits": 1,
   "endpoint": "/audio/speech",
   "file": "review/v18_voices/quill/retreat_v3.mp3",
+  "history": [
+   {
+    "credits": 1,
+    "endpoint": "/audio/speech",
+    "job": "1f45d033-f792-48e5-886c-5c9b5ef63995",
+    "url": "https://storage.googleapis.com/ludo-assets/api/68f97e86657c680226e7a504-6b3765824ced99520550e43dea1c9783.mp3",
+    "v": 1
+   }
+  ],
   "id": "line18_quill_retreat_v3",
-  "job": "1f45d033-f792-48e5-886c-5c9b5ef63995",
+  "job": "f042a3cc-0e48-417a-b9fc-d2debd88b48a",
   "params": {
    "sample": "https://storage.googleapis.com/ludo-assets/api/68f97e86657c680226e7a504-cf9f39d78debf0feb86cb518794fa307.mp3",
-   "text": "Sell! Sell! Back to the ships!"
+   "text": "Sell! Sell!"
   },
-  "url": "https://storage.googleapis.com/ludo-assets/api/68f97e86657c680226e7a504-6b3765824ced99520550e43dea1c9783.mp3",
-  "v": 1
+  "url": "https://storage.googleapis.com/ludo-assets/api/68f97e86657c680226e7a504-636129634fd20a9a58854a82163b82a2.mp3",
+  "v": 2
  },
  "line18_quill_taunt": {
   "credits": 1,
   "endpoint": "/audio/speech",
   "file": "review/v18_voices/quill/taunt.mp3",
+  "history": [
+   {
+    "credits": 1,
+    "endpoint": "/audio/speech",
+    "job": "3b9a0373-880f-4825-a8ab-3c275920e8d8",
+    "url": "https://storage.googleapis.com/ludo-assets/api/68f97e86657c680226e7a504-9f8baabd622eb048f20edc1cc2c83570.mp3",
+    "v": 1
+   }
+  ],
   "id": "line18_quill_taunt",
-  "job": "3b9a0373-880f-4825-a8ab-3c275920e8d8",
+  "job": "1c428995-6a8f-487d-9eb5-d7c8b2c5427d",
   "params": {
    "sample": "https://storage.googleapis.com/ludo-assets/api/68f97e86657c680226e7a504-cf9f39d78debf0feb86cb518794fa307.mp3",
    "text": "Nothing personal, Commander. Just business."
   },
-  "url": "https://storage.googleapis.com/ludo-assets/api/68f97e86657c680226e7a504-9f8baabd622eb048f20edc1cc2c83570.mp3",
-  "v": 1
+  "url": "https://storage.googleapis.com/ludo-assets/api/68f97e86657c680226e7a504-524205281c43e925efd53ae96249d8d3.mp3",
+  "v": 2
  },
  "line18_quill_taunt_v2": {
   "credits": 1,
   "endpoint": "/audio/speech",
   "file": "review/v18_voices/quill/taunt_v2.mp3",
+  "history": [
+   {
+    "credits": 1,
+    "endpoint": "/audio/speech",
+    "job": "949b6e09-1ca9-40ae-9d97-4d6fb02c2a9f",
+    "url": "https://storage.googleapis.com/ludo-assets/api/68f97e86657c680226e7a504-536f930d6c0c450857403d076a264d27.mp3",
+    "v": 1
+   }
+  ],
   "id": "line18_quill_taunt_v2",
-  "job": "949b6e09-1ca9-40ae-9d97-4d6fb02c2a9f",
+  "job": "6de513b0-84cc-4838-ad62-bd63045e69d5",
   "params": {
    "sample": "https://storage.googleapis.com/ludo-assets/api/68f97e86657c680226e7a504-cf9f39d78debf0feb86cb518794fa307.mp3",
-   "text": "I have made you an offer you cannot refuse. My army."
+   "text": "I have an offer you cannot refuse. My army."
   },
-  "url": "https://storage.googleapis.com/ludo-assets/api/68f97e86657c680226e7a504-536f930d6c0c450857403d076a264d27.mp3",
-  "v": 1
+  "url": "https://storage.googleapis.com/ludo-assets/api/68f97e86657c680226e7a504-db3045b845f37660227a8f75f5830f1d.mp3",
+  "v": 2
  },
  "line18_quill_taunt_v3": {
   "credits": 1,
   "endpoint": "/audio/speech",
   "file": "review/v18_voices/quill/taunt_v3.mp3",
+  "history": [
+   {
+    "credits": 1,
+    "endpoint": "/audio/speech",
+    "job": "cdda5ea2-d308-4348-99c3-c2d9e3cbb00b",
+    "url": "https://storage.googleapis.com/ludo-assets/api/68f97e86657c680226e7a504-65761d5e581c266607daae5ccaf6d78c.mp3",
+    "v": 1
+   }
+  ],
   "id": "line18_quill_taunt_v3",
-  "job": "cdda5ea2-d308-4348-99c3-c2d9e3cbb00b",
+  "job": "9c51f5c7-3fa6-4646-8d48-059190f58798",
   "params": {
    "sample": "https://storage.googleapis.com/ludo-assets/api/68f97e86657c680226e7a504-cf9f39d78debf0feb86cb518794fa307.mp3",
-   "text": "Your lands are under new management. Mine."
+   "text": "Your lands are under new management."
   },
-  "url": "https://storage.googleapis.com/ludo-assets/api/68f97e86657c680226e7a504-65761d5e581c266607daae5ccaf6d78c.mp3",
-  "v": 1
+  "url": "https://storage.googleapis.com/ludo-assets/api/68f97e86657c680226e7a504-3dc758355afbf3e24be30afcc1a70472.mp3",
+  "v": 2
  },
  "line18_quill_taunt_v4": {
   "credits": 1,
@@ -5156,27 +5660,45 @@
   "credits": 1,
   "endpoint": "/audio/speech",
   "file": "review/v18_voices/quill/walkin_v2.mp3",
+  "history": [
+   {
+    "credits": 1,
+    "endpoint": "/audio/speech",
+    "job": "67604cc6-60d5-4161-9437-15495c114a77",
+    "url": "https://storage.googleapis.com/ludo-assets/api/68f97e86657c680226e7a504-fb84c798ddeb5b66923d38badc8f2dd9.mp3",
+    "v": 1
+   }
+  ],
   "id": "line18_quill_walkin_v2",
-  "job": "67604cc6-60d5-4161-9437-15495c114a77",
+  "job": "b395a680-68e1-4eb9-bd9b-0001c3be38e8",
   "params": {
    "sample": "https://storage.googleapis.com/ludo-assets/api/68f97e86657c680226e7a504-cf9f39d78debf0feb86cb518794fa307.mp3",
    "text": "Unattended property? Mine, by right of possession."
   },
-  "url": "https://storage.googleapis.com/ludo-assets/api/68f97e86657c680226e7a504-fb84c798ddeb5b66923d38badc8f2dd9.mp3",
-  "v": 1
+  "url": "https://storage.googleapis.com/ludo-assets/api/68f97e86657c680226e7a504-d1199a1ade5956832375d66502ca4c41.mp3",
+  "v": 2
  },
  "line18_quill_walkin_v3": {
   "credits": 1,
   "endpoint": "/audio/speech",
   "file": "review/v18_voices/quill/walkin_v3.mp3",
+  "history": [
+   {
+    "credits": 1,
+    "endpoint": "/audio/speech",
+    "job": "5ec9f6fc-46aa-46e4-9b38-807f66429af2",
+    "url": "https://storage.googleapis.com/ludo-assets/api/68f97e86657c680226e7a504-6cbfd5481ee640f503e2f6104df40631.mp3",
+    "v": 1
+   }
+  ],
   "id": "line18_quill_walkin_v3",
-  "job": "5ec9f6fc-46aa-46e4-9b38-807f66429af2",
+  "job": "4181e71c-03bb-489d-9f2e-6461a6a1e865",
   "params": {
    "sample": "https://storage.googleapis.com/ludo-assets/api/68f97e86657c680226e7a504-cf9f39d78debf0feb86cb518794fa307.mp3",
-   "text": "Nobody minding the shop? Lovely."
+   "text": "Nobody minding the shop? Lovely!"
   },
-  "url": "https://storage.googleapis.com/ludo-assets/api/68f97e86657c680226e7a504-6cbfd5481ee640f503e2f6104df40631.mp3",
-  "v": 1
+  "url": "https://storage.googleapis.com/ludo-assets/api/68f97e86657c680226e7a504-765b1d0ace8ed42a413b88e1a14dced8.mp3",
+  "v": 2
  },
  "line18_quill_win_v2": {
   "credits": 1,
@@ -5234,14 +5756,23 @@
   "credits": 1,
   "endpoint": "/audio/speech",
   "file": "review/v18_voices/varek/attack_v3.mp3",
+  "history": [
+   {
+    "credits": 1,
+    "endpoint": "/audio/speech",
+    "job": "999895c2-993c-475b-b518-fb76cf3784e9",
+    "url": "https://storage.googleapis.com/ludo-assets/api/68f97e86657c680226e7a504-bc54628be319fe6b8c110d7e601dcd3f.mp3",
+    "v": 1
+   }
+  ],
   "id": "line18_varek_attack_v3",
-  "job": "999895c2-993c-475b-b518-fb76cf3784e9",
+  "job": "4302ecb2-5986-4b95-9f0d-e21881ca7786",
   "params": {
    "sample": "https://storage.googleapis.com/ludo-assets/api/68f97e86657c680226e7a504-c13808872f9c05429740345041b30464.mp3",
-   "text": "Take the ground. Hold it."
+   "text": "Take the ground!"
   },
-  "url": "https://storage.googleapis.com/ludo-assets/api/68f97e86657c680226e7a504-bc54628be319fe6b8c110d7e601dcd3f.mp3",
-  "v": 1
+  "url": "https://storage.googleapis.com/ludo-assets/api/68f97e86657c680226e7a504-1a70952bbeff0e88237a96ec5ec908d0.mp3",
+  "v": 2
  },
  "line18_varek_attack_v4": {
   "credits": 1,
@@ -5312,53 +5843,89 @@
   "credits": 1,
   "endpoint": "/audio/speech",
   "file": "review/v18_voices/varek/capital_took_v2.mp3",
+  "history": [
+   {
+    "credits": 1,
+    "endpoint": "/audio/speech",
+    "job": "63392f56-9fbe-4021-9466-707afa722fa0",
+    "url": "https://storage.googleapis.com/ludo-assets/api/68f97e86657c680226e7a504-660f0b63256f84f7d59e58d753aab512.mp3",
+    "v": 1
+   }
+  ],
   "id": "line18_varek_capital_took_v2",
-  "job": "63392f56-9fbe-4021-9466-707afa722fa0",
+  "job": "56bece5a-c63d-41ba-9eac-66cf6daec21e",
   "params": {
    "sample": "https://storage.googleapis.com/ludo-assets/api/68f97e86657c680226e7a504-c13808872f9c05429740345041b30464.mp3",
-   "text": "The seat of your government now flies my colours."
+   "text": "The seat of your government now flies *my* colours."
   },
-  "url": "https://storage.googleapis.com/ludo-assets/api/68f97e86657c680226e7a504-660f0b63256f84f7d59e58d753aab512.mp3",
-  "v": 1
+  "url": "https://storage.googleapis.com/ludo-assets/api/68f97e86657c680226e7a504-92eda273ba7b993d450542a315ccc2f2.mp3",
+  "v": 2
  },
  "line18_varek_capital_took_v3": {
   "credits": 1,
   "endpoint": "/audio/speech",
   "file": "review/v18_voices/varek/capital_took_v3.mp3",
+  "history": [
+   {
+    "credits": 1,
+    "endpoint": "/audio/speech",
+    "job": "737ac444-b7a6-452a-ae1b-27ff7b6aebc3",
+    "url": "https://storage.googleapis.com/ludo-assets/api/68f97e86657c680226e7a504-d65af8e38e8671902dff3b36c5dcfd5f.mp3",
+    "v": 1
+   }
+  ],
   "id": "line18_varek_capital_took_v3",
-  "job": "737ac444-b7a6-452a-ae1b-27ff7b6aebc3",
+  "job": "2a224781-c48f-4c51-86e7-3191e558607d",
   "params": {
    "sample": "https://storage.googleapis.com/ludo-assets/api/68f97e86657c680226e7a504-c13808872f9c05429740345041b30464.mp3",
    "text": "A capital is only stone. You should have held it."
   },
-  "url": "https://storage.googleapis.com/ludo-assets/api/68f97e86657c680226e7a504-d65af8e38e8671902dff3b36c5dcfd5f.mp3",
-  "v": 1
+  "url": "https://storage.googleapis.com/ludo-assets/api/68f97e86657c680226e7a504-3ac67add3d5fdc76a0703694539e4994.mp3",
+  "v": 2
  },
  "line18_varek_cash_v2": {
   "credits": 1,
   "endpoint": "/audio/speech",
   "file": "review/v18_voices/varek/cash_v2.mp3",
+  "history": [
+   {
+    "credits": 1,
+    "endpoint": "/audio/speech",
+    "job": "c834b29f-a533-4aa9-86db-d79574c577bf",
+    "url": "https://storage.googleapis.com/ludo-assets/api/68f97e86657c680226e7a504-e0d8142659de11f143b0d965f40a6f6d.mp3",
+    "v": 1
+   }
+  ],
   "id": "line18_varek_cash_v2",
-  "job": "c834b29f-a533-4aa9-86db-d79574c577bf",
+  "job": "cb4d75b7-7866-4de6-a4e7-975e5a7cbc30",
   "params": {
    "sample": "https://storage.googleapis.com/ludo-assets/api/68f97e86657c680226e7a504-c13808872f9c05429740345041b30464.mp3",
    "text": "The war office sends its compliments. And its regiments."
   },
-  "url": "https://storage.googleapis.com/ludo-assets/api/68f97e86657c680226e7a504-e0d8142659de11f143b0d965f40a6f6d.mp3",
-  "v": 1
+  "url": "https://storage.googleapis.com/ludo-assets/api/68f97e86657c680226e7a504-25fbf17e6c964c469b77ee18852701ae.mp3",
+  "v": 2
  },
  "line18_varek_claim_v2": {
   "credits": 1,
   "endpoint": "/audio/speech",
   "file": "review/v18_voices/varek/claim_v2.mp3",
+  "history": [
+   {
+    "credits": 1,
+    "endpoint": "/audio/speech",
+    "job": "f79129ca-4bfb-4503-b7cb-164ea9f614e0",
+    "url": "https://storage.googleapis.com/ludo-assets/api/68f97e86657c680226e7a504-2b76e6151307976f9202e608306d3d59.mp3",
+    "v": 1
+   }
+  ],
   "id": "line18_varek_claim_v2",
-  "job": "f79129ca-4bfb-4503-b7cb-164ea9f614e0",
+  "job": "0fc9b7ff-4704-4dd6-bdf4-4c3d94174cb1",
   "params": {
    "sample": "https://storage.googleapis.com/ludo-assets/api/68f97e86657c680226e7a504-c13808872f9c05429740345041b30464.mp3",
-   "text": "Here. We build from here."
+   "text": "We build from here."
   },
-  "url": "https://storage.googleapis.com/ludo-assets/api/68f97e86657c680226e7a504-2b76e6151307976f9202e608306d3d59.mp3",
-  "v": 1
+  "url": "https://storage.googleapis.com/ludo-assets/api/68f97e86657c680226e7a504-8dd6d3e3a3aefb68698ff569ad7fceaf.mp3",
+  "v": 2
  },
  "line18_varek_claim_v3": {
   "credits": 1,
@@ -5403,27 +5970,45 @@
   "credits": 1,
   "endpoint": "/audio/speech",
   "file": "review/v18_voices/varek/lose_v2.mp3",
+  "history": [
+   {
+    "credits": 1,
+    "endpoint": "/audio/speech",
+    "job": "1217e3bb-6e83-432b-b74b-e26dbf8c87a5",
+    "url": "https://storage.googleapis.com/ludo-assets/api/68f97e86657c680226e7a504-52c27c474efb219e03370edce7cfb85d.mp3",
+    "v": 1
+   }
+  ],
   "id": "line18_varek_lose_v2",
-  "job": "1217e3bb-6e83-432b-b74b-e26dbf8c87a5",
+  "job": "7dbdee2b-f0b2-4a32-a509-eb348677f37c",
   "params": {
    "sample": "https://storage.googleapis.com/ludo-assets/api/68f97e86657c680226e7a504-c13808872f9c05429740345041b30464.mp3",
    "text": "Noted."
   },
-  "url": "https://storage.googleapis.com/ludo-assets/api/68f97e86657c680226e7a504-52c27c474efb219e03370edce7cfb85d.mp3",
-  "v": 1
+  "url": "https://storage.googleapis.com/ludo-assets/api/68f97e86657c680226e7a504-23aa37e73eb5bbc31bbb3d189282c080.mp3",
+  "v": 2
  },
  "line18_varek_lose_v3": {
   "credits": 1,
   "endpoint": "/audio/speech",
   "file": "review/v18_voices/varek/lose_v3.mp3",
+  "history": [
+   {
+    "credits": 1,
+    "endpoint": "/audio/speech",
+    "job": "886f19e4-ff36-42ef-85e3-e379fbdb58cd",
+    "url": "https://storage.googleapis.com/ludo-assets/api/68f97e86657c680226e7a504-d05d5be4e6c384ea24f4906bc85acbb3.mp3",
+    "v": 1
+   }
+  ],
   "id": "line18_varek_lose_v3",
-  "job": "886f19e4-ff36-42ef-85e3-e379fbdb58cd",
+  "job": "8beb1930-6dd5-4fc2-9d09-f114013f3d02",
   "params": {
    "sample": "https://storage.googleapis.com/ludo-assets/api/68f97e86657c680226e7a504-c13808872f9c05429740345041b30464.mp3",
-   "text": "A costly lesson. For them, eventually."
+   "text": "A costly lesson for them"
   },
-  "url": "https://storage.googleapis.com/ludo-assets/api/68f97e86657c680226e7a504-d05d5be4e6c384ea24f4906bc85acbb3.mp3",
-  "v": 1
+  "url": "https://storage.googleapis.com/ludo-assets/api/68f97e86657c680226e7a504-526dc434b4fdc0aa48665a6de05f4c02.mp3",
+  "v": 2
  },
  "line18_varek_lose_v4": {
   "credits": 1,
@@ -5455,27 +6040,45 @@
   "credits": 1,
   "endpoint": "/audio/speech",
   "file": "review/v18_voices/varek/reserves_v3.mp3",
+  "history": [
+   {
+    "credits": 1,
+    "endpoint": "/audio/speech",
+    "job": "8acd9ffa-64e7-4e0d-a3bb-859cc71cc936",
+    "url": "https://storage.googleapis.com/ludo-assets/api/68f97e86657c680226e7a504-28907e9d7b95f482eb1c8c2ad7fb575e.mp3",
+    "v": 1
+   }
+  ],
   "id": "line18_varek_reserves_v3",
-  "job": "8acd9ffa-64e7-4e0d-a3bb-859cc71cc936",
+  "job": "409fd275-1cea-42e1-9bdc-1ec81c8b71ce",
   "params": {
    "sample": "https://storage.googleapis.com/ludo-assets/api/68f97e86657c680226e7a504-c13808872f9c05429740345041b30464.mp3",
    "text": "Every man forward. Now."
   },
-  "url": "https://storage.googleapis.com/ludo-assets/api/68f97e86657c680226e7a504-28907e9d7b95f482eb1c8c2ad7fb575e.mp3",
-  "v": 1
+  "url": "https://storage.googleapis.com/ludo-assets/api/68f97e86657c680226e7a504-377afc15e8546c47d56e1790d9b510d2.mp3",
+  "v": 2
  },
  "line18_varek_retreat_v2": {
   "credits": 1,
   "endpoint": "/audio/speech",
   "file": "review/v18_voices/varek/retreat_v2.mp3",
+  "history": [
+   {
+    "credits": 1,
+    "endpoint": "/audio/speech",
+    "job": "c5b2cd48-8500-4fe1-a52c-abb0bc73af97",
+    "url": "https://storage.googleapis.com/ludo-assets/api/68f97e86657c680226e7a504-1523485c0a3fd6ac1cfbe25806fed51e.mp3",
+    "v": 1
+   }
+  ],
   "id": "line18_varek_retreat_v2",
-  "job": "c5b2cd48-8500-4fe1-a52c-abb0bc73af97",
+  "job": "cfaad4d4-5378-4a87-9193-0e801b8064c8",
   "params": {
    "sample": "https://storage.googleapis.com/ludo-assets/api/68f97e86657c680226e7a504-c13808872f9c05429740345041b30464.mp3",
    "text": "Withdraw in good order. Discipline."
   },
-  "url": "https://storage.googleapis.com/ludo-assets/api/68f97e86657c680226e7a504-1523485c0a3fd6ac1cfbe25806fed51e.mp3",
-  "v": 1
+  "url": "https://storage.googleapis.com/ludo-assets/api/68f97e86657c680226e7a504-01714252cdfb1c121f070d69adf630d9.mp3",
+  "v": 2
  },
  "line18_varek_retreat_v3": {
   "credits": 1,
@@ -5494,53 +6097,89 @@
   "credits": 1,
   "endpoint": "/audio/speech",
   "file": "review/v18_voices/varek/taunt.mp3",
+  "history": [
+   {
+    "credits": 1,
+    "endpoint": "/audio/speech",
+    "job": "1f1acf67-016a-4f9e-a7e4-78858a12a8ee",
+    "url": "https://storage.googleapis.com/ludo-assets/api/68f97e86657c680226e7a504-64d3d42659583dc62167cba76de294a9.mp3",
+    "v": 1
+   }
+  ],
   "id": "line18_varek_taunt",
-  "job": "1f1acf67-016a-4f9e-a7e4-78858a12a8ee",
+  "job": "cbf06a0d-fee4-4557-acc2-d353e13270b3",
   "params": {
    "sample": "https://storage.googleapis.com/ludo-assets/api/68f97e86657c680226e7a504-c13808872f9c05429740345041b30464.mp3",
    "text": "I see your border, Commander. It is thin."
   },
-  "url": "https://storage.googleapis.com/ludo-assets/api/68f97e86657c680226e7a504-64d3d42659583dc62167cba76de294a9.mp3",
-  "v": 1
+  "url": "https://storage.googleapis.com/ludo-assets/api/68f97e86657c680226e7a504-8a48770a5536c783808600964f823b6b.mp3",
+  "v": 2
  },
  "line18_varek_taunt_v2": {
   "credits": 1,
   "endpoint": "/audio/speech",
   "file": "review/v18_voices/varek/taunt_v2.mp3",
+  "history": [
+   {
+    "credits": 1,
+    "endpoint": "/audio/speech",
+    "job": "adbdebf5-7825-441b-8069-2e7055874d5d",
+    "url": "https://storage.googleapis.com/ludo-assets/api/68f97e86657c680226e7a504-aa93a0c49c9fdbab8bc50ba8cdfabfd8.mp3",
+    "v": 1
+   }
+  ],
   "id": "line18_varek_taunt_v2",
-  "job": "adbdebf5-7825-441b-8069-2e7055874d5d",
+  "job": "357399f1-73ae-4ebd-a5c4-053d66076e04",
   "params": {
    "sample": "https://storage.googleapis.com/ludo-assets/api/68f97e86657c680226e7a504-c13808872f9c05429740345041b30464.mp3",
    "text": "My columns are marching. I would dig in, if I were you."
   },
-  "url": "https://storage.googleapis.com/ludo-assets/api/68f97e86657c680226e7a504-aa93a0c49c9fdbab8bc50ba8cdfabfd8.mp3",
-  "v": 1
+  "url": "https://storage.googleapis.com/ludo-assets/api/68f97e86657c680226e7a504-999f51e607a45178efb60a85d75695f9.mp3",
+  "v": 2
  },
  "line18_varek_taunt_v3": {
   "credits": 1,
   "endpoint": "/audio/speech",
   "file": "review/v18_voices/varek/taunt_v3.mp3",
+  "history": [
+   {
+    "credits": 1,
+    "endpoint": "/audio/speech",
+    "job": "f89e56cc-a593-490e-9ca7-448dea5abbb8",
+    "url": "https://storage.googleapis.com/ludo-assets/api/68f97e86657c680226e7a504-68903efbc3640a9fe1e3af580ce2f940.mp3",
+    "v": 1
+   }
+  ],
   "id": "line18_varek_taunt_v3",
-  "job": "f89e56cc-a593-490e-9ca7-448dea5abbb8",
+  "job": "3c1fd851-9316-4b3b-a976-0aebd0ef6fc2",
   "params": {
    "sample": "https://storage.googleapis.com/ludo-assets/api/68f97e86657c680226e7a504-c13808872f9c05429740345041b30464.mp3",
-   "text": "You have something of mine. I am coming to collect it."
+   "text": "You have something of mine. I am coming to collect."
   },
-  "url": "https://storage.googleapis.com/ludo-assets/api/68f97e86657c680226e7a504-68903efbc3640a9fe1e3af580ce2f940.mp3",
-  "v": 1
+  "url": "https://storage.googleapis.com/ludo-assets/api/68f97e86657c680226e7a504-71c61ab6ace81677794671803d6727ae.mp3",
+  "v": 2
  },
  "line18_varek_taunt_v4": {
   "credits": 1,
   "endpoint": "/audio/speech",
   "file": "review/v18_voices/varek/taunt_v4.mp3",
+  "history": [
+   {
+    "credits": 1,
+    "endpoint": "/audio/speech",
+    "job": "8bce98b7-7720-4e28-abe7-f5c1c0f6ec0d",
+    "url": "https://storage.googleapis.com/ludo-assets/api/68f97e86657c680226e7a504-cd7f7c64e9135a00f339022cb399839f.mp3",
+    "v": 1
+   }
+  ],
   "id": "line18_varek_taunt_v4",
-  "job": "8bce98b7-7720-4e28-abe7-f5c1c0f6ec0d",
+  "job": "ec56da00-7e7e-4be4-a079-505d839f795e",
   "params": {
    "sample": "https://storage.googleapis.com/ludo-assets/api/68f97e86657c680226e7a504-c13808872f9c05429740345041b30464.mp3",
-   "text": "Brace yourself. This one will hurt."
+   "text": "Brace yourself. This one will *hurt*."
   },
-  "url": "https://storage.googleapis.com/ludo-assets/api/68f97e86657c680226e7a504-cd7f7c64e9135a00f339022cb399839f.mp3",
-  "v": 1
+  "url": "https://storage.googleapis.com/ludo-assets/api/68f97e86657c680226e7a504-9c5b423609928f7b66e97e0d7a6945c3.mp3",
+  "v": 2
  },
  "line18_varek_walkin_v2": {
   "credits": 1,
@@ -5585,53 +6224,89 @@
   "credits": 1,
   "endpoint": "/audio/speech",
   "file": "review/v18_voices/varek/win_v3.mp3",
+  "history": [
+   {
+    "credits": 1,
+    "endpoint": "/audio/speech",
+    "job": "17d61084-f154-4d0d-8dc9-f1be77030347",
+    "url": "https://storage.googleapis.com/ludo-assets/api/68f97e86657c680226e7a504-eb21229e6fe19a6fb68962dbc6da102f.mp3",
+    "v": 1
+   }
+  ],
   "id": "line18_varek_win_v3",
-  "job": "17d61084-f154-4d0d-8dc9-f1be77030347",
+  "job": "b5be5aa5-1346-4e44-8295-5eb7d76106e6",
   "params": {
    "sample": "https://storage.googleapis.com/ludo-assets/api/68f97e86657c680226e7a504-c13808872f9c05429740345041b30464.mp3",
    "text": "The ground is ours. Next."
   },
-  "url": "https://storage.googleapis.com/ludo-assets/api/68f97e86657c680226e7a504-eb21229e6fe19a6fb68962dbc6da102f.mp3",
-  "v": 1
+  "url": "https://storage.googleapis.com/ludo-assets/api/68f97e86657c680226e7a504-a1271c4ada42ec97e4895b0f76c89337.mp3",
+  "v": 2
  },
  "line18_varek_win_v4": {
   "credits": 1,
   "endpoint": "/audio/speech",
   "file": "review/v18_voices/varek/win_v4.mp3",
+  "history": [
+   {
+    "credits": 1,
+    "endpoint": "/audio/speech",
+    "job": "94ab6d16-a631-45f8-a8ff-d2494377d9c8",
+    "url": "https://storage.googleapis.com/ludo-assets/api/68f97e86657c680226e7a504-5d22d203c6e85a47c27e550e3b8176c4.mp3",
+    "v": 1
+   }
+  ],
   "id": "line18_varek_win_v4",
-  "job": "94ab6d16-a631-45f8-a8ff-d2494377d9c8",
+  "job": "1cae5e67-587b-446d-b594-f8ca8301756f",
   "params": {
    "sample": "https://storage.googleapis.com/ludo-assets/api/68f97e86657c680226e7a504-c13808872f9c05429740345041b30464.mp3",
    "text": "They broke. They always break."
   },
-  "url": "https://storage.googleapis.com/ludo-assets/api/68f97e86657c680226e7a504-5d22d203c6e85a47c27e550e3b8176c4.mp3",
-  "v": 1
+  "url": "https://storage.googleapis.com/ludo-assets/api/68f97e86657c680226e7a504-2a879665e016b1b8662631532088e6cb.mp3",
+  "v": 2
  },
  "line18_ysolde_attack_v2": {
   "credits": 1,
   "endpoint": "/audio/speech",
   "file": "review/v18_voices/ysolde/attack_v2.mp3",
+  "history": [
+   {
+    "credits": 1,
+    "endpoint": "/audio/speech",
+    "job": "bc88fdd5-bc3c-4be0-92c8-0abd7c26c7db",
+    "url": "https://storage.googleapis.com/ludo-assets/api/68f97e86657c680226e7a504-738717fc19242d3195b4cae4c77b40c5.mp3",
+    "v": 1
+   }
+  ],
   "id": "line18_ysolde_attack_v2",
-  "job": "bc88fdd5-bc3c-4be0-92c8-0abd7c26c7db",
+  "job": "4444a611-a5dc-4aac-98f8-6d59efee6d14",
   "params": {
    "sample": "https://storage.googleapis.com/ludo-assets/api/68f97e86657c680226e7a504-5b72130f6ba93ae92d9d0b97b043ffeb.mp3",
-   "text": "March. And do not come back without it."
+   "text": "March. And do not come back without victory."
   },
-  "url": "https://storage.googleapis.com/ludo-assets/api/68f97e86657c680226e7a504-738717fc19242d3195b4cae4c77b40c5.mp3",
-  "v": 1
+  "url": "https://storage.googleapis.com/ludo-assets/api/68f97e86657c680226e7a504-c0e3886b2b541e9d355a894128502cc7.mp3",
+  "v": 2
  },
  "line18_ysolde_attack_v3": {
   "credits": 1,
   "endpoint": "/audio/speech",
   "file": "review/v18_voices/ysolde/attack_v3.mp3",
+  "history": [
+   {
+    "credits": 1,
+    "endpoint": "/audio/speech",
+    "job": "80fad4bc-1796-4800-bc87-329d88b89f2b",
+    "url": "https://storage.googleapis.com/ludo-assets/api/68f97e86657c680226e7a504-48fac9bfabeb2b863f3338b6a1a9ee8a.mp3",
+    "v": 1
+   }
+  ],
   "id": "line18_ysolde_attack_v3",
-  "job": "80fad4bc-1796-4800-bc87-329d88b89f2b",
+  "job": "c2d01762-cab9-4906-a33f-f4a6de949b85",
   "params": {
    "sample": "https://storage.googleapis.com/ludo-assets/api/68f97e86657c680226e7a504-5b72130f6ba93ae92d9d0b97b043ffeb.mp3",
    "text": "Crush them. Quickly."
   },
-  "url": "https://storage.googleapis.com/ludo-assets/api/68f97e86657c680226e7a504-48fac9bfabeb2b863f3338b6a1a9ee8a.mp3",
-  "v": 1
+  "url": "https://storage.googleapis.com/ludo-assets/api/68f97e86657c680226e7a504-e0a9180d91436af67258a9fcb0961745.mp3",
+  "v": 2
  },
  "line18_ysolde_attack_v4": {
   "credits": 1,
@@ -5650,14 +6325,23 @@
   "credits": 1,
   "endpoint": "/audio/speech",
   "file": "review/v18_voices/ysolde/capital_lost.mp3",
+  "history": [
+   {
+    "credits": 1,
+    "endpoint": "/audio/speech",
+    "job": "12cb6aee-eaef-46b9-be91-c42c68f9aa33",
+    "url": "https://storage.googleapis.com/ludo-assets/api/68f97e86657c680226e7a504-9fddff08d204e32284e1d4a87e10b45b.mp3",
+    "v": 1
+   }
+  ],
   "id": "line18_ysolde_capital_lost",
-  "job": "12cb6aee-eaef-46b9-be91-c42c68f9aa33",
+  "job": "a90433c8-b567-4863-b26d-e16af4cabac9",
   "params": {
    "sample": "https://storage.googleapis.com/ludo-assets/api/68f97e86657c680226e7a504-5b72130f6ba93ae92d9d0b97b043ffeb.mp3",
-   "text": "They dare to sit in my capital?"
+   "text": "They dare to sit in *my* capital?"
   },
-  "url": "https://storage.googleapis.com/ludo-assets/api/68f97e86657c680226e7a504-9fddff08d204e32284e1d4a87e10b45b.mp3",
-  "v": 1
+  "url": "https://storage.googleapis.com/ludo-assets/api/68f97e86657c680226e7a504-a5b0168d0fd5e11dc33f63c19b4ecb64.mp3",
+  "v": 2
  },
  "line18_ysolde_capital_lost_v2": {
   "credits": 1,
@@ -5676,53 +6360,89 @@
   "credits": 1,
   "endpoint": "/audio/speech",
   "file": "review/v18_voices/ysolde/capital_lost_v3.mp3",
+  "history": [
+   {
+    "credits": 1,
+    "endpoint": "/audio/speech",
+    "job": "2bb4a66d-0b61-4f9f-b788-e09b5bf60a09",
+    "url": "https://storage.googleapis.com/ludo-assets/api/68f97e86657c680226e7a504-06ec132e0218289d7cee6bd6ba26175d.mp3",
+    "v": 1
+   }
+  ],
   "id": "line18_ysolde_capital_lost_v3",
-  "job": "2bb4a66d-0b61-4f9f-b788-e09b5bf60a09",
+  "job": "81ac09be-c4f1-4cce-9ec8-01b67dbcf8fa",
   "params": {
    "sample": "https://storage.googleapis.com/ludo-assets/api/68f97e86657c680226e7a504-5b72130f6ba93ae92d9d0b97b043ffeb.mp3",
-   "text": "You have taken my capital. Now I will take everything."
+   "text": "You have taken my capital. Now I will take *everything*."
   },
-  "url": "https://storage.googleapis.com/ludo-assets/api/68f97e86657c680226e7a504-06ec132e0218289d7cee6bd6ba26175d.mp3",
-  "v": 1
+  "url": "https://storage.googleapis.com/ludo-assets/api/68f97e86657c680226e7a504-7d57932790db5aee40a9e95491ad86fd.mp3",
+  "v": 2
  },
  "line18_ysolde_capital_took": {
   "credits": 1,
   "endpoint": "/audio/speech",
   "file": "review/v18_voices/ysolde/capital_took.mp3",
+  "history": [
+   {
+    "credits": 1,
+    "endpoint": "/audio/speech",
+    "job": "6d6ed1db-4cf8-4009-a401-ceb1b0a937d8",
+    "url": "https://storage.googleapis.com/ludo-assets/api/68f97e86657c680226e7a504-e739135a36cef72a9c8cf8c270fc5162.mp3",
+    "v": 1
+   }
+  ],
   "id": "line18_ysolde_capital_took",
-  "job": "6d6ed1db-4cf8-4009-a401-ceb1b0a937d8",
+  "job": "7cd9c865-b0d4-442f-845a-e52ad608569e",
   "params": {
    "sample": "https://storage.googleapis.com/ludo-assets/api/68f97e86657c680226e7a504-5b72130f6ba93ae92d9d0b97b043ffeb.mp3",
-   "text": "Your capital kneels to me now."
+   "text": "Your capital kneels to *me* now."
   },
-  "url": "https://storage.googleapis.com/ludo-assets/api/68f97e86657c680226e7a504-e739135a36cef72a9c8cf8c270fc5162.mp3",
-  "v": 1
+  "url": "https://storage.googleapis.com/ludo-assets/api/68f97e86657c680226e7a504-d8a436acbf749b1e4b1690de9f8554b7.mp3",
+  "v": 2
  },
  "line18_ysolde_capital_took_v2": {
   "credits": 1,
   "endpoint": "/audio/speech",
   "file": "review/v18_voices/ysolde/capital_took_v2.mp3",
+  "history": [
+   {
+    "credits": 1,
+    "endpoint": "/audio/speech",
+    "job": "e8ad2145-d94e-472d-b605-c5cdeb4d76f9",
+    "url": "https://storage.googleapis.com/ludo-assets/api/68f97e86657c680226e7a504-5e430e81c95bdd628052c1854fbc0ac1.mp3",
+    "v": 1
+   }
+  ],
   "id": "line18_ysolde_capital_took_v2",
-  "job": "e8ad2145-d94e-472d-b605-c5cdeb4d76f9",
+  "job": "2c074628-b6d6-4839-bd4b-719bb1c26834",
   "params": {
    "sample": "https://storage.googleapis.com/ludo-assets/api/68f97e86657c680226e7a504-5b72130f6ba93ae92d9d0b97b043ffeb.mp3",
-   "text": "Your court has fled. Your treasury has not."
+   "text": "Your court has fled. Your treasury, has not."
   },
-  "url": "https://storage.googleapis.com/ludo-assets/api/68f97e86657c680226e7a504-5e430e81c95bdd628052c1854fbc0ac1.mp3",
-  "v": 1
+  "url": "https://storage.googleapis.com/ludo-assets/api/68f97e86657c680226e7a504-8bc6df9ee5ee7f330cf336ef5217f897.mp3",
+  "v": 2
  },
  "line18_ysolde_capital_took_v3": {
   "credits": 1,
   "endpoint": "/audio/speech",
   "file": "review/v18_voices/ysolde/capital_took_v3.mp3",
+  "history": [
+   {
+    "credits": 1,
+    "endpoint": "/audio/speech",
+    "job": "5f47301d-e9c9-49d0-832b-1df49fbe509b",
+    "url": "https://storage.googleapis.com/ludo-assets/api/68f97e86657c680226e7a504-d7241aa6dc2872b3d9551e6411ebe248.mp3",
+    "v": 1
+   }
+  ],
   "id": "line18_ysolde_capital_took_v3",
-  "job": "5f47301d-e9c9-49d0-832b-1df49fbe509b",
+  "job": "a32872c5-6ae9-489b-9ef1-0720d2655fb6",
   "params": {
    "sample": "https://storage.googleapis.com/ludo-assets/api/68f97e86657c680226e7a504-5b72130f6ba93ae92d9d0b97b043ffeb.mp3",
    "text": "A pretty city. I will rename it."
   },
-  "url": "https://storage.googleapis.com/ludo-assets/api/68f97e86657c680226e7a504-d7241aa6dc2872b3d9551e6411ebe248.mp3",
-  "v": 1
+  "url": "https://storage.googleapis.com/ludo-assets/api/68f97e86657c680226e7a504-f9d08f4a755273e4a1fc68180017128a.mp3",
+  "v": 2
  },
  "line18_ysolde_cash_v2": {
   "credits": 1,
@@ -5754,14 +6474,23 @@
   "credits": 1,
   "endpoint": "/audio/speech",
   "file": "review/v18_voices/ysolde/claim_v3.mp3",
+  "history": [
+   {
+    "credits": 1,
+    "endpoint": "/audio/speech",
+    "job": "d8571320-51cb-424f-a265-5d3fe4ea5aab",
+    "url": "https://storage.googleapis.com/ludo-assets/api/68f97e86657c680226e7a504-14782bebe9e562fec7f85b15038ee2b3.mp3",
+    "v": 1
+   }
+  ],
   "id": "line18_ysolde_claim_v3",
-  "job": "d8571320-51cb-424f-a265-5d3fe4ea5aab",
+  "job": "13d89acf-6eb8-4859-9e01-6e7e103e1656",
   "params": {
    "sample": "https://storage.googleapis.com/ludo-assets/api/68f97e86657c680226e7a504-5b72130f6ba93ae92d9d0b97b043ffeb.mp3",
    "text": "I will have this province."
   },
-  "url": "https://storage.googleapis.com/ludo-assets/api/68f97e86657c680226e7a504-14782bebe9e562fec7f85b15038ee2b3.mp3",
-  "v": 1
+  "url": "https://storage.googleapis.com/ludo-assets/api/68f97e86657c680226e7a504-663ba7999037caa1077a8fb6f2809584.mp3",
+  "v": 2
  },
  "line18_ysolde_fortune": {
   "credits": 1,
@@ -5858,14 +6587,23 @@
   "credits": 1,
   "endpoint": "/audio/speech",
   "file": "review/v18_voices/ysolde/retreat_v2.mp3",
+  "history": [
+   {
+    "credits": 1,
+    "endpoint": "/audio/speech",
+    "job": "2e88e94a-a1f3-439b-b81a-6aaa3821264d",
+    "url": "https://storage.googleapis.com/ludo-assets/api/68f97e86657c680226e7a504-6c1eb1d431ef0a15f526c9877b6b035c.mp3",
+    "v": 1
+   }
+  ],
   "id": "line18_ysolde_retreat_v2",
-  "job": "2e88e94a-a1f3-439b-b81a-6aaa3821264d",
+  "job": "80024a80-5983-4e3a-b85b-c6ffd6962ed5",
   "params": {
    "sample": "https://storage.googleapis.com/ludo-assets/api/68f97e86657c680226e7a504-5b72130f6ba93ae92d9d0b97b043ffeb.mp3",
-   "text": "Fall back. I will remember this field."
+   "text": "Fall back. I will remember this."
   },
-  "url": "https://storage.googleapis.com/ludo-assets/api/68f97e86657c680226e7a504-6c1eb1d431ef0a15f526c9877b6b035c.mp3",
-  "v": 1
+  "url": "https://storage.googleapis.com/ludo-assets/api/68f97e86657c680226e7a504-5113842cda789d02988033fc840bb6a6.mp3",
+  "v": 2
  },
  "line18_ysolde_retreat_v3": {
   "credits": 1,
@@ -5910,27 +6648,45 @@
   "credits": 1,
   "endpoint": "/audio/speech",
   "file": "review/v18_voices/ysolde/taunt_v3.mp3",
+  "history": [
+   {
+    "credits": 1,
+    "endpoint": "/audio/speech",
+    "job": "51d4b064-0fa8-465a-9d6b-88a863d8406e",
+    "url": "https://storage.googleapis.com/ludo-assets/api/68f97e86657c680226e7a504-59778a86e3bd25e39fe93cf0db8e3be7.mp3",
+    "v": 1
+   }
+  ],
   "id": "line18_ysolde_taunt_v3",
-  "job": "51d4b064-0fa8-465a-9d6b-88a863d8406e",
+  "job": "52e3d4f0-8f19-45f2-80f6-f3cc0584dcea",
   "params": {
    "sample": "https://storage.googleapis.com/ludo-assets/api/68f97e86657c680226e7a504-5b72130f6ba93ae92d9d0b97b043ffeb.mp3",
    "text": "Look east, Commander. Winter is coming for you."
   },
-  "url": "https://storage.googleapis.com/ludo-assets/api/68f97e86657c680226e7a504-59778a86e3bd25e39fe93cf0db8e3be7.mp3",
-  "v": 1
+  "url": "https://storage.googleapis.com/ludo-assets/api/68f97e86657c680226e7a504-221edc198dea7581f8c7cf45a51dc77c.mp3",
+  "v": 2
  },
  "line18_ysolde_taunt_v4": {
   "credits": 1,
   "endpoint": "/audio/speech",
   "file": "review/v18_voices/ysolde/taunt_v4.mp3",
+  "history": [
+   {
+    "credits": 1,
+    "endpoint": "/audio/speech",
+    "job": "878e3f25-d02d-4f99-a423-2775103a42e7",
+    "url": "https://storage.googleapis.com/ludo-assets/api/68f97e86657c680226e7a504-a7af4825fa173834f7f4fd4773ba12cb.mp3",
+    "v": 1
+   }
+  ],
   "id": "line18_ysolde_taunt_v4",
-  "job": "878e3f25-d02d-4f99-a423-2775103a42e7",
+  "job": "320bf6c6-5629-4738-9602-ef78b17f33d9",
   "params": {
    "sample": "https://storage.googleapis.com/ludo-assets/api/68f97e86657c680226e7a504-5b72130f6ba93ae92d9d0b97b043ffeb.mp3",
-   "text": "I hope you enjoyed that land. You will not keep it."
+   "text": "I hope you enjoyed that land. You will *not* keep it."
   },
-  "url": "https://storage.googleapis.com/ludo-assets/api/68f97e86657c680226e7a504-a7af4825fa173834f7f4fd4773ba12cb.mp3",
-  "v": 1
+  "url": "https://storage.googleapis.com/ludo-assets/api/68f97e86657c680226e7a504-66a16e13f44bc6b0d575ec52d13185da.mp3",
+  "v": 2
  },
  "line18_ysolde_walkin_v2": {
   "credits": 1,

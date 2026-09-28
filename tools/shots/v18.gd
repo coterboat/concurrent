@@ -142,10 +142,7 @@ func run(probe) -> void:
 			gs.cinema.advance()
 		await p.frames(1)
 	p.ok(th.visible and th._melee, "two AIs storm our land: the melee opens")
-	var kinds: Array = []
-	for b in th._beats:
-		kinds.append(str(b["event"]["kind"]))
-	p.ok(kinds.has(Types.EVENT_SCRAMBLE), "and the fight for the spoils is part of the same field (%s)" % ", ".join(kinds))
+
 	## we roll while our men stand; after that we touch nothing
 	var ours := 0
 	var theirs := 0
@@ -164,9 +161,17 @@ func run(probe) -> void:
 			"done":
 				if standing:
 					th.press()
+			"call":
+				th._answer("n" if th._btn_fortune.visible else "p") ## v1.10: a defender in a melee may be offered Fortune
 		if str(th._state) == "rolling" and not standing and th._scramble:
 			theirs += 1
 		await p.frames(1)
+	## (v1.10: a defender may be offered Fortune mid-melee, pausing the round, so the spoils are
+	## checked once the fight is over rather than when the field opens)
+	var kinds: Array = []
+	for e in s.events:
+		kinds.append(str(e.get("kind", "")))
+	p.ok(kinds.has(Types.EVENT_SCRAMBLE), "and the fight for the spoils followed the melee on the same land")
 	p.ok(not th.visible and fell_at > 0, "once our defenders fell the field closed by itself (%d rolls pressed while we stood)" % ours)
 	p.ok(theirs == 0, "we were never shown the victors' scramble to roll (%d frames of it)" % theirs)
 	guard = 0

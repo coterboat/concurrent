@@ -256,6 +256,8 @@ main { display: flex; flex-direction: column; min-width: 0; height: 100vh; }
   font: 700 10.5px/1 var(--sans); letter-spacing: .16em; text-transform: uppercase;
 }
 .s-accept .pill { color: var(--green-ink); background: var(--green-bg); border-color: rgba(93, 155, 90, .6); }
+.row.inst { --st: var(--brass); }
+.row.inst .pill { color: #1a1406; background: var(--brass); border-color: var(--brass); }
 .s-reject .pill { color: var(--red-ink); background: var(--red-bg); border-color: rgba(184, 65, 47, .65); }
 .s-missing .pill { border-style: dashed; color: #9aa0ad; }
 .regen .pill { color: var(--brass); background: rgba(217, 178, 95, .1); border-color: var(--brass-2); }
@@ -675,6 +677,7 @@ const TABS = [
   { id: 'all', name: 'All' },
   { id: 'pending', name: 'Pending' },
   { id: 'accept', name: 'Accepted' },
+  { id: 'installed', name: 'In game' },
   { id: 'reject', name: 'Rejected' },
   { id: 'flagged', name: 'Flagged' },
 ];
@@ -805,7 +808,8 @@ function matches(it) {
   if (!matchesGroup(it)) return false;
   switch (S.tab) {
     case 'pending': return it.status === 'pending';
-    case 'accept': return it.status === 'accept';
+    case 'accept': return it.status === 'accept' && !it.installed;
+    case 'installed': return it.status === 'accept' && !!it.installed;
     case 'reject': return it.status === 'reject';
     case 'flagged': return !!flagOf(it);
     default: return true;
@@ -834,6 +838,7 @@ function computeView() {
 
 function rowClass(it) {
   const c = ['row', 'k-' + it.kind, 's-' + it.status];
+  if (it.installed && it.status === 'accept') c.push('inst');
   if (it.regenerated) c.push('regen');
   if (it.id === S.curId) c.push('cur');
   if (!matches(it)) c.push('out');
@@ -845,6 +850,7 @@ const isPlaying = id => (S.playingId === id && !player.paused) || (S.vidId === i
 function pillText(it) {
   if (it.status === 'missing') return 'Missing';
   if (it.regenerated) return 'Needs a listen';
+  if (it.installed && it.status === 'accept') return 'In game';
   return { accept: 'Accepted', reject: 'Rejected', pending: 'Pending' }[it.status] || it.status;
 }
 
@@ -1072,16 +1078,17 @@ function renderEnd() {
   }
   end.className = 'endcard';
   if (c.pending === 0) {
-    end.innerHTML = `All ${c.total - c.missing} reviewed${c.missing ? ` (${c.missing} still missing)` : ''}. <b>${c.accept}</b> accepted, <b>${c.reject}</b> rejected.<br>Next: install the keepers and redo the rejects.${go}`;
+    end.innerHTML = `All ${c.total - c.missing} reviewed${c.missing ? ` (${c.missing} still missing)` : ''}. <b>${c.accept}</b> accepted${c.installed ? `, <b>${c.installed}</b> in game` : ''}, <b>${c.reject}</b> rejected.<br>${c.accept || c.reject ? 'Next: install the keepers and redo the rejects.' : 'Everything accepted is in the game.'}${go}`;
   } else {
     end.innerHTML = `End of list · <b>${c.pending}</b> still pending in this batch${c.missing ? ` · ${c.missing} missing` : ''}.`;
   }
 }
 
 function counts(items) {
-  const c = { total: items.length, pending: 0, accept: 0, reject: 0, missing: 0, flagged: 0 };
+  const c = { total: items.length, pending: 0, accept: 0, reject: 0, missing: 0, flagged: 0, installed: 0 };
   for (const it of items) {
-    if (c[it.status] !== undefined) c[it.status]++;
+    if (it.installed && it.status === 'accept') c.installed++;  // in the game already: not waiting to be installed
+    else if (c[it.status] !== undefined) c[it.status]++;
     if (flagOf(it)) c.flagged++;
   }
   return c;
@@ -1097,7 +1104,7 @@ function renderCounts() {
   const pool = S.items.filter(matchesGroup);
   const c = counts(pool);
   // tabs
-  const nums = { all: c.total, pending: c.pending, accept: c.accept, reject: c.reject, flagged: c.flagged };
+  const nums = { all: c.total, pending: c.pending, accept: c.accept, installed: c.installed, reject: c.reject, flagged: c.flagged };
   const tabs = $('#tabs');
   if (!tabs.children.length) {
     tabs.innerHTML = TABS.map(t => `<button class="tab" data-tab="${t.id}"><span class="dot"></span>${t.name}<span class="n"></span></button>`).join('');
@@ -1107,9 +1114,9 @@ function renderCounts() {
     b.querySelector('.n').textContent = nums[b.dataset.tab];
   }
   // progress
-  const reviewed = c.accept + c.reject;
+  const reviewed = c.accept + c.installed + c.reject;
   const denom = Math.max(1, c.total);
-  $('#pa').style.width = (c.accept / denom * 100) + '%';
+  $('#pa').style.width = ((c.accept + c.installed) / denom * 100) + '%';
   $('#pr').style.width = (c.reject / denom * 100) + '%';
   $('#plabel').innerHTML = S.batch ? `<b>${reviewed}</b> / ${c.total} reviewed${c.missing ? ` · ${c.missing} missing` : ''}` : '—';
   $('#ppct').textContent = S.batch && c.total ? Math.round(reviewed / c.total * 100) + '%' : '';
@@ -1907,7 +1914,7 @@ function actCardHTML(a, i, c) {
   if (a.error) why = `<div class="act-err">Can’t run: ${esc(a.error)}</div>`;
   else if (busy) why = `<div class="act-why">“${esc(S.run.info.label)}” is running: see the log (O).</div>`;
   else if (a.kind === 'regen' && !c.reject) why = `<div class="act-why">Nothing is rejected right now.</div>`;
-  else if (a.kind === 'install' && !c.accept) why = `<div class="act-why">Nothing is accepted yet.</div>`;
+  else if (a.kind === 'install' && !c.accept) why = `<div class="act-why">${c.installed ? `Nothing new to install: ${c.installed} already in the game.` : 'Nothing is accepted yet.'}</div>`;
   const tags = (a.spends ? '<span class="act-tag">spends Ludo credits</span>' : '') + (a.builtin ? '<span class="act-tag b">built in</span>' : '');
   return `<div class="${cls.join(' ')}" data-aid="${esc(a.id)}">
     <button class="act-run" data-run="${esc(a.id)}" ${a.error || busy ? 'disabled' : ''}>${i < 9 ? `<kbd>${i + 1}</kbd>` : ''}${esc(a.label)}</button>
@@ -1924,7 +1931,7 @@ function renderFinish() {
   S.finishBusy = runBusy();
   $('#finSub').innerHTML = `${esc(S.title)} · <code>review/${esc(S.batch)}</code> · ${plural(c.total, 'item', 'items')}`;
   const tile = (cls, n, lbl) => `<div class="fc ${cls}${n ? '' : ' zero'}"><b>${n}</b><span>${lbl}</span></div>`;
-  $('#finCounts').innerHTML = tile('acc', c.accept, 'Accepted') + tile('rej', c.reject, 'Rejected') + tile('pen', c.fresh, 'Pending') +
+  $('#finCounts').innerHTML = tile('acc', c.accept, 'Accepted') + (c.installed ? tile('acc', c.installed, 'In game') : '') + tile('rej', c.reject, 'Rejected') + tile('pen', c.fresh, 'Pending') +
     tile('lis', c.listen, 'Needs a listen') + (c.missing ? tile('mis', c.missing, 'Missing') : '');
   let warn = '';
   if (c.fresh) warn += `<div class="fin-warn"><span><b>${plural(c.fresh, 'item is', 'items are')} still pending.</b> Pending items are neither installed nor redone.</span><span class="sp"></span><button data-fin="pending">Show pending</button></div>`;

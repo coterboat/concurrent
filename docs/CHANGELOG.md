@@ -2,6 +2,120 @@
 
 The bible says amendments come with a dated entry and the test or band that justified them. Everything below has both.
 
+## v1.10 — 27 Sep 2026: Fortune in every fight, the second wave, and nobody cut off
+
+New games play **rules 19**. v1.9 saves (rules 18) and older replay exactly as they were
+played.
+
+### Fortune, fixed where it didn't fire
+
+The owner: "fortune doesn't seem to fire off correctly." Three things were wrong.
+
+- **Auto-roll declined every offer.** With Auto-roll on, or Settings → "Roll the dice
+  yourself" off, the battlefield answered every call by the standing order, which never
+  spends a favour. So a Fortune offer passed by without being shown. Now an offer always
+  stops and waits for you, even on auto-roll.
+- **Only one-on-one assaults counted.** Clashes, melees and the scramble for the spoils
+  never fed the ledger. In a five-handed war those are a large share of the dice a
+  commander throws, so the end-of-war Luck column could say "cursed" while no favour came.
+  Now every fight counts (rules 19):
+  - Clashes and fights for the spoils are fought to the end, so each is its outcome less
+    its odds.
+  - A melee books each exchange's swing on the whole attack (the attackers together, shared
+    by their numbers; the defender the opposite).
+  - A scramble books each army's outcome less its chance of being the last standing
+    (`Combat.scramble_odds`, simulated from a fixed seed, so the same fight always quotes
+    the same odds).
+  - The Luck column now weighs the same fights.
+- **No Fortune in melees.** Now anyone in a melee can call on her after a bad exchange: the
+  defender (beset from two sides is exactly when you want it) or the commander of any front.
+  That exchange is thrown again for everyone in it, once a battle for each commander. The
+  AI calls it by the same doctrine, and a watching human is asked. Clashes and scrambles
+  still have no calls; their stars show dimmed, with "no calls in a free-for-all".
+
+Arena, the same 30–40 wars (favours earned per commander per war):
+
+| | rules 18 | rules 19 |
+|---|---|---|
+| Known World, 4 commanders | 1.55 | 1.79 |
+| Wide World, 5 commanders | 1.83 | 2.11 |
+| battles a favour was spent in, won by the spender | 48–49% | 47–48% |
+
+The hard commander still leads both. The bar stays at half a battle.
+
+### Melees and scrambles look like every other battle
+
+- **The scramble for the spoils** draws an odds bar split into every army's chance of
+  being the last standing, in its colours (it had none).
+- **Fortune's stars** show in melees and scrambles.
+- **The painted pieces** stand beside the table in melees and scrambles too, and the flag
+  goes up (and the loser's piece topples) when they end.
+
+### The second wave (rules 19)
+
+A surge into a land you also attack directly can't fight alongside that assault: the surge
+only marches once its own land has fallen. So it is a second wave.
+
+- If the land held, the surge storms what's left (as before).
+- If the first assault took it, the second wave now **marches in to hold it**, where it used
+  to stay where it broke through.
+- The surge's order card says which will happen.
+
+### Dice, sound and voices
+
+- **Even volleys are fired again as a throw of their own.** An exchange used to throw every
+  volley at once, re-fired ties included, so a battle could show four or five pairs of dice
+  with no explanation. Now three pairs are thrown, and any ties are re-fired in a second
+  throw under "EVEN VOLLEYS ARE FIRED AGAIN".
+- Every throw on any table plays the dice leaving the hand and settling (`dice_throw`,
+  `dice_settle`, generated earlier but never wired in), besides each knock.
+- **Charges are heard:** a hurrah when the foot press on, hooves (and sometimes a neigh)
+  when the horse do.
+- **Nobody is cut off.** A taunt or a callout used to be cut off by whatever the game did
+  next. Now:
+  - A line the game starts by itself waits for the one being spoken, and is dropped if it
+    waited over five seconds.
+  - A line that follows your own click or keypress may cut in, and Space or Enter skips a
+    line.
+  - A portrait's bubble shows when its line starts.
+  - The battle report and auto-rolled battles hold a few seconds for a line to finish.
+
+### The final chart
+
+- It draws the same size in all three modes. The longer "Armies" title used to widen the
+  panel off the screen, so switching modes resized the graph.
+- Markers stay inside the chart, and the names at the lines' ends are stacked so they
+  never overlap.
+
+### The review table
+
+- **In game.** After a successful Install run (not a dry run), every take that was
+  accepted when the run began is marked **In game**, with its own tab, count and Finish
+  tile. It stays so until a new take replaces its file.
+- `review.py reconcile` (also run when the server starts) marks accepted takes whose
+  installed copies already match: the 176 v1.8 lines installed earlier show as in game.
+
+### Playtest bot findings (f5ee031), all fixed
+
+- **B1:** the v13 probe closed the cards dialog after turning a set in had already freed it.
+  Turning in closes it; `_close()` now ignores a second call, and the probe only closes a
+  dialog still open.
+- **B2:** the text CLI treated the end of stdin as a blank line and looped forever. Now a
+  run of empty reads is the end of input: it prints "(end of input)" and quits without
+  playing on.
+- **B3:** the `ui` probe's fast-forward stalled in the regroup phase and screenshotted
+  round 2 as "game over". It now passes the regroup phase and checks that it reached the
+  end.
+
+### Tools
+
+- `tools/test_one.gd` runs one test file.
+- `tests/test_v110.gd` covers every fight's luck, melee Fortune for a watching defender, a
+  watching attacker and the AI, the old rules untouched, the second wave, and five-handed
+  wars replaying.
+- The `v110` probe checks melees, scrambles, a defender's offer, and the chart in all three
+  modes.
+
 ## v1.9 — 27 Sep 2026: Fortune comes back, the chest is divided, the table gets dressed
 
 New games play **rules 18**. Saves from v1.8 (rules 17) replay exactly as they were played.

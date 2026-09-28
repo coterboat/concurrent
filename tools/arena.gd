@@ -8,7 +8,7 @@ const Setup := preload("res://engine/setup.gd")
 
 
 func _initialize() -> void:
-	var args := {"map": "known24", "n": "30", "seats": "general,veteran,recruit", "rounds": "0", "seed": "1000", "battle": "volleys", "moves": "1", "wild": "0", "scramble": "1", "deal": "random", "dig": "3", "rules": "18", "first": "0", "line": "5", "supply": "map", "traits": "map", "capitals": "1", "fortune": "1", "levee": "map", "fbar": "0", "ffloor": "0"}
+	var args := {"map": "known24", "n": "30", "seats": "general,veteran,recruit", "rounds": "0", "seed": "1000", "battle": "volleys", "moves": "1", "wild": "0", "scramble": "1", "deal": "random", "dig": "3", "rules": "19", "first": "0", "line": "5", "supply": "map", "traits": "map", "capitals": "1", "fortune": "1", "levee": "map", "fbar": "0", "ffloor": "0"}
 	for a in OS.get_cmdline_user_args():
 		var kv := a.split("=", true, 1)
 		if kv.size() == 2:

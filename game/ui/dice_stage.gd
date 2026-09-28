@@ -146,6 +146,8 @@ func _process(delta: float) -> void:
 			moving = true
 	if not moving and not _settled_sent:
 		_settled_sent = true
+		if not quiet and visible:
+			_sfx("dice_settle", -9.0) ## v1.10: the dice come to rest
 		all_settled.emit()
 	queue_redraw()
 
@@ -551,6 +553,8 @@ func throw(specs: Array) -> float:
 		_fix_faces(d, rng)
 		_pose(d)
 	_settled_sent = false
+	if not quiet and visible and not specs.is_empty():
+		_sfx("dice_throw", -6.0) ## v1.10: they leave the hand
 	return (_end + (_glide if arrange else 0.0)) / maxf(0.5, pace)
 
 
@@ -1044,6 +1048,12 @@ func _pose(d: Dictionary) -> void:
 		_knock(d, float(imps[ni][1]))
 		ni += 1
 	d["next_impact"] = ni
+
+
+func _sfx(name: String, db: float) -> void:
+	var audio: Node = get_node_or_null("/root/Audio")
+	if audio != null:
+		audio.sfx(name, db, 0.08)
 
 
 func _knock(d: Dictionary, strength: float) -> void:

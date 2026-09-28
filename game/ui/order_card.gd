@@ -66,6 +66,16 @@ func _rebuild_surge() -> void:
 	h.add_child(Style.chip("✕", func(): gs.edit_order("", ""), Style.MUTED, 13))
 	_box.add_child(h)
 	_box.add_child(Style.label("If %s falls, the men who took it march on — after every other battle, all surges at once." % s.hex_name(from_id), 14, Style.PARCH, "italic"))
+	## v1.10: a surge into a land you also attack directly is a second wave
+	var direct := false
+	for raw in s.sheet().packets:
+		if (raw as Types.Packet).to_id == to_id:
+			direct = true
+	if direct:
+		var sw := Style.label("Second wave: you also attack %s directly. The surge arrives after that assault: if %s has fallen, these men march in to hold it; if it still stands, they storm what's left." % [s.hex_name(to_id), s.hex_name(to_id)] if s.map.rules >= 19 else "Second wave: you also attack %s directly. If that assault takes it, this surge stays where it broke through; if not, it storms what's left." % s.hex_name(to_id), 13, Style.GOLD.lightened(0.2), "italic")
+		sw.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
+		sw.custom_minimum_size = Vector2(300, 0)
+		_box.add_child(sw)
 	var most: int = s.surge_most(from_id)
 	var n0: int = s.surge_count(from_id)
 	var shown: int = most if n0 <= 0 else n0

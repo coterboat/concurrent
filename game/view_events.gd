@@ -78,6 +78,15 @@ static func apply(world: Types.World, event: Dictionary) -> void:
 					var os: Types.TerritoryState = world.get_territory(str(r.get("from", "")))
 					if os != null:
 						os.armies = int(r.get("left", os.armies))
+			## v1.10: favours spent in a melee, by an attacker on any front or by the defender
+			var mcalls: Array = (event.get("defCalls", []) as Array).duplicate()
+			for f in event.get("fronts", []):
+				mcalls.append_array(f.get("calls", []))
+			for c in mcalls:
+				if str(c.get("call", "")) == Combat.CALL_FORTUNE:
+					var mp: Types.PlayerState = world.players.get(str(c.get("by", "")), null)
+					if mp != null:
+						mp.fortune = maxi(0, mp.fortune - 1)
 			if bool(event.get("pending", false)):
 				return
 			for f in event.get("fronts", []):
@@ -119,6 +128,11 @@ static func apply(world: Types.World, event: Dictionary) -> void:
 			var ts: Types.TerritoryState = world.get_territory(str(event.get("from", "")))
 			if ts != null:
 				ts.armies = int(event.get("originRemaining", 1))
+			if bool(event.get("joins", false)):
+				## v1.10: a second wave marching into a land the first already took
+				var tt: Types.TerritoryState = world.get_territory(str(event.get("to", "")))
+				if tt != null:
+					tt.armies = int(event.get("arrived", tt.armies))
 		Types.EVENT_PLAYER_ELIMINATED:
 			var ps: Types.PlayerState = world.players.get(str(event.get("playerId", "")), null)
 			if ps != null:

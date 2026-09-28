@@ -194,6 +194,38 @@ static func scramble(sizes: Array, rng: RefCounted) -> Dictionary:
 	return {"salvos": salvos, "left": left, "winner": winner}
 
 
+static var _scr_memo := {}
+
+
+static func scramble_odds(sizes: Array, trials: int = 240) -> Array:
+	## v1.9: each army's chance to be the last standing in a scramble, simulated from a fixed
+	## seed (so the same fight always quotes, and books, the same odds). Memoised.
+	var key: String = "%s|%d|%d" % [",".join(PackedStringArray(sizes.map(func(x): return str(int(x))))), trials, line]
+	if _scr_memo.has(key):
+		return (_scr_memo[key] as Array).duplicate()
+	var wins: Array = []
+	for i in sizes.size():
+		wins.append(0.0)
+	var standing := 0
+	for v in sizes:
+		if int(v) > 0:
+			standing += 1
+	if standing <= 1:
+		for i in sizes.size():
+			wins[i] = 1.0 if int(sizes[i]) > 0 else 0.0
+		return wins
+	var rng: RefCounted = preload("res://engine/rng.gd").new(1_000_003 + sizes.size() * 7919)
+	for k in trials:
+		var r: Dictionary = scramble(sizes, rng)
+		wins[int(r["winner"])] = float(wins[int(r["winner"])]) + 1.0
+	for i in wins.size():
+		wins[i] = float(wins[i]) / float(trials)
+	if _scr_memo.size() > 4000:
+		_scr_memo.clear()
+	_scr_memo[key] = wins.duplicate()
+	return wins
+
+
 static func _standing(left: Array) -> int:
 	var n := 0
 	for v in left:

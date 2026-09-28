@@ -81,7 +81,14 @@ static func upkeep(before: Types.World, w: Types.World, map: Types.MapDef, event
 		return
 	var delta := {}
 	for e in events:
-		if str(e.get("kind", "")) != Types.EVENT_INVASION:
+		var kind: String = str(e.get("kind", ""))
+		if map.rules >= 19 and kind != Types.EVENT_INVASION:
+			## v1.10: every fight a commander fights counts, not only the one-on-one assaults
+			var fl: Dictionary = fight_luck(e, map.battle)
+			for pid in fl.keys():
+				delta[pid] = int(delta.get(pid, 0)) - int(fl[pid])
+			continue
+		if kind != Types.EVENT_INVASION:
 			continue
 		if bool(e.get("fellBack", false)) and not e.has("luck"):
 			continue ## v1.8 ignored a battle abandoned halfway (the flaw v1.9 fixes)
@@ -120,6 +127,48 @@ static func _owed(before: Types.World, map: Types.MapDef, e: Dictionary) -> int:
 	var bonus: int = MapLib.defender_bonus(before, map, str(e.get("to", "")))
 	var p: float = Combat.capture_rate(int(e["attackerSize"]), int(e["defenderSize"]), map.battle, bonus)
 	return int(round(100.0 * (p - (1.0 if bool(e["attackerWon"]) else 0.0))))
+
+
+static func fight_luck(e: Dictionary, battle: String) -> Dictionary:
+	## v1.10 (rules 19): the dice's swing, in hundredths of a battle, for every commander in a
+	## fight that isn't a one-on-one assault. A clash or a fight for the spoils is fought to the
+	## end, so it is its outcome less its odds; a melee and a scramble carry their own.
+	var out := {}
+	match str(e.get("kind", "")):
+		Types.EVENT_CLASH, Types.EVENT_SPOILS:
+			var pa: String = str(e.get("playerA", ""))
+			var pb: String = str(e.get("playerB", ""))
+			var sa: int = int(e.get("sizeA", 0))
+			var sb: int = int(e.get("sizeB", 0))
+			if pa == "" or pb == "" or sa <= 0 or sb <= 0:
+				return out
+			var p: float = clash_rate(sa, sb, battle)
+			var won: float = 1.0 if str(e.get("winnerId", "")) == pa else 0.0
+			var l: int = int(round(100.0 * (won - p)))
+			out[pa] = l
+			out[pb] = -l
+		Types.EVENT_MELEE, Types.EVENT_SCRAMBLE:
+			var lk: Variant = e.get("luck", {})
+			if typeof(lk) == TYPE_DICTIONARY:
+				for pid in (lk as Dictionary).keys():
+					out[str(pid)] = int(lk[pid])
+	out.erase(NEUTRAL_ID)
+	return out
+
+
+static func clash_rate(a: int, b: int, battle: String) -> float:
+	## the chance the first army wins a fight to the end with even throws fired again
+	if battle == Combat.MODE_VOLLEYS:
+		return Combat.volley_capture_rate(a, b, false)
+	var wins := 0
+	var losses := 0
+	for da in range(1, 7):
+		for db in range(1, 7):
+			if a + da > b + db:
+				wins += 1
+			elif a + da < b + db:
+				losses += 1
+	return float(wins) / float(maxi(1, wins + losses))
 
 
 static func meter_share(map: Types.MapDef, meter: int) -> float:

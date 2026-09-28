@@ -45,6 +45,7 @@ var _waiting := false
 var _theater_off := false
 var _theater_cb: Callable
 var _group_first := -1 ## beat index of the first fight on the battlefield now
+var _voice_hold := 0.0 ## seconds the report has waited for a line to finish
 
 
 func _ready() -> void:
@@ -262,6 +263,11 @@ func _process(delta: float) -> void:
 		return
 	_wait -= delta
 	if _wait <= 0.0 and _rolling <= 0.0:
+		## v1.10: let a line being spoken finish (a few seconds at most) before the report moves on
+		if Audio.voice_playing() and _voice_hold < 4.0:
+			_voice_hold += delta
+			return
+		_voice_hold = 0.0
 		advance()
 
 
@@ -455,6 +461,11 @@ func _build_beats() -> Array:
 					out.append({"upto": i, "caption": "Walk-in!", "sub": "%s into %s — %s left it bare." % [Style.says(_name(who), "strolls"), _hex(hex), _name(vacated[hex])], "sound": "walkin", "delay": 2.0, "focus": [hex], "flash": hex, "flash_text": "WALK-IN", "resolves": hex, "walkin": who, "victim": vacated[hex]})
 				else:
 					out.append({"upto": i, "caption": "%s %s" % [Style.says(_name(who), "takes"), _hex(hex)], "sub": "Nobody was home.", "sound": "capture", "delay": 1.1, "focus": [hex], "flash": hex, "flash_text": "+1", "resolves": hex})
+			Types.EVENT_SURGE when bool(e.get("joins", false)):
+				## v1.10: the second wave finds the land already taken, and marches in to hold it
+				out.append({"upto": i, "caption": "The second wave marches in",
+					"sub": "%s already fell to %s: %d more from %s join its garrison." % [_hex(str(e["to"])), _name(str(e["playerId"])), int(e["strength"]), _hex(str(e["from"]))],
+					"sound": "march", "delay": 1.4, "focus": [str(e["from"]), str(e["to"])], "flash": str(e["to"]), "flash_text": "+%d" % int(e["strength"])})
 			Types.EVENT_SURGE:
 				## the surge marches like any column, on from the land just taken; its arrow
 				## appears (and draws itself out) only when it sets off

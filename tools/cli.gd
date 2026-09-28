@@ -123,6 +123,8 @@ func _cmd_play(flags: Dictionary) -> void:
 	print("seed %s  (not on the map)" % seed)
 	print("")
 	_opening(world, map, seed)
+	if _quitting:
+		return
 	print(Ascii.render(world, map, YOU))
 	var setup: Dictionary = world.to_dict()
 	var recorded_sheets: Array = []
@@ -132,6 +134,8 @@ func _cmd_play(flags: Dictionary) -> void:
 			print("you have no territories.")
 			break
 		var human: Types.Sheet = _prompt_sheet(world, map)
+		if _quitting:
+			break ## quit (or the end of input): save what was played, stop here
 		var bot_rng: RefCounted = Rng.derive_stream(seed, world.round, "bot|" + MONKEY)
 		var monkey: Types.Sheet = Bot.legal_sheet(world, map, MONKEY, bot_rng)
 		var sheets: Array = [human, monkey]
@@ -190,6 +194,7 @@ func _opening(world: Types.World, map: Types.MapDef, seed: int) -> void:
 		elif cmd == "lock" or cmd == "l":
 			break
 		elif cmd == "quit" or cmd == "q":
+			_quitting = true
 			quit(0)
 			return
 		else:
@@ -255,6 +260,7 @@ func _prompt_sheet(world: Types.World, map: Types.MapDef) -> Types.Sheet:
 				continue
 			return sheet
 		elif cmd == "quit" or cmd == "q":
+			_quitting = true
 			quit(0)
 			return sheet
 		else:
@@ -275,6 +281,20 @@ func _winner(events: Array) -> String:
 	return ""
 
 
+var _empty_reads := 0
+var _quitting := false ## quit typed (or stdin ended): stop the game where it stands
+
+
 func _read(prompt: String) -> String:
+	## Stdin that has ended reads back empty forever: after a run of empty reads that no one at
+	## a keyboard would type, treat it as the end of input and quit (was an infinite loop).
 	print(prompt)
-	return OS.read_string_from_stdin()
+	var raw: String = OS.read_string_from_stdin()
+	if raw == "":
+		_empty_reads += 1
+		if _empty_reads >= 20:
+			print("(end of input)")
+			return "quit"
+	else:
+		_empty_reads = 0
+	return raw

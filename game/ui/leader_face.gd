@@ -209,9 +209,21 @@ func react(mood: String, line_key: String = "", hold: float = 2.8, speak: bool =
 	var text: String = Lines.text(who, line_key) if line_key != "" else ""
 	var secs := 0.0
 	if text != "":
-		say_text(text, hold)
 		if speak:
-			secs = Audio.voice(Lines.voice_path(who, line_key))
+			## v1.10: if someone is still speaking, this line waits its turn (bubble and all)
+			var m0: String = mood
+			secs = Audio.voice(Lines.voice_path(who, line_key), false, func(s2: float):
+				if is_instance_valid(self):
+					say_text(text, hold)
+					_talk_in = 0.0
+					_talk_left = s2
+					_revert_in = -1.0 if m0 == "neutral" else s2 + 0.4)
+			if secs < 0.0:
+				## queued: the face keeps its mood a while; if the line never gets its turn it lapses
+				_talk_in = -1.0
+				_revert_in = hold if mood != "neutral" else -1.0
+				return 0.0
+		say_text(text, hold)
 	if mood == "dead":
 		_talk_in = -1.0
 		_revert_in = -1.0

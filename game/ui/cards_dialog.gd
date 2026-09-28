@@ -258,6 +258,8 @@ func _turn() -> void:
 
 
 func _close() -> void:
+	if is_queued_for_deletion():
+		return ## already closing (a set turned in closes it too)
 	hover_land.emit("")
 	closed.emit()
 	queue_free()

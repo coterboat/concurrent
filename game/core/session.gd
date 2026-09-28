@@ -6,6 +6,7 @@ extends Node
 const Types := preload("res://engine/types.gd")
 const Setup := preload("res://engine/setup.gd")
 const MapLib := preload("res://engine/map.gd")
+const Fortune := preload("res://engine/fortune.gd")
 const Income := preload("res://engine/income.gd")
 const Validate := preload("res://engine/validate.gd")
 const Resolve := preload("res://engine/resolve.gd")
@@ -144,7 +145,7 @@ func _apply_length() -> void:
 	## v1.5 rules: surges clash head-on and carry a count; v1.6: the firing line, fair ties,
 	## and campaign cards with a land on each; v1.7: an even volley is fired again in every
 	## battle actually fought, and a pass holds to its column of six, surges and reserves too
-	map.rules = int(config.get("rules", 18))
+	map.rules = int(config.get("rules", 19))
 	config["rules"] = map.rules
 	map.first_digs_in = bool(config.get("first_digs_in", false))
 	config["first_digs_in"] = map.first_digs_in
@@ -740,6 +741,11 @@ func _luck(evs: Array, before: Types.World) -> void:
 			var won: bool = bool(e["attackerWon"])
 			_luck_add(a, p, won)
 			_luck_add(d, 1.0 - p, not won)
+		elif map.rules >= 19 and k in [Types.EVENT_CLASH, Types.EVENT_SPOILS, Types.EVENT_MELEE, Types.EVENT_SCRAMBLE]:
+			## v1.10: every fight, weighed as Fortune weighs it
+			var fl: Dictionary = Fortune.fight_luck(e, map.battle)
+			for pid in fl.keys():
+				_luck_swing(str(pid), float(fl[pid]) / 100.0)
 		elif k == Types.EVENT_CLASH:
 			var pa: float = Combat.volley_capture_rate(int(e["sizeA"]), int(e["sizeB"]), true) if map.battle == Combat.MODE_VOLLEYS else Combat.capture_rate(int(e["sizeA"]), int(e["sizeB"]), map.battle)
 			var wa: bool = str(e["winnerId"]) == str(e["playerA"])

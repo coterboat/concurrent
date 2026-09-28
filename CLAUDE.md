@@ -29,7 +29,8 @@ rules of the road for working in the repo. `README.md` covers how to play,
 | What | Command |
 |---|---|
 | Compile every script (seconds) | `$G --headless --path . --script res://tools/compile_check.gd` |
-| Full test suite | `./scripts/test.sh` → ends `CONCURRENT ok passed=N failed=0` |
+| Full test suite | `./scripts/test.sh` → ends `CONCURRENT ok passed=N failed=0` (a few minutes) |
+| One test file | `$G --headless --path . --script res://tools/test_one.gd -- tests/test_v110.gd` |
 | Screenshot probes (windowed) | `SHOT_DIR=/some/dir ./scripts/shot.sh v18` (`calls`, `v13`…`v18`, `dice`, `input`) |
 | AI arena (balance) | `$G --headless --path . --script res://tools/arena.gd -- map=known24 n=40 seats=general,veteran,recruit,hask deal=draft levee=3` |
 | Review table | `python3 tools/review/review.py serve --open` (port 8765) |
@@ -40,6 +41,12 @@ Arena switches: `rules=`, `deal=draft|random`, `levee=`, `capitals=0|1`, `fortun
 It prints wins, length, capitals, Fortune, and drama (lead changes, wins from behind,
 close finishes). Compare variants **on the same seeds**, 40+ wars each, and treat a few
 points as noise.
+
+## Outside eyes
+
+- A **playtest bot** (the owner's Grok agent) runs on every push to `main` and reports findings
+  (e.g. "B1 … crash signal 11"). Treat its report as a bug list: reproduce, fix, and say which
+  were fixed. It flags tooling bugs as well as game bugs.
 
 ## Gotchas that have bitten before
 
@@ -53,6 +60,11 @@ points as noise.
   (and `$G --headless --path . --import`).
 - Godot plays only **Ogg Theora** video. Use `/opt/homebrew/opt/ffmpeg-full/bin/ffmpeg` (the
   plain `ffmpeg` has no Theora).
+- **Voice lines queue** (`Audio.voice`): a line the game starts on its own waits for the one
+  being spoken (and is dropped after 5 s); only a line that follows the player's own click or
+  key may cut in, and Space/Enter skips. Faces show their bubble when their line starts. The
+  battle report and auto-rolled battles hold a few seconds for a line to finish.
+- Probes run with films off (`tools/probe.gd` sets `motion = "paintings"`); `v19` turns them on.
 - `ready` is a member of every Control. Don't name a variable `ready` (a parse error that
   fails every script that preloads it).
 - Screens must fit **1440×900**: the setup screen (the Rules row replaced five rows for this)
@@ -75,6 +87,7 @@ points as noise.
   | 16 | v1.6 | land cards (a land on every card), card draws |
   | 17 | v1.7 | Amendment 18: fair ties (an even volley is fired again); a pass holds six, surges and reserves included |
   | 18 | v1.9 | Fortune's ledger kept exchange by exchange (`luck` on each invasion); a war chest divided by dice among everyone who took the last lands |
+  | 19 | v1.10 | every fight feeds Fortune's ledger (clash/spoils odds, `luck` on melees and scrambles); Fortune can be spent in a melee (`defCalls`, fronts' calls); a second-wave surge whose land already fell marches in |
 
 - Rules that a table chooses (capitals, Fortune, levée, surges, terrain, the deal…) live
   in `game/core/rules.gd` with their help text, and presets there (**Standard** is the

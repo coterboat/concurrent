@@ -137,7 +137,7 @@
 "surges",
 2,
 "surges_v3",
-"Here come the surges, all at once. Steady now."
+"Here come the surges. Steady now."
 ],
 [
 "advisor",
@@ -452,7 +452,7 @@
 "upset_win",
 2,
 "upset_win_v3",
-"That should not have worked. It worked! Marvellous!"
+"That should not have worked. But it did! Marvellous!"
 ],
 [
 "advisor",
@@ -655,7 +655,7 @@
 "attack",
 2,
 "attack_v3",
-"Take the ground. Hold it."
+"Take the ground!"
 ],
 [
 "varek",
@@ -697,7 +697,7 @@
 "lose",
 2,
 "lose_v3",
-"A costly lesson. For them, eventually."
+"A costly lesson for them"
 ],
 [
 "varek",
@@ -760,7 +760,7 @@
 "claim",
 1,
 "claim_v2",
-"Here. We build from here."
+"We build from here."
 ],
 [
 "varek",
@@ -781,7 +781,7 @@
 "capital_took",
 1,
 "capital_took_v2",
-"The seat of your government now flies my colours."
+"The seat of your government now flies *my* colours."
 ],
 [
 "varek",
@@ -830,21 +830,21 @@
 "taunt",
 2,
 "taunt_v3",
-"You have something of mine. I am coming to collect it."
+"You have something of mine. I am coming to collect."
 ],
 [
 "varek",
 "taunt",
 3,
 "taunt_v4",
-"Brace yourself. This one will hurt."
+"Brace yourself. This one will *hurt*."
 ],
 [
 "ysolde",
 "attack",
 1,
 "attack_v2",
-"March. And do not come back without it."
+"March. And do not come back without victory."
 ],
 [
 "ysolde",
@@ -921,7 +921,7 @@
 "retreat",
 1,
 "retreat_v2",
-"Fall back. I will remember this field."
+"Fall back. I will remember this."
 ],
 [
 "ysolde",
@@ -970,14 +970,14 @@
 "capital_took",
 0,
 "capital_took",
-"Your capital kneels to me now."
+"Your capital kneels to *me* now."
 ],
 [
 "ysolde",
 "capital_took",
 1,
 "capital_took_v2",
-"Your court has fled. Your treasury has not."
+"Your court has fled. Your treasury, has not."
 ],
 [
 "ysolde",
@@ -991,7 +991,7 @@
 "capital_lost",
 0,
 "capital_lost",
-"They dare to sit in my capital?"
+"They dare to sit in *my* capital?"
 ],
 [
 "ysolde",
@@ -1005,7 +1005,7 @@
 "capital_lost",
 2,
 "capital_lost_v3",
-"You have taken my capital. Now I will take everything."
+"You have taken my capital. Now I will take *everything*."
 ],
 [
 "ysolde",
@@ -1033,14 +1033,14 @@
 "taunt",
 3,
 "taunt_v4",
-"I hope you enjoyed that land. You will not keep it."
+"I hope you enjoyed that land. You will *not* keep it."
 ],
 [
 "quill",
 "attack",
 1,
 "attack_v2",
-"Right, lads. Go and repossess it."
+"Right lads. Go and repossess it!"
 ],
 [
 "quill",
@@ -1089,7 +1089,7 @@
 "lose",
 2,
 "lose_v3",
-"Well, that was a poor investment."
+"Well, *that* was a poor investment."
 ],
 [
 "quill",
@@ -1110,7 +1110,7 @@
 "walkin",
 2,
 "walkin_v3",
-"Nobody minding the shop? Lovely."
+"Nobody minding the shop? Lovely!"
 ],
 [
 "quill",
@@ -1124,14 +1124,14 @@
 "retreat",
 2,
 "retreat_v3",
-"Sell! Sell! Back to the ships!"
+"Sell! Sell!"
 ],
 [
 "quill",
 "reserves",
 1,
 "reserves_v2",
-"Throw in the capital! All of it!"
+"Throw in our capital! All of it!"
 ],
 [
 "quill",
@@ -1152,7 +1152,7 @@
 "claim",
 1,
 "claim_v2",
-"Prime real estate. I will take it."
+"Prime real estate. I'll take it."
 ],
 [
 "quill",
@@ -1166,14 +1166,14 @@
 "capital_took",
 0,
 "capital_took",
-"Your treasury? Consider it audited."
+"Consider your treasury audited."
 ],
 [
 "quill",
 "capital_took",
 1,
 "capital_took_v2",
-"What a lovely capital. And such generous vaults!"
+"What a lovely capital. And such *generous* vaults."
 ],
 [
 "quill",
@@ -1215,14 +1215,14 @@
 "taunt",
 1,
 "taunt_v2",
-"I have made you an offer you cannot refuse. My army."
+"I have an offer you cannot refuse. My army."
 ],
 [
 "quill",
 "taunt",
 2,
 "taunt_v3",
-"Your lands are under new management. Mine."
+"Your lands are under new management."
 ],
 [
 "quill",
@@ -1299,14 +1299,14 @@
 "walkin",
 1,
 "walkin_v2",
-"Oh, it is empty! Mine, mine, mine!"
+"Oh, it's empty. Mine!"
 ],
 [
 "oren",
 "walkin",
 2,
 "walkin_v3",
-"Nobody there? Brilliant!"
+"Nobody home? Brilliant!"
 ],
 [
 "oren",
@@ -1383,7 +1383,7 @@
 "capital_lost",
 0,
 "capital_lost",
-"My capital! Oh, Mother is going to be furious."
+"My capital?! Oh, Mother is going to be furious."
 ],
 [
 "oren",
@@ -1397,7 +1397,7 @@
 "capital_lost",
 2,
 "capital_lost_v3",
-"Right. New capital. Nobody panic. I am not panicking."
+"Right. New capital. Nobody panic. I'm not panicking!"
 ],
 [
 "oren",
@@ -1467,14 +1467,14 @@
 "win",
 3,
 "win_v4",
-"That is how the Bear does it!"
+"That is how the *Bear* does it!"
 ],
 [
 "hask",
 "lose",
 1,
 "lose_v2",
-"Argh! Lucky shot!"
+"Argh! Lucky shot."
 ],
 [
 "hask",
@@ -1488,14 +1488,14 @@
 "lose",
 3,
 "lose_v4",
-"Grr. Patch the hull and go again."
+"Hrmph. Patch the hull and go again."
 ],
 [
 "hask",
 "walkin",
 1,
 "walkin_v2",
-"Ha! Nobody on deck? I will take her!"
+"Ha! Nobody on deck?"
 ],
 [
 "hask",
@@ -1565,7 +1565,7 @@
 "capital_took",
 1,
 "capital_took_v2",
-"The Bear sits on your throne now!"
+"The Bear sits on *your* throne now!"
 ],
 [
 "hask",
@@ -1600,7 +1600,7 @@
 "taunt",
 0,
 "taunt",
-"I am coming for you, little general! Ha!"
+"I am coming for you, little general!"
 ],
 [
 "hask",
@@ -1621,7 +1621,7 @@
 "taunt",
 3,
 "taunt_v4",
-"Run! Or do not. It is more fun if you do not!"
+"Run! Or do not. It is more *fun* if you don't."
 ],
 [
 "imre",
@@ -1642,7 +1642,7 @@
 "attack",
 3,
 "attack_v4",
-"They are exactly where I expected. Strike."
+"They are *exactly* where I expected. Strike."
 ],
 [
 "imre",
@@ -1691,7 +1691,7 @@
 "walkin",
 1,
 "walkin_v2",
-"You left it open. I noticed."
+"You left it open."
 ],
 [
 "imre",
@@ -1719,7 +1719,7 @@
 "reserves",
 1,
 "reserves_v2",
-"Now. The reserve."
+"Now comes the reserve."
 ],
 [
 "imre",
@@ -1747,7 +1747,7 @@
 "claim",
 2,
 "claim_v3",
-"That land. I have my reasons."
+"*That* land. I have my reasons."
 ],
 [
 "imre",
@@ -1768,7 +1768,7 @@
 "capital_took",
 2,
 "capital_took_v3",
-"Your treasury was poorly defended. I corrected that."
+"Your treasury was poorly defended. I corrected that :)."
 ],
 [
 "imre",

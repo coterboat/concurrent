@@ -217,7 +217,9 @@ func run(probe) -> void:
 	await p.frames(6)
 	await snap("59_cards_turned_in")
 	p.ok(s.sheet().cash_set.size() == 3, "a set is turned in from the table")
-	dlg._close()
+	## turning a set in closes the dialog itself (_turn frees it): only close one still open
+	if is_instance_valid(dlg) and not dlg.is_queued_for_deletion():
+		dlg._close()
 
 
 func snap(name: String) -> void:

@@ -226,7 +226,7 @@ static func _invade(w: Types.World, map: Types.MapDef, t: Transit, dest: String,
 						pend["refuge"] = refuge_for(w, map, t.owner, froms, dest)
 					ctx["pending"] = pend
 					return fight
-				elif (ctx["auto"] as Dictionary).has(chooser):
+				elif (ctx.get("auto", {}) as Dictionary).has(chooser):
 					dec = Combat.CALL_FORTUNE if Fortune.doctrine(side, a0, d0, a, d, fortify, map.battle) else Combat.CALL_STAND
 				else:
 					dec = Combat.CALL_STAND ## a commander's favours are theirs to spend: never behind their back
@@ -625,7 +625,24 @@ static func _melee(w: Types.World, map: Types.MapDef, dest: String, invaders: Ar
 			"calls": [], "refuge": "", "refuge_armies": 0})
 	var salvos: Array = []
 	var pending := false
+	## v1.10 (rules 19): the dice's swing for everyone in the melee, and Fortune for all of them
+	var v110: bool = map.rules >= 19
+	var luck := {}
+	var fortuned := {}
+	var def_calls: Array = []
+	var def_key := "melee|%s%s" % [tag, dest]
+	var def_recorded: Array = (ctx["calls"].get(defender, {}) as Dictionary).get(def_key, [])
+	var dci := 0
 	while d > 0 and _fronts_alive(fronts) > 0:
+		var d_prev: int = d
+		var a_prev: Array = []
+		var up_prev: Array = []
+		var wins: Array = []
+		for f in fronts:
+			a_prev.append(int(f["a"]))
+			up_prev.append(_front_up(f))
+			wins.append(0)
+		var s_prev: int = salvos.size()
 		var n := 0
 		while n < Combat.EXCHANGE and d > 0 and _fronts_alive(fronts) > 0:
 			var tot := 0
@@ -652,6 +669,7 @@ static func _melee(w: Types.World, map: Types.MapDef, dest: String, invaders: Ar
 					salvo.append({"i": i, "a": da, "b": db, "sa": int(f["a"]), "sd": d, "fa": fa, "fd": fd, "w": w2})
 					if w2 == "a":
 						loss += 1
+						wins[i] = int(wins[i]) + 1
 					elif w2 == "b":
 						f["a"] = int(f["a"]) - 1
 					continue
@@ -659,11 +677,101 @@ static func _melee(w: Types.World, map: Types.MapDef, dest: String, invaders: Ar
 				salvo.append({"i": i, "a": da, "b": db, "sa": int(f["a"]), "sd": snappedf(share, 0.1), "w": "a" if won else "b"})
 				if won:
 					loss += 1
+					wins[i] = int(wins[i]) + 1
 				else:
 					f["a"] = int(f["a"]) - 1
 			d = maxi(0, d - loss)
 			salvos.append(salvo)
 			n += 1
+		var a_was := 0
+		var a_now := 0
+		for i in fronts.size():
+			if bool(up_prev[i]):
+				a_was += int(a_prev[i])
+			if _front_up(fronts[i]):
+				a_now += int(fronts[i]["a"])
+		## v1.10 Fortune: a disastrous exchange may be thrown again, once a battle for each commander in it
+		if v110 and map.fortune:
+			var cands: Array = []
+			if defender != Income.NEUTRAL_ID and defender != Types.UNOCCUPIED and w.players.has(defender):
+				cands.append({"side": "d", "pid": defender, "front": -1})
+			for i in fronts.size():
+				if bool(up_prev[i]):
+					cands.append({"side": "a", "pid": (fronts[i]["t"] as Transit).owner, "front": i})
+			var thrown := false
+			for c in cands:
+				var pid: String = str(c["pid"])
+				var fi: int = int(c["front"])
+				if fortuned.has(pid) or Fortune.held(w, pid) <= 0:
+					continue
+				var bad := false
+				if str(c["side"]) == "d":
+					bad = Fortune.bad_for(a_was, d_prev, a_now, d) == "d"
+				else:
+					var lost_i: int = int(a_prev[fi]) - int(fronts[fi]["a"])
+					bad = int(fronts[fi]["a"]) <= 0 or lost_i - int(wins[fi]) >= 2
+				if not bad:
+					continue
+				var dec := ""
+				var frec: Array = [] if fi < 0 else (ctx["calls"].get(pid, {}) as Dictionary).get(fronts[fi]["key"], [])
+				if fi < 0 and dci < def_recorded.size():
+					dec = str(def_recorded[dci])
+					dci += 1
+				elif fi >= 0 and int(fronts[fi]["ci"]) < frec.size():
+					dec = str(frec[int(fronts[fi]["ci"])])
+					fronts[fi]["ci"] = int(fronts[fi]["ci"]) + 1
+				elif (ctx["live"] as Dictionary).has(pid):
+					var over: bool = d <= 0 or _fronts_alive(fronts) == 0 or (fi >= 0 and int(fronts[fi]["a"]) <= 0)
+					var pend := {"key": def_key if fi < 0 else str(fronts[fi]["key"]), "chooser": pid, "side": c["side"], "melee": true, "front": fi,
+						"attacker": pid if fi >= 0 else (fronts[0]["t"] as Transit).owner, "defender": defender, "to": dest,
+						"from": "" if fi < 0 else (fronts[fi]["t"] as Transit).from_id, "fortune": true, "ended": over,
+						"a": a_now if fi < 0 else int(fronts[fi]["a"]), "d": d, "a0": a_was if fi < 0 else int(a_prev[fi]), "d0": d_prev,
+						"fronts0": a_prev.duplicate(), "fortunes": Fortune.held(w, pid), "stance": "" if fi < 0 else str(fronts[fi]["stance"]),
+						"reserves": 0, "reserveFrom": [], "refuge": "", "rolls": salvos.size(), "call": 0}
+					if fi >= 0 and not over:
+						## the front's call comes straight after: one plate asks both
+						var t3: Transit = fronts[fi]["t"]
+						var froms3: PackedStringArray = _froms(t3)
+						var res3: int = 0 if bool(fronts[fi]["used"]) else reserves_available(w, t3.owner, froms3)
+						var room3: int = _column_room(map, dest, froms3, int(fronts[fi]["a"]))
+						pend["reserves"] = mini(res3, room3) if room3 >= 0 else res3
+						pend["reserveFrom"] = _reserve_sources(w, t3.owner, froms3)
+						pend["refuge"] = refuge_for(w, map, t3.owner, froms3, dest)
+					ctx["pending"] = pend
+					pending = true
+					break
+				elif (ctx.get("auto", {}) as Dictionary).has(pid):
+					dec = Combat.CALL_FORTUNE if Fortune.doctrine(str(c["side"]), a_was, d_prev, a_now, d, fortify, map.battle) else Combat.CALL_STAND
+				else:
+					dec = Combat.CALL_STAND ## a commander's favours are theirs to spend
+				if dec == Combat.CALL_FORTUNE:
+					fortuned[pid] = true
+					(w.players[pid] as Types.PlayerState).fortune -= 1
+					var entry := {"at": salvos.size(), "call": Combat.CALL_FORTUNE, "by": pid, "side": c["side"], "from": s_prev, "fronts": a_prev.duplicate(), "d": d_prev}
+					if fi < 0:
+						def_calls.append(entry)
+					else:
+						(fronts[fi]["calls"] as Array).append(entry)
+					## that exchange never happened: everyone stands where they stood
+					d = d_prev
+					for i in fronts.size():
+						fronts[i]["a"] = int(a_prev[i])
+					thrown = true
+					break
+			if pending:
+				break
+			if thrown:
+				continue
+		if v110 and a_was > 0:
+			## the exchange stands: book its swing (the attackers together, shared by their numbers)
+			var p0: float = Combat.capture_rate(a_was, d_prev, map.battle, fortify)
+			var p1: float = 1.0 if d <= 0 else (0.0 if a_now <= 0 else Combat.capture_rate(a_now, d, map.battle, fortify))
+			var sw: float = p1 - p0
+			for i in fronts.size():
+				if bool(up_prev[i]):
+					var ow: String = (fronts[i]["t"] as Transit).owner
+					luck[ow] = float(luck.get(ow, 0.0)) + sw * float(a_prev[i]) / float(a_was)
+			luck[defender] = float(luck.get(defender, 0.0)) - sw
 		if d <= 0 or _fronts_alive(fronts) == 0:
 			break
 		## the calls, front by front
@@ -729,6 +837,13 @@ static func _melee(w: Types.World, map: Types.MapDef, dest: String, invaders: Ar
 		if pending:
 			break
 	var ev := {"kind": Types.EVENT_MELEE, "to": dest, "defenderId": defender, "defenderSize": d0, "defenderLeft": d, "salvos": salvos, "fronts": []}
+	if v110:
+		var lk := {}
+		for pid in luck.keys():
+			lk[pid] = int(round(float(luck[pid]) * 100.0))
+		ev["luck"] = lk
+		if not def_calls.is_empty():
+			ev["defCalls"] = def_calls
 	for f in fronts:
 		var t2: Transit = f["t"]
 		var fd := {"attackerId": t2.owner, "from": t2.from_id, "fromIds": Array(_froms(t2)), "size": int(f["size"]), "left": int(f["a"])}
@@ -760,7 +875,7 @@ static func _melee(w: Types.World, map: Types.MapDef, dest: String, invaders: Ar
 		var sides: Array = []
 		for f in alive:
 			sides.append({"t": f["t"], "a": int(f["a"])})
-		var won: Dictionary = _scramble(w, dest, sides, match_seed, events, tag + "melee")
+		var won: Dictionary = _scramble(w, dest, sides, match_seed, events, tag + "melee", map.rules >= 19)
 		_take(w, events, dest, (won["t"] as Transit).owner, int(won["a"]))
 		_remember_surge(surge_book, dest, won["t"])
 		return false
@@ -836,13 +951,13 @@ static func _land_v14(w: Types.World, map: Types.MapDef, dest: String, pkts: Arr
 	var sides: Array = []
 	for t in invaders:
 		sides.append({"t": t, "a": t.strength})
-	var won: Dictionary = _scramble(w, dest, sides, match_seed, events, tag + "empty")
+	var won: Dictionary = _scramble(w, dest, sides, match_seed, events, tag + "empty", map.rules >= 19)
 	_take(w, events, dest, (won["t"] as Transit).owner, int(won["a"]))
 	_remember_surge(surge_book, dest, won["t"])
 	return false
 
 
-static func _scramble(w: Types.World, dest: String, sides: Array, match_seed: int, events: Array, key: String) -> Dictionary:
+static func _scramble(w: Types.World, dest: String, sides: Array, match_seed: int, events: Array, key: String, v110: bool = false) -> Dictionary:
 	## sides: [{t: Transit, a}] of different commanders. One free-for-all (Combat.scramble);
 	## returns the last army standing {t, a}.
 	var sizes: Array = []
@@ -855,8 +970,17 @@ static func _scramble(w: Types.World, dest: String, sides: Array, match_seed: in
 		var t: Transit = sides[k]["t"]
 		fronts.append({"playerId": t.owner, "from": t.from_id, "fromIds": Array(_froms(t)), "size": int(sizes[k]), "left": int(r["left"][k])})
 	var win: int = int(r["winner"])
-	events.append({"kind": Types.EVENT_SCRAMBLE, "to": dest, "fronts": fronts, "salvos": r["salvos"],
-		"winnerId": (sides[win]["t"] as Transit).owner, "winnerLeft": int(r["left"][win]), "after": key.get_slice("|", key.get_slice_count("|") - 1)})
+	var ev := {"kind": Types.EVENT_SCRAMBLE, "to": dest, "fronts": fronts, "salvos": r["salvos"],
+		"winnerId": (sides[win]["t"] as Transit).owner, "winnerLeft": int(r["left"][win]), "after": key.get_slice("|", key.get_slice_count("|") - 1)}
+	if v110:
+		## v1.10 (rules 19): each army's luck is its outcome less its chance of being the last standing
+		var odds: Array = Combat.scramble_odds(sizes)
+		var lk := {}
+		for k in sides.size():
+			var ow: String = (sides[k]["t"] as Transit).owner
+			lk[ow] = int(lk.get(ow, 0)) + int(round(100.0 * ((1.0 if k == win else 0.0) - float(odds[k]))))
+		ev["luck"] = lk
+	events.append(ev)
 	return {"t": sides[win]["t"], "a": int(r["left"][win])}
 
 
@@ -894,13 +1018,26 @@ static func _resolve_surges(w: Types.World, map: Types.MapDef, match_seed: int, 
 		var target: Types.TerritoryState = w.get_territory(surge_to)
 		if target == null:
 			continue
-		if target.owner == ts.owner:
-			continue
+		var joins: bool = target.owner == ts.owner
+		if joins and map.rules < 19:
+			continue ## before v1.10 a second wave whose land had already fallen stayed put
 		var strength: int = ts.armies - 1
 		if map.rules >= 15 and int(info.get("n", 0)) > 0:
 			strength = mini(strength, int(info["n"])) ## v1.5: the count the surge was ordered with, at most
 		if map.rules >= 17 and MapLib.column_cap(map, surge_to) > 0:
 			strength = mini(strength, MapLib.column_cap(map, surge_to)) ## v1.7: a pass takes a column of six, surge or not
+		if joins:
+			## v1.10 the second wave: the first assault already took it, so these men march
+			## in to hold it (they fight whoever else surges there, as its garrison)
+			if strength < 1:
+				continue
+			ts.armies -= strength
+			target.armies += strength
+			var jev: Dictionary = Events.surge_event(ts.owner, dest, surge_to, strength, ts.armies)
+			jev["joins"] = true
+			jev["arrived"] = target.armies
+			events.append(jev)
+			continue
 		ts.armies -= strength
 		events.append(Events.surge_event(ts.owner, dest, surge_to, strength, ts.armies))
 		var t := Transit.new()

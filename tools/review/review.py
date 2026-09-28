@@ -236,10 +236,16 @@ def merge_item(name: str, d: Path, item: dict, entry: dict | None) -> dict:
         status = "pending"
     else:
         status = verdict
+    ## "in game": accepted, installed by a successful Install run, and the file is the one installed
+    inst = entry.get("installed") if isinstance(entry.get("installed"), dict) else None
+    installed = bool(inst) and status == "accept" and exists and isinstance(inst.get("file_mtime"), (int, float)) \
+        and abs(st.st_mtime - inst["file_mtime"]) <= MTIME_EPS
     out = dict(item)
     out["kind"] = item_kind(item)
     out.update(
         status=status,
+        installed=installed,
+        installed_at=inst.get("at") if installed else None,
         verdict=verdict,
         regenerated=regenerated,
         note=entry.get("note", "") or "",
@@ -271,9 +277,11 @@ def merged_batch(name: str) -> dict:
 
 
 def summarize(items: list[dict]) -> dict:
-    c = {"total": len(items), "accept": 0, "reject": 0, "pending": 0, "missing": 0, "regenerated": 0}
+    c = {"total": len(items), "accept": 0, "reject": 0, "pending": 0, "missing": 0, "regenerated": 0, "installed": 0}
     for it in items:
         c[it["status"]] += 1
+        if it.get("installed"):
+            c["installed"] += 1
         if it["regenerated"]:
             c["regenerated"] += 1
     c["reviewed"] = c["accept"] + c["reject"]
@@ -686,6 +694,12 @@ def _pump(run: Run, logf) -> None:
         status = "cancelled" if run.cancel_requested else ("ok" if code == 0 else "failed")
         out(f"\n[{status} · exit {code} · {t1 - run.t0:.1f}s]\n")  # before the status flips: a poll that
         run.code, run.t1 = code, t1                                  # sees it finished has all the output
+        if status == "ok" and getattr(run, "install_snapshot", None):
+            try:
+                n = mark_installed(run.batch, run.install_snapshot)
+                out(f"review: {n} accepted take{'s' if n != 1 else ''} marked in game\n")
+            except (OSError, ReviewError) as e:
+                out(f"review: couldn't mark the installed takes: {e}\n")
         run.status = status
         if logf:
             try:
@@ -693,6 +707,62 @@ def _pump(run: Run, logf) -> None:
             except OSError:
                 pass
         run.done.set()
+
+
+def mark_installed(name: str, snapshot: dict) -> int:
+    """After a successful install: every take that was accepted when it started is in the game."""
+    at = time.strftime("%Y-%m-%dT%H:%M:%S")
+    n = 0
+    with _LOCK:
+        d, _ = load_batch(name)
+        review = load_review(d)
+        entries = review["items"]
+        for item_id, mt in snapshot.items():
+            e = entries.get(item_id)
+            if isinstance(e, dict) and e.get("verdict") == "accept":
+                e["installed"] = {"at": at, "file_mtime": mt}
+                n += 1
+        atomic_write_json(d / "review.json", review)
+    return n
+
+
+def _install_pairs(d: Path, item: dict) -> list[tuple[Path, Path]]:
+    """(batch file, game file) pairs an accepted item installs: meta.install when the generator
+    lists them (a sheet and its json, a converted video), else the item's own file → target."""
+    meta = item.get("meta") if isinstance(item.get("meta"), dict) else {}
+    pairs = meta.get("install")
+    out = []
+    if isinstance(pairs, list) and pairs:
+        for pr in pairs:
+            if isinstance(pr, (list, tuple)) and len(pr) == 2:
+                out.append((d / str(pr[0]), REPO / str(pr[1])))
+    elif item.get("target"):
+        out.append((d / str(item["file"]), REPO / str(item["target"])))
+    return out
+
+
+def reconcile(name: str) -> int:
+    """Mark accepted takes whose installed copies already match as in the game (installs made
+    before the review table tracked them, or by hand). Returns how many it marked."""
+    n = 0
+    with _LOCK:
+        d, data = load_batch(name)
+        review = load_review(d)
+        entries = review["items"]
+        for item in data["items"]:
+            e = entries.get(item["id"])
+            if not isinstance(e, dict) or e.get("verdict") != "accept":
+                continue
+            m = merge_item(name, d, item, e)
+            if m["status"] != "accept" or m["installed"] or m["mtime"] is None:
+                continue
+            pairs = _install_pairs(d, item)
+            if pairs and all(a.is_file() and b.is_file() and filecmp.cmp(a, b, shallow=False) for a, b in pairs):
+                e["installed"] = {"at": time.strftime("%Y-%m-%dT%H:%M:%S"), "file_mtime": m["mtime"], "found": True}
+                n += 1
+        if n:
+            atomic_write_json(d / "review.json", review)
+    return n
 
 
 def start_run(name: str, action_id: str, options=None) -> Run:
@@ -707,6 +777,10 @@ def start_run(name: str, action_id: str, options=None) -> Run:
         if busy is not None:
             raise ReviewError(f"“{busy.label}” is still running for {name}: wait for it or cancel it", 409)
         run = Run(name, action, argv, shown)
+        if action["kind"] == "install" and "--dry-run" not in extra:
+            ## what this run installs: the accepted takes as they are now (marked "in game" if it succeeds)
+            run.install_snapshot = {it["id"]: it["mtime"] for it in merged_batch(name)["items"]
+                                    if it["status"] == "accept" and it["mtime"] is not None}
         ids = _BATCH_RUNS.setdefault(name, [])
         ids.append(run.id)
         _RUNS[run.id] = run
@@ -1000,6 +1074,13 @@ def cmd_serve(args) -> int:
         return 1
     url = f"http://127.0.0.1:{args.port}/"
     names = list_batch_names()
+    for nm in names:
+        try:
+            k = reconcile(nm)
+            if k:
+                print(f"review: {nm}: {k} accepted take{'s' if k != 1 else ''} already in the game")
+        except (OSError, ReviewError, ValueError):
+            pass
     print(f"review: serving {url}  ({len(names)} batch{'es' if len(names) != 1 else ''} in {REVIEW})")
     print("review: Ctrl+C to stop", flush=True)
     if args.open:
@@ -1292,6 +1373,9 @@ def main(argv=None) -> int:
     p.add_argument("batch")
     p.add_argument("--dry-run", action="store_true")
     p.set_defaults(fn=cmd_apply)
+    p = sub.add_parser("reconcile", help="mark accepted takes whose installed copies already match as in the game")
+    p.add_argument("batch", nargs="?")
+    p.set_defaults(fn=lambda a: (print("\n".join(f"{nm}: {reconcile(nm)} marked in game" for nm in ([a.batch] if a.batch else list_batch_names()))) or 0))
     p = sub.add_parser("new", help="scaffold an empty batch")
     p.add_argument("batch")
     p.add_argument("--title", default="")

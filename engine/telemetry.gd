@@ -90,6 +90,16 @@ static func summarize_events(events: Array) -> Dictionary:
 				scrambles += 1
 			Types.EVENT_MELEE:
 				melees += 1
+				## v1.10: favours spent in a melee; saved if the caller's side came out on top
+				var mcalls: Array = (event.get("defCalls", []) as Array).duplicate()
+				for f in event.get("fronts", []):
+					mcalls.append_array(f.get("calls", []))
+				for c in mcalls:
+					if str(c.get("call", "")) == "F":
+						fortune_spent += 1
+						var held: bool = int(event.get("defenderLeft", 0)) > 0
+						if (str(c.get("side", "")) == "d") == held:
+							fortune_saved += 1
 				for f in event.get("fronts", []):
 					invasions += 1
 					if int(f.get("reservesAdded", 0)) > 0:

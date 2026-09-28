@@ -28,7 +28,7 @@ func _ready() -> void:
 	_music_b = _player("Music")
 	_amb = _player("Ambience")
 	_voice = _player("Voice")
-	_voice.finished.connect(func(): _duck(false))
+	_voice.finished.connect(_next_line)
 	for i in 10:
 		_pool.append(_player("SFX"))
 	for i in 6:
@@ -259,19 +259,71 @@ func _process(_delta: float) -> void:
 		_crossfade(_next_take(_current), XFADE)
 
 
-func voice(path: String) -> float:
-	## Plays one spoken line (cutting off any line still going) and ducks the music.
-	## Returns its length in seconds, 0 if silent.
+## v1.10 nobody is cut off. A line the game starts by itself waits for the one being spoken
+## (and is dropped if it waited too long for its moment); a line that follows the player's
+## own click or key within INTERRUPT_MS may cut in, and Space/Enter skips the line outright.
+const INTERRUPT_MS := 600
+const STALE_MS := 5000
+var _queue: Array = [] ## [{path, at, cb}]
+var _last_input := -100000
+
+
+func _input(e: InputEvent) -> void:
+	if (e is InputEventMouseButton and e.pressed) or (e is InputEventKey and e.pressed and not e.echo):
+		_last_input = Time.get_ticks_msec()
+		if e is InputEventKey and (e.keycode == KEY_SPACE or e.keycode == KEY_ENTER) and _voice.playing:
+			skip_voice()
+
+
+func voice(path: String, urgent: bool = false, on_start: Callable = Callable()) -> float:
+	## Plays one spoken line and ducks the music. Returns its length in seconds (0 if silent).
+	## If another line is still being spoken and this one isn't urgent (nor the player's doing),
+	## it is queued: returns -1, and on_start(seconds) is called if and when it plays.
 	if path == "" or not ResourceLoader.exists(path):
 		return 0.0
 	var s := get_node_or_null("/root/Settings")
 	if s and float(s.get_value("voices", 0.9)) <= 0.001:
 		return 0.0
+	var now := Time.get_ticks_msec()
+	if _voice.playing and not urgent and now - _last_input > INTERRUPT_MS:
+		_queue.append({"path": path, "at": now, "cb": on_start})
+		while _queue.size() > 2:
+			_queue.pop_front() ## the oldest waiting line has had its moment
+		return -1.0
+	if urgent or now - _last_input <= INTERRUPT_MS:
+		_queue.clear()
+	return _play_line(path)
+
+
+func _play_line(path: String) -> float:
 	var st: AudioStream = load(path)
 	_voice.stream = st
 	_voice.play()
 	_duck(true)
 	return st.get_length()
+
+
+func _next_line() -> void:
+	## the line ended: the next one waiting, if it is still timely
+	var now := Time.get_ticks_msec()
+	while not _queue.is_empty():
+		var q: Dictionary = _queue.pop_front()
+		if now - int(q["at"]) > STALE_MS:
+			continue
+		var secs: float = _play_line(str(q["path"]))
+		var cb: Callable = q["cb"]
+		if cb.is_valid():
+			cb.call(secs)
+		return
+	_duck(false)
+
+
+func skip_voice() -> void:
+	## the player moved on: stop the line and forget the ones waiting
+	_queue.clear()
+	if _voice.playing:
+		_voice.stop()
+	_duck(false)
 
 
 func voice_playing() -> bool:

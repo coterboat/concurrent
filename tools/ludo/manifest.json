@@ -3859,7 +3859,7 @@
    "voice": "voice_advisor",
    "text": "Signed, sealed, and out of our hands. I do love this part.",
    "out": "review/v18_voices/advisor/sealed_v4",
-   "v": 1
+   "v": 2
   },
   {
    "id": "line18_advisor_sealed_v5",
@@ -3971,7 +3971,7 @@
    "voice": "voice_advisor",
    "text": "A moment's peace. Use it. March the reserves up to the border.",
    "out": "review/v18_voices/advisor/maneuver_v3",
-   "v": 1
+   "v": 2
   },
   {
    "id": "line18_advisor_maneuver_v4",
@@ -3987,15 +3987,15 @@
    "voice": "voice_advisor",
    "text": "The breakthroughs charge on! Hold on to your hat.",
    "out": "review/v18_voices/advisor/surges_v2",
-   "v": 1
+   "v": 2
   },
   {
    "id": "line18_advisor_surges_v3",
    "kind": "speech",
    "voice": "voice_advisor",
-   "text": "Here come the surges, all at once. Steady now.",
+   "text": "Here come the surges. Steady now.",
    "out": "review/v18_voices/advisor/surges_v3",
-   "v": 1
+   "v": 2
   },
   {
    "id": "line18_advisor_opening_good_v2",
@@ -4035,7 +4035,7 @@
    "voice": "voice_advisor",
    "text": "They are giving as good as they get. Your call, Commander.",
    "out": "review/v18_voices/advisor/opening_bad_v3",
-   "v": 1
+   "v": 2
   },
   {
    "id": "line18_advisor_opening_bad_v4",
@@ -4155,7 +4155,7 @@
    "voice": "voice_advisor",
    "text": "They left the door open and we walked right in. Splendid!",
    "out": "review/v18_voices/advisor/walkin_us_v2",
-   "v": 1
+   "v": 2
   },
   {
    "id": "line18_advisor_walkin_us_v3",
@@ -4171,7 +4171,7 @@
    "voice": "voice_advisor",
    "text": "Empty! Oh, that is careless of them. Ours now.",
    "out": "review/v18_voices/advisor/walkin_us_v4",
-   "v": 1
+   "v": 2
   },
   {
    "id": "line18_advisor_walkin_them_v2",
@@ -4267,7 +4267,7 @@
    "voice": "voice_advisor",
    "text": "Taken! Well fought, Commander.",
    "out": "review/v18_voices/advisor/capture_v3",
-   "v": 1
+   "v": 2
   },
   {
    "id": "line18_advisor_capture_v4",
@@ -4331,7 +4331,7 @@
    "voice": "voice_advisor",
    "text": "Gone. Mark it on the map, and mark who took it.",
    "out": "review/v18_voices/advisor/lost_land_v4",
-   "v": 1
+   "v": 2
   },
   {
    "id": "line18_advisor_upset_win",
@@ -4339,7 +4339,7 @@
    "voice": "voice_advisor",
    "text": "Against all odds! I will not pretend I expected that.",
    "out": "review/v18_voices/advisor/upset_win",
-   "v": 1
+   "v": 2
   },
   {
    "id": "line18_advisor_upset_win_v2",
@@ -4353,9 +4353,9 @@
    "id": "line18_advisor_upset_win_v3",
    "kind": "speech",
    "voice": "voice_advisor",
-   "text": "That should not have worked. It worked! Marvellous!",
+   "text": "That should not have worked. But it did! Marvellous!",
    "out": "review/v18_voices/advisor/upset_win_v3",
-   "v": 1
+   "v": 2
   },
   {
    "id": "line18_advisor_upset_win_v4",
@@ -4427,7 +4427,7 @@
    "voice": "voice_advisor",
    "text": "One soldier left on the walls, and he held! Remarkable.",
    "out": "review/v18_voices/advisor/close_hold",
-   "v": 1
+   "v": 2
   },
   {
    "id": "line18_advisor_close_hold_v2",
@@ -4585,9 +4585,9 @@
    "id": "line18_varek_attack_v3",
    "kind": "speech",
    "voice": "voice2_varek",
-   "text": "Take the ground. Hold it.",
+   "text": "Take the ground!",
    "out": "review/v18_voices/varek/attack_v3",
-   "v": 1
+   "v": 2
   },
   {
    "id": "line18_varek_attack_v4",
@@ -4611,7 +4611,7 @@
    "voice": "voice2_varek",
    "text": "The ground is ours. Next.",
    "out": "review/v18_voices/varek/win_v3",
-   "v": 1
+   "v": 2
   },
   {
    "id": "line18_varek_win_v4",
@@ -4619,7 +4619,7 @@
    "voice": "voice2_varek",
    "text": "They broke. They always break.",
    "out": "review/v18_voices/varek/win_v4",
-   "v": 1
+   "v": 2
   },
   {
    "id": "line18_varek_lose_v2",
@@ -4627,15 +4627,15 @@
    "voice": "voice2_varek",
    "text": "Noted.",
    "out": "review/v18_voices/varek/lose_v2",
-   "v": 1
+   "v": 2
   },
   {
    "id": "line18_varek_lose_v3",
    "kind": "speech",
    "voice": "voice2_varek",
-   "text": "A costly lesson. For them, eventually.",
+   "text": "A costly lesson for them",
    "out": "review/v18_voices/varek/lose_v3",
-   "v": 1
+   "v": 2
   },
   {
    "id": "line18_varek_lose_v4",
@@ -4667,7 +4667,7 @@
    "voice": "voice2_varek",
    "text": "Withdraw in good order. Discipline.",
    "out": "review/v18_voices/varek/retreat_v2",
-   "v": 1
+   "v": 2
   },
   {
    "id": "line18_varek_retreat_v3",
@@ -4691,7 +4691,7 @@
    "voice": "voice2_varek",
    "text": "Every man forward. Now.",
    "out": "review/v18_voices/varek/reserves_v3",
-   "v": 1
+   "v": 2
   },
   {
    "id": "line18_varek_cash_v2",
@@ -4699,15 +4699,15 @@
    "voice": "voice2_varek",
    "text": "The war office sends its compliments. And its regiments.",
    "out": "review/v18_voices/varek/cash_v2",
-   "v": 1
+   "v": 2
   },
   {
    "id": "line18_varek_claim_v2",
    "kind": "speech",
    "voice": "voice2_varek",
-   "text": "Here. We build from here.",
+   "text": "We build from here.",
    "out": "review/v18_voices/varek/claim_v2",
-   "v": 1
+   "v": 2
   },
   {
    "id": "line18_varek_claim_v3",
@@ -4729,9 +4729,9 @@
    "id": "line18_varek_capital_took_v2",
    "kind": "speech",
    "voice": "voice2_varek",
-   "text": "The seat of your government now flies my colours.",
+   "text": "The seat of your government now flies *my* colours.",
    "out": "review/v18_voices/varek/capital_took_v2",
-   "v": 1
+   "v": 2
   },
   {
    "id": "line18_varek_capital_took_v3",
@@ -4739,7 +4739,7 @@
    "voice": "voice2_varek",
    "text": "A capital is only stone. You should have held it.",
    "out": "review/v18_voices/varek/capital_took_v3",
-   "v": 1
+   "v": 2
   },
   {
    "id": "line18_varek_capital_lost",
@@ -4771,7 +4771,7 @@
    "voice": "voice2_varek",
    "text": "I see your border, Commander. It is thin.",
    "out": "review/v18_voices/varek/taunt",
-   "v": 1
+   "v": 2
   },
   {
    "id": "line18_varek_taunt_v2",
@@ -4779,31 +4779,31 @@
    "voice": "voice2_varek",
    "text": "My columns are marching. I would dig in, if I were you.",
    "out": "review/v18_voices/varek/taunt_v2",
-   "v": 1
+   "v": 2
   },
   {
    "id": "line18_varek_taunt_v3",
    "kind": "speech",
    "voice": "voice2_varek",
-   "text": "You have something of mine. I am coming to collect it.",
+   "text": "You have something of mine. I am coming to collect.",
    "out": "review/v18_voices/varek/taunt_v3",
-   "v": 1
+   "v": 2
   },
   {
    "id": "line18_varek_taunt_v4",
    "kind": "speech",
    "voice": "voice2_varek",
-   "text": "Brace yourself. This one will hurt.",
+   "text": "Brace yourself. This one will *hurt*.",
    "out": "review/v18_voices/varek/taunt_v4",
-   "v": 1
+   "v": 2
   },
   {
    "id": "line18_ysolde_attack_v2",
    "kind": "speech",
    "voice": "voice2_ysolde",
-   "text": "March. And do not come back without it.",
+   "text": "March. And do not come back without victory.",
    "out": "review/v18_voices/ysolde/attack_v2",
-   "v": 1
+   "v": 2
   },
   {
    "id": "line18_ysolde_attack_v3",
@@ -4811,7 +4811,7 @@
    "voice": "voice2_ysolde",
    "text": "Crush them. Quickly.",
    "out": "review/v18_voices/ysolde/attack_v3",
-   "v": 1
+   "v": 2
   },
   {
    "id": "line18_ysolde_attack_v4",
@@ -4889,9 +4889,9 @@
    "id": "line18_ysolde_retreat_v2",
    "kind": "speech",
    "voice": "voice2_ysolde",
-   "text": "Fall back. I will remember this field.",
+   "text": "Fall back. I will remember this.",
    "out": "review/v18_voices/ysolde/retreat_v2",
-   "v": 1
+   "v": 2
   },
   {
    "id": "line18_ysolde_retreat_v3",
@@ -4939,23 +4939,23 @@
    "voice": "voice2_ysolde",
    "text": "I will have this province.",
    "out": "review/v18_voices/ysolde/claim_v3",
-   "v": 1
+   "v": 2
   },
   {
    "id": "line18_ysolde_capital_took",
    "kind": "speech",
    "voice": "voice2_ysolde",
-   "text": "Your capital kneels to me now.",
+   "text": "Your capital kneels to *me* now.",
    "out": "review/v18_voices/ysolde/capital_took",
-   "v": 1
+   "v": 2
   },
   {
    "id": "line18_ysolde_capital_took_v2",
    "kind": "speech",
    "voice": "voice2_ysolde",
-   "text": "Your court has fled. Your treasury has not.",
+   "text": "Your court has fled. Your treasury, has not.",
    "out": "review/v18_voices/ysolde/capital_took_v2",
-   "v": 1
+   "v": 2
   },
   {
    "id": "line18_ysolde_capital_took_v3",
@@ -4963,15 +4963,15 @@
    "voice": "voice2_ysolde",
    "text": "A pretty city. I will rename it.",
    "out": "review/v18_voices/ysolde/capital_took_v3",
-   "v": 1
+   "v": 2
   },
   {
    "id": "line18_ysolde_capital_lost",
    "kind": "speech",
    "voice": "voice2_ysolde",
-   "text": "They dare to sit in my capital?",
+   "text": "They dare to sit in *my* capital?",
    "out": "review/v18_voices/ysolde/capital_lost",
-   "v": 1
+   "v": 2
   },
   {
    "id": "line18_ysolde_capital_lost_v2",
@@ -4985,9 +4985,9 @@
    "id": "line18_ysolde_capital_lost_v3",
    "kind": "speech",
    "voice": "voice2_ysolde",
-   "text": "You have taken my capital. Now I will take everything.",
+   "text": "You have taken my capital. Now I will take *everything*.",
    "out": "review/v18_voices/ysolde/capital_lost_v3",
-   "v": 1
+   "v": 2
   },
   {
    "id": "line18_ysolde_taunt",
@@ -5011,23 +5011,23 @@
    "voice": "voice2_ysolde",
    "text": "Look east, Commander. Winter is coming for you.",
    "out": "review/v18_voices/ysolde/taunt_v3",
-   "v": 1
+   "v": 2
   },
   {
    "id": "line18_ysolde_taunt_v4",
    "kind": "speech",
    "voice": "voice2_ysolde",
-   "text": "I hope you enjoyed that land. You will not keep it.",
+   "text": "I hope you enjoyed that land. You will *not* keep it.",
    "out": "review/v18_voices/ysolde/taunt_v4",
-   "v": 1
+   "v": 2
   },
   {
    "id": "line18_quill_attack_v2",
    "kind": "speech",
    "voice": "voice2_quill",
-   "text": "Right, lads. Go and repossess it.",
+   "text": "Right lads. Go and repossess it!",
    "out": "review/v18_voices/quill/attack_v2",
-   "v": 1
+   "v": 2
   },
   {
    "id": "line18_quill_attack_v3",
@@ -5081,9 +5081,9 @@
    "id": "line18_quill_lose_v3",
    "kind": "speech",
    "voice": "voice2_quill",
-   "text": "Well, that was a poor investment.",
+   "text": "Well, *that* was a poor investment.",
    "out": "review/v18_voices/quill/lose_v3",
-   "v": 1
+   "v": 2
   },
   {
    "id": "line18_quill_lose_v4",
@@ -5099,15 +5099,15 @@
    "voice": "voice2_quill",
    "text": "Unattended property? Mine, by right of possession.",
    "out": "review/v18_voices/quill/walkin_v2",
-   "v": 1
+   "v": 2
   },
   {
    "id": "line18_quill_walkin_v3",
    "kind": "speech",
    "voice": "voice2_quill",
-   "text": "Nobody minding the shop? Lovely.",
+   "text": "Nobody minding the shop? Lovely!",
    "out": "review/v18_voices/quill/walkin_v3",
-   "v": 1
+   "v": 2
   },
   {
    "id": "line18_quill_retreat_v2",
@@ -5115,23 +5115,23 @@
    "voice": "voice2_quill",
    "text": "Pull out, lads. The market has turned.",
    "out": "review/v18_voices/quill/retreat_v2",
-   "v": 1
+   "v": 2
   },
   {
    "id": "line18_quill_retreat_v3",
    "kind": "speech",
    "voice": "voice2_quill",
-   "text": "Sell! Sell! Back to the ships!",
+   "text": "Sell! Sell!",
    "out": "review/v18_voices/quill/retreat_v3",
-   "v": 1
+   "v": 2
   },
   {
    "id": "line18_quill_reserves_v2",
    "kind": "speech",
    "voice": "voice2_quill",
-   "text": "Throw in the capital! All of it!",
+   "text": "Throw in our capital! All of it!",
    "out": "review/v18_voices/quill/reserves_v2",
-   "v": 1
+   "v": 2
   },
   {
    "id": "line18_quill_reserves_v3",
@@ -5139,7 +5139,7 @@
    "voice": "voice2_quill",
    "text": "Double down, gentlemen!",
    "out": "review/v18_voices/quill/reserves_v3",
-   "v": 1
+   "v": 2
   },
   {
    "id": "line18_quill_cash_v2",
@@ -5147,15 +5147,15 @@
    "voice": "voice2_quill",
    "text": "Cashing in my chips. With interest.",
    "out": "review/v18_voices/quill/cash_v2",
-   "v": 1
+   "v": 2
   },
   {
    "id": "line18_quill_claim_v2",
    "kind": "speech",
    "voice": "voice2_quill",
-   "text": "Prime real estate. I will take it.",
+   "text": "Prime real estate. I'll take it.",
    "out": "review/v18_voices/quill/claim_v2",
-   "v": 1
+   "v": 2
   },
   {
    "id": "line18_quill_claim_v3",
@@ -5163,23 +5163,23 @@
    "voice": "voice2_quill",
    "text": "Location, location, location.",
    "out": "review/v18_voices/quill/claim_v3",
-   "v": 1
+   "v": 2
   },
   {
    "id": "line18_quill_capital_took",
    "kind": "speech",
    "voice": "voice2_quill",
-   "text": "Your treasury? Consider it audited.",
+   "text": "Consider your treasury audited.",
    "out": "review/v18_voices/quill/capital_took",
-   "v": 1
+   "v": 2
   },
   {
    "id": "line18_quill_capital_took_v2",
    "kind": "speech",
    "voice": "voice2_quill",
-   "text": "What a lovely capital. And such generous vaults!",
+   "text": "What a lovely capital. And such *generous* vaults.",
    "out": "review/v18_voices/quill/capital_took_v2",
-   "v": 1
+   "v": 2
   },
   {
    "id": "line18_quill_capital_took_v3",
@@ -5187,7 +5187,7 @@
    "voice": "voice2_quill",
    "text": "The Company thanks you for your contribution.",
    "out": "review/v18_voices/quill/capital_took_v3",
-   "v": 1
+   "v": 2
   },
   {
    "id": "line18_quill_capital_lost",
@@ -5219,23 +5219,23 @@
    "voice": "voice2_quill",
    "text": "Nothing personal, Commander. Just business.",
    "out": "review/v18_voices/quill/taunt",
-   "v": 1
+   "v": 2
   },
   {
    "id": "line18_quill_taunt_v2",
    "kind": "speech",
    "voice": "voice2_quill",
-   "text": "I have made you an offer you cannot refuse. My army.",
+   "text": "I have an offer you cannot refuse. My army.",
    "out": "review/v18_voices/quill/taunt_v2",
-   "v": 1
+   "v": 2
   },
   {
    "id": "line18_quill_taunt_v3",
    "kind": "speech",
    "voice": "voice2_quill",
-   "text": "Your lands are under new management. Mine.",
+   "text": "Your lands are under new management.",
    "out": "review/v18_voices/quill/taunt_v3",
-   "v": 1
+   "v": 2
   },
   {
    "id": "line18_quill_taunt_v4",
@@ -5307,7 +5307,7 @@
    "voice": "voice2_oren",
    "text": "That is, hm. That is not ideal.",
    "out": "review/v18_voices/oren/lose_v3",
-   "v": 1
+   "v": 2
   },
   {
    "id": "line18_oren_lose_v4",
@@ -5315,23 +5315,23 @@
    "voice": "voice2_oren",
    "text": "Not fair! They cheated! Probably.",
    "out": "review/v18_voices/oren/lose_v4",
-   "v": 1
+   "v": 2
   },
   {
    "id": "line18_oren_walkin_v2",
    "kind": "speech",
    "voice": "voice2_oren",
-   "text": "Oh, it is empty! Mine, mine, mine!",
+   "text": "Oh, it's empty. Mine!",
    "out": "review/v18_voices/oren/walkin_v2",
-   "v": 1
+   "v": 2
   },
   {
    "id": "line18_oren_walkin_v3",
    "kind": "speech",
    "voice": "voice2_oren",
-   "text": "Nobody there? Brilliant!",
+   "text": "Nobody home? Brilliant!",
    "out": "review/v18_voices/oren/walkin_v3",
-   "v": 1
+   "v": 2
   },
   {
    "id": "line18_oren_retreat_v2",
@@ -5403,7 +5403,7 @@
    "voice": "voice2_oren",
    "text": "Your capital! Is it mine? It is mine!",
    "out": "review/v18_voices/oren/capital_took_v2",
-   "v": 1
+   "v": 2
   },
   {
    "id": "line18_oren_capital_took_v3",
@@ -5417,9 +5417,9 @@
    "id": "line18_oren_capital_lost",
    "kind": "speech",
    "voice": "voice2_oren",
-   "text": "My capital! Oh, Mother is going to be furious.",
+   "text": "My capital?! Oh, Mother is going to be furious.",
    "out": "review/v18_voices/oren/capital_lost",
-   "v": 1
+   "v": 2
   },
   {
    "id": "line18_oren_capital_lost_v2",
@@ -5427,15 +5427,15 @@
    "voice": "voice2_oren",
    "text": "They took my capital? I was using that!",
    "out": "review/v18_voices/oren/capital_lost_v2",
-   "v": 1
+   "v": 2
   },
   {
    "id": "line18_oren_capital_lost_v3",
    "kind": "speech",
    "voice": "voice2_oren",
-   "text": "Right. New capital. Nobody panic. I am not panicking.",
+   "text": "Right. New capital. Nobody panic. I'm not panicking!",
    "out": "review/v18_voices/oren/capital_lost_v3",
-   "v": 1
+   "v": 2
   },
   {
    "id": "line18_oren_taunt",
@@ -5467,7 +5467,7 @@
    "voice": "voice2_oren",
    "text": "I have a very fast horse, and it is pointed at you!",
    "out": "review/v18_voices/oren/taunt_v4",
-   "v": 1
+   "v": 2
   },
   {
    "id": "line18_hask_attack_v2",
@@ -5513,17 +5513,17 @@
    "id": "line18_hask_win_v4",
    "kind": "speech",
    "voice": "voice2_hask",
-   "text": "That is how the Bear does it!",
+   "text": "That is how the *Bear* does it!",
    "out": "review/v18_voices/hask/win_v4",
-   "v": 1
+   "v": 2
   },
   {
    "id": "line18_hask_lose_v2",
    "kind": "speech",
    "voice": "voice2_hask",
-   "text": "Argh! Lucky shot!",
+   "text": "Argh! Lucky shot.",
    "out": "review/v18_voices/hask/lose_v2",
-   "v": 1
+   "v": 2
   },
   {
    "id": "line18_hask_lose_v3",
@@ -5537,17 +5537,17 @@
    "id": "line18_hask_lose_v4",
    "kind": "speech",
    "voice": "voice2_hask",
-   "text": "Grr. Patch the hull and go again.",
+   "text": "Hrmph. Patch the hull and go again.",
    "out": "review/v18_voices/hask/lose_v4",
-   "v": 1
+   "v": 2
   },
   {
    "id": "line18_hask_walkin_v2",
    "kind": "speech",
    "voice": "voice2_hask",
-   "text": "Ha! Nobody on deck? I will take her!",
+   "text": "Ha! Nobody on deck?",
    "out": "review/v18_voices/hask/walkin_v2",
-   "v": 1
+   "v": 2
   },
   {
    "id": "line18_hask_walkin_v3",
@@ -5555,7 +5555,7 @@
    "voice": "voice2_hask",
    "text": "Empty? The Bear says thank you!",
    "out": "review/v18_voices/hask/walkin_v3",
-   "v": 1
+   "v": 2
   },
   {
    "id": "line18_hask_retreat_v2",
@@ -5625,9 +5625,9 @@
    "id": "line18_hask_capital_took_v2",
    "kind": "speech",
    "voice": "voice2_hask",
-   "text": "The Bear sits on your throne now!",
+   "text": "The Bear sits on *your* throne now!",
    "out": "review/v18_voices/hask/capital_took_v2",
-   "v": 1
+   "v": 2
   },
   {
    "id": "line18_hask_capital_took_v3",
@@ -5643,7 +5643,7 @@
    "voice": "voice2_hask",
    "text": "They have taken my capital! Argh! To arms!",
    "out": "review/v18_voices/hask/capital_lost",
-   "v": 1
+   "v": 2
   },
   {
    "id": "line18_hask_capital_lost_v2",
@@ -5651,7 +5651,7 @@
    "voice": "voice2_hask",
    "text": "My hall! My beer! They will pay!",
    "out": "review/v18_voices/hask/capital_lost_v2",
-   "v": 1
+   "v": 2
   },
   {
    "id": "line18_hask_capital_lost_v3",
@@ -5665,9 +5665,9 @@
    "id": "line18_hask_taunt",
    "kind": "speech",
    "voice": "voice2_hask",
-   "text": "I am coming for you, little general! Ha!",
+   "text": "I am coming for you, little general!",
    "out": "review/v18_voices/hask/taunt",
-   "v": 1
+   "v": 2
   },
   {
    "id": "line18_hask_taunt_v2",
@@ -5683,15 +5683,15 @@
    "voice": "voice2_hask",
    "text": "The Bear smells your border, and it smells weak!",
    "out": "review/v18_voices/hask/taunt_v3",
-   "v": 1
+   "v": 2
   },
   {
    "id": "line18_hask_taunt_v4",
    "kind": "speech",
    "voice": "voice2_hask",
-   "text": "Run! Or do not. It is more fun if you do not!",
+   "text": "Run! Or do not. It is more *fun* if you don't.",
    "out": "review/v18_voices/hask/taunt_v4",
-   "v": 1
+   "v": 2
   },
   {
    "id": "line18_imre_attack_v2",
@@ -5713,9 +5713,9 @@
    "id": "line18_imre_attack_v4",
    "kind": "speech",
    "voice": "voice2_imre",
-   "text": "They are exactly where I expected. Strike.",
+   "text": "They are *exactly* where I expected. Strike.",
    "out": "review/v18_voices/imre/attack_v4",
-   "v": 1
+   "v": 2
   },
   {
    "id": "line18_imre_win_v2",
@@ -5755,7 +5755,7 @@
    "voice": "voice2_imre",
    "text": "A variance. It will even out.",
    "out": "review/v18_voices/imre/lose_v3",
-   "v": 1
+   "v": 2
   },
   {
    "id": "line18_imre_lose_v4",
@@ -5769,9 +5769,9 @@
    "id": "line18_imre_walkin_v2",
    "kind": "speech",
    "voice": "voice2_imre",
-   "text": "You left it open. I noticed.",
+   "text": "You left it open.",
    "out": "review/v18_voices/imre/walkin_v2",
-   "v": 1
+   "v": 2
   },
   {
    "id": "line18_imre_walkin_v3",
@@ -5795,15 +5795,15 @@
    "voice": "voice2_imre",
    "text": "Preserve the fleet. Fall back.",
    "out": "review/v18_voices/imre/retreat_v3",
-   "v": 1
+   "v": 2
   },
   {
    "id": "line18_imre_reserves_v2",
    "kind": "speech",
    "voice": "voice2_imre",
-   "text": "Now. The reserve.",
+   "text": "Now comes the reserve.",
    "out": "review/v18_voices/imre/reserves_v2",
-   "v": 1
+   "v": 2
   },
   {
    "id": "line18_imre_reserves_v3",
@@ -5833,9 +5833,9 @@
    "id": "line18_imre_claim_v3",
    "kind": "speech",
    "voice": "voice2_imre",
-   "text": "That land. I have my reasons.",
+   "text": "*That* land. I have my reasons.",
    "out": "review/v18_voices/imre/claim_v3",
-   "v": 1
+   "v": 2
   },
   {
    "id": "line18_imre_capital_took",
@@ -5857,9 +5857,9 @@
    "id": "line18_imre_capital_took_v3",
    "kind": "speech",
    "voice": "voice2_imre",
-   "text": "Your treasury was poorly defended. I corrected that.",
+   "text": "Your treasury was poorly defended. I corrected that :).",
    "out": "review/v18_voices/imre/capital_took_v3",
-   "v": 1
+   "v": 2
   },
   {
    "id": "line18_imre_capital_lost",
@@ -5867,7 +5867,7 @@
    "voice": "voice2_imre",
    "text": "My capital has fallen. Irritating.",
    "out": "review/v18_voices/imre/capital_lost",
-   "v": 1
+   "v": 2
   },
   {
    "id": "line18_imre_capital_lost_v2",
@@ -5915,7 +5915,7 @@
    "voice": "voice2_imre",
    "text": "Check.",
    "out": "review/v18_voices/imre/taunt_v4",
-   "v": 1
+   "v": 2
   },
   {
    "id": "sfx_capital_fall",

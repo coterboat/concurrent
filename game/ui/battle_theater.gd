@@ -83,7 +83,9 @@ var _fort_cap_a: Label
 var _fort_cap_b: Label
 var _f_spent := {} ## pid -> favours spent in the fights shown so far
 var _f_used := {} ## pid -> true once they called on Fortune in this battle
-var _pieces_final := false ## v1.9: the battle's over: the colours stand, the loser's piece lies
+var _pieces_final := false
+var _voice_hold := 0.0
+var _fortune_ask := false ## v1.10: a Fortune offer is on the plate: it waits for the commander, even on auto-roll ## v1.9: the battle's over: the colours stand, the loser's piece lies
 
 
 func _ready() -> void:
@@ -483,8 +485,13 @@ func _process(delta: float) -> void:
 	if _state == "ready" and not _hands_on():
 		_auto_t -= delta
 		if _auto_t <= 0.0:
+			## v1.10: nobody is cut off mid-taunt by an auto-rolled volley (three seconds at most)
+			if Audio.voice_playing() and _voice_hold < 3.0:
+				_voice_hold += delta
+				return
+			_voice_hold = 0.0
 			_roll_exchange()
-	elif _state == "call" and not manual:
+	elif _state == "call" and not manual and not _fortune_ask:
 		_auto_t -= delta
 		if _auto_t <= 0.0:
 			_answer(session.officer_call())
@@ -774,10 +781,11 @@ func _update_counts() -> void:
 	_tier_b.text = (DiceStage.tier_name(nb) + " dice") if nb > 0 else ""
 	if _fort_a != null:
 		_update_fortune()
-	## v1.9: the painted pieces on the table: what each side's men are worth
-	if DiceStage.has_pieces() and not _scramble and not _pieces_final:
+	## v1.9: the painted pieces on the table: what each side's men are worth (v1.10: in a melee
+	## and a free-for-all too, the lead army against the one across the field)
+	if DiceStage.has_pieces() and not _pieces_final:
 		if na > 0:
-			_tray.set_piece(0, DiceStage.piece_for(na), Style.seat_color(_melee_lead_pid() if _melee else _a_pid))
+			_tray.set_piece(0, DiceStage.piece_for(na), Style.seat_color(_melee_lead_pid() if (_melee or _scramble) else _a_pid))
 		if nb > 0:
 			_tray.set_piece(1, DiceStage.piece_for(nb), Style.seat_color(_b_pid))
 
@@ -805,6 +813,8 @@ func _roll_exchange() -> void:
 		var n := 0
 		var cur: Array = []
 		while _ri < _rolls.size() and n < Combat.EXCHANGE:
+			if n > 0 and _melee and _call_boundary(_ri):
+				break ## v1.10: a call was made here (Fortune may have cut an exchange short)
 			var salvo: Array = _rolls[_ri]
 			if not cur.is_empty() and cur.size() + salvo.size() > 4:
 				throws.append(cur)
@@ -815,15 +825,28 @@ func _roll_exchange() -> void:
 		if not cur.is_empty():
 			throws.append(cur)
 	elif _volley_mode:
+		## v1.10: three pairs are thrown; any even volleys among them are fired again as a
+		## throw of their own, until three volleys are decided (or the battle is)
 		_ex_start = [_a_left, _b_left]
-		var chunk: Array = []
 		var decided := 0
-		while _ri < _rolls.size() and decided < Combat.EXCHANGE:
-			chunk.append(_rolls[_ri])
-			_ri += 1
-			if str(chunk[-1].get("w", "")) != "":
-				decided += 1
-		throws.append(chunk)
+		var want: int = Combat.EXCHANGE
+		var first := true
+		while _ri < _rolls.size() and decided < Combat.EXCHANGE and want > 0:
+			if not first and _call_boundary(_ri):
+				break
+			var chunk: Array = []
+			var k: int = want
+			while _ri < _rolls.size() and k > 0:
+				if not chunk.is_empty() and _call_boundary(_ri):
+					break
+				chunk.append(_rolls[_ri])
+				_ri += 1
+				k -= 1
+				if str(chunk[-1].get("w", "")) != "":
+					decided += 1
+			throws.append(chunk)
+			want = Combat.EXCHANGE - decided
+			first = false
 	else:
 		throws.append([_rolls[-1]])
 		_ri = _rolls.size()
@@ -843,6 +866,10 @@ func _next_throw(throws: Array, k: int) -> void:
 		return
 	var pairs: Array = _pairs_of(throws[k])
 	_clear_dice()
+	if k > 0 and _volley_mode and not _melee and not _scramble:
+		_tray_note("EVEN VOLLEYS ARE FIRED AGAIN")
+	if k > 0:
+		Audio.sfx("dice_shake", -5.0)
 	var specs: Array = []
 	var m: int = pairs.size()
 	var span: float = minf(3.6, 12.6 / float(maxi(1, m)))
@@ -1018,6 +1045,24 @@ func _plaque(k: int, sl: float, sr: float, tl: String, tr: String, w: String, lp
 	tw.tween_property(plate, "scale", Vector2.ONE, 0.22).set_trans(Tween.TRANS_BACK).set_ease(Tween.EASE_OUT)
 
 
+func _tray_note(text: String) -> void:
+	## a word over the table between throws of one exchange
+	var l := Style.label(text, 18, Style.PARCH, "display")
+	l.add_theme_constant_override("outline_size", 7)
+	l.add_theme_color_override("font_outline_color", Color(0, 0, 0, 0.9))
+	l.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+	l.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	l.size = Vector2(size.x, 26)
+	l.position = Vector2(0, _tray.position.y + _tray.rail_screen(0.0).y - 150.0)
+	add_child(l)
+	l.modulate.a = 0.0
+	var tw := create_tween()
+	tw.tween_property(l, "modulate:a", 1.0, 0.15)
+	tw.tween_interval(1.1)
+	tw.tween_property(l, "modulate:a", 0.0, 0.4)
+	tw.tween_callback(l.queue_free)
+
+
 func _float_at(i: int, text: String, col: Color) -> void:
 	var l := Style.label(text, 26, col, "display")
 	l.add_theme_constant_override("outline_size", 7)
@@ -1039,11 +1084,23 @@ func _update_odds() -> void:
 		bar.show_odds(-1.0, _a_pid, _b_pid, "", "")
 		return
 	if _scramble:
+		## v1.10: every army's chance of being the last standing, in its colours
+		var sizes: Array = []
+		for i in _fronts.size():
+			sizes.append(maxi(0, int(_left[i])))
+		var odds: Array = Combat.scramble_odds(sizes)
+		var parts: Array = []
 		var bits: Array = []
 		for i in _fronts.size():
-			if int(_left[i]) > 0:
-				bits.append("%s %d" % [session.name_of(_front_pid(i)), int(_left[i])])
-		bar.show_odds(-1.0, _a_pid, _b_pid, "Last army standing takes it", "  ·  ".join(bits))
+			if int(sizes[i]) > 0:
+				parts.append({"pid": _front_pid(i), "p": float(odds[i])})
+				bits.append("%s %d%%" % [session.name_of(_front_pid(i)), int(round(float(odds[i]) * 100.0))])
+		var standing := parts.size()
+		if standing <= 1:
+			var wn2: String = session.name_of(str(parts[0]["pid"])) if standing == 1 else "Nobody"
+			bar.show_multi(parts, "%s %s" % [Style.says(wn2, "takes"), session.hex_name(str(_beats[_bi].get("resolves", "")))], "Decided.")
+			return
+		bar.show_multi(parts, "Last army standing takes it", "  ·  ".join(bits))
 		return
 	var a := 0
 	if _melee:
@@ -1231,9 +1288,33 @@ func _fled(i: int) -> bool:
 	return _melee and bool(_fronts[i].get("fellBack", false)) and _seen_calls.has("fell|%d" % i)
 
 
+func _call_boundary(at: int) -> bool:
+	## an exchange ends where any call on the log was made (Fortune can cut one short)
+	if not _melee:
+		for c in _event().get("calls", []):
+			if int(c.get("at", -1)) == at:
+				return true
+		return false
+	for c in _event().get("defCalls", []):
+		if int(c.get("at", -1)) == at:
+			return true
+	for f in _fronts:
+		for c in f.get("calls", []):
+			if int(c.get("at", -1)) == at:
+				return true
+	return false
+
+
 func _calls_at(at: int) -> Array:
 	var out: Array = []
 	if _melee:
+		## v1.10: the defender's Fortune comes first, as the engine asks it first
+		if not _seen_calls.has("-1|%d" % at):
+			for c in _event().get("defCalls", []):
+				if int(c.get("at", -1)) == at:
+					var dc: Dictionary = c.duplicate()
+					dc["front"] = -1
+					out.append(dc)
 		for i in _fronts.size():
 			if _seen_calls.has("%d|%d" % [i, at]):
 				continue
@@ -1266,6 +1347,7 @@ func _ask() -> void:
 	var fortune: bool = bool(p.get("fortune", false))
 	var side: String = str(p.get("side", ""))
 	var only_fortune: bool = fortune and (side == "d" or bool(p.get("ended", false)))
+	_fortune_ask = fortune and session.is_human(str(p.get("chooser", "")))
 	_btn_fortune.visible = fortune
 	_btn_reserves.visible = not only_fortune
 	_btn_fall.visible = not only_fortune
@@ -1287,7 +1369,7 @@ func _ask() -> void:
 	_btn_reserves.disabled = res <= 0
 	_btn_fall.text = "↩ Fall back to %s   (F)" % session.hex_name(refuge) if refuge != "" else "Cut off — no retreat!"
 	_btn_fall.disabled = refuge == ""
-	if manual:
+	if manual or _fortune_ask:
 		var seen: int = int(Settings.get_value("calls_seen", 0))
 		_hint.visible = seen < 4
 		if seen < 4:
@@ -1324,6 +1406,7 @@ func _counsel(a: int, d: int, res: int, refuge: String) -> void:
 func _answer(call: String) -> void:
 	if _state != "call":
 		return
+	_fortune_ask = false
 	_call_plate.visible = false
 	_state = "wait"
 	_dial.set_label("…", "")
@@ -1335,7 +1418,14 @@ func _answer(call: String) -> void:
 	if call == Combat.CALL_PRESS:
 		if _advised and _advisor.visible and session.is_human(str(p.get("attacker", ""))) and _exchange == 1:
 			_advisor.react("happy", "press", 2.0)
-		_field.charge(fi if _melee else 0)
+		match _field.charge(fi if _melee else 0): ## v1.10: a charge is heard
+			"horse":
+				Audio.sfx("horse_trample", -5.0, 0.08)
+				Audio.sfx("hurrah", -8.0)
+				if randf() < 0.45:
+					get_tree().create_timer(0.35).timeout.connect(func(): Audio.sfx("neigh", -9.0, 0.1))
+			"foot":
+				Audio.sfx("hurrah", -5.0)
 		## in a melee other fronts may also have called at this moment: show them, then go on
 		var rest: Array = _calls_at(at)
 		if not rest.is_empty():
@@ -1370,6 +1460,8 @@ func _answer(call: String) -> void:
 		## the counts before the exchange that never happened
 		entry["a"] = int(p.get("a0", _a_left))
 		entry["d"] = int(p.get("d0", _b_left))
+		if p.has("fronts0"):
+			entry["fronts"] = p["fronts0"]
 		entry["by"] = str(p.get("chooser", ""))
 		entry["side"] = str(p.get("side", ""))
 	_show_calls([entry])
@@ -1412,13 +1504,24 @@ func _show_call(c: Dictionary) -> void:
 			var by: String = str(c.get("by", pid))
 			_f_spent[by] = int(_f_spent.get(by, 0)) + 1
 			_f_used[by] = true
+			if _melee and c.has("fronts"):
+				## v1.10: in a melee every front stands where it stood, and the defenders too
+				var fr: Array = c["fronts"]
+				for i in mini(fr.size(), _fronts.size()):
+					_left[i] = int(fr[i])
+					_field.set_count(i, int(fr[i]))
+				_left[_def()] = int(c.get("d", _left[_def()]))
+				_field.set_count(_def(), int(_left[_def()]))
+				_a_left = int(_left[_lead_front()])
+				_b_left = int(_left[_def()])
+			else:
+				_a_left = int(c.get("a", _a_left))
+				_b_left = int(c.get("d", _b_left))
+				_left[0] = _a_left
+				_left[_def()] = _b_left
+				_field.set_count(0, _a_left)
+				_field.set_count(_def(), _b_left)
 			_update_fortune()
-			_a_left = int(c.get("a", _a_left))
-			_b_left = int(c.get("d", _b_left))
-			_left[0] = _a_left
-			_left[_def()] = _b_left
-			_field.set_count(0, _a_left)
-			_field.set_count(_def(), _b_left)
 			_update_counts()
 			_update_odds()
 			_shout_text("✦ FORTUNE!  THROWN AGAIN", Style.GOLD.lightened(0.25))
@@ -1426,7 +1529,7 @@ func _show_call(c: Dictionary) -> void:
 			Audio.sfx("fortune" if Audio.has_sfx("fortune") else "war_chest", -3.0)
 			get_tree().create_timer(0.4).timeout.connect(func(): Audio.sfx("dice_shake", -2.0))
 			var bw: String = _who(by)
-			var bface: Control = _face_a if by == _a_pid else _face_b
+			var bface: Control = _face_b if by == _b_pid else (_face_of_front(int(c.get("front", 0))) if _melee and int(c.get("front", 0)) >= 0 else _face_a)
 			if Lines.has(bw, "fortune"):
 				bface.react("happy", "fortune", 2.4)
 			elif _advisor.visible and session.is_human(by):
@@ -1475,10 +1578,17 @@ func fortune_held(pid: String) -> int:
 
 
 func _update_fortune() -> void:
-	## v1.9: each commander's favours under their dice. Only an assault can be thrown again,
-	## once a battle for each side, and only while both still stand.
-	var on: bool = session != null and session.map.fortune and _event_kind() == Types.EVENT_INVASION and _volley_mode
-	var sides := [[_fort_a, _fort_cap_a, _a_pid], [_fort_b, _fort_cap_b, _b_pid]]
+	## v1.9: each commander's favours under their dice. An assault (and from v1.10 a melee) can
+	## be thrown again, once a battle for each commander, while both sides still stand. In a
+	## clash or a free-for-all nobody makes calls: the stars show, dimmed, and say so.
+	var on: bool = session != null and session.map.fortune and _volley_mode
+	var kind: String = _event_kind()
+	var callable_kind: bool = kind == Types.EVENT_INVASION or (_melee and session != null and session.map.rules >= 19)
+	var why := ""
+	if not callable_kind:
+		why = "no calls in a free-for-all" if _scramble else ("no calls in a clash" if kind == "Clash" else ("no calls in a melee (before v1.10)" if _melee else "no calls here"))
+	var a_pid: String = _melee_lead_pid() if (_melee or _scramble) else _a_pid
+	var sides := [[_fort_a, _fort_cap_a, a_pid], [_fort_b, _fort_cap_b, _b_pid]]
 	for sd in sides:
 		var fp: Control = sd[0]
 		var cap: Label = sd[1]
@@ -1491,8 +1601,13 @@ func _update_fortune() -> void:
 		var used: bool = bool(_f_used.get(pid, false))
 		var live: bool = _a_left > 0 and _b_left > 0 and _state != "done"
 		fp.visible = true
-		fp.set_state(n, 0.0, n > 0 and not used and live, used)
 		var mine: bool = session.is_human(pid)
+		if not callable_kind:
+			fp.set_state(n, 0.0, false, true)
+			cap.text = why if n > 0 else ""
+			fp.tooltip_text = "Fortune ✦ %d. Nobody makes calls in this kind of fight, so it can't be thrown again; the dice's swing here still counts toward the next favour." % n
+			continue
+		fp.set_state(n, 0.0, n > 0 and not used and live, used)
 		if used:
 			cap.text = "called on Fortune"
 		elif n > 0:
@@ -1701,6 +1816,10 @@ func _finish_melee(e: Dictionary, land: String) -> void:
 			if not bool(_fronts[i].get("fellBack", false)):
 				cheering += maxi(0, int(_left[i]))
 	get_tree().create_timer(0.35).timeout.connect(func(): Audio.cheer(cheering))
+	if DiceStage.has_pieces():
+		_tray.set_piece(1 if held else 0, "flag", Style.seat_color(_b_pid if held else _melee_lead_pid()))
+		_tray.topple(0 if held else 1)
+	_pieces_final = true
 	_state = "done"
 	_update_fortune()
 	_auto_t = 2.6
@@ -1734,6 +1853,11 @@ func _finish_scramble(e: Dictionary, land: String) -> void:
 			_face_of_front(i).react("lose")
 	var cheering: int = int(_left[wi])
 	get_tree().create_timer(0.35).timeout.connect(func(): Audio.cheer(cheering))
+	if DiceStage.has_pieces():
+		var left_side: bool = wi == _lead_front() or (wi != _b_front() and win == _melee_lead_pid())
+		_tray.set_piece(0 if left_side else 1, "flag", Style.seat_color(win))
+		_tray.topple(1 if left_side else 0)
+	_pieces_final = true
 	_state = "done"
 	_update_fortune()
 	_auto_t = 2.6
@@ -1754,7 +1878,17 @@ class _OddsBar extends Control:
 	func _init() -> void:
 		mouse_filter = Control.MOUSE_FILTER_IGNORE
 
+	var multi: Array = [] ## v1.10: a free-for-all's shares [{pid, p}]
+
+	func show_multi(parts: Array, h: String, e: String) -> void:
+		multi = parts
+		p = -2.0
+		head = h
+		edge = e
+		queue_redraw()
+
 	func show_odds(np: float, a: String, b: String, h: String, e: String) -> void:
+		multi = []
 		p = np
 		a_pid = a
 		b_pid = b
@@ -1778,6 +1912,16 @@ class _OddsBar extends Control:
 		var hw: float = f.get_string_size(head, HORIZONTAL_ALIGNMENT_LEFT, -1, 17).x
 		draw_string_outline(f, Vector2((w - hw) * 0.5, 16), head, HORIZONTAL_ALIGNMENT_LEFT, -1, 17, 6, Color(0, 0, 0, 0.85))
 		draw_string(f, Vector2((w - hw) * 0.5, 16), head, HORIZONTAL_ALIGNMENT_LEFT, -1, 17, Style.CREAM)
+		if not multi.is_empty():
+			var rm := Rect2(Vector2(40, 23), Vector2(w - 80, 12))
+			draw_rect(rm.grow(2.0), Color(0, 0, 0, 0.7))
+			var x0: float = rm.position.x
+			for k in multi.size():
+				var seg: float = rm.size.x * clampf(float(multi[k]["p"]), 0.0, 1.0)
+				draw_rect(Rect2(Vector2(x0, rm.position.y), Vector2(seg, rm.size.y)), Style.seat_color(str(multi[k]["pid"])).lightened(0.1))
+				x0 += seg
+				if k < multi.size() - 1:
+					draw_rect(Rect2(Vector2(x0 - 1.5, rm.position.y - 3), Vector2(3, rm.size.y + 6)), Style.GOLD)
 		if p >= 0.0:
 			var r := Rect2(Vector2(40, 23), Vector2(w - 80, 12))
 			draw_rect(r.grow(2.0), Color(0, 0, 0, 0.7))
@@ -1786,6 +1930,6 @@ class _OddsBar extends Control:
 			draw_rect(Rect2(r.position + Vector2(split, 0), Vector2(r.size.x - split, r.size.y)), Style.seat_color(b_pid).lightened(0.1) if b_pid != "neutral" else Color(0.55, 0.53, 0.5))
 			draw_rect(Rect2(r.position + Vector2(split - 2.0, -4), Vector2(4, r.size.y + 8)), Style.GOLD)
 		var ew: float = fi.get_string_size(edge, HORIZONTAL_ALIGNMENT_LEFT, -1, 14).x
-		var ey: float = 52.0 if p >= 0.0 else 36.0
+		var ey: float = 52.0 if (p >= 0.0 or not multi.is_empty()) else 36.0
 		draw_string_outline(fi, Vector2((w - ew) * 0.5, ey), edge, HORIZONTAL_ALIGNMENT_LEFT, -1, 14, 5, Color(0, 0, 0, 0.85))
 		draw_string(fi, Vector2((w - ew) * 0.5, ey), edge, HORIZONTAL_ALIGNMENT_LEFT, -1, 14, Style.PARCH)

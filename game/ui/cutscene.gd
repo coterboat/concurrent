@@ -83,7 +83,7 @@ func play(kind: String, caption: String = "", voice_who: String = "advisor", voi
 		## the line lands a beat into the shot
 		get_tree().create_timer(0.9).timeout.connect(func():
 			if _open:
-				Audio.voice(Lines.voice_path(voice_who, voice_key)))
+				Audio.voice(Lines.voice_path(voice_who, voice_key), true))
 	return true
 
 

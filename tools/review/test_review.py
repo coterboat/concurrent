@@ -427,6 +427,34 @@ class ServerTests(unittest.TestCase):
         st, d = self.jreq("POST", "/api/run", {"batch": self.plain, "action": "regen"})
         self.assertEqual(st, 404)  # no regen without a generator
 
+    def test_install_marks_accepted_takes_in_game(self):
+        def crest():
+            st, d = self.jreq("GET", f"/api/batch/{self.plain}")
+            return next(it for it in d["items"] if it["id"] == "crest")
+        R.decide(self.plain, "crest", verdict="accept")
+        d = R.REVIEW / self.plain
+        rv = R.load_review(d)
+        rv["items"]["crest"].pop("installed", None)  # an earlier test may have installed it
+        R.atomic_write_json(d / "review.json", rv)
+        info, out, _ = self.run_to_end(self.plain, "install", {"--dry-run": True})
+        self.assertEqual(info["status"], "ok", out)
+        self.assertFalse(crest()["installed"], "a dry run installs nothing")
+        info, out, _ = self.run_to_end(self.plain, "install", {})
+        self.assertEqual(info["status"], "ok", out)
+        self.assertIn("marked in game", out)
+        it = crest()
+        self.assertTrue(it["installed"] and it["status"] == "accept" and it["installed_at"])
+        self.assertEqual(R.summarize(R.merged_batch(self.plain)["items"])["installed"], 1)
+        # a new take on the same file is no longer the one in the game
+        f = R.REVIEW / self.plain / "crest.png"
+        t = time.time() + 5
+        os.utime(f, (t, t))
+        it = crest()
+        self.assertFalse(it["installed"])
+        self.assertEqual(it["status"], "pending")
+        R.decide(self.plain, "crest", verdict="accept")
+        self.assertFalse(crest()["installed"], "accepted again, but not installed yet")
+
     # -- video
     def test_video_items_and_companions(self):
         st, d = self.jreq("GET", f"/api/batch/{self.name}")

@@ -243,5 +243,5 @@ func _session(report: Callable, tree: SceneTree) -> void:
 	s.new_game({"map": "res://maps/known24.json", "seed": 5, "length": "short", "seats": [
 		{"id": "red", "name": "Dad", "kind": "human", "ai": ""},
 		{"id": "blue", "name": "Varek", "kind": "ai", "ai": "varek"}]})
-	report.call(s.map.rules == 18 and int(s.config["rules"]) == 18, "a new game plays rules 18")
+	report.call(s.map.rules >= 18 and int(s.config["rules"]) == s.map.rules, "a new game plays rules 18 or later (%d)" % s.map.rules)
 	s.queue_free()

@@ -373,8 +373,11 @@ func _act(f: Dictionary, state: String, anim: String, dur: float) -> void:
 	f["dur"] = dur
 
 
-func charge(ai: int) -> void:
-	## pressing on: the men surge a few paces forward and back into line
+func charge(ai: int) -> String:
+	## pressing on: the men surge a few paces forward and back into line. Returns the sound it
+	## makes (v1.10): hooves if horse went in, a hurrah if only foot, "" if nobody moved.
+	var horse := false
+	var foot := false
 	for f in _alive(ai):
 		if f["state"] != "idle":
 			continue
@@ -382,14 +385,19 @@ func charge(ai: int) -> void:
 			var ik: String = "grenadier_charge_kf" if _elite(f) else "soldier_charge_kf"
 			if _has(ik):
 				_act(f, "charge", ik, _kf_len(ik))
+				foot = true
 			elif not _elite(f) and not _anims["soldier_charge"].is_empty():
 				_act(f, "charge", "soldier_charge", 0.9)
+				foot = true
 		elif f["type"] == "cav":
 			var ck2: String = "cuirassier_charge_kf" if _elite(f) else "cavalry_charge_kf"
 			if _has(ck2):
 				_act(f, "charge", ck2, _kf_len(ck2))
+				horse = true
 			elif not _elite(f):
 				_act(f, "charge", "cavalry_charge", 0.9)
+				horse = true
+	return "horse" if horse else ("foot" if foot else "")
 
 
 func cheer(ai: int) -> void:

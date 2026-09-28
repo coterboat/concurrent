@@ -82,7 +82,9 @@ for another take. `git checkout` restores the previous version.
 ### Video: `assets/video/*.ogv` (v1.9)
 
 - Godot plays **Ogg Theora** only. Convert with the keg-only full build:
-  `/opt/homebrew/opt/ffmpeg-full/bin/ffmpeg -i in.mp4 -c:v libtheora -q:v 7 -c:a libvorbis -q:a 4 out.ogv`.
+  `/opt/homebrew/opt/ffmpeg-full/bin/ffmpeg -i in.mp4 -c:v libtheora -q:v 5 -c:a libvorbis -q:a 4 out.ogv`.
+  Quality 5 looks the same as 7 on these upscaled 480p films and is about 40% smaller (v1.10
+  re-encoded all nine: 49 MB → 28 MB).
 - Keep the mp4 masters in `assets/raw/video/`.
 - **Living paintings** (`title_loop`, `victory_loop`, `defeat_loop`):
   - Their first frame is the still painting, and they loop seamlessly (the last half-second

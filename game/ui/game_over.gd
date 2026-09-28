@@ -107,13 +107,18 @@ func show_result() -> void:
 	var right := PanelContainer.new()
 	right.add_theme_stylebox_override("panel", Style.panel_box(18))
 	right.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	right.clip_contents = true
 	row.add_child(right)
 	var rv := VBoxContainer.new()
 	right.add_child(rv)
 	var ch_head := HBoxContainer.new()
 	ch_head.add_theme_constant_override("separation", 8)
-	var ch_title := Style.label("Lands held, round by round", 24, Style.GOLD, "display")
+	var ch_title := Style.label("Lands, round by round", 24, Style.GOLD, "display")
 	ch_title.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	## v1.10: the title never widens the panel, so every mode draws the chart at the same size
+	ch_title.clip_text = true
+	ch_title.text_overrun_behavior = TextServer.OVERRUN_TRIM_ELLIPSIS
+	ch_title.custom_minimum_size = Vector2(120, 0)
 	ch_head.add_child(ch_title)
 	rv.add_child(ch_head)
 	var chart := _Chart.new()
@@ -121,7 +126,7 @@ func show_result() -> void:
 	chart.size_flags_vertical = Control.SIZE_EXPAND_FILL
 	chart.custom_minimum_size = Vector2(0, 260)
 	## v1.6: the chart by lands, armies or score; card sets turned in are marked on it
-	var modes := [["terr", "Lands", "Lands held, round by round"], ["armies", "Armies", "Armies in the field, round by round"], ["score", "Score", "Score, round by round"]]
+	var modes := [["terr", "Lands", "Lands, round by round"], ["armies", "Armies", "Armies, round by round"], ["score", "Score", "Score, round by round"]]
 	var chips: Array = []
 	for md in modes:
 		var mkey: String = md[0]
@@ -179,6 +184,7 @@ class _Chart extends Control:
 			var y: float = area.position.y + area.size.y * (1.0 - float(k) / 4.0)
 			draw_line(Vector2(area.position.x, y), Vector2(area.end.x, y), Color(1, 1, 1, 0.08), 1.0)
 			draw_string(f, Vector2(4, y + 5), str(int(round(max_v * k / 4.0))), HORIZONTAL_ALIGNMENT_LEFT, -1, 14, Style.MUTED)
+		var ends: Array = []
 		for seat in session.seats:
 			var pid: String = seat["id"]
 			var pts := PackedVector2Array()
@@ -191,7 +197,8 @@ class _Chart extends Control:
 			draw_polyline(pts, col, 3.5, true)
 			for p in pts:
 				draw_circle(p, 4.0, col)
-			draw_string(Style.font("bold"), pts[pts.size() - 1] + Vector2(-60, -10), str(seat["name"]), HORIZONTAL_ALIGNMENT_LEFT, -1, 15, col)
+			ends.append({"y": pts[pts.size() - 1].y - 10.0, "x": pts[pts.size() - 1].x, "name": str(seat["name"]), "col": col})
+
 		for i in h.size():
 			var x2: float = area.position.x + area.size.x * float(i) / float(h.size() - 1)
 			draw_string(f, Vector2(x2 - 4, size.y), str(h[i]["round"]), HORIZONTAL_ALIGNMENT_LEFT, -1, 13, Style.MUTED)
@@ -210,7 +217,7 @@ class _Chart extends Control:
 			var y3: float = area.end.y - area.size.y * float(series2.get(pid2, 0)) / float(max_v)
 			var k: int = int(stack.get(idx, 0))
 			stack[idx] = k + 1
-			var at := Vector2(x3 - 7, y3 - 30 - k * 22)
+			var at := Vector2(x3 - 7, maxf(area.position.y + 2.0, y3 - 30 - k * 22))
 			var col2: Color = Style.seat_color(pid2).lightened(0.2)
 			draw_rect(Rect2(at, Vector2(14, 19)), Color(0.08, 0.05, 0.03), true)
 			draw_rect(Rect2(at + Vector2(1.5, 1.5), Vector2(11, 16)), col2, true)
@@ -232,7 +239,8 @@ class _Chart extends Control:
 			var cy: float = area.end.y - area.size.y * float(series3.get(lost, 0)) / float(max_v)
 			var k2: int = int(stack.get(ci, 0))
 			stack[ci] = k2 + 1
-			var at2 := Vector2(cx, cy + 26 + k2 * 4) if cy < area.position.y + 40 else Vector2(cx, cy - 26 - k2 * 22)
+			var at2 := Vector2(cx, cy + 26 + k2 * 22) if cy < area.position.y + 40 else Vector2(cx, cy - 26 - k2 * 22)
+			at2.y = clampf(at2.y, area.position.y + 14.0, area.end.y - 14.0)
 			var ring: Color = Style.seat_color(str(cl["by"])).lightened(0.2)
 			draw_line(Vector2(cx, cy), at2, Color(ring, 0.7), 2.0, true)
 			draw_circle(at2, 14.0, Color(0.06, 0.04, 0.03, 0.95))
@@ -241,3 +249,14 @@ class _Chart extends Control:
 				draw_texture_rect(crown, Rect2(at2 - Vector2(10, 10), Vector2(20, 20)), false, Style.seat_color(lost).lightened(0.55))
 			else:
 				draw_string(Style.font("bold"), at2 + Vector2(-6, 6), "♛", HORIZONTAL_ALIGNMENT_LEFT, -1, 16, Style.GOLD)
+		## v1.10: the names (drawn last, over any marker) at the lines' ends, stacked so two never sit on each other
+		ends.sort_custom(func(x, y): return float(x["y"]) < float(y["y"]))
+		for k in range(1, ends.size()):
+			if float(ends[k]["y"]) - float(ends[k - 1]["y"]) < 17.0:
+				ends[k]["y"] = float(ends[k - 1]["y"]) + 17.0
+		var nf := Style.font("bold")
+		for en in ends:
+			var nw: float = nf.get_string_size(str(en["name"]), HORIZONTAL_ALIGNMENT_LEFT, -1, 15).x
+			var at_n := Vector2(minf(float(en["x"]) - nw - 8.0, size.x - nw - 4.0), clampf(float(en["y"]), area.position.y + 12.0, area.end.y - 2.0))
+			draw_string_outline(nf, at_n, str(en["name"]), HORIZONTAL_ALIGNMENT_LEFT, -1, 15, 5, Color(0, 0, 0, 0.8))
+			draw_string(nf, at_n, str(en["name"]), HORIZONTAL_ALIGNMENT_LEFT, -1, 15, en["col"])

@@ -100,19 +100,22 @@ func run(probe) -> void:
 	main.settings_panel.closed.emit()
 	## fast-forward to the end
 	var guard := 0
-	while s.phase != Session.Phase.GAME_OVER and guard < 80:
+	while s.phase != Session.Phase.GAME_OVER and guard < 400:
 		guard += 1
 		match s.phase:
 			Session.Phase.RECAP:
 				gs.recap.visible = false
 				s.next_round()
-			Session.Phase.PLANNING:
+			Session.Phase.PLANNING, Session.Phase.OPENING:
 				s.auto_deploy()
 				s.lock()
+			Session.Phase.MANEUVER:
+				s.lock() ## the regroup phase: no marches, go on (it used to stall here)
 			Session.Phase.CINEMA:
 				gs.cinema.skip()
 		await p.frames(3)
 	await p.frames(70)
+	p.ok(s.phase == Session.Phase.GAME_OVER, "the fast-forward reaches the end of the war (round %d)" % s.world.round)
 	await snap("11_game_over")
 
 func snap(name: String) -> void:

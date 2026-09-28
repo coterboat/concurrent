@@ -177,12 +177,12 @@
    "surges": [
     "Now the breakthroughs. Every surge charges on at once!",
     "The breakthroughs charge on! Hold on to your hat.",
-    "Here come the surges, all at once. Steady now."
+    "Here come the surges. Steady now."
    ],
    "upset_win": [
     "Against all odds! I will not pretend I expected that.",
     "Well, I never! The dice owed us one.",
-    "That should not have worked. It worked! Marvellous!",
+    "That should not have worked. But it did! Marvellous!",
     "A miracle, Commander. Do not get used to it."
    ],
    "upset_loss": [
@@ -239,7 +239,7 @@
    "attack": [
     "Advance. Fix bayonets. No quarter.",
     "Forward. Steady ranks.",
-    "Take the ground. Hold it.",
+    "Take the ground!",
     "Advance, and do not stop until it is ours."
    ],
    "win": [
@@ -251,7 +251,7 @@
    "lose": [
     "A setback. They will pay for it in blood.",
     "Noted.",
-    "A costly lesson. For them, eventually.",
+    "A costly lesson for them",
     "Bury the dead. We go again."
    ],
    "walkin": [
@@ -273,7 +273,7 @@
    ],
    "claim": [
     "This ground is mine. Dig in.",
-    "Here. We build from here.",
+    "We build from here.",
     "A sound position. Mine."
    ],
    "cash": [
@@ -282,7 +282,7 @@
    ],
    "capital_took": [
     "Your capital is mine. Your treasury too.",
-    "The seat of your government now flies my colours.",
+    "The seat of your government now flies *my* colours.",
     "A capital is only stone. You should have held it."
    ],
    "capital_lost": [
@@ -293,8 +293,8 @@
    "taunt": [
     "I see your border, Commander. It is thin.",
     "My columns are marching. I would dig in, if I were you.",
-    "You have something of mine. I am coming to collect it.",
-    "Brace yourself. This one will hurt."
+    "You have something of mine. I am coming to collect.",
+    "Brace yourself. This one will *hurt*."
    ],
    "fortune": [
     "Again. Properly, this time.",
@@ -305,7 +305,7 @@
    "greet": "Viceroy Ysolde. Every land at this table will fly my banner. Guard your doors.",
    "attack": [
     "Take it. Leave nothing standing.",
-    "March. And do not come back without it.",
+    "March. And do not come back without victory.",
     "Crush them. Quickly.",
     "Take it. I dislike waiting."
    ],
@@ -330,7 +330,7 @@
    "victory": "Kneel. The empire is mine.",
    "retreat": [
     "Withdraw. For now.",
-    "Fall back. I will remember this field.",
+    "Fall back. I will remember this.",
     "Withdraw. We choose the next battle."
    ],
    "reserves": [
@@ -348,20 +348,20 @@
     "The treasury is open. Raise the regiments."
    ],
    "capital_took": [
-    "Your capital kneels to me now.",
-    "Your court has fled. Your treasury has not.",
+    "Your capital kneels to *me* now.",
+    "Your court has fled. Your treasury, has not.",
     "A pretty city. I will rename it."
    ],
    "capital_lost": [
-    "They dare to sit in my capital?",
+    "They dare to sit in *my* capital?",
     "My court moves. My army does not forget.",
-    "You have taken my capital. Now I will take everything."
+    "You have taken my capital. Now I will take *everything*."
    ],
    "taunt": [
     "Your border is weak, Commander. I can see it from here.",
     "In my country, we do not knock.",
     "Look east, Commander. Winter is coming for you.",
-    "I hope you enjoyed that land. You will not keep it."
+    "I hope you enjoyed that land. You will *not* keep it."
    ],
    "fortune": [
     "No. We do that again.",
@@ -372,7 +372,7 @@
    "greet": "Governor Quill, of the Company. Everything has its price, and I intend to buy the world.",
    "attack": [
     "An investment opportunity, lads. Go and collect.",
-    "Right, lads. Go and repossess it.",
+    "Right lads. Go and repossess it!",
     "Hostile takeover, gentlemen!",
     "There is money in that valley. Fetch it."
    ],
@@ -385,29 +385,29 @@
    "lose": [
     "Hm. That will cost me.",
     "Ooh, that is a write-off.",
-    "Well, that was a poor investment.",
+    "Well, *that* was a poor investment.",
     "Losses, losses. Most disappointing."
    ],
    "walkin": [
     "Unguarded goods. Finders keepers.",
     "Unattended property? Mine, by right of possession.",
-    "Nobody minding the shop? Lovely."
+    "Nobody minding the shop? Lovely!"
    ],
    "eliminated": "Bankrupt. Well, it was lovely doing business.",
    "victory": "Tally it up. The Company owns the lot.",
    "retreat": [
     "Cut our losses, lads. Back to the ships.",
     "Pull out, lads. The market has turned.",
-    "Sell! Sell! Back to the ships!"
+    "Sell! Sell!"
    ],
    "reserves": [
     "Double the investment! Send the reserves!",
-    "Throw in the capital! All of it!",
+    "Throw in our capital! All of it!",
     "Double down, gentlemen!"
    ],
    "claim": [
     "A fine piece of property. I will take it.",
-    "Prime real estate. I will take it.",
+    "Prime real estate. I'll take it.",
     "Location, location, location."
    ],
    "cash": [
@@ -415,8 +415,8 @@
     "Cashing in my chips. With interest."
    ],
    "capital_took": [
-    "Your treasury? Consider it audited.",
-    "What a lovely capital. And such generous vaults!",
+    "Consider your treasury audited.",
+    "What a lovely capital. And such *generous* vaults.",
     "The Company thanks you for your contribution."
    ],
    "capital_lost": [
@@ -426,8 +426,8 @@
    ],
    "taunt": [
     "Nothing personal, Commander. Just business.",
-    "I have made you an offer you cannot refuse. My army.",
-    "Your lands are under new management. Mine.",
+    "I have an offer you cannot refuse. My army.",
+    "Your lands are under new management.",
     "Let us call it a merger, shall we?"
    ],
    "fortune": [
@@ -457,8 +457,8 @@
    ],
    "walkin": [
     "Nobody home? Do not mind if I do!",
-    "Oh, it is empty! Mine, mine, mine!",
-    "Nobody there? Brilliant!"
+    "Oh, it's empty. Mine!",
+    "Nobody home? Brilliant!"
    ],
    "eliminated": "I will be back. With more horses.",
    "victory": "I won? I won! Somebody tell my mother!",
@@ -487,9 +487,9 @@
     "Ha! A whole capital! With a palace!"
    ],
    "capital_lost": [
-    "My capital! Oh, Mother is going to be furious.",
+    "My capital?! Oh, Mother is going to be furious.",
     "They took my capital? I was using that!",
-    "Right. New capital. Nobody panic. I am not panicking."
+    "Right. New capital. Nobody panic. I'm not panicking!"
    ],
    "taunt": [
     "Hello, neighbour! Coming through!",
@@ -514,17 +514,17 @@
     "Hah! Soft as butter!",
     "Ha ha! Too easy!",
     "Sunk! Like a stone!",
-    "That is how the Bear does it!"
+    "That is how the *Bear* does it!"
    ],
    "lose": [
     "Grr. Lucky blow.",
-    "Argh! Lucky shot!",
+    "Argh! Lucky shot.",
     "Bah! They will pay for that one!",
-    "Grr. Patch the hull and go again."
+    "Hrmph. Patch the hull and go again."
    ],
    "walkin": [
     "Empty? Then it is mine!",
-    "Ha! Nobody on deck? I will take her!",
+    "Ha! Nobody on deck?",
     "Empty? The Bear says thank you!"
    ],
    "eliminated": "Bah! Pour me a drink. I am done.",
@@ -550,7 +550,7 @@
    ],
    "capital_took": [
     "Your capital! Loot the treasury, lads! Ha ha!",
-    "The Bear sits on your throne now!",
+    "The Bear sits on *your* throne now!",
     "What a prize! Hoist my colours!"
    ],
    "capital_lost": [
@@ -559,10 +559,10 @@
     "Bah! A capital is just a building. The Bear is still here!"
    ],
    "taunt": [
-    "I am coming for you, little general! Ha!",
+    "I am coming for you, little general!",
     "Hide your ships and lock your doors!",
     "The Bear smells your border, and it smells weak!",
-    "Run! Or do not. It is more fun if you do not!"
+    "Run! Or do not. It is more *fun* if you don't."
    ],
    "fortune": [
     "Throw the bones again, lads! Ha!",
@@ -575,7 +575,7 @@
     "Exactly as planned. Proceed.",
     "Execute.",
     "As predicted. Proceed.",
-    "They are exactly where I expected. Strike."
+    "They are *exactly* where I expected. Strike."
    ],
    "win": [
     "Calculated.",
@@ -591,7 +591,7 @@
    ],
    "walkin": [
     "You moved. I did not. That was the whole trick.",
-    "You left it open. I noticed.",
+    "You left it open.",
     "Empty. I had counted on that."
    ],
    "eliminated": "Well played. I underestimated you.",
@@ -603,13 +603,13 @@
    ],
    "reserves": [
     "Commit the reserve. Now.",
-    "Now. The reserve.",
+    "Now comes the reserve.",
     "All of it. The margin matters."
    ],
    "claim": [
     "That one. You were about to take it, were you not?",
     "This one. It connects everything.",
-    "That land. I have my reasons."
+    "*That* land. I have my reasons."
    ],
    "cash": [
     "I have been saving these. Now they matter.",
@@ -618,7 +618,7 @@
    "capital_took": [
     "Your capital. I have had it marked since round one.",
     "The seat of your power. Now the seat of mine.",
-    "Your treasury was poorly defended. I corrected that."
+    "Your treasury was poorly defended. I corrected that :)."
    ],
    "capital_lost": [
     "My capital has fallen. Irritating.",
