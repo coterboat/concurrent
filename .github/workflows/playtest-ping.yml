@@ -1,0 +1,28 @@
+name: playtest ping
+
+on:
+  push:
+    branches: [main]
+    paths-ignore:
+      - 'playtest/**'
+
+jobs:
+  ping:
+    runs-on: ubuntu-latest
+    timeout-minutes: 2
+    steps:
+      - name: wake playtester
+        env:
+          URL: ${{ secrets.PLAYTESTER_WEBHOOK_URL }}
+          KEY: ${{ secrets.PLAYTESTER_WEBHOOK_KEY }}
+          SHA: ${{ github.sha }}
+        run: |
+          if [ -z "$URL" ] || [ -z "$KEY" ]; then
+            echo "playtester secrets not set, skipping"
+            exit 0
+          fi
+          curl -sS -m 8 -X POST "$URL" \
+            -H "Content-Type: application/json" \
+            -H "Authorization: Bearer $KEY" \
+            -H "X-Automation-Key: $KEY" \
+            -d "{\"event\":\"push\",\"sha\":\"$SHA\"}" || echo "ping failed; the hourly poll will catch it"
