@@ -777,13 +777,9 @@ func _on_hover(id: String) -> void:
 	if id == "" or session.world == null or land_card.visible and id == selected:
 		_hover_tip.visible = false
 		return
-	_hover_label.text = "\n".join(LandTip.lines(session, board, id)) ## v1.13: game/ui/land_tip.gd
-	_hover_tip.visible = true
-	_hover_tip.reset_size()
-	var p: Vector2 = board.anchor(id) + Vector2(28, -_hover_tip.size.y - 22)
-	p.x = clampf(p.x, 4, size.x - _hover_tip.size.x - 4)
-	p.y = clampf(p.y, TOP, size.y - BAR - _hover_tip.size.y - 4)
-	_hover_tip.position = p
+	## the words, the box and where it sits: game/ui/land_tip.gd
+	LandTip.show(_hover_tip, _hover_label, "\n".join(LandTip.lines(session, board, id)), board.anchor(id),
+		Rect2(4, TOP, size.x - 8, size.y - BAR - TOP - 4), board.token_radius() + 16.0)
 
 
 func _on_roster_hover(pid: String) -> void:

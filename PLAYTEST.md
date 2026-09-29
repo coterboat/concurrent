@@ -104,7 +104,23 @@ fingerprints below v1.12 are unchanged). Everything here is what the table shows
     `probes: failed:`. `v112` now also checks where each army stands in a three- and a five-way
     scramble.
 
-## v1.13.1: fixes from your report on 0b2fe07 (this push)
+## v1.13.2: your critic's trims to reading the map (this push)
+
+- **Enemy ceilings (`≤N`)** show only on enemy lands that border yours, and on the one you hover.
+  - **Poke:** round 2 on the ring and the Isles. Count the numbers on the map. Hovering a far enemy
+    land should show its ceiling.
+- **The "ways in" line** names its region ("2 ways into Great Vane: …"). An entrance at the land
+  you hover says "(here)".
+- **The land tooltip** sits beside its land on the outer side, else above or below it, and wraps
+  past 400 px.
+  - **Poke:** hover lands at every edge and in the middle, at 1280×800 as well as 1440×900. It must
+    never cover the land you hover, run off the screen, or sit under the command bar.
+- **Fate marks:** a red cross (thrown back), a pale double chevron pointing the way the survivors
+  went (fell back), crossed swords (beaten in a scramble). A column beaten in a border clash still
+  stops halfway.
+  - **Poke:** a busy round 2. Can you tell each fate apart without hovering?
+
+## v1.13.1: fixes from your report on 0b2fe07
 
 - **B-005..B-008 fixed.** Poke: a seat named "You" in the recap, the tooltips and the report ("your",
   "you were"); the round banner while your battle waits for a call; Esc during the swoop; a land two of

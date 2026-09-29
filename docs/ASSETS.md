@@ -68,7 +68,17 @@ MCP server at `/mcp/` (`.mcp.json`). No credits and no key; nothing leaves the m
   picks the person). Each records a voice card (its greeting plus one line), and its other lines are
   cloned from that card so every line is the same person. Batch `vs_designs`. Its one button saves
   the identities whose card you accepted as VoiceStudio profiles.
-- About 11 s to make a take of 3–6 s once the model is warm (17 s cold). The advisor and the commanders are saved in VoiceStudio as
+- `tools/voicestudio/vs_casting.py` is round 2 of the designs (batch `vs_cast`): several seeds per
+  trait mix, junk thrown out before anyone listens.
+- `tools/voicestudio/vs_lines.py` makes the full sets (batch `vs_lines`). Every line of every
+  commander is spoken in the chosen voice (`CAST`), 3 takes each, plus every v1.11 lab iteration
+  except `[pause]` and `<break>`, which get read aloud. Quill and Ysolde have two voices each, side by
+  side. Before anyone listens, each take must hold its voice's pitch, not swing wildly, and fit its
+  words for length, or it's rolled again. A quiet, pitchless burst before the first word or after
+  the last (a click, a lip smack) is cut; a quiet burst at the voice's own pitch is a word ("Hm.")
+  and stays. Install stops if two takes are accepted for one line. It's resumable: run it again and
+  it makes only what's missing.
+- About 12 s to make a take of 3–6 s once the model is warm (17 s cold). The advisor and the commanders are saved in VoiceStudio as
   profiles named "CONCURRENT · …", so they can be used in its app too.
 
 ## Formats the code reads

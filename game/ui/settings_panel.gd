@@ -34,7 +34,7 @@ func _ready() -> void:
 	v.add_child(_choice("Battle speed", "speed", ["Slow — savor every roll", "Normal", "Fast"], ["slow", "normal", "fast"]))
 	v.add_child(_choice("Text size", "ui_scale", ["Normal", "Large", "Extra large"], [1.0, 1.15, 1.3]))
 	v.add_child(_toggle("Advisor tips", "tips"))
-	v.add_child(_toggle("Show enemy ceilings (≤) on the map", "ceilings"))
+	v.add_child(_toggle("Show enemy ceilings (≤) at your borders", "ceilings"))
 	v.add_child(_toggle("Fullscreen", "fullscreen"))
 	var done := Style.button("Done", func(): closed.emit(), 0, 22)
 	done.custom_minimum_size = Vector2(0, 56)

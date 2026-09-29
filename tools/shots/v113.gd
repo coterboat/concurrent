@@ -11,6 +11,7 @@ const MapLib := preload("res://engine/map.gd")
 const LastRound := preload("res://game/core/last_round.gd")
 const BoardFacts := preload("res://game/core/board_facts.gd")
 const Resolve := preload("res://engine/resolve.gd")
+const Income := preload("res://engine/income.gd")
 
 var p
 
@@ -258,6 +259,29 @@ func _fates(s: Node, gs: Control) -> void:
 	await p.frames(6)
 	await snap("02_tooltip_last_round")
 	gs._on_hover("")
+	await _three_fates(s, gs)
+
+
+func _three_fates(s: Node, gs: Control) -> void:
+	## v1.13.2 (the play critic): each fate its own mark. Thrown back, a red cross; fell back, a
+	## chevron pointing the way they went; beaten in a scramble, crossed swords
+	var b: Control = gs.board
+	var kept: Array = b.ghosts
+	b.ghosts = [
+		{"from": "vanetor", "to": "vaneholt", "strength": 6, "owner": "red", "result": LastRound.THROWN_BACK, "by": "blue", "left": 0, "fellTo": ""},
+		{"from": "vanefell", "to": "vanehead", "strength": 3, "owner": "red", "result": LastRound.FELL_BACK, "by": "green", "left": 2, "fellTo": "vanefell"},
+		{"from": "vaneholt", "to": "vanemoor", "strength": 5, "owner": "blue", "result": LastRound.OUTFOUGHT, "by": "green", "left": 0, "fellTo": ""}]
+	b.refresh()
+	await p.frames(4)
+	var fates: Array = b.drawn_fates.map(func(f): return str(f[0]))
+	fates.sort()
+	var want: Array = [LastRound.FELL_BACK, LastRound.OUTFOUGHT, LastRound.THROWN_BACK]
+	want.sort()
+	p.ok(fates == want, "three fates, three marks: %s" % str(fates))
+	await snap("02b_three_fates")
+	b.ghosts = kept
+	b.refresh()
+	await p.frames(2)
 
 
 func _threats(s: Node, gs: Control) -> void:
@@ -274,10 +298,21 @@ func _threats(s: Node, gs: Control) -> void:
 	p.ok(b.threats.has("vanemoor") and bool(b.threats["vanemoor"]["capital"]) and bool(b.threats["vanemoor"]["danger"]), "the capital could be outnumbered: it rings crimson (%s)" % str(b.threats.get("vanemoor", {})))
 	gs._on_hover("vanefell")
 	var tip: String = gs._hover_label.text
-	p.ok(tip.contains("The road home for Vane Tor") and tip.contains("2 ways in"), "hovering Vanefell: \"%s\"" % tip.replace("\n", " | "))
+	p.ok(tip.contains("The road home for Vane Tor") and tip.contains("ways into Great Vane"), "hovering Vanefell: \"%s\"" % tip.replace("\n", " | "))
+	## v1.13.2: the tooltip keeps off the middle: on Vanefell's outer side (it's left of centre), or
+	## above or below it reaching outward; never over the land, and no wider than LandTip.WIDE
+	var tr := Rect2(gs._hover_tip.position, gs._hover_tip.size)
+	var at: Vector2 = b.anchor("vanefell")
+	var gap: float = b.token_radius() + 16.0
+	var near: float = at.distance_to(Vector2(clampf(at.x, tr.position.x, tr.end.x), clampf(at.y, tr.position.y, tr.end.y)))
+	p.ok(near >= gap - 0.5 and Rect2(Vector2.ZERO, gs.size).encloses(tr) and tr.get_center().x <= at.x + gap and tr.size.x <= 400.5,
+		"the tooltip keeps clear of Vanefell and off the middle (%s, the land at %s)" % [tr, at])
 	gs._on_hover("vanetor")
 	var tip2: String = gs._hover_label.text
 	p.ok(tip2.contains("could bring up to"), "hovering Vanetor: \"%s\"" % tip2.replace("\n", " | "))
+	gs._on_hover("vanestrand")
+	var tip3: String = gs._hover_label.text
+	p.ok(tip3.contains("→ Vane Strand (here)"), "an entrance to Great Vane says so: \"%s\"" % tip3.replace("\n", " | "))
 	gs._on_hover("")
 	## strip the land that holds the road home, and sealing warns you
 	s.set_attack("vanefell", "vaneholt", 2)
@@ -291,6 +326,30 @@ func _threats(s: Node, gs: Control) -> void:
 	for i in 6:
 		s.add_place("vanetor", 1)
 	await p.frames(4)
+	## v1.13.2: an enemy land's ceiling (≤N) only where it borders you, or while you hover it
+	var bordering := func(id: String) -> bool:
+		for nb in MapLib.neighbors(s.map, id):
+			if s.world.get_territory(nb).owner == "red":
+				return true
+		return false
+	var enemy: Array = Array(s.map.territory_ids()).filter(func(t): return s.world.get_territory(t).owner not in ["red", Types.UNOCCUPIED])
+	var far: Array = enemy.filter(func(t): return not bordering.call(t) and s.world.get_territory(t).owner != "neutral" and Income.cap_of(s.world, s.map, t) > 0)
+	## a ceiling says something only where recruits can land (not neutral, not cut off)
+	var could: Array = enemy.filter(func(t): return s.world.get_territory(t).owner != "neutral" and Income.cap_of(s.world, s.map, t) > 0)
+	var want: Array = could.filter(func(t): return bordering.call(t))
+	var shown: Array = b.drawn_ceilings.duplicate()
+	shown.sort()
+	want.sort()
+	p.ok(not shown.is_empty() and shown == want,
+		"enemy ceilings only on your borders: %s (of %d enemy lands that could show one)" % [", ".join(shown), could.size()])
+	if not far.is_empty():
+		b.hovered = str(far[0])
+		b.refresh()
+		await p.frames(3)
+		p.ok(b.drawn_ceilings.has(str(far[0])), "hovering %s, away from your borders, shows its ceiling (hovered %s, shown %s, ceilings %s)" % [far[0], b.hovered, b.drawn_ceilings, b.show_ceiling])
+		b.hovered = ""
+		b.refresh()
+		await p.frames(2)
 	p.ok(before and (not b.threats.has("vanetor") or not bool(b.threats["vanetor"]["danger"]) or int(b.threats["vanetor"]["held"]) > 2), "placing recruits on Vanetor updates what it faces (held %s)" % str(b.threats.get("vanetor", {}).get("held", "?")))
 	s.clear_placements()
 	await p.frames(4)

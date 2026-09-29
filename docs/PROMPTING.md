@@ -90,6 +90,17 @@ What the numbers can and can't tell (`tools/voicestudio/vs_casting.py`):
   (4.5) and Imre C (5.6). Performance comes from the script the voice card reads (write it in
   character: exclamations, `...`, `[laughter]`) and from several takes. Ears choose.
 
+**The chosen voices, 28 Sep 2026:** Oren A, Varek B and Imre C (designed), Hask's own voice (cloned), and for
+Quill and Ysolde both their own voice and the recast they kept (Quill E, Ysolde F), heard line by line in
+`vs_lines`.
+- **Quill's "tsk".** Nearly every take cloned from Quill's greeting opened with a short burst 16–21 dB under
+  the line, then silence. It isn't in his reference. It rumbles at 60–120 Hz, under his voice (about 180 Hz),
+  while a murmured "Hm." sits at his own pitch; that's how `vs_lines.py` tells them apart and cuts only the
+  click. Whisper still hears "Hmm, that will cost me." after the cut.
+- **Notes on one voice's take carry to the others.** The first pass's notes are about the words, so they
+  steer those lines in every voice: "Deerly" for Ysolde's "Dearly", "...ME..." for her "kneels to *me*",
+  "NOT" for Oren's "not supposed to happen".
+
 **The cast** (the notes, boiled down)
 
 | voice | wants | keep away from |

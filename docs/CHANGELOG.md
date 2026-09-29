@@ -2,6 +2,54 @@
 
 The bible says amendments come with a dated entry and the test or band that justified them. Everything below has both.
 
+## v1.13.2 — 29 Sep 2026: the play critic's trims to reading the map
+
+No rule changes (rules 20). The playtest bot's play critic reviewed v1.13's map
+(`playtest/reviews/2026-09-28-0b2fe07-v113-reading-the-map.md`). Its verdict: "keep, and trim
+it". The words are right, but by round 2 there's too much on the map at once. Its four UI notes:
+
+- **Enemy ceilings (`≤N`) only where you could march.** They sat on every enemy land (the critic
+  counted about 20 numbers on the ring). Now an enemy land shows its ceiling when it borders one of
+  yours, or while you hover it. On probe `v113`'s map that's one badge (Vanewick) out of five enemy
+  lands that could show one. The settings toggle now reads "Show enemy ceilings (≤) at your borders".
+- **"N ways in" names its region.** The line lists the region's entrances, so every land in the
+  region said the same thing, as if it were about the land. Now it reads "2 ways into Great Vane:
+  Morrowfen → Vane Strand, …", and an entrance at the hovered land says "(here)".
+- **The tooltip keeps off the middle of the map.** It sits beside its land on the outer side (a land
+  left of centre gets it on the left). With no room there, it goes above or below the land, reaching
+  toward the edge. Only after that does it take the inner side, and it never covers the land. Past
+  400 px its words wrap, so the box stays narrow. The code moved out of `game_screen.gd` into
+  `LandTip.show()` and `LandTip.place()`.
+- **Each fate has its own mark.** "You can tell it failed, but not how." Thrown back is still a red
+  cross. Fell back is a pale double chevron pointing the way the survivors went. Beaten in a scramble
+  (or the fight for the spoils) is crossed swords. A column beaten in a border clash still stops
+  halfway, under a cross.
+
+`tests/test_v113.gd` places the tooltip for 799 land positions on a 1440×900 screen. It never
+comes over its land or leaves the screen, and it never takes the inner side while the outer side,
+above or below, has room. Probe `v113` checks the three marks on one map (`02b_three_fates`), that
+the ceilings sit exactly on the enemy lands bordering yours (plus the one you hover), and that the
+tooltip keeps clear of Vanefell and off the middle.
+
+The critic's three bigger ideas add behaviour, so they wait for the owner: a "likely" threat read
+from what a rival actually did, a walk-in preview when you seal, and opening the map on the round's
+biggest cross.
+
+### Voices: every line in the chosen voices (batch `vs_lines`)
+
+The owner's picks from the auditions were Oren A, Varek B, Imre C and Hask's own voice. Quill and
+Ysolde get both their own voice and the recast they kept (Quill E, Ysolde F), to compare line by line.
+`tools/voicestudio/vs_lines.py` speaks all 41 lines per commander (the Fortune lines included) at
+3 takes each. It also speaks every v1.11 lab iteration (pauses, falls, emphasis) in the new voices,
+except `[pause]` and `<break>`, which get read aloud. That's 1,328 takes, free, about 5 hours on
+this Mac.
+- **Quill's "tsk"** (the owner's note on the first pass) is a short burst before the first word,
+  16–21 dB under the line. It's cut, along with lip smacks after the last word. A burst at the
+  voice's own pitch is a word ("Hm.") and stays.
+- **The first pass's notes** steer those lines in every voice ("Deerly", "...ME...", "NOT").
+- **Checks before anyone listens:** a take off its voice's pitch, swinging wildly, or too long or
+  short for its words is rolled again.
+
 ## v1.13.1 — 28 Sep 2026: the bot's report on v1.13, and free voices on the Mac
 
 No rule changes (rules 20).

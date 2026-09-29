@@ -50,6 +50,8 @@ var pad_bottom := 0.0 ## (HUD below)
 var show_region_labels := true
 var _label_hits: Array = [] ## [{pos, from, to}] arrow labels you can click
 var _late: Array = [] ## v1.13: marks drawn over the tokens (fates, region pips), queued while the arrows draw
+var drawn_ceilings: Array = [] ## v1.13.2: the enemy lands wearing their ≤N this frame (the probe reads it)
+var drawn_fates: Array = [] ## v1.13.2: [fate, where] for each fate mark this frame (the probe reads it)
 var _region_font: FontVariation
 
 var zoom := 0.5
@@ -488,6 +490,8 @@ func _draw_overlay() -> void:
 	var ci := overlay
 	_label_hits.clear()
 	_late.clear()
+	drawn_ceilings.clear()
+	drawn_fates.clear()
 	_draw_ornaments(ci)
 	_draw_lanes(ci)
 	if show_region_labels:
@@ -732,6 +736,16 @@ func _draw_threat(ci: CanvasItem, id: String, p: Vector2, r: float, f: Font) -> 
 	ci.draw_string(f, box.position + Vector2(ic + 7.0, 15.0), txt, HORIZONTAL_ALIGNMENT_LEFT, -1, fs, Color(1, 0.93, 0.88))
 
 
+func _borders(id: String, pid: String) -> bool:
+	## does this land touch one of pid's (by land or lane)?
+	if pid == "":
+		return false
+	for nb in MapLib.neighbors(map, id):
+		if world.get_territory(nb).owner == pid:
+			return true
+	return false
+
+
 func _is_capital(id: String, owner: String) -> bool:
 	if map == null or not map.capitals or world == null or not world.players.has(owner):
 		return false
@@ -770,25 +784,42 @@ func _draw_ghost(ci: CanvasItem, g: Dictionary) -> void:
 	var kind: String = str(g.get("kind", "attack"))
 	var end: Vector2 = _draw_arrow(ci, str(g["from"]), str(g["to"]), int(g.get("strength", 1)), str(g.get("owner", "")), "" if surge_died else str(g.get("surgeTo", "")),
 		kind, 0.42 if failed else 0.22, false, 1.0, 0, 0.5 if res == LastRound.CLASH else 1.0)
-	## the crosses go over the tokens: at a land's edge its garrison shield would hide them
+	## the marks go over the tokens: at a land's edge its garrison shield would hide them
 	if failed and end != Vector2.INF:
-		_late.append(_draw_fate_mark.bind(end))
+		var back: String = str(g.get("fellTo", "")) if str(g.get("fellTo", "")) != "" else str(g["from"])
+		_late.append(_draw_fate_mark.bind(end, res, anchor(back) if art.anchors.has(back) else Vector2.INF))
 	if surge_died:
 		## the surge it sent on met another surge on the border and died there
 		var se: Vector2 = _draw_arrow(ci, str(g["to"]), str(g["surgeTo"]), -1, str(g.get("owner", "")), "", kind, 0.42, false, 1.0, 0, 0.5)
 		if se != Vector2.INF:
-			_late.append(_draw_fate_mark.bind(se))
+			_late.append(_draw_fate_mark.bind(se, LastRound.CLASH, Vector2.INF))
 
 
-func _draw_fate_mark(ci: CanvasItem, at: Vector2) -> void:
-	## a column that failed: a red cross on a dark medal, readable over any land or sea
+func _draw_fate_mark(ci: CanvasItem, at: Vector2, fate: String, toward: Vector2) -> void:
+	## a column that failed, on a dark medal readable over any land or sea. v1.13.2: each fate its
+	## own mark (the play critic: "you can tell it failed, but not how, without hovering"). Thrown
+	## back or beaten on the border: a red cross. Fell back: a pale double chevron pointing the way
+	## the survivors went. Beaten in a scramble (or the fight for the spoils): crossed swords.
 	var s: float = clampf(token_radius() * 0.32, 6.0, 9.0)
+	drawn_fates.append([fate, at])
 	ci.draw_circle(at + Vector2(1.0, 1.5), s + 5.0, Color(0, 0, 0, 0.35))
 	ci.draw_circle(at, s + 5.0, Color(0.10, 0.05, 0.04, 0.88))
 	ci.draw_arc(at, s + 5.0, 0, TAU, 20, Color(0.95, 0.88, 0.72, 0.7), 1.5, true)
-	var red := Color(0.95, 0.33, 0.26)
-	ci.draw_line(at + Vector2(-s, -s), at + Vector2(s, s), red, 3.5, true)
-	ci.draw_line(at + Vector2(-s, s), at + Vector2(s, -s), red, 3.5, true)
+	var swords: Texture2D = Style.icon("attack") if fate == LastRound.OUTFOUGHT else null
+	if fate == LastRound.FELL_BACK:
+		var d: Vector2 = (toward - at).normalized() if toward != Vector2.INF and toward.distance_to(at) > 1.0 else Vector2.LEFT
+		var n: Vector2 = d.orthogonal()
+		var pale := Color(0.98, 0.84, 0.55)
+		for k in 2:
+			var c: Vector2 = at + d * (s * (0.45 - 0.8 * k))
+			ci.draw_polyline(PackedVector2Array([c - d * s * 0.45 + n * s * 0.8, c + d * s * 0.45, c - d * s * 0.45 - n * s * 0.8]), pale, 3.0, true)
+	elif swords != null:
+		var q: float = s * 1.25
+		ci.draw_texture_rect(swords, Rect2(at - Vector2(q, q), Vector2(q, q) * 2.0), false, Color(1.0, 0.72, 0.66))
+	else:
+		var red := Color(0.95, 0.33, 0.26)
+		ci.draw_line(at + Vector2(-s, -s), at + Vector2(s, s), red, 3.5, true)
+		ci.draw_line(at + Vector2(-s, s), at + Vector2(s, -s), red, 3.5, true)
 
 
 func _draw_arrow(ci: CanvasItem, from_id: String, to_id: String, strength: int, owner: String, surge: String, kind: String, alpha: float, labeled: bool, grow: float = 1.0, surge_n: int = 0, cut: float = 1.0) -> Vector2:
@@ -994,10 +1025,13 @@ func _draw_token(ci: CanvasItem, id: String) -> void:
 		var amber := Color(1.0, 0.72, 0.25, 0.85)
 		for k in 16:
 			ci.draw_arc(p, r + 6.0, TAU * k / 16.0, TAU * (k + 0.55) / 16.0, 4, amber, 2.5, true)
-	## enemy ceiling: the most this hex could hold after their hidden reinforcement
-	if show_ceiling and owner != viewer and owner != Types.UNOCCUPIED:
+	## enemy ceiling: the most this hex could hold after their hidden reinforcement. v1.13.2: only
+	## where you could march on it (it borders a land of yours) and on the land you hover; on every
+	## enemy land at once it was clutter (the play critic counted about 20 numbers on the ring)
+	if show_ceiling and owner != viewer and owner != Types.UNOCCUPIED and (id == hovered or _borders(id, viewer)):
 		var ceiling: int = n + (Income.cap_of(world, map, id) * ceiling_mult if owner != "neutral" else 0)
 		if ceiling > n:
+			drawn_ceilings.append(id)
 			var cp: Vector2 = p + Vector2(r * 0.95, -r * 0.8)
 			var ct := "≤%d" % ceiling
 			var cw: float = f.get_string_size(ct, HORIZONTAL_ALIGNMENT_LEFT, -1, 13).x

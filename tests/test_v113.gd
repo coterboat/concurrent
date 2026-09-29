@@ -16,6 +16,7 @@ const BoardFacts := preload("res://game/core/board_facts.gd")
 const Moments := preload("res://game/ui/moments.gd")
 const Session := preload("res://game/core/session.gd")
 const Style := preload("res://game/core/style.gd")
+const LandTip := preload("res://game/ui/land_tip.gd")
 
 
 func run(report: Callable, tree: SceneTree) -> void:
@@ -28,6 +29,7 @@ func run(report: Callable, tree: SceneTree) -> void:
 	_wars(report)
 	_session(report, tree)
 	_bot_0b2fe07(report)
+	_tip_place(report)
 	Combat.use_rules(null)
 
 
@@ -297,3 +299,35 @@ func _bot_0b2fe07(report: Callable) -> void:
 	report.call(lines == ["Your 10 (from Silvermarch and The Throne) took it.", "Grand Marshal Varek's 5 were thrown back by you."],
 		"B-008: one merged column is one sentence, its origins named: %s" % str(lines))
 
+
+
+func _tip_place(report: Callable) -> void:
+	## v1.13.2 (the play critic on 0b2fe07): the land tooltip sits beside its land on the outer side,
+	## off the middle of the map; it never covers the land it's about, and never leaves the screen
+	var area := Rect2(4, 84, 1432, 656) ## 1440x900 less the top line and the command bar
+	var tip := Vector2(330, 150)
+	var gap := 40.0
+	var covered := 0
+	var outside := 0
+	var inward := 0
+	var n := 0
+	for x in range(20, 1430, 30):
+		for y in range(90, 740, 40):
+			var at := Vector2(x, y)
+			var r := Rect2(LandTip.place(at, tip, area, gap), tip)
+			n += 1
+			if at.distance_to(Vector2(clampf(at.x, r.position.x, r.end.x), clampf(at.y, r.position.y, r.end.y))) < gap - 0.5:
+				covered += 1 ## the box comes within the land's token
+			if not area.encloses(r):
+				outside += 1
+			var outer_fits: bool = (at.x - gap - tip.x >= area.position.x) if at.x < area.get_center().x else (at.x + gap + tip.x <= area.end.x)
+			if outer_fits and (r.get_center().x > at.x) == (at.x < area.get_center().x):
+				inward += 1
+			elif not outer_fits and (r.get_center().x > at.x + gap) == (at.x < area.get_center().x) and absf(r.get_center().y - at.y) < tip.y * 0.5:
+				inward += 1 ## no room outside, and it went level on the inner side while above or below had room
+	report.call(covered == 0 and outside == 0 and inward == 0,
+		"the tooltip never comes over its land (%d) or leaves the screen (%d), and keeps to the outer side, else above or below (%d inward), over %d spots" % [covered, outside, inward, n])
+	var left := Rect2(LandTip.place(Vector2(500, 400), tip, area, gap), tip)
+	var edge := Rect2(LandTip.place(Vector2(200, 500), tip, area, gap), tip)
+	report.call(left.end.x <= 460.0 and edge.position.y >= 540.0 and edge.get_center().x < 400.0,
+		"a land left of centre gets its tip on the left (%s); one by the left edge in the lower half, below it, toward the edge (%s)" % [left, edge])
