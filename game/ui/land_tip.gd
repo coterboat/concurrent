@@ -32,13 +32,13 @@ static func lines(s: Node, board: Control, id: String) -> Array:
 		var cut: Array = board.hinges[id]
 		out.append("The road home for %s: if it falls, %s cut off." % [_names(s, cut), "that land is" if cut.size() == 1 else "they are"])
 	var told: Array = []
+	for g in LastRound.merged(board.ghosts, id):
+		var said: String = LastRound.said(g, s.name_of, s.hex_name)
+		if said != "":
+			told.append(said)
 	for g in board.ghosts:
-		if str(g.get("to", "")) == id:
-			var said: String = LastRound.said(g, s.name_of, s.hex_name)
-			if said != "":
-				told.append(said)
-		elif str(g.get("surgeTo", "")) == id and str(g.get("surgeFate", "")) == LastRound.CLASH:
-			told.append("%s's surge never got here: %s's met it on the border." % [s.name_of(str(g["owner"])), s.name_of(str(g["surgeBy"]))])
+		if str(g.get("surgeTo", "")) == id and str(g.get("surgeFate", "")) == LastRound.CLASH:
+			told.append("%s surge never got here: %s met it on the border." % [Style.owns(s.name_of(str(g["owner"])), true), Style.owns(s.name_of(str(g["surgeBy"])))])
 	if not told.is_empty():
 		out.append("Last round: " + " ".join(told))
 	return out

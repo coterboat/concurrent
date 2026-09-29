@@ -109,7 +109,7 @@ func _lines(evs: Array) -> Array:
 				var hex: String = str(e["terrId"])
 				var who: String = str(e["playerId"])
 				if vacated.has(hex) and vacated[hex] != who:
-					out.append(["skull", "Walk-in: %s took %s while %s was away." % [s.name_of(who), s.hex_name(hex), s.name_of(vacated[hex])], Style.CRIMSON.lightened(0.35)])
+					out.append(["skull", "Walk-in: %s took %s while %s away." % [s.name_of(who), s.hex_name(hex), Style.says(Style.who(s.name_of(vacated[hex])), "was")], Style.CRIMSON.lightened(0.35)])
 				else:
 					if not took.has(who):
 						took[who] = []
@@ -119,32 +119,32 @@ func _lines(evs: Array) -> Array:
 					var fell: String = ""
 					if bool(e.get("fellBack", false)):
 						fell = " (%d fell back to %s)" % [int(e.get("attackerLeft", 0)), s.hex_name(str(e.get("refuge", "")))]
-					out.append(["shield", "%s held %s against %s%s." % [s.name_of(str(e["defenderId"])), s.hex_name(str(e["to"])), s.name_of(str(e["attackerId"])), fell], Style.PARCH])
+					out.append(["shield", "%s held %s against %s%s." % [s.name_of(str(e["defenderId"])), s.hex_name(str(e["to"])), Style.who(s.name_of(str(e["attackerId"]))), fell], Style.PARCH])
 			Types.EVENT_MELEE:
 				## v1.13: several at once against one land
 				if int(e.get("defenderLeft", 0)) > 0:
 					var foes: Array = []
 					for f in e.get("fronts", []):
-						foes.append(s.name_of(str(f.get("attackerId", ""))))
+						foes.append(Style.who(s.name_of(str(f.get("attackerId", "")))))
 					out.append(["shield", "%s held %s against %s at once." % [s.name_of(str(e.get("defenderId", ""))), s.hex_name(str(e.get("to", ""))), _join(foes)], Style.PARCH])
 			Types.EVENT_SCRAMBLE:
 				var rivals: Array = []
 				for f in e.get("fronts", []):
 					if str(f.get("playerId", "")) != str(e.get("winnerId", "")):
-						rivals.append(s.name_of(str(f.get("playerId", ""))))
+						rivals.append(Style.who(s.name_of(str(f.get("playerId", "")))))
 				out.append(["attack", "%s won the scramble for %s against %s." % [s.name_of(str(e.get("winnerId", ""))), s.hex_name(str(e.get("to", ""))), _join(rivals)], Style.PARCH])
 			Types.EVENT_CAPITAL_TAKEN:
-				out.append(["crown", "%s took %s's capital, %s." % [s.name_of(str(e.get("by", ""))), s.name_of(str(e.get("playerId", ""))), s.hex_name(str(e.get("terrId", "")))], Style.GOLD])
+				out.append(["crown", "%s took %s capital, %s." % [s.name_of(str(e.get("by", ""))), Style.owns(s.name_of(str(e.get("playerId", "")))), s.hex_name(str(e.get("terrId", "")))], Style.GOLD])
 			Types.EVENT_CLASH:
 				## v1.13: named by the road it was fought on (hexB was one end of it, not "where" it was)
 				var loser: String = str(e["playerB"]) if str(e["winnerId"]) == str(e["playerA"]) else str(e["playerA"])
-				out.append(["attack", "%s beat %s's column on the road between %s and %s." % [s.name_of(str(e["winnerId"])), s.name_of(loser), s.hex_name(str(e["hexA"])), s.hex_name(str(e["hexB"]))], Style.PARCH])
+				out.append(["attack", "%s beat %s column on the road between %s and %s." % [s.name_of(str(e["winnerId"])), Style.owns(s.name_of(loser)), s.hex_name(str(e["hexA"])), s.hex_name(str(e["hexB"]))], Style.PARCH])
 			Types.EVENT_PLAYER_ELIMINATED:
-				out.append(["skull", "%s has been eliminated." % s.name_of(str(e["playerId"])), Style.CRIMSON.lightened(0.3)])
+				out.append(["skull", "%s been eliminated." % Style.says(s.name_of(str(e["playerId"])), "has"), Style.CRIMSON.lightened(0.3)])
 			Types.EVENT_SET_CASHED:
 				out.append(["coins", "%s traded a card set for +%d armies." % [s.name_of(str(e["playerId"])), int(e["value"])], Style.GOLD])
 			Types.EVENT_CARDS_CAPTURED:
-				out.append(["coins", "%s seized %s's cards." % [s.name_of(str(e["to"])), s.name_of(str(e["from"]))], Style.GOLD])
+				out.append(["coins", "%s seized %s cards." % [s.name_of(str(e["to"])), Style.owns(s.name_of(str(e["from"])))], Style.GOLD])
 	for who in took.keys():
 		var names: Array = took[who]
 		out.insert(0, ["flag", "%s captured %s." % [s.name_of(who), _join(names)], Style.seat_color(who).lightened(0.4)])

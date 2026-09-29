@@ -104,6 +104,12 @@ fingerprints below v1.12 are unchanged). Everything here is what the table shows
     `probes: failed:`. `v112` now also checks where each army stands in a three- and a five-way
     scramble.
 
+## v1.13.1: fixes from your report on 0b2fe07 (this push)
+
+- **B-005..B-008 fixed.** Poke: a seat named "You" in the recap, the tooltips and the report ("your",
+  "you were"); the round banner while your battle waits for a call; Esc during the swoop; a land two of
+  your columns took together (one line: "Your 10 (from A and B) took it.").
+
 ## v1.12: the fled court, a fairer Thousand Isles, a war you can hear
 
 New games play **rules 20**.

@@ -63,7 +63,12 @@ MCP server at `/mcp/` (`.mcp.json`). No credits and no key; nothing leaves the m
   accepted takes (`REFS`) and says four lines the game already has. 3 takes of each go into the review
   batch `vs_voices`, loudness-matched to the Ludo take, and `0` in the table plays that Ludo take.
   Install replaces only what's accepted; Redo is free and reads the notes.
-- About 17 s to make a take of 3–6 s. The advisor and the commanders are saved in VoiceStudio as
+- `tools/voicestudio/vs_designs.py` designs new voices from a description alone (none of our audio
+  goes in): three identities per commander (gender, age, pitch, accent, whisper, and a seed that
+  picks the person). Each records a voice card (its greeting plus one line), and its other lines are
+  cloned from that card so every line is the same person. Batch `vs_designs`. Its one button saves
+  the identities whose card you accepted as VoiceStudio profiles.
+- About 11 s to make a take of 3–6 s once the model is warm (17 s cold). The advisor and the commanders are saved in VoiceStudio as
   profiles named "CONCURRENT · …", so they can be used in its app too.
 
 ## Formats the code reads

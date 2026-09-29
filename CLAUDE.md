@@ -42,7 +42,7 @@ reviews taught us), and `PLAYTEST.md` is the testers' brief.
 | Repo size | `./scripts/repo_size.sh` (plain git, no LFS: see `docs/ASSETS.md`, "Storage") |
 | Pull what the bot pushed | `./scripts/sync_main.sh` (automatic: a hook runs it every prompt) |
 | Generate assets | `python3 tools/ludo/ludo.py <ids>` or a `tools/ludo/vNN_content.py` script |
-| Voices, free on this Mac | VoiceStudio running (`http://127.0.0.1:3900`), then `python3 tools/voicestudio/vs_samples.py` (see `docs/ASSETS.md`) |
+| Voices, free on this Mac | VoiceStudio running (`http://127.0.0.1:3900`), then `python3 tools/voicestudio/vs_samples.py` (clones of our voices) or `vs_designs.py` (new voices from a description); see `docs/ASSETS.md` |
 
 Arena switches: `rules=`, `deal=draft|random`, `levee=`, `capitals=0|1`, `fortune=0|1`,
 `fbar=`/`ffloor=` (try a Fortune bar or floor), `supply=`, `traits=`, `line=`, `battle=`.

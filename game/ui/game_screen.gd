@@ -423,7 +423,9 @@ func _refresh_plate() -> void:
 	else:
 		var n: int = s.world.round
 		if s.phase == Session.Phase.CINEMA or s.phase == Session.Phase.RECAP or s.phase == Session.Phase.GAME_OVER:
-			n = maxi(1, s.world.round - 1)
+			## the round being fought: the world before the battles (B-006: while one of your battles
+			## waits for a call, the world hasn't moved on yet, so "world.round - 1" was a round behind)
+			n = s.pre_world.round if s.pre_world != null else maxi(1, s.world.round - 1)
 		_plate_round.text = ("Round %d" % n) if s.conquest() else ("Round %d of %d" % [mini(n, total), total])
 	match s.phase:
 		Session.Phase.DRAFT:

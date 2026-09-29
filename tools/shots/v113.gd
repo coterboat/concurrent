@@ -33,6 +33,7 @@ func run(probe) -> void:
 	await _lead(r[0], r[1])
 	await _howto()
 	await _upset(main)
+	await _bot_0b2fe07(main)
 	p.log("v113 probe done")
 
 
@@ -56,6 +57,94 @@ func _howto() -> void:
 	await snap("05_howto_reading_the_map")
 	h.queue_free()
 	await p.frames(2)
+
+
+func _bot_0b2fe07(main: Control) -> void:
+	## The playtest bot's report on 0b2fe07 (B-005..B-008), as facts on the screen: a human seat
+	## named "You", round 2, your own assault paused for a call.
+	main.start_game({"map": "res://maps/knife7.json", "seed": 7, "length": "standard", "timer": 0, "capitals": true, "fortune": true, "seats": [
+		{"id": "red", "name": "You", "kind": "human", "ai": "", "portrait": "you_ironduke"},
+		{"id": "blue", "name": "Grand Marshal Varek", "kind": "ai", "ai": "varek", "portrait": "varek"},
+		{"id": "green", "name": "Commodore Hask", "kind": "ai", "ai": "hask", "portrait": "hask"}]})
+	await p.frames(6)
+	var s: Node = main.session
+	var gs: Control = main.current
+	gs.intro._done()
+	var guard := 0
+	while (s.phase != Session.Phase.PLANNING or s.world.round < 2) and guard < 3000:
+		guard += 1
+		match s.phase:
+			Session.Phase.DRAFT:
+				if s.is_human(s.draft_turn()):
+					s.claim(s.draft_pick_for("red"))
+				else:
+					s.ai_claim()
+			Session.Phase.RECAP:
+				gs.recap.visible = false
+				s.next_round()
+			Session.Phase.PLANNING, Session.Phase.OPENING:
+				s.auto_deploy()
+				s.lock()
+			Session.Phase.MANEUVER:
+				s.lock()
+			Session.Phase.CINEMA:
+				gs.cinema.skip()
+		await p.frames(2)
+	## B-005: the recap names the human seat as "you", never "You's"
+	var evs := [
+		{"kind": Types.EVENT_CAPITAL_TAKEN, "playerId": "red", "by": "blue", "terrId": "ridge"},
+		{"kind": Types.EVENT_CLASH, "hexA": "gate", "hexB": "ridge", "playerA": "blue", "playerB": "red", "winnerId": "blue"},
+		{"kind": Types.EVENT_CARDS_CAPTURED, "from": "red", "to": "blue", "cards": []},
+		{"kind": Types.EVENT_PLAYER_ELIMINATED, "playerId": "red"}]
+	var all: String = " / ".join(gs.recap._lines(evs).map(func(l): return str(l[1])))
+	p.ok(not all.contains("You's") and not all.contains("You has") and all.contains("took your capital") and all.contains("beat your column")
+		and all.contains("seized your cards") and all.contains("You have been eliminated"), "B-005: the recap says \"your\" and \"you have\" (%s)" % all)
+	## B-006 / B-007: your assault in round 2 pauses for a call; while the camera swoops down to it
+	var w: Types.World = s.world
+	for t in w.territories.keys():
+		w.set_hex(str(t), Types.UNOCCUPIED, 0)
+	w.set_hex("ridge", "red", 14, 1)
+	w.set_hex("beacon", "red", 2, 1)
+	w.set_hex("gate", "blue", 6, 1)
+	w.set_hex("harbor", "blue", 3, 1)
+	w.set_hex("docks", "green", 4, 1)
+	s.drafts.clear()
+	s.changed.emit()
+	await p.frames(4)
+	s.set_attack("ridge", "gate", 13)
+	_order(s, "blue", [])
+	_order(s, "green", [])
+	s.lock()
+	var cin: Control = gs.cinema
+	var th: Control = gs.theater
+	var banner := ""
+	var paused := false
+	var escaped := false
+	var opened_after := false
+	guard = 0
+	while guard < 6000 and s.phase != Session.Phase.RECAP and s.phase != Session.Phase.PLANNING and s.phase != Session.Phase.MANEUVER:
+		guard += 1
+		if not escaped and cin._waiting and not th.visible:
+			banner = gs._plate_round.text
+			paused = not s.pending.is_empty() and s.world.round == 2 ## the case B-006 was: not absorbed yet
+			var ev := InputEventKey.new()
+			ev.keycode = KEY_ESCAPE
+			ev.pressed = true
+			Input.parse_input_event(ev)
+			escaped = true
+			await p.frames(90) ## the swoop would have ended and the battlefield opened by now
+			opened_after = th.visible
+		elif th.visible:
+			match str(th._state):
+				"ready", "done":
+					th.press()
+				"call":
+					th._answer("p")
+		elif cin.visible and not cin._waiting:
+			cin.advance()
+		await p.frames(1)
+	p.ok(escaped and paused and banner.begins_with("Round 2"), "B-006: while your battle waits for a call (paused %s), the banner says the round being fought (%s)" % [paused, banner])
+	p.ok(escaped and not opened_after and cin._theater_off, "B-007: Esc during the swoop skips the battles; the battlefield doesn't open")
 
 
 func _start(main: Control, seed: int) -> Array:

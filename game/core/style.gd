@@ -203,6 +203,20 @@ static func theme() -> Theme:
 	return t
 
 
+static func owns(name: String, cap: bool = false) -> String:
+	## "Varek's", but "your" ("Your" to open a sentence): the default human seat is called You (B-005)
+	if name.strip_edges().to_lower() == "you":
+		return "Your" if cap else "your"
+	return name + "'s"
+
+
+static func who(name: String, cap: bool = false) -> String:
+	## a seat's name inside a sentence: "Varek", but "you" (B-005: "while You was away")
+	if name.strip_edges().to_lower() == "you":
+		return "You" if cap else "you"
+	return name
+
+
 static func says(name: String, verb: String) -> String:
 	## "Varek holds", but "You hold": the default human seat is called You
 	if name.strip_edges().to_lower() != "you":

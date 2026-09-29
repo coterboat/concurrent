@@ -59,6 +59,37 @@ emotion or speed setting, so everything we can do happens in the text, plus roll
 7. **Don't touch the advisor's voice.** It is cloned, it is the owner's favourite, and 87% of its first
    takes are kept. Never replace it with a Ludo-designed voice.
 
+**VoiceStudio (OmniVoice, local and free), first pass, 28 Sep 2026.** The owner: "genuinely much higher
+quality both in performance and in the audio itself", and "the three takes each is gold". Cloned from
+each voice's own accepted take, and measured against the Ludo take of the same line (84 takes):
+- It kept every word: no take ran long or short for its words.
+- Its endings fall more reliably. Varek's go from rising to falling (+0.8 → −1.9 st), and Hask's from
+  level (+0.0 → −1.7). That's the downward inflection the notes kept asking for.
+- It holds a voice's pitch: Quill's Ludo takes wander from 122 to 192 Hz, while his clones stay near his
+  reference.
+- Its text levers: `[laughter]`, `[sigh]`, `[surprise-oh]`, `[dissatisfaction-hnn]`, `[confirmation-en]`,
+  and a voice designed from traits (`instruct`) plus a seed.
+
+**VoiceStudio voice design (new voices from traits), round 1, 28 Sep 2026.** 18 identities, 3 per commander.
+The owner's ears:
+- **Kept:** Varek B (elderly, low, British: "great"), Imre C (female, elderly, low, British: "excellent"),
+  Oren A and B ("both good"; wanted: A's higher pitch with B's delivery).
+- **Rejected:**
+  - Russian accent: it came out American (Varek A "sucks", Ysolde A).
+  - `whisper`: it really whispers ("the most human", but not the part).
+  - Hask and Quill: "boring and flat".
+  - Junk: one identity per commander (Varek C, Ysolde B, Quill B, Oren C, Imre B).
+- **Overall:** designed voices read flatter than Ludo's performances. Clones of our own takes (the first
+  pass) did better than both.
+
+What the numbers can and can't tell (`tools/voicestudio/vs_casting.py`):
+- **Junk is detectable.** It swings its pitch 10–18 semitones, or sits outside its gender's range (a
+  woman at 80 Hz). Whisper (VoiceStudio's `/transcribe`) hears it as nothing, or as its hallucination
+  "Thanks for watching!". Roll several seeds and throw those out before anyone listens.
+- **"Flat" isn't detectable.** The flat Hask voices spread their pitch 4.4–6.3 st, the same as Varek B
+  (4.5) and Imre C (5.6). Performance comes from the script the voice card reads (write it in
+  character: exclamations, `...`, `[laughter]`) and from several takes. Ears choose.
+
 **The cast** (the notes, boiled down)
 
 | voice | wants | keep away from |

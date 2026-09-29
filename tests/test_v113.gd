@@ -15,6 +15,7 @@ const LastRound := preload("res://game/core/last_round.gd")
 const BoardFacts := preload("res://game/core/board_facts.gd")
 const Moments := preload("res://game/ui/moments.gd")
 const Session := preload("res://game/core/session.gd")
+const Style := preload("res://game/core/style.gd")
 
 
 func run(report: Callable, tree: SceneTree) -> void:
@@ -26,6 +27,7 @@ func run(report: Callable, tree: SceneTree) -> void:
 	_moments(report)
 	_wars(report)
 	_session(report, tree)
+	_bot_0b2fe07(report)
 	Combat.use_rules(null)
 
 
@@ -277,3 +279,21 @@ func _session(report: Callable, tree: SceneTree) -> void:
 	report.call(fated and failed > 0, "a live war's ghost arrows carry their fates (%d failed columns seen)" % failed)
 	report.call(sums and checked >= 3, "the recruits' breakdown adds up to the recruits, capital and levée included, only supplied lands paying (%d rounds)" % checked)
 	s.queue_free()
+
+
+func _bot_0b2fe07(report: Callable) -> void:
+	## the playtest bot's report on 0b2fe07: B-005 (the human seat called You) and B-008 (a merged column)
+	report.call(Style.owns("You", true) == "Your" and Style.owns("you") == "your" and Style.owns("Varek") == "Varek's"
+		and Style.says(Style.who("You"), "was") == "you were" and Style.who("Grand Marshal Varek") == "Grand Marshal Varek",
+		"B-005: the seat called You reads \"Your\", \"your\", \"you were\"; others keep their names")
+	var names := func(pid): return {"red": "You", "blue": "Grand Marshal Varek"}.get(pid, pid)
+	var hexes := func(h): return {"silvermarch": "Silvermarch", "thethrone": "The Throne", "ivorymarch": "Ivorymarch"}.get(h, h)
+	var ghosts := [
+		{"from": "silvermarch", "to": "ivorymarch", "strength": 7, "owner": "red", "result": LastRound.TOOK, "by": "", "left": 0, "fellTo": ""},
+		{"from": "thethrone", "to": "ivorymarch", "strength": 3, "owner": "red", "result": LastRound.TOOK, "by": "", "left": 0, "fellTo": ""},
+		{"from": "gate", "to": "ivorymarch", "strength": 5, "owner": "blue", "result": LastRound.THROWN_BACK, "by": "red", "left": 0, "fellTo": ""},
+		{"from": "gate", "to": "elsewhere", "strength": 2, "owner": "red", "result": LastRound.TOOK, "by": "", "left": 0, "fellTo": ""}]
+	var lines: Array = LastRound.merged(ghosts, "ivorymarch").map(func(g): return LastRound.said(g, names, hexes))
+	report.call(lines == ["Your 10 (from Silvermarch and The Throne) took it.", "Grand Marshal Varek's 5 were thrown back by you."],
+		"B-008: one merged column is one sentence, its origins named: %s" % str(lines))
+

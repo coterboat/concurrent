@@ -6,6 +6,7 @@
 extends RefCounted
 
 const Types := preload("res://engine/types.gd")
+const Style := preload("res://game/core/style.gd")
 
 const TOOK := "took" ## it holds the land it marched on
 const THROWN_BACK := "thrown_back" ## beaten at the walls, and none came home
@@ -142,13 +143,41 @@ static func _why(g: Dictionary, pid: String, events: Array, now: Types.Territory
 					return
 
 
+static func merged(ghosts: Array, land: String) -> Array:
+	## B-008: a commander's columns bound for one land march and fight as one column (the engine
+	## merges them), so they're told as one: the men summed, the origins named (`froms`)
+	var groups := {}
+	var order: Array = []
+	for g in ghosts:
+		if str(g.get("to", "")) != land:
+			continue
+		var k: String = "%s|%s|%s|%s" % [g.get("owner", ""), g.get("result", ""), g.get("by", ""), g.get("fellTo", "")]
+		if not groups.has(k):
+			var m: Dictionary = (g as Dictionary).duplicate()
+			m["froms"] = [str(g.get("from", ""))]
+			groups[k] = m
+			order.append(k)
+		else:
+			groups[k]["strength"] = int(groups[k]["strength"]) + int(g.get("strength", 0))
+			(groups[k]["froms"] as Array).append(str(g.get("from", "")))
+	var out: Array = []
+	for k in order:
+		out.append(groups[k])
+	return out
+
+
 static func said(g: Dictionary, name_of: Callable, hex_name: Callable) -> String:
 	## one line for a ghost's fate: "Varek's 7 were thrown back by Dad." ("" when there's nothing to say)
 	var n: int = int(g["strength"])
-	var who: String = ("%s's %d" % [name_of.call(str(g["owner"])), n]) if n != 1 else "%s's lone man" % name_of.call(str(g["owner"]))
+	var owner_s: String = Style.owns(name_of.call(str(g["owner"])), true) ## "Your 7", not "You's 7" (B-005)
+	var who: String = ("%s %d" % [owner_s, n]) if n != 1 else "%s lone man" % owner_s
+	var froms: Array = g.get("froms", [])
+	if froms.size() > 1:
+		var places: Array = froms.map(func(f): return str(hex_name.call(str(f))))
+		who += " (from %s and %s)" % [", ".join(places.slice(0, places.size() - 1)), places[-1]]
 	var were: String = "were" if n != 1 else "was"
 	var by: String = str(g.get("by", ""))
-	var by_s: String = (" by %s" % name_of.call(by)) if by != "" and by != Types.UNOCCUPIED else ""
+	var by_s: String = (" by %s" % Style.who(name_of.call(by))) if by != "" and by != Types.UNOCCUPIED else ""
 	match str(g.get("result", "")):
 		TOOK:
 			return "%s took it." % who
@@ -160,7 +189,7 @@ static func said(g: Dictionary, name_of: Callable, hex_name: Callable) -> String
 		OUTFOUGHT:
 			return "%s %s beaten%s in the fight for it." % [who, were, by_s]
 		CLASH:
-			return "%s never got there: %s's column met them on the border." % [who, name_of.call(by)]
+			return "%s never got there: %s column met them on the border." % [who, Style.owns(name_of.call(by))]
 		MISSED:
 			return "%s didn't hold it." % who
 	return ""

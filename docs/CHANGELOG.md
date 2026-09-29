@@ -2,6 +2,46 @@
 
 The bible says amendments come with a dated entry and the test or band that justified them. Everything below has both.
 
+## v1.13.1 — 28 Sep 2026: the bot's report on v1.13, and free voices on the Mac
+
+No rule changes (rules 20).
+
+### Fixed: the playtest bot's report on `0b2fe07`
+
+- **B-005:** a human seat named "You" read "You's column" and "while You was away". There's now
+  `Style.owns()` ("Varek's", but "your"/"Your") and `Style.who()` ("you" mid-sentence). The recap,
+  the columns' fates and the land tooltip use them: "Grand Marshal Varek took your capital", "You
+  have been eliminated", "Your 7 took it".
+- **B-006:** while one of your battles waited for a call, the round banner read a round behind. It
+  assumed the world had already moved on. It now shows the round being fought (the world before the
+  battles).
+- **B-007:** Esc while the camera swooped down to a battle opened the battlefield anyway. Nothing
+  took the key: the report ignores keys while it waits, and the battlefield wasn't up yet. It now
+  does what Esc on the battlefield does: the battles are skipped and the report goes on.
+- **B-008:** one commander's columns bound for one land fight as one (the engine merges them), but the
+  tooltip told each origin separately: "You's 7 took it. You's 3 took it." Now it's one sentence:
+  "Your 10 (from Silvermarch and The Throne) took it." (`LastRound.merged`)
+
+`tests/test_v113.gd` checks B-005 and B-008. Probe `v113` checks B-005 on the recap, and B-006 and
+B-007 with a real Esc key during a real pause (the banner says "Round 2" while round 2's battle waits).
+
+### VoiceStudio: voices made on this Mac, free
+
+The owner found VoiceStudio (OmniVoice, local). `tools/voicestudio/` drives it; `docs/ASSETS.md`
+covers the tools.
+
+- **Clones of our own voices** (batch `vs_voices`): "genuinely much higher quality both in performance
+  and in the audio itself", and three takes per line is "gold". Their endings fall more reliably, and
+  they hold each voice's pitch (`docs/PROMPTING.md`).
+- **New voices designed from traits** (`vs_designs`, then `vs_casting` for round 2): Varek B and Imre
+  C were keepers. Russian came out American, `whisper` really whispers, and one identity per commander
+  was junk.
+- **Casting round 2** rolls 5 seeds per trait mix and throws out junk before anyone listens: a pitch
+  outside the gender's range or swinging past 14 semitones, or Whisper not hearing the words. It
+  found that pitch spread doesn't predict "flat" (the owner's flat voices measured the same as their
+  favourites), so ears still choose the performance.
+- Nothing is installed in the game until the owner accepts it.
+
 ## v1.13 — 28 Sep 2026: the map says what the engine knows, and the big moments land
 
 No rule changes: new games still play **rules 20**, nothing in `engine/` changed, and every save

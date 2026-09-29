@@ -243,6 +243,14 @@ func _toggle_pause() -> void:
 
 
 func _unhandled_input(event: InputEvent) -> void:
+	if _active and _waiting and theater != null and not theater.visible and event is InputEventKey and event.pressed \
+			and not event.echo and event.keycode == KEY_ESCAPE and _theater_cb.is_valid() and theater.finished.is_connected(_theater_cb):
+		## B-007: Esc while the camera swoops down to a battle skips the battles, as Esc on the
+		## battlefield would; the battlefield never opens (it used to open anyway)
+		theater.finished.disconnect(_theater_cb)
+		_theater_cb.call(true)
+		get_viewport().set_input_as_handled()
+		return
 	if not _active or _waiting:
 		return
 	if event is InputEventKey and event.pressed and not event.echo:
