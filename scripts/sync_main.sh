@@ -54,6 +54,10 @@ if git merge -q --ff-only origin/main 2>/dev/null; then
 	git log --format='      %h %an: %s' "$old..HEAD" | head -8
 	pt=$(git diff --name-only "$old" HEAD -- playtest/ | head -6)
 	[ -n "$pt" ] && { say "      new from the playtest bot:"; echo "$pt" | sed 's/^/        /'; say "      Read playtest/BUGS.md: the open bugs are the first job."; }
+	# what the bots said, for each push they answered (tools/playtest/await_bots.py)
+	for sha in $(git log --author="bug clerk" --format=%s "$old..HEAD" | sed -nE 's/^bugs: (review )?([0-9a-f]{7,40}) .*/\2/p' | sort -u); do
+		python3 "$ROOT/tools/playtest/await_bots.py" --digest "$sha" --local 2>/dev/null
+	done
 else
 	say "sync: GitHub's main has $behind new commit(s), but a local change would be overwritten; not pulled."
 	git diff --name-only HEAD origin/main | head -6 | sed 's/^/      /'

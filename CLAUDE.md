@@ -41,6 +41,7 @@ reviews taught us), and `PLAYTEST.md` is the testers' brief.
 | Tool tests | `python3 tools/review/test_review.py && python3 tools/ludo/test_notes.py` |
 | Repo size | `./scripts/repo_size.sh` (plain git, no LFS: see `docs/ASSETS.md`, "Storage") |
 | Pull what the bot pushed | `./scripts/sync_main.sh` (automatic: a hook runs it every prompt) |
+| Wait for the bots on a push | `./scripts/await_bots.sh` in the background: returns when the playtester and the play critic have both answered, with a digest (`--after <sha>` waits for the next push first; `--digest <sha>` rereads one) |
 | Generate assets | `python3 tools/ludo/ludo.py <ids>` or a `tools/ludo/vNN_content.py` script |
 | Voices, free on this Mac | VoiceStudio running (`http://127.0.0.1:3900`), then `python3 tools/voicestudio/vs_samples.py` (clones of our voices), `vs_designs.py` (new voices from a description) or `vs_lines.py` (every line in the chosen voices); see `docs/ASSETS.md` |
 
@@ -68,6 +69,18 @@ points as noise.
   they built: read it before writing a line or a prompt. After a review round, run
   `python3 tools/review/review.py lessons --write docs/PROMPTING.md` and fold any new pattern into
   its rules.
+- **The bots' loop.** Two bots answer each push (both commit as "bug clerk"): the playtester's verdict
+  (`bugs: <sha> N open, M fixed`, about 25 min after the push) and the play critic's review
+  (`bugs: review <sha> <slug>`, about 50 min after that). After the owner pushes, run
+  `scripts/await_bots.sh` in the background. It returns when both have answered, having pulled them,
+  with a digest of the open bugs and the review; in a new session the sync hook prints the same digest.
+  Then, without waiting to be asked:
+  1. The open bugs, each reproduced, fixed, tested and probed.
+  2. The critic's ui/ux notes: polish and legibility are in scope. Give each one a probe fact.
+  3. The critic's ideas add behaviour ("No new systems"): put them to the owner as a question.
+  4. Work in a worktree if the owner may be playing. Leave it uncommitted for the owner, with
+     `check.sh` and the touched probes green, a CHANGELOG entry naming the B-numbers, and a PLAYTEST
+     section. Then start `scripts/await_bots.sh --after <sha>` for the next push.
 - **The bot is a playtest helper, not CI.** It catches things on a clean Linux clone after a push.
   The gate before a commit is ours: `scripts/check.sh` (the pre-commit hook), and `probes.sh` for
   anything that changes the picture.
