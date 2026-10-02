@@ -203,6 +203,11 @@ static func theme() -> Theme:
 	return t
 
 
+static func is_fullscreen_key(e: InputEventKey) -> bool:
+	## F11, or ctrl-cmd-F on a Mac (main.gd toggles fullscreen on them; a film mustn't swallow them)
+	return e.keycode == KEY_F11 or (e.keycode == KEY_F and e.meta_pressed and e.ctrl_pressed)
+
+
 static func owns(name: String, cap: bool = false) -> String:
 	## "Varek's", but "your" ("Your" to open a sentence): the default human seat is called You (B-005)
 	if name.strip_edges().to_lower() == "you":

@@ -122,6 +122,10 @@ points as noise.
   script file. (Once this made the arena load a map called `known24 n=40 …`.)
 - **A GDScript runtime error doesn't quit headless Godot.** It hangs. Always check the
   output for `SCRIPT ERROR`, and kill your own stuck runs by script path.
+- **A test must not preload a script that names an autoload** (`Settings`, `Audio`: `game_screen.gd`
+  does). `test_one.gd` (and so `check.sh`) compiles it fine; the full runner doesn't, and its count
+  still says `failed=0`. `test.sh` now fails on any `SCRIPT ERROR`. Put the testable piece in a
+  lighter file (`Recap.defeat_title`, not `GameScreen`).
 - Run probes one at a time when the owner's Godot is open. v13 has hung under contention;
   rerun it alone.
 - `Style.tex()` caches a missing texture as null for the whole run. New art needs a restart

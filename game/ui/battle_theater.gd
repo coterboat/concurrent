@@ -457,9 +457,16 @@ func _unhandled_input(e: InputEvent) -> void:
 	if not visible:
 		return
 	if e is InputEventKey and e.pressed and not e.echo:
-		if e.keycode == KEY_SPACE or e.keycode == KEY_ENTER:
+		## v1.14: a call's letter is a bare key (macOS's fullscreen, ctrl-cmd-F, used to sound the retreat)
+		var bare: bool = not (e.ctrl_pressed or e.meta_pressed or e.alt_pressed)
+		if e.keycode == KEY_ESCAPE and _help.visible:
+			_help.visible = false ## v1.14: Esc closes the dice help; it used to skip every battle left
+			get_viewport().set_input_as_handled()
+		elif e.keycode == KEY_SPACE or e.keycode == KEY_ENTER or e.keycode == KEY_KP_ENTER:
 			press()
 			get_viewport().set_input_as_handled()
+		elif not bare and e.keycode in [KEY_R, KEY_F, KEY_T]:
+			return
 		elif e.keycode == KEY_R and _state == "call" and not _btn_reserves.disabled:
 			_answer(Combat.CALL_RESERVES)
 			get_viewport().set_input_as_handled()
@@ -480,6 +487,8 @@ var _bed_t := 3.0 ## the battle beyond this one: now and then, far off and quiet
 func _process(delta: float) -> void:
 	if not visible:
 		return
+	if _help.visible and _help.get_index() != get_child_count() - 1:
+		move_child(_help, -1) ## v1.14: the dice help stays over the fronts a melee adds after it opens
 	_bed_t -= delta
 	if _bed_t <= 0.0:
 		_bed_t = randf_range(4.5, 9.0)
@@ -1190,7 +1199,7 @@ func _update_odds() -> void:
 		bar.show_odds(p, _a_pid, _b_pid, head, edge)
 		return
 	if _melee:
-		edge = "%d attackers on %d fronts against %d defenders, who must split themselves across every front" % [a, _fronts_up(), d]
+		edge = "%s on %s against %s, who must split themselves across every front" % [Style.plural(a, "attacker"), Style.plural(_fronts_up(), "front"), Style.plural(d, "defender")]
 	elif diff == 0:
 		edge = "%s against %d: even numbers, the dice decide%s" % [men.call(a), d, tie_note]
 	else:
@@ -1379,7 +1388,7 @@ func _ask() -> void:
 	var refuge: String = str(p.get("refuge", ""))
 	var pr: float = Combat.capture_rate(a, d, Combat.MODE_VOLLEYS, _fort_bonus()) if a > 0 and d > 0 else (1.0 if d <= 0 else 0.0)
 	var who: String = session.name_of(str(p.get("attacker", "")))
-	_odds.text = ("%s's call · " % who if _melee else "") + "From here: %s — %d%% to take it" % [Combat.odds_word(a, d, Combat.MODE_VOLLEYS, _fort_bonus()), int(round(pr * 100.0))]
+	_odds.text = ("%s call · " % Style.owns(who, true) if _melee else "") + "From here: %s — %d%% to take it" % [Combat.odds_word(a, d, Combat.MODE_VOLLEYS, _fort_bonus()), int(round(pr * 100.0))]
 	## v1.8: Fortune offered (the exchange went badly for the one choosing)
 	var fortune: bool = bool(p.get("fortune", false))
 	var side: String = str(p.get("side", ""))
@@ -1395,7 +1404,7 @@ func _ask() -> void:
 		var mine0: float = p0 if side == "a" else 1.0 - p0
 		var mine1: float = pr if side == "a" else 1.0 - pr
 		_btn_fortune.text = ("Fortune: throw it again   (T)" if _btn_fortune.icon != null else "✦ Fortune: throw it again   (T)")
-		_btn_fortune.tooltip_text = "Spend one of your %d favours: that exchange never happened, and the dice fly again. Once a battle." % int(p.get("fortunes", 1))
+		_btn_fortune.tooltip_text = "Spend a favour (%s): that exchange never happened, and the dice fly again. Once a battle." % ("your only one" if int(p.get("fortunes", 1)) == 1 else "you hold %d" % int(p.get("fortunes", 1)))
 		_odds.text = "That exchange cost you dear: %d%% → %d%%.   ✦ Fortune can throw it again (%d left)" % [int(round(mine0 * 100.0)), int(round(mine1 * 100.0)), int(p.get("fortunes", 1))]
 	if res > 0:
 		var pr2: float = Combat.capture_rate(a + res, d, Combat.MODE_VOLLEYS, _fort_bonus())
@@ -1651,7 +1660,7 @@ func _update_fortune() -> void:
 			cap.text = ("Fortune: throw a bad exchange again" if mine else "may call on Fortune") if live else ""
 		else:
 			cap.text = "no favours" if mine else ""
-		fp.tooltip_text = "Fortune ✦ %d: after an exchange that goes badly for them (it ends their battle, or costs them two more men than it costs the foe), %s can have it thrown again, once a battle." % [n, session.name_of(pid)]
+		fp.tooltip_text = "Fortune ✦ %d: after an exchange that goes badly for %s (it ends the battle, or costs two more men than it costs the foe), %s can have it thrown again, once a battle." % [n, "you" if Style.who(session.name_of(pid)) == "you" else "them", Style.who(session.name_of(pid))]
 
 
 func _shout_text(t: String, col: Color) -> void:

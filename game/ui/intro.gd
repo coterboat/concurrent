@@ -111,7 +111,7 @@ func _done() -> void:
 
 
 func _unhandled_input(e: InputEvent) -> void:
-	if visible and e is InputEventKey and e.pressed and not e.echo:
+	if visible and e is InputEventKey and e.pressed and not e.echo and not Style.is_fullscreen_key(e):
 		if e.keycode == KEY_ESCAPE:
 			_done()
 		else:

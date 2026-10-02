@@ -16,6 +16,7 @@ signal hovered(pid: String)
 
 var session: Node
 var faces := {} ## pid -> LeaderFace
+const NAME_MIN := 96.0 ## v1.14: the most room a name is promised (a longer one trims with an ellipsis)
 var _rows := {}
 
 
@@ -68,7 +69,7 @@ func refresh() -> void:
 		var inc: int = int(r["income"])
 		if view != null and view.players.has(r["id"]):
 			inc = Income.income_of(view, s.map, r["id"])
-		var bits := "%d lands · +%d" % [r["lands"], inc]
+		var bits := "%s · +%d" % [Style.plural(int(r["lands"]), "land"), inc]
 		if s.map.cards and r["alive"]:
 			var nc: int = int(r["cards"])
 			if view != null and view.players.has(r["id"]):
@@ -80,7 +81,7 @@ func refresh() -> void:
 			bits += " · %d card%s%s" % [nc, "" if nc == 1 else "s", turning]
 		## v1.8: the favours Fortune owes each commander, for everyone to see (v1.9: as stars,
 		## the next one filling with gold)
-		var tip := "%s raises %d recruits next round, as the map stands." % [s.name_of(r["id"]), inc] if r["alive"] else ""
+		var tip := "%s %d recruits next round, as the map stands." % [Style.says(s.name_of(r["id"]), "raises"), inc] if r["alive"] else ""
 		var pips: Control = ui["pips"]
 		pips.visible = false
 		if s.map.fortune and r["alive"]:
@@ -95,7 +96,7 @@ func refresh() -> void:
 				var nm: String = s.name_of(r["id"])
 				tip += "\n\n" + "Fortune ✦ %d of %d: %s. After an exchange that goes badly, %s can throw it again (once a battle).\nThe next star fills with gold as the dice rob %s: about half a battle's worth of bad luck owes another (%d%% of the way there)." % [
 					ps.fortune, Fortune.MOST, "no favours in hand" if ps.fortune == 0 else ("%d favour%s in hand" % [ps.fortune, "" if ps.fortune == 1 else "s"]),
-					nm, nm, int(round(share * 100.0))]
+					Style.who(nm), Style.who(nm), int(round(share * 100.0))]
 		if not r["alive"]:
 			bits = "fallen"
 		(ui["sub"] as Label).text = bits
@@ -151,6 +152,9 @@ func _make_row(seat: Dictionary) -> Dictionary:
 	name_l.clip_text = true
 	name_l.text_overrun_behavior = TextServer.OVERRUN_TRIM_ELLIPSIS
 	name_l.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	## v1.14: the name keeps its room. Its label clips, so it asked for none: on a map without cards
+	## the short "3 lands · +7" left the stars and the crown nothing but "Da" and an empty line
+	name_l.custom_minimum_size.x = minf(Style.font("bold").get_string_size(shown, HORIZONTAL_ALIGNMENT_LEFT, -1, 15).x + 2.0, NAME_MIN)
 	## v1.9: the name, and Fortune's stars beside it
 	var nh := HBoxContainer.new()
 	nh.add_theme_constant_override("separation", 4)
@@ -180,7 +184,7 @@ func _make_row(seat: Dictionary) -> Dictionary:
 	for c in [name_l, sub, score]:
 		c.mouse_filter = Control.MOUSE_FILTER_IGNORE
 	p.tooltip_text = "%s — score is lands + region bonuses" % seat["name"]
-	return {"panel": p, "face": face, "score": score, "sub": sub, "crown": crown, "pips": pips}
+	return {"panel": p, "face": face, "score": score, "sub": sub, "crown": crown, "pips": pips, "name": name_l}
 
 
 class _Mark extends Control:

@@ -285,6 +285,13 @@ func _process(delta: float) -> void:
 
 # ------------------------------------------------------------------ beats
 
+static func _may_move(name: String) -> String:
+	## the fled court's line: "They may move it…", but "You may move it in your…" (the seat called You)
+	if name.strip_edges().to_lower() == "you":
+		return "You may move it in your next reinforcement phase."
+	return "They may move it in their next reinforcement phase."
+
+
 func _name(pid: String) -> String:
 	return session.name_of(pid)
 
@@ -426,7 +433,7 @@ func _build_beats() -> Array:
 				if not held and i + 1 < n and str(evs[i + 1]["kind"]) == Types.EVENT_OCCUPIED:
 					upto3 = i + 1
 				var outcome: String = ("%s with %d left." % [Style.says(_name(str(e["defenderId"])), "holds"), int(e["defenderLeft"])]) if held else "The defenders are overrun!"
-				out.append({"upto": upto3, "caption": "Melee at %s" % _hex(to3), "sub": "%s storm %s's %d at once. %s" % [" and ".join(names), _name(str(e["defenderId"])), int(e["defenderSize"]), outcome],
+				out.append({"upto": upto3, "caption": "Melee at %s" % _hex(to3), "sub": "%s storm %s %d at once. %s" % [" and ".join(names), Style.owns(_name(str(e["defenderId"]))), int(e["defenderSize"]), outcome],
 					"fight": true, "melee": true, "event": e, "a": human if human != "" else attackers[0], "b": str(e["defenderId"]), "attackers": attackers,
 					"focus": froms, "resolves": to3, "delay": 2.6, "sound": "melee", "a_won": not held})
 				i = upto3
@@ -451,7 +458,7 @@ func _build_beats() -> Array:
 				var other4: String = str(who4[1]) if str(who4[0]) == lead4 else str(who4[0])
 				var after_melee: bool = str(e.get("after", "")) == "melee"
 				out.append({"upto": upto4, "caption": ("The victors turn on each other at %s" if after_melee else "Scramble for %s") % _hex(to4),
-					"sub": "%s — every man for himself. %s is left standing with %d." % [", ".join(names4), _name(str(e["winnerId"])), int(e["winnerLeft"])],
+					"sub": "%s — every man for himself. %s left standing with %d." % [", ".join(names4), Style.says(_name(str(e["winnerId"])), "is"), int(e["winnerLeft"])],
 					"fight": true, "scramble": true, "event": e, "a": lead4, "b": other4, "attackers": who4,
 					"focus": froms4, "resolves": to4, "delay": 2.4, "sound": "melee", "a_won": true})
 				i = upto4
@@ -470,13 +477,13 @@ func _build_beats() -> Array:
 				var hex: String = str(e["terrId"])
 				var who: String = str(e["playerId"])
 				if vacated.has(hex) and vacated[hex] != who:
-					out.append({"upto": i, "caption": "Walk-in!", "sub": "%s into %s — %s left it bare." % [Style.says(_name(who), "strolls"), _hex(hex), _name(vacated[hex])], "sound": "walkin", "delay": 2.0, "focus": [hex], "flash": hex, "flash_text": "WALK-IN", "resolves": hex, "walkin": who, "victim": vacated[hex]})
+					out.append({"upto": i, "caption": "Walk-in!", "sub": "%s into %s — %s left it bare." % [Style.says(_name(who), "strolls"), _hex(hex), Style.who(_name(vacated[hex]))], "sound": "walkin", "delay": 2.0, "focus": [hex], "flash": hex, "flash_text": "WALK-IN", "resolves": hex, "walkin": who, "victim": vacated[hex]})
 				else:
 					out.append({"upto": i, "caption": "%s %s" % [Style.says(_name(who), "takes"), _hex(hex)], "sub": "Nobody was home.", "sound": "capture", "delay": 1.1, "focus": [hex], "flash": hex, "flash_text": "+1", "resolves": hex})
 			Types.EVENT_SURGE when bool(e.get("joins", false)):
 				## v1.10: the second wave finds the land already taken, and marches in to hold it
 				out.append({"upto": i, "caption": "The second wave marches in",
-					"sub": "%s already fell to %s: %d more from %s join its garrison." % [_hex(str(e["to"])), _name(str(e["playerId"])), int(e["strength"]), _hex(str(e["from"]))],
+					"sub": "%s already fell to %s: %d more from %s join its garrison." % [_hex(str(e["to"])), Style.who(_name(str(e["playerId"]))), int(e["strength"]), _hex(str(e["from"]))],
 					"sound": "march", "delay": 1.4, "focus": [str(e["from"]), str(e["to"])], "flash": str(e["to"]), "flash_text": "+%d" % int(e["strength"])})
 			Types.EVENT_SURGE:
 				## the surge marches like any column, on from the land just taken; its arrow
@@ -493,18 +500,18 @@ func _build_beats() -> Array:
 				var loot: Array = e.get("cards", [])
 				var sub4 := ""
 				if int(e.get("levy", 0)) > 0:
-					sub4 = "%s raises %d fresh troops in the city" % [_name(by), int(e["levy"])]
-					sub4 += (" and carries off %d of %s's cards." % [loot.size(), _name(str(e["playerId"]))]) if not loot.is_empty() else "."
+					sub4 = "%s %d fresh troops in the city" % [Style.says(_name(by), "raises"), int(e["levy"])]
+					sub4 += (" and carries off %d of %s cards." % [loot.size(), Style.owns(_name(str(e["playerId"])))]) if not loot.is_empty() else "."
 				var up4 := i
 				if i + 1 < n and bool((evs[i + 1] as Dictionary).get("capitalLevy", false)):
 					up4 = i + 1 ## the levy shows with the fall
-				out.append({"upto": up4, "caption": "%s's capital falls!" % _name(str(e["playerId"])), "sub": sub4, "sound": "capital_fall", "delay": 2.6,
+				out.append({"upto": up4, "caption": "%s capital falls!" % Style.owns(_name(str(e["playerId"])), true), "sub": sub4, "sound": "capital_fall", "delay": 2.6,
 					"focus": [fell], "flash": fell, "flash_text": "CAPITAL TAKEN", "capital_taken": str(e["playerId"]), "capital_by": by})
 				i = up4
 			Types.EVENT_FORTUNE:
 				## v1.8: the dice have been cruel to someone: Fortune pays what she owes
 				var fp: String = str(e["playerId"])
-				out.append({"upto": i, "caption": "Fortune owes %s a favour" % _name(fp), "sub": "The dice have been cruel. ✦ %d in hand: after an exchange that goes badly, throw it again." % int(e.get("fortune", 1)),
+				out.append({"upto": i, "caption": "Fortune owes %s a favour" % Style.who(_name(fp)), "sub": "The dice have been cruel. ✦ %d in hand: after an exchange that goes badly, throw it again." % int(e.get("fortune", 1)),
 					"sound": "fortune_gained" if Audio.has_sfx("fortune_gained") else "war_chest", "delay": 1.8, "fortune_to": fp})
 			Types.EVENT_CAPITAL_FOUNDED:
 				if str(e.get("why", "")) == "fallen":
@@ -516,10 +523,11 @@ func _build_beats() -> Array:
 						up5 += 1
 						guard += int((evs[up5] as Dictionary).get("added", 0)) if bool((evs[up5] as Dictionary).get("courtGuard", false)) else 0
 						dug5 = int((evs[up5] as Dictionary).get("garrison", dug5)) if bool((evs[up5] as Dictionary).get("court", false)) else dug5
-					var sub5: String = "%s's new capital. They may move it in their next reinforcement phase." % _name(str(e["playerId"]))
+					var may: String = _may_move(_name(str(e["playerId"])))
+					var sub5: String = "%s new capital. %s" % [Style.owns(_name(str(e["playerId"])), true), may]
 					if guard > 0:
-						sub5 = "%s's new capital: the court's guard arrives (+%d)%s. They may move it in their next reinforcement phase." % [
-							_name(str(e["playerId"])), guard, (" and %d dig in behind the walls" % dug5) if dug5 > 0 else ""]
+						sub5 = "%s new capital: the court's guard arrives (+%d)%s. %s" % [
+							Style.owns(_name(str(e["playerId"])), true), guard, (" and %d dig in behind the walls" % dug5) if dug5 > 0 else "", may]
 					out.append({"upto": up5, "caption": "The court flees to %s" % _hex(str(e["terrId"])), "sub": sub5,
 						"sound": "banner", "delay": 1.6 if guard == 0 else 2.2, "focus": [str(e["terrId"])], "flash": str(e["terrId"]), "flash_text": "NEW CAPITAL"}) ## v1.13: its flag goes up
 					i = up5
@@ -540,10 +548,10 @@ func _build_beats() -> Array:
 						var throws: Array = []
 						for q in order:
 							var got: int = int((sp["shares"] as Dictionary).get(q, 0))
-							parts.append("%s throws %d: %s" % [_name(str(q)), int((sp["rolls"] as Dictionary).get(q, 0)), ("%d card%s" % [got, "" if got == 1 else "s"]) if got > 0 else "nothing"])
+							parts.append("%s %d: %s" % [Style.says(_name(str(q)), "throws"), int((sp["rolls"] as Dictionary).get(q, 0)), ("%d card%s" % [got, "" if got == 1 else "s"]) if got > 0 else "nothing"])
 							throws.append({"pid": str(q), "value": int((sp["rolls"] as Dictionary).get(q, 0))})
-						out.append({"upto": i, "caption": "%s's war chest is divided" % _name(str(e["from"])),
-							"sub": "Their last lands fell to %d commanders at once, so the dice share out the %d cards. %s." % [order.size(), int(sp.get("of", 0)), "; ".join(parts)],
+						out.append({"upto": i, "caption": "%s war chest is divided" % Style.owns(_name(str(e["from"])), true),
+							"sub": "Their last lands fell to %d commanders at once, so the dice share out %s. %s." % [order.size(), "the card" if int(sp.get("of", 0)) == 1 else "the %d cards" % int(sp.get("of", 0)), "; ".join(parts)],
 							"sound": "dice_click", "delay": 4.2, "split_throws": throws})
 					if cc.is_empty():
 						i += 1
@@ -553,13 +561,13 @@ func _build_beats() -> Array:
 						"cards_to": str(e["to"]), "cards_from": str(e["from"]), "cards": cc})
 					i += 1
 					continue
-				out.append({"upto": i, "caption": "%s %s's war chest" % [Style.says(_name(str(e["to"])), "seizes"), _name(str(e["from"]))],
+				out.append({"upto": i, "caption": "%s %s war chest" % [Style.says(_name(str(e["to"])), "seizes"), Style.owns(_name(str(e["from"])))],
 					"sub": "Every card they held changes hands: %s." % ", ".join(kinds), "sound": "", "delay": 2.8,
 					"cards_to": str(e["to"]), "cards_from": str(e["from"]), "cards": cc})
 			Types.EVENT_ENTRENCHED:
 				dug += 1
 			Types.EVENT_CARD_DRAWN:
-				drawn.append(_name(str(e["playerId"])))
+				drawn.append(Style.who(_name(str(e["playerId"]))))
 			Types.EVENT_BECAME_UNOCCUPIED:
 				pass
 			Types.EVENT_ROUND_ENDED:

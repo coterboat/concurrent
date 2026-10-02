@@ -67,3 +67,10 @@ func _ready() -> void:
 	row.add_child(Style.button("Keep my own", func(): queue_free(), 0, 20))
 	_box.add_child(row)
 	face.react("happy", "plan", 2.0)
+
+
+func _unhandled_input(e: InputEvent) -> void:
+	## v1.14: Esc keeps your own sheet (it used to put the pause menu over the plan)
+	if e is InputEventKey and e.pressed and not e.echo and e.keycode == KEY_ESCAPE:
+		queue_free()
+		get_viewport().set_input_as_handled()

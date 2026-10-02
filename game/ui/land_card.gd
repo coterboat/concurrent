@@ -276,7 +276,7 @@ func _trait_rows(s, ts: Types.TerritoryState, td: Types.TerritoryDef) -> Array:
 		if s.capital_shown(str(pid)) == land:
 			cap_of = str(pid)
 	if cap_of != "":
-		var whose: String = ("Our capital" if cap_of == s.planner else "%s's capital" % s.name_of(cap_of)) + "  ·  +%d a round, a fortress" % Income.TREASURY
+		var whose: String = ("Our capital" if cap_of == s.planner else "%s capital" % Style.owns(s.name_of(cap_of), true)) + "  ·  +%d a round, a fortress" % Income.TREASURY
 		out.append(_trait("crown", whose, "Pays %d recruits a round. Its defenders fire a line of %d, not five, and one more man may dig in. Whoever takes it plunders half its commander's cards and raises %d troops there on the spot."
 			% [Income.TREASURY, Combat.LINE + 1, 3], Style.GOLD))
 	if td.has_trait("fort"):

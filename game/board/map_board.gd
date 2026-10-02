@@ -52,6 +52,10 @@ var _label_hits: Array = [] ## [{pos, from, to}] arrow labels you can click
 var _late: Array = [] ## v1.13: marks drawn over the tokens (fates, region pips), queued while the arrows draw
 var drawn_ceilings: Array = [] ## v1.13.2: the enemy lands wearing their ≤N this frame (the probe reads it)
 var drawn_fates: Array = [] ## v1.13.2: [fate, where] for each fate mark this frame (the probe reads it)
+var drawn_cut: Dictionary = {} ## v1.14: land -> where its CUT OFF plate sits this frame (the probe reads it)
+var drawn_bonus: Dictionary = {} ## v1.14: region -> the screen rect of its bonus and pips this frame (the probe reads it)
+var _names_now: Array = [] ## v1.14: this frame's name plates (found once a frame, when a fate mark needs them)
+var _fate_spots: Array = [] ## v1.14: where this frame's fate marks go, queued before the tokens draw
 var _region_font: FontVariation
 
 var zoom := 0.5
@@ -90,6 +94,7 @@ func _ready() -> void:
 
 func load_map(p_map: Types.MapDef) -> void:
 	map = p_map
+	_bonus_at.clear()
 	art = MapArt.load_for(map.id)
 	if art == null:
 		return
@@ -492,6 +497,10 @@ func _draw_overlay() -> void:
 	_late.clear()
 	drawn_ceilings.clear()
 	drawn_fates.clear()
+	drawn_cut.clear()
+	drawn_bonus.clear()
+	_fate_spots.clear()
+	_names_now = []
 	_draw_ornaments(ci)
 	_draw_lanes(ci)
 	if show_region_labels:
@@ -630,6 +639,8 @@ func _draw_region_labels(ci: CanvasItem) -> void:
 	var k: float = zoom / maxf(fit, 0.01)
 	var sz: int = int(clampf(30.0 * sqrt(k) * (art.size.x / 2400.0 + 0.3), 20.0, 52.0))
 	var shares: Dictionary = BoardFacts.shares(world, map) if world != null and not plain else {}
+	if absf(zoom - _bonus_zoom) > zoom * 0.002 and _time - _bonus_t > 0.15:
+		_bonus_at.clear() ## the view zoomed: the spots are found again once it settles
 	for r in art.regions.keys():
 		if not map.region_bonus.has(r):
 			continue
@@ -646,12 +657,131 @@ func _draw_region_labels(ci: CanvasItem) -> void:
 		var bf := Style.font("display")
 		var bs: int = int(sz * 0.8)
 		var bw: float = bf.get_string_size(bonus, HORIZONTAL_ALIGNMENT_LEFT, -1, bs).x
+		## v1.14: the bonus and its pips are meant to be read, so they keep off the tokens and their
+		## names (on the Known World Eastshore's pips sat on Steppe's name, Crownlands' on Throne's
+		## crown): under the region's name if that's clear, else the nearest clear spot around it
+		var pw: float = _pips_width((shares[r]["members"] as PackedStringArray).size(), sz) if shares.has(r) else 0.0
+		var bw_all: float = bw + (10.0 + pw if shares.has(r) else 0.0)
 		var bp := p + Vector2(-bw * 0.5, bs + 4)
+		if world != null and not plain:
+			bp = p + _bonus_spot(str(r), p, bp - p, Vector2(bw_all, bs), w, sz)
+		drawn_bonus[r] = Rect2(bp + Vector2(0, -bs * 0.8), Vector2(bw_all, bs))
 		ci.draw_string_outline(bf, bp, bonus, HORIZONTAL_ALIGNMENT_LEFT, -1, bs, 5, Color(0.05, 0.03, 0.02, 0.4))
 		ci.draw_string(bf, bp, bonus, HORIZONTAL_ALIGNMENT_LEFT, -1, bs, Color(1.0, 0.85, 0.45, 0.7))
 		if shares.has(r):
 			## beside the bonus, over the tokens (a pip hidden under a crown would miscount)
 			_late.append(_draw_region_pips.bind(shares[r], bp + Vector2(bw + 10.0, -bs * 0.34), sz))
+
+
+var _bonus_at := {} ## v1.14: region -> [where its bonus sits from its label at _bonus_zoom, its size]
+var _bonus_zoom := 0.0
+var _bonus_t := -1.0
+var _bonus_offsets: Array = []
+
+
+func _bonus_spot(r: String, p: Vector2, home: Vector2, box: Vector2, name_w: float, sz: int) -> Vector2:
+	## the nearest spot to `home` (from the label at p) where a box this big covers no token, no
+	## land's name and no other region's bonus; failing that, the one that covers least. Found once
+	## per zoom (and scaled meanwhile while a zoom is under way): panning only slides it.
+	if _bonus_at.has(r) and (_bonus_at[r][1] as Vector2).is_equal_approx(box):
+		return (_bonus_at[r][0] as Vector2) * (zoom / maxf(_bonus_zoom, 0.0001))
+	if _bonus_offsets.is_empty():
+		for dy in range(-16, 17):
+			for dx in range(-40, 41):
+				_bonus_offsets.append(Vector2(dx, dy))
+		_bonus_offsets.sort_custom(func(a, b): return a.x * a.x + 1.7 * a.y * a.y < b.x * b.x + 1.7 * b.y * b.y)
+	var step := Vector2(minf(8.0, (name_w * 0.5 + 60.0) / 40.0), float(sz) * 0.16)
+	var reach := Rect2(p + home - Vector2(name_w * 0.5 + 60.0, step.y * 16.0), box + Vector2(name_w + 120.0, step.y * 32.0))
+	## a land's name weighs three times a token's box (whose corners are mostly empty)
+	var near: Array = []
+	for b in token_boxes():
+		if reach.intersects(b as Rect2):
+			near.append(b)
+	for other in drawn_bonus.values():
+		near.append(other)
+	var names: Array = []
+	for b in token_boxes(true, false):
+		if reach.intersects(b as Rect2):
+			names.append(b)
+	var view := Rect2(Vector2(0, pad_top), size - Vector2(0, pad_top + pad_bottom))
+	var lift := Vector2(0, -box.y * 0.8)
+	var keep_in: bool = view.encloses(Rect2(p + home + lift, box))
+	## it must read as its own region's: the nearest clear spot on its lands; else the nearest clear
+	## spot in the water off them (on an archipelago, or the Ring's inner sea, the lands are full),
+	## touching no other region; else the spot on its lands that covers least for its distance
+	var best: Vector2 = home
+	var best_cost := INF
+	var own_best: Vector2 = Vector2.INF
+	var own_cost := INF
+	var wet: Vector2 = Vector2.INF
+	for o in _bonus_offsets:
+		var c: Vector2 = home + (o as Vector2) * step
+		var rect := Rect2(p + c + lift, box)
+		if keep_in and not view.encloses(rect):
+			continue
+		var hit: float = _overlap(rect, near)
+		var cost: float = hit + (2.0 * _overlap(rect, names) if hit > 0.0 else 0.0) + 0.05 * c.distance_squared_to(home)
+		var mid: String = _region_at(rect.get_center())
+		var ends: Array = [_region_at(rect.position + Vector2(4, box.y * 0.5)), _region_at(rect.end - Vector2(4, box.y * 0.5))]
+		var own: bool = mid == r and (ends[0] == r or ends[1] == r)
+		var off_shore: bool = (mid == r or mid == "") and ends.all(func(e): return e == r or e == "") and not own
+		if hit <= 0.0 and own:
+			own_best = c
+			wet = Vector2.INF
+			break
+		if hit <= 0.0 and off_shore and wet == Vector2.INF:
+			wet = c
+		if own and cost < own_cost:
+			own_cost = cost
+			own_best = c
+		if cost < best_cost:
+			best_cost = cost
+			best = c
+	if wet != Vector2.INF:
+		best = wet
+	elif own_best != Vector2.INF:
+		best = own_best
+	_bonus_at[r] = [best, box]
+	_bonus_zoom = zoom
+	_bonus_t = _time
+	return best
+
+
+func _region_at(at: Vector2) -> String:
+	## the region of the land under this screen point ("" on the sea)
+	var id: String = art.territory_at(screen_to_map(at))
+	var td: Types.TerritoryDef = map.get_territory(id) if id != "" else null
+	return td.region if td != null else ""
+
+
+func token_boxes(names: bool = true, tokens: bool = true) -> Array:
+	## v1.14: the screen rects of every land's token (its shield, crown and plates) and its name
+	var out: Array = []
+	var r := token_radius()
+	var f := Style.font("bold")
+	var ns := 15 if zoom < fit * 1.4 else 17
+	for id in art.order:
+		var p: Vector2 = anchor(str(id))
+		if tokens:
+			out.append(Rect2(p - Vector2(r * 1.55, r * 1.3), Vector2(r * 2.9, r * 2.4)))
+		var td: Types.TerritoryDef = map.get_territory(str(id)) if map != null else null
+		if td != null and names:
+			var nw: float = f.get_string_size(td.display_name, HORIZONTAL_ALIGNMENT_LEFT, -1, ns).x
+			out.append(Rect2(p + Vector2(-nw * 0.5 - 2.0, r + 2.0), Vector2(nw + 4.0, float(ns) + 3.0)))
+	return out
+
+
+static func _overlap(box: Rect2, boxes: Array) -> float:
+	var a := 0.0
+	for b in boxes:
+		a += box.intersection(b as Rect2).get_area()
+	return a
+
+
+static func _pips_width(n: int, sz: int) -> float:
+	## the region pips' pill, as _draw_region_pips draws it
+	var pr: float = clampf(float(sz) * 0.13, 3.5, 6.5)
+	return (pr * 2.0 + 3.0) * float(maxi(n, 1) - 1) + pr * 2.0 + 8.0
 
 
 func _draw_region_pips(ci: CanvasItem, sh: Dictionary, at: Vector2, sz: int) -> void:
@@ -786,40 +916,94 @@ func _draw_ghost(ci: CanvasItem, g: Dictionary) -> void:
 		kind, 0.42 if failed else 0.22, false, 1.0, 0, 0.5 if res == LastRound.CLASH else 1.0)
 	## the marks go over the tokens: at a land's edge its garrison shield would hide them
 	if failed and end != Vector2.INF:
+		end = _off_names(end, anchor(str(g["from"])), anchor(str(g["to"])))
 		var back: String = str(g.get("fellTo", "")) if str(g.get("fellTo", "")) != "" else str(g["from"])
 		_late.append(_draw_fate_mark.bind(end, res, anchor(back) if art.anchors.has(back) else Vector2.INF))
+		_fate_spots.append(end)
 	if surge_died:
 		## the surge it sent on met another surge on the border and died there
 		var se: Vector2 = _draw_arrow(ci, str(g["to"]), str(g["surgeTo"]), -1, str(g.get("owner", "")), "", kind, 0.42, false, 1.0, 0, 0.5)
 		if se != Vector2.INF:
 			_late.append(_draw_fate_mark.bind(se, LastRound.CLASH, Vector2.INF))
+			_fate_spots.append(se)
 
 
 func _draw_fate_mark(ci: CanvasItem, at: Vector2, fate: String, toward: Vector2) -> void:
 	## a column that failed, on a dark medal readable over any land or sea. v1.13.2: each fate its
 	## own mark (the play critic: "you can tell it failed, but not how, without hovering"). Thrown
 	## back or beaten on the border: a red cross. Fell back: a pale double chevron pointing the way
-	## the survivors went. Beaten in a scramble (or the fight for the spoils): crossed swords.
-	var s: float = clampf(token_radius() * 0.32, 6.0, 9.0)
+	## the survivors went. Beaten in a scramble (or the fight for the spoils): a broken banner.
+	## v1.14: half as big again, on a solid disc (the critic: "about the size of an army crest, and
+	## the pale chevron is the hardest to spot"), and the scramble's crossed swords became a broken
+	## banner: the swords were the threat plate's symbol, so the two read as one thing.
+	var s: float = fate_mark_size()
 	drawn_fates.append([fate, at])
-	ci.draw_circle(at + Vector2(1.0, 1.5), s + 5.0, Color(0, 0, 0, 0.35))
-	ci.draw_circle(at, s + 5.0, Color(0.10, 0.05, 0.04, 0.88))
-	ci.draw_arc(at, s + 5.0, 0, TAU, 20, Color(0.95, 0.88, 0.72, 0.7), 1.5, true)
-	var swords: Texture2D = Style.icon("attack") if fate == LastRound.OUTFOUGHT else null
+	var rr: float = s + 6.0
+	ci.draw_circle(at + Vector2(1.5, 2.0), rr + 1.0, Color(0, 0, 0, 0.45))
+	ci.draw_circle(at, rr, Color(0.10, 0.05, 0.04, 0.97))
+	ci.draw_arc(at, rr, 0, TAU, 28, Color(0.98, 0.9, 0.72, 0.9), 2.0, true)
 	if fate == LastRound.FELL_BACK:
 		var d: Vector2 = (toward - at).normalized() if toward != Vector2.INF and toward.distance_to(at) > 1.0 else Vector2.LEFT
 		var n: Vector2 = d.orthogonal()
-		var pale := Color(0.98, 0.84, 0.55)
+		var pale := Color(1.0, 0.9, 0.6)
 		for k in 2:
 			var c: Vector2 = at + d * (s * (0.45 - 0.8 * k))
-			ci.draw_polyline(PackedVector2Array([c - d * s * 0.45 + n * s * 0.8, c + d * s * 0.45, c - d * s * 0.45 - n * s * 0.8]), pale, 3.0, true)
-	elif swords != null:
-		var q: float = s * 1.25
-		ci.draw_texture_rect(swords, Rect2(at - Vector2(q, q), Vector2(q, q) * 2.0), false, Color(1.0, 0.72, 0.66))
+			ci.draw_polyline(PackedVector2Array([c - d * s * 0.45 + n * s * 0.8, c + d * s * 0.45, c - d * s * 0.45 - n * s * 0.8]), pale, 4.0, true)
+	elif fate == LastRound.OUTFOUGHT:
+		_draw_broken_banner(ci, at + Vector2(0, s * 0.06), s * 1.18)
 	else:
-		var red := Color(0.95, 0.33, 0.26)
-		ci.draw_line(at + Vector2(-s, -s), at + Vector2(s, s), red, 3.5, true)
-		ci.draw_line(at + Vector2(-s, s), at + Vector2(s, -s), red, 3.5, true)
+		var red := Color(0.98, 0.36, 0.28)
+		ci.draw_line(at + Vector2(-s, -s) * 0.85, at + Vector2(s, s) * 0.85, red, 4.0, true)
+		ci.draw_line(at + Vector2(-s, s) * 0.85, at + Vector2(s, -s) * 0.85, red, 4.0, true)
+
+
+func _off_names(at: Vector2, toward: Vector2, home: Vector2) -> Vector2:
+	## v1.14: a fate mark keeps off the lands' names (one that came in from below sat on the name
+	## plate: "…en Spar"): it slides back along its arrow, or up onto the rim of the land's token,
+	## whichever clears first
+	if _names_now.is_empty():
+		_names_now = token_boxes(true, false)
+	var m: float = fate_mark_size() + 6.0
+	var rim: float = token_radius() * 0.75
+	for k in 13:
+		for c in [at.move_toward(toward, 4.0 * k), at.move_toward(home, minf(3.0 * k, rim))]:
+			var hit := false
+			for b in _names_now:
+				if (b as Rect2).intersects(Rect2(c - Vector2(m, m), Vector2(m, m) * 2.0)):
+					hit = true
+					break
+			if not hit:
+				return c
+	return at
+
+
+func fate_mark_size() -> float:
+	## the fate marks' inner size (v1.14: 1.5x the v1.13.2 marks)
+	return clampf(token_radius() * 0.48, 9.0, 13.5)
+
+
+func _draw_broken_banner(ci: CanvasItem, at: Vector2, s: float) -> void:
+	## a colour lost in the scramble: the staff snapped, its top hanging askew, the flag torn
+	var staff := Color(0.98, 0.88, 0.66)
+	var cloth := Color(0.98, 0.38, 0.3)
+	var foot: Vector2 = at + Vector2(-0.45, 0.95) * s
+	var snap: Vector2 = at + Vector2(-0.45, 0.05) * s
+	ci.draw_line(foot, snap, staff, 3.0, true)
+	## the broken top, leaning away from the stump
+	var kink: Vector2 = at + Vector2(-0.25, -0.12) * s
+	var tip: Vector2 = at + Vector2(0.55, -0.9) * s
+	ci.draw_line(kink, tip, staff, 3.0, true)
+	## the flag hangs off the top, its fly edge torn in a zigzag
+	var dir: Vector2 = (tip - kink).normalized()
+	var hoist: Vector2 = tip - dir * s * 0.62
+	var drop := Vector2(0.18, 1.0).normalized() * s * 0.9
+	var pts := PackedVector2Array([tip, tip + drop * 0.55 + Vector2(0.28, 0) * s, tip + drop * 0.7 + Vector2(0.05, 0) * s,
+		tip + drop + Vector2(0.18, 0) * s, hoist + drop * 0.85, hoist])
+	ci.draw_colored_polygon(pts, cloth)
+	pts.append(tip)
+	ci.draw_polyline(pts, Color(0.2, 0.05, 0.03, 0.9), 1.2, true)
+	## the splinters at the break
+	ci.draw_line(snap, snap + Vector2(0.2, -0.22) * s, staff, 2.0, true)
 
 
 func _draw_arrow(ci: CanvasItem, from_id: String, to_id: String, strength: int, owner: String, surge: String, kind: String, alpha: float, labeled: bool, grow: float = 1.0, surge_n: int = 0, cut: float = 1.0) -> Vector2:
@@ -1016,8 +1200,18 @@ func _draw_token(ci: CanvasItem, id: String) -> void:
 	if map.supply and owner != Types.UNOCCUPIED and owner != "neutral" and not MapLib.in_supply(world, map, id):
 		var cut := Color(0.92, 0.35, 0.28)
 		ci.draw_arc(p, r + 6.0, 0, TAU, 40, Color(cut, 0.85), 2.5, true)
+		## v1.14: on a dark plate above the token, or under its name when a fate mark sits there
+		## (an arrow ends at the token's edge, so last round's cross used to land on the words)
 		var cw: float = f.get_string_size("CUT OFF", HORIZONTAL_ALIGNMENT_LEFT, -1, 12).x
-		var cpp: Vector2 = p + Vector2(-cw * 0.5, -r - 10)
+		var cc: Vector2 = p + Vector2(0, -r - 14)
+		var clear_of: float = cw * 0.5 + fate_mark_size() + 8.0
+		for spot in _fate_spots:
+			if absf((spot as Vector2).x - cc.x) < clear_of and absf((spot as Vector2).y - cc.y) < fate_mark_size() + 14.0:
+				cc = p + Vector2(0, r + ns + 15)
+				break
+		drawn_cut[id] = cc
+		ci.draw_rect(Rect2(cc - Vector2(cw * 0.5 + 4, 8), Vector2(cw + 8, 15)), Color(0.08, 0.03, 0.02, 0.82))
+		var cpp: Vector2 = cc + Vector2(-cw * 0.5, 4)
 		ci.draw_string_outline(f, cpp, "CUT OFF", HORIZONTAL_ALIGNMENT_LEFT, -1, 12, 4, Color(0.05, 0.03, 0.02, 0.9))
 		ci.draw_string(f, cpp, "CUT OFF", HORIZONTAL_ALIGNMENT_LEFT, -1, 12, cut)
 	## v1.13: a land that holds the road home for others: an amber ring, dashed (the tooltip names them)

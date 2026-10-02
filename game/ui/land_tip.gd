@@ -54,9 +54,9 @@ static func _region(s: Node, w: Types.World, region: String, here: String = "") 
 	if not sh.is_empty() and str(sh["leader"]) != "":
 		var n: int = (sh["members"] as PackedStringArray).size()
 		if int(sh["led"]) == n:
-			line += " · %s holds it all" % s.name_of(str(sh["leader"]))
+			line += " · %s it all" % Style.says(s.name_of(str(sh["leader"])), "holds")
 		else:
-			line += " · %s holds %d of %d" % [s.name_of(str(sh["leader"])), int(sh["led"]), n]
+			line += " · %s %d of %d" % [Style.says(s.name_of(str(sh["leader"])), "holds"), int(sh["led"]), n]
 	var ways: Array = BoardFacts.ways_in(s.map, region)
 	if ways.size() <= 3:
 		var bits: Array = []

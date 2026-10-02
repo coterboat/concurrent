@@ -92,3 +92,10 @@ func _toggle(title: String, key: String) -> Control:
 	t.toggled.connect(func(on): Settings.set_value(key, on))
 	h.add_child(t)
 	return h
+
+
+func _unhandled_input(e: InputEvent) -> void:
+	## v1.14: Esc closes the settings (in a game it used to open the pause menu, hidden behind them)
+	if e is InputEventKey and e.pressed and not e.echo and e.keycode == KEY_ESCAPE:
+		closed.emit()
+		get_viewport().set_input_as_handled()

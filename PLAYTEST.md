@@ -53,7 +53,27 @@ shown: fine" is as useful as a bug.
   v1.8 Fortune.
 - **Probes run with films off** (`motion = "paintings"`). `v19` turns them on.
 
-## v1.13: the map says what the engine knows, and the big moments land (this push)
+## v1.14: a senior pass on the polish (this push)
+
+No rule changes: new games still play **rules 20**, nothing in `engine/` changed, every save replays
+as before, and the arena fingerprints are unchanged. Everything here is what the table shows, says,
+and does with a key.
+
+- **B-009..B-012 fixed** (the seat called "You"). **Poke:** play as "You" on the ring with claiming on:
+  "Your pick", the tooltip's "You hold 5 of 6", "takes the lead from you." in the recap, "You have been
+  defeated". Then watch the battle report for any "You's", "You raises", "You is" or "You has".
+- **Fate marks:** half as big again, a broken banner for a scramble lost (not crossed swords), and
+  never on a land's name. **Poke:** a busy round 2. Can you tell a scramble lost from a sword plate?
+- **CUT OFF** moves under the land's name when a fate mark sits at its walls.
+- **A region's bonus and pips** keep off the tokens and the names, on the region's own lands or the
+  water off them. **Poke:** every map at 1280×800 and 1440×900, at the fit zoom and zoomed in. Does
+  any bonus read as its neighbour's? (The Ring's Crown has no clear spot; it takes the least-covered.)
+- **Keys:** a dialog over the table takes the keys; Esc closes Settings, the plan and the dice help;
+  ⌘↩/Ctrl+Enter does what the dial does; Space goes on from the round's report (not in its first
+  moment). **Poke:** mash Space through a battle report and see the round's report stay up; ⌘↩ with
+  the pause menu, the cards or the rules open; C twice.
+
+## v1.13: the map says what the engine knows, and the big moments land
 
 No rule changes: new games still play **rules 20**, and every save replays as before (the arena
 fingerprints below v1.12 are unchanged). Everything here is what the table shows and says.
@@ -104,7 +124,7 @@ fingerprints below v1.12 are unchanged). Everything here is what the table shows
     `probes: failed:`. `v112` now also checks where each army stands in a three- and a five-way
     scramble.
 
-## v1.13.2: your critic's trims to reading the map (this push)
+## v1.13.2: your critic's trims to reading the map
 
 - **Enemy ceilings (`≤N`)** show only on enemy lands that border yours, and on the one you hover.
   - **Poke:** round 2 on the ring and the Isles. Count the numbers on the map. Hovering a far enemy
