@@ -101,6 +101,14 @@ Quill and Ysolde both their own voice and the recast they kept (Quill E, Ysolde 
   steer those lines in every voice: "Deerly" for Ysolde's "Dearly", "...ME..." for her "kneels to *me*",
   "NOT" for Oren's "not supposed to happen".
 
+**ElevenLabs v4, 30 Sep 2026.** The owner on the samples: "holy shit the voice lines are such an
+upgrade". v4 now speaks the game:
+- **The advisor** is a v4 clone of her own voice ("perfect").
+- **Each commander** is a v4 designed voice, one of three cards from a description written by the cast
+  table below (`tools/elevenlabs/el_samples.py`).
+- **Sound effects:** Ludo's won across the board against ElevenLabs'.
+- **The design filter** refused "barely twenty" for Oren; "a young man in his twenties" passed.
+
 **The cast** (the notes, boiled down)
 
 | voice | wants | keep away from |

@@ -81,6 +81,39 @@ MCP server at `/mcp/` (`.mcp.json`). No credits and no key; nothing leaves the m
 - About 12 s to make a take of 3–6 s once the model is warm (17 s cold). The advisor and the commanders are saved in VoiceStudio as
   profiles named "CONCURRENT · …", so they can be used in its app too.
 
+## Voices and sounds from ElevenLabs (paid, by the character)
+
+`tools/elevenlabs/` drives the ElevenLabs API. The key is `ELEVENLABS_API_KEY` (or `ELEVEN_LABS_API_KEY`) in
+`.env.local`, never printed. It needs these permissions:
+- Text to Speech
+- Voices: read and write
+- Text to Voice
+- Sound Effects
+- Models: read
+- User: read (without it the scripts skip their credit check)
+
+Eleven v4 was $0.08 per 1,000 characters on the API in Sep 2026, and the whole game's voice text
+is about 16,000 characters.
+- `el.py --account`: the plan, the credits left, and whether v4 is available.
+- `el_samples.py` (batch `el_samples`): v4 samples.
+  - Clones of every voice from about 40 s of the game's own takes. A clone is deleted from the
+    account once its lines are made; the same takes rebuild it.
+  - A designed voice per commander from the cast in `docs/PROMPTING.md`, with 3 voice cards each.
+    The designs are kept in the account.
+  - The safety filter refuses a description that stresses youth ("barely twenty"); "a young man in
+    his twenties" passes.
+- **The cast** (the owner's picks, 30 Sep 2026): the advisor's own voice cloned, and a designed voice
+  for each commander: Varek card 1, Ysolde 2, Quill 1, Oren 2, Hask 3, Imre 3. `el_cast.py` keeps
+  each as a saved voice in the account and records its voice_id in `tools/elevenlabs/cast.json`. That
+  file is the cast; change a pick there (or in `el_cast.py`'s `PICKS`) and rerun it.
+- `el_lines.py` (batch `el_lines`): every line in the game in the cast's voices, 3 takes each (about
+  49,000 characters). It works like `vs_lines.py`: install, and redo the rejected with notes steering
+  the words. It's resumable and makes 4 takes at a time.
+- `el_sfx.py` (batch `el_sfx`): battle sounds for the slots the game plays: `shot`, `volley`,
+  cannon and melee. Each take starts on its first sound and matches the replaced file's loudness and
+  format; install puts accepted takes in `assets/audio/sfx/`. The owner's verdict on the first round:
+  "Ludo's wins across the board for the sound generation", so sound effects stay with Ludo.
+
 ## Formats the code reads
 
 ### Battle sprite sheets: `assets/battle/<name>.webp` + `.json`

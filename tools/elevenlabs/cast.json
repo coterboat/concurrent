@@ -1,0 +1,70 @@
+{
+ "advisor": {
+  "voice_id": "vPRs4GMamXRxBrbvA41J",
+  "kind": "clone",
+  "card": null,
+  "name": "CONCURRENT · the advisor",
+  "refs": [
+   "assets/voice/advisor/welcome.mp3",
+   "assets/voice/advisor/attack_hint.mp3",
+   "assets/voice/advisor/bad_roll.mp3",
+   "assets/voice/advisor/bad_roll_v2.mp3",
+   "assets/voice/advisor/bad_roll_v3.mp3",
+   "assets/voice/advisor/bad_roll_v4.mp3",
+   "assets/voice/advisor/behind.mp3",
+   "assets/voice/advisor/behind_v2.mp3",
+   "assets/voice/advisor/capital_choose.mp3",
+   "assets/voice/advisor/capital_choose_v2.mp3",
+   "assets/voice/advisor/capital_lost.mp3"
+  ],
+  "ref_seconds": 41.4
+ },
+ "varek": {
+  "voice_id": "0AhGtg1WF4fW0ZpLOJDl",
+  "kind": "design",
+  "card": 1,
+  "name": "CONCURRENT · Grand Marshal Varek",
+  "description": "An elderly British field marshal of the Napoleonic wars. A deep, gravelly baritone, cold and stoic. He speaks slowly, with weight and long pauses, and every sentence falls to a low, final close, like a verdict. Clipped and unhurried; never warm, never raised.",
+  "card_file": "review/el_samples/varek/design/card1.mp3"
+ },
+ "ysolde": {
+  "voice_id": "RyOz6akMjL1kgM2KWTmR",
+  "kind": "design",
+  "card": 2,
+  "name": "CONCURRENT · Viceroy Ysolde",
+  "description": "A middle-aged imperial viceroy, a woman with a low, cold, velvety voice and a faint Eastern European accent. Menacing and controlled, she lingers on possessive words like 'my' and 'mine'. Quiet contempt, never bright or friendly.",
+  "card_file": "review/el_samples/ysolde/design/card2.mp3"
+ },
+ "quill": {
+  "voice_id": "TGs1mV2cp7wogGxGFfNt",
+  "kind": "design",
+  "card": 1,
+  "name": "CONCURRENT · Governor Quill",
+  "description": "A smug, middle-aged British colonial company governor: a merchant clerk turned conqueror. A precise, slightly nasal voice, pleased with himself, relishing every word about money. Each phrase descends at its end; no rising questions.",
+  "card_file": "review/el_samples/quill/design/card1.mp3"
+ },
+ "oren": {
+  "voice_id": "K7jiQP7eBszUWSCRx7Mp",
+  "kind": "design",
+  "card": 2,
+  "name": "CONCURRENT · Captain Oren",
+  "description": "A cocky British cavalry captain of noble birth, a young man in his twenties: eager, boastful and smarmy, a bit of a show-off. An upper-class accent and a quick, excited delivery that runs away with him. Swagger, not heroism.",
+  "card_file": "review/el_samples/oren/design/card2.mp3"
+ },
+ "hask": {
+  "voice_id": "XqB5wWz9rZIMCsSjevn8",
+  "kind": "design",
+  "card": 3,
+  "name": "CONCURRENT · Commodore Hask",
+  "description": "A loud, salty old sea commodore called the Old Bear. A booming, gravelly, rough-edged West Country voice, belly laughs, shouted orders, full of gusto and sudden anger. Never polite, never quiet.",
+  "card_file": "review/el_samples/hask/design/card3.mp3"
+ },
+ "imre": {
+  "voice_id": "i4146E7hodcavxxSm6Eb",
+  "kind": "design",
+  "card": 3,
+  "name": "CONCURRENT · Admiral Imre",
+  "description": "A calm elderly female admiral. A low, precise British voice, clipped and utterly confident, with a small calculating pause before each verdict. Cool and exact; never hesitant.",
+  "card_file": "review/el_samples/imre/design/card3.mp3"
+ }
+}
