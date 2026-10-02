@@ -281,7 +281,7 @@ func rebuild() -> void:
 		var reserves: int = s.reserves_at(from_id)
 		if reserves > 0 and int(d["now"]) > 0:
 			var o3: Dictionary = s.odds(total + reserves, int(d["now"]), to_id)
-			_box.add_child(Style.label("With the %d reserves thrown in: %s" % [reserves, o3["word"]], 14, Style.GOLD.darkened(0.1), "italic"))
+			_box.add_child(Style.label("With the %s thrown in: %s" % ["1 reserve" if reserves == 1 else "%d reserves" % reserves, o3["word"]], 14, Style.GOLD.darkened(0.1), "italic"))
 		var st_row := HBoxContainer.new()
 		st_row.add_theme_constant_override("separation", 6)
 		st_row.add_child(Style.label("If it turns:", 14, Style.PARCH))

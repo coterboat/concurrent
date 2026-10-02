@@ -2,6 +2,104 @@
 
 The bible says amendments come with a dated entry and the test or band that justified them. Everything below has both.
 
+## v1.14 — 2 Oct 2026: a senior pass on the polish
+
+No rule changes: new games still play **rules 20**, nothing in `engine/` changed, and every save
+replays as it was played. The owner asked for a fresh pair of eyes, "as a senior game dev seeing it
+for the first time", on polish rather than mechanics. Every screenshot probe was run and looked at,
+and two read-only audits went through the client's input handling and its words.
+
+### Fixed: the playtest bot's report on `cd3b208`
+
+All four were the human seat called "You" (the play critic's report, confirmed by the playtester).
+
+- **B-009:** the land tooltip's region line read "You holds it all" / "You holds 5 of 6". Now "You
+  hold it all"; a rival still "holds".
+- **B-010:** the defeat notice read "YOU HAS BEEN DEFEATED". Now "You have been defeated"
+  (`GameScreen.defeat_title`; two people: "Dad and Mum have been defeated"). The fallen card that
+  follows reads "YOU HAVE FALLEN".
+- **B-011:** claiming read "You's pick" in the command bar and the top-left plate. Now "Your pick".
+- **B-012:** the recap's lead change read "Captain Oren takes the lead from You." and "You takes the
+  lead…". Now "…from you." and "You take the lead…" (`Recap.lead_said`).
+
+The sweep for the same mistake found more, now fixed the same way (`Style.says/who/owns`): the battle
+report ("You raises 3 fresh troops", "You's capital falls!", "Fortune owes You a favour", "Cards drawn
+by You", "storm You's 6", "You is left standing", "You's new capital. They may move it…"), a melee
+call ("You's call"), the roster's tooltip ("You raises"), and the dice-help and Fortune tooltips.
+
+### The play critic's notes on the fate marks
+
+- **The scramble's mark is a broken banner**, not crossed swords: the swords were the threat plate's
+  symbol, so "⚔17 at Silvermarch" and a scramble lost on the road read as one thing.
+- **Every fate mark is half as big again** (12.5 px against 8.3 at the fit zoom), on a solid disc, and
+  the fell-back chevrons are brighter and thicker.
+- **A fate mark keeps off the lands' names.** One that came in from below sat on the name plate
+  ("…en Spar"); it now slides back along its arrow, or onto the rim of the land's token.
+- **CUT OFF keeps clear of a fate mark.** The words sat above the token, exactly where an arrow ends,
+  so last round's cross covered them. They're on a dark plate now, and move under the land's name
+  when a mark is there.
+
+### The board keeps its marks off each other
+
+- **A region's bonus and its pips find a clear spot.** They were placed blind under the region's
+  name: on the Known World, Eastshore's pips covered Steppe's name (it read "…e") and Crownlands' sat
+  on Throne's crown; Midsea's "+4" hid behind Reef. Now they take the nearest spot to the name that
+  covers no token, no land's name and no other bonus, on the region's own lands (or in the water off
+  them, never on a neighbour's land, so they still read as the region's). Found once per zoom, so
+  panning costs nothing.
+- **The roster never squeezes a name to nothing.** On a map without cards the short "3 lands · +7"
+  left the stars and the crown nothing for the name: "Da", and for the crowned Varek an empty line.
+
+### Keys and dialogs
+
+- **A dialog over the table takes the keys.** ⌘↩ sealed your sheet behind the pause menu; C, V and
+  Enter worked through the menu, the rules, the cards and the advisor's plan. Esc still closes them.
+- **Esc closes Settings** (in a game it opened the pause menu, hidden behind them), **the advisor's
+  plan** (keeping your own; it put the pause menu over the plan), and **the dice help** (it skipped
+  every battle left).
+- **⌘↩ / Ctrl+Enter does what the dial does.** In the reinforcement phase it sealed a sheet with no
+  orders at all, without asking; now it moves on to the orders, as the dial does. It seals the
+  regroup's marches too, which it ignored.
+- **C twice no longer stacks two hands of cards.**
+- **Space or Enter goes on from the round's report**, as it did through the battles, but not in its
+  first 0.9 s, so a Space still being pressed through the battles doesn't skip it unread.
+- **A call's letter is a bare key:** macOS's fullscreen shortcut (⌃⌘F) during a call sounded the
+  retreat. The films and the intro let F11 through.
+- **Clicking an enemy land that doesn't border your selected one says so** ("Vale does not border
+  Moor: pick one of our lands beside it."), as a drag already did.
+- **Claiming in hotseat:** a quick second click right after a claim could claim a land for the next
+  person. It waits for their turn to be announced now.
+- **How to Play's "Play the Tutorial"** marks the tutorial seen, as the title's button does.
+- **The dice help stays on top** of a melee's fronts (in a five-way scramble, Varek's name and number
+  were drawn over it).
+
+### Words
+
+- Counts of one: "1 of those holds the garrison", "1 fresh troop waits", "1 recruit still unplaced",
+  "With the 1 reserve thrown in", "1 land · +3", "against 1 defender", "share out the card", "Spend a
+  favour (your only one)".
+- **The tutorial's battle rule** said "plus its armies… ties go to the attacker". The tutorial plays
+  the firing line, so it now says the men in the firing line (at most five), and an even volley is
+  fired again (the old words stay for a game without it).
+- How to Play: the fate marks (a broken banner), "Hover any other enemy land to see its ceiling
+  too" (it read "to see its."), and Fortune weighs "every fight you are in" (it said assaults, then
+  every fight). README: six maps, not three; T calls on Fortune; the keys above.
+
+`tests/test_v114.gd` checks B-009 to B-012 on a live session (the tooltip's region line with You
+holding all of a region, then most of it, and a rival's), and the lines the sweep found. Probe `v114`
+checks, on all six maps at 1440×900, that no region's bonus covers a land's name or (but on the Ring's
+packed Crown, at most a third) a token; the three fate marks and their size; CUT OFF clear of a cross
+at its walls; no fate mark on a name; the roster's names on the Isthmus; and the keys, pressed for
+real: ⌘↩ and C behind the pause menu, C twice, Esc on the cards, the settings and the plan, ⌘↩ in the
+reinforcement phase, and Space on the round's report, at once and a moment later.
+
+**Tooling:** `scripts/test.sh` fails on a `SCRIPT ERROR` now. The runner kept counting when a test
+file failed to compile or died halfway, and printed `failed=0` over it (this version's first test
+preloaded `game_screen.gd`, which names an autoload: `check.sh` passed it, the full runner didn't).
+
+For the owner, not done here (they add behaviour): the critic's ideas that a cut-off land lose a man a
+round, and that a click on an enemy ceiling pin its threat line.
+
 ## v1.13.2 — 29 Sep 2026: the play critic's trims to reading the map
 
 No rule changes (rules 20). The playtest bot's play critic reviewed v1.13's map

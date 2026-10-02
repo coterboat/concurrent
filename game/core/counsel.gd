@@ -39,7 +39,7 @@ static func advice(s: Node) -> Array:
 	## 1. unplaced men
 	var left: int = s.income_left()
 	if left > 0:
-		out.append(_item("place", "%d fresh troops wait for orders. Click one of our lands to put them there — unplaced men go home." % left, "neutral", "reinforce", [], 40))
+		out.append(_item("place", ("1 fresh troop waits" if left == 1 else "%d fresh troops wait" % left) + " for orders. Click one of our lands to put them there — unplaced men go home.", "neutral", "reinforce", [], 40))
 	## 2. threats
 	var proj: Types.World = s.projected_world()
 	for t in MapLib.player_territory_ids(w, pid):
@@ -202,7 +202,10 @@ static func lesson(s: Node, surge_pick: int) -> Dictionary:
 	if surge_pick >= 0:
 		return _item("surgepick", "Pick where the survivors go next: any enemy or empty land touching the target. They only go if the first attack wins, and surges happen after every other battle.", "neutral", "", [], 200)
 	var volleys: bool = s.map.battle == Combat.MODE_VOLLEYS
-	var battle_rule := "Battles are fought volley by volley: each side rolls a die, times five, plus its armies. The loser of each volley loses a man, until one side is gone. Ties go to the attacker." if volleys else "Battles are one roll: armies plus one die. Higher total wins, ties go to the attacker, and the winner loses half the loser's size."
+	## v1.14: the tutorial plays the firing line (v1.6): only five men fire, and an even volley is fired again
+	var volley_rule := "Battles are fought volley by volley: each side rolls a die, times five, plus the men in its firing line (at most five). The loser of each volley loses a man, until one side is gone. An even volley is fired again." if s.map.fire_line \
+		else "Battles are fought volley by volley: each side rolls a die, times five, plus its armies. The loser of each volley loses a man, until one side is gone. Ties go to the attacker."
+	var battle_rule := volley_rule if volleys else "Battles are one roll: armies plus one die. Higher total wins, ties go to the attacker, and the winner loses half the loser's size."
 	if bool(s.config.get("tutorial", false)):
 		var r: int = s.world.round
 		if ph == Session.Phase.OPENING:

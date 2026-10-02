@@ -319,7 +319,7 @@ func refresh() -> void:
 			var turn: String = s.draft_turn()
 			var picking: bool = str(gs._draft_state) == "picking"
 			_tally_title.text = "CLAIMING THE LANDS"
-			_tally.text = ("%s's pick" % s.name_of(turn)) if picking and turn != "" else "Throwing for the order"
+			_tally.text = ("%s pick" % Style.owns(s.name_of(turn), true)) if picking and turn != "" else "Throwing for the order"
 			var free := 0
 			for t in s.map.territory_ids():
 				if s.world.get_territory(str(t)).owner == Types.UNOCCUPIED:

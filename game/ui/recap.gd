@@ -12,6 +12,20 @@ var _panel: PanelContainer
 var _box: VBoxContainer
 
 
+static func lead_said(to_name: String, from_name: String) -> String:
+	## "Varek takes the lead from you." / "You take the lead from Varek." (B-012: the seat called You)
+	if from_name == "":
+		return "%s the lead." % Style.says(to_name, "takes")
+	return "%s the lead from %s." % [Style.says(to_name, "takes"), Style.who(from_name)]
+
+
+static func defeat_title(fell: Array) -> String:
+	## "You have been defeated", "Dad has been defeated", "Dad and Mum have been defeated" (B-010)
+	if fell.size() == 1:
+		return "%s been defeated" % Style.says(str(fell[0]), "has")
+	return "%s have been defeated" % " and ".join(fell)
+
+
 func _ready() -> void:
 	set_anchors_and_offsets_preset(PRESET_FULL_RECT)
 	mouse_filter = Control.MOUSE_FILTER_STOP
@@ -47,7 +61,7 @@ func show_round() -> void:
 	var lc: Dictionary = Moments.lead_change(s.history)
 	if not lc.is_empty() and s.winner == "":
 		var from: String = str(lc.get("from", ""))
-		lines.insert(0, ["crown", ("%s takes the lead from %s." % [s.name_of(str(lc["to"])), s.name_of(from)]) if from != "" else "%s takes the lead." % s.name_of(str(lc["to"])),
+		lines.insert(0, ["crown", lead_said(s.name_of(str(lc["to"])), s.name_of(from) if from != "" else ""),
 			Style.seat_color(str(lc["to"])).lightened(0.45)])
 	if lines.is_empty():
 		lines.append(["scroll", "A quiet round. Nobody lost an inch.", Style.MUTED])

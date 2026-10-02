@@ -2,7 +2,7 @@
 
 A SameTime conquest game of rival empires. Everyone writes their orders in secret, everyone's orders happen at once, and the armies you send away leave home empty. Whoever strips a border gets walked.
 
-Two to five commanders on one of three maps. Any seat can be a person at this computer (hotseat) or one of six AI commanders, from easy to hard.
+Two to five commanders on one of six maps. Any seat can be a person at this computer (hotseat) or one of six AI commanders, from easy to hard.
 
 ## Play it
 
@@ -42,7 +42,7 @@ Every round has four phases, each announced as it begins: **Reinforcement** (pla
 - **Capitals.** Every commander keeps a capital, marked with a crown: name it at deployment (or your first claim is it). It pays 2 recruits a round, fights like a fortress, and supply runs from it. Take a rival's and you plunder half their cards and raise 3 troops there; lose yours and the court flees deep into your own lands with its guard (one fresh troop, the walls fully manned), and you may move it next round.
 - **Fortune** ✦. Bad luck banks favours: the ledger weighs every exchange against its odds, and each time the dice have cost you about half a battle, Fortune owes you one (start with one, hold three; a commander's next star fills with gold as the dice owe them). Every fight counts toward it (assaults, clashes, melees, scrambles). In a battle you're watching, after an exchange that went badly for you, spend one and the exchange is thrown again, for everyone in it. Assaults and melees, once a battle for each commander; only you ever spend yours.
 - **Levée en masse.** Whoever trails the leader in lands raises a recruit for every three lands behind (up to four a round).
-- **Reading the map.** While you plan, last round's columns stay on the map, faint, and one that failed ends in a mark for how: a red cross (thrown back), a chevron pointing the way they went (fell back), crossed swords (beaten in a scramble); one beaten in a border clash stops halfway, where it died. An enemy land that borders yours shows the most it could hold (≤N). A sword plate on a land of yours says it could be outnumbered next round (your capital rings crimson), an amber ring that it holds the road home for others, and the pips beside a region's bonus who holds how much of it. Hover any land to read it all in words; the roster shows what each commander raises next round.
+- **Reading the map.** While you plan, last round's columns stay on the map, faint, and one that failed ends in a mark for how: a red cross (thrown back), a chevron pointing the way they went (fell back), a broken banner (beaten in a scramble); one beaten in a border clash stops halfway, where it died. An enemy land that borders yours shows the most it could hold (≤N). A sword plate on a land of yours says it could be outnumbered next round (your capital rings crimson), an amber ring that it holds the road home for others, and the pips beside a region's bonus who holds how much of it. Hover any land to read it all in words; the roster shows what each commander raises next round.
 - **Rules.** Standard is the full war we balance around; Recruit is a first war with fewer rules; Classic is Risk II odds; or customize any rule on the setup screen.
 - **The lands.** Dealt at random, or claimed in turn: every commander's die drops onto the map for the order, then everyone claims one land at a time.
 - **Winning.** After the last round, the highest score wins (lands + region bonuses). Holding 80% of the map, or being the last one standing, wins at once.
@@ -69,15 +69,16 @@ Every round has four phases, each announced as it begins: **Reinforcement** (pla
 | Attack (orders phase) | With your land selected, click an enemy neighbor, or drag from your land onto it |
 | Surge (orders phase) | Drag from the land you're attacking on to the next one (or **Surge onward…** on the order); click the surge arrow to choose how many |
 | March (regroup phase) | Drag from your land onto a neighbouring land of yours, or click one then the other; **Advisor's marches** plans them all |
-| Seal | **SEAL** on the dial (or ⌘↩) |
+| Seal | **SEAL** on the dial (or ⌘↩ / Ctrl+Enter: whatever the dial says, so in the reinforcement phase it moves on to the orders first) |
 | Zoom / pan | Mouse wheel or pinch / drag the sea or two-finger scroll; ⤢ shows the whole map |
 | Edit an attack or march | Click the number on its arrow; ✓ OK or Enter closes the card |
 | Cards | **Cards** in the command bar (or C) opens your hand; each card names a land, and turning in a card for a land you hold puts a free soldier there |
 | Advisor's plan | The button in the dispatch panel drafts a whole sheet; adopt it or keep yours |
 | Map view | **View** coin or V: owner colours ↔ region colours |
-| Battle scene | Space / ROLL = throw the next exchange; at a call Space = press on, R = reserves, F = fall back; **? Dice** explains the scoring; Esc = skip the battles |
+| Battle scene | Space / ROLL = throw the next exchange; at a call Space = press on, R = reserves, F = fall back, T = call on Fortune; **? Dice** explains the scoring; Esc = skip the battles |
 | Claiming lands | Click a free land on your turn; **PICK** takes the advisor's choice; **Hurry** speeds up the others |
-| Battle report | Space = next, P = pause, Esc = skip to the report |
+| Battle report | Space = next, P = pause, Esc = skip to the report; on the round's report, Space or Enter = next round |
+| Dialogs | Esc closes the pause menu, Settings, the cards, the rules and the advisor's plan (keeping your own); while one is open the map's keys wait |
 | Fullscreen | F11, or Settings |
 
 ## For developers

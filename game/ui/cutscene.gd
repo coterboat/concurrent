@@ -115,7 +115,7 @@ func _gui_input(e: InputEvent) -> void:
 
 
 func _unhandled_input(e: InputEvent) -> void:
-	if _open and e is InputEventKey and e.pressed and not e.echo:
+	if _open and e is InputEventKey and e.pressed and not e.echo and not Style.is_fullscreen_key(e):
 		skip()
 		get_viewport().set_input_as_handled()
 

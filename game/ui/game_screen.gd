@@ -23,6 +23,7 @@ const Cutscene := preload("res://game/ui/cutscene.gd")
 const Intro := preload("res://game/ui/intro.gd")
 const PlanDialog := preload("res://game/ui/plan_dialog.gd")
 const HowTo := preload("res://game/ui/howto_screen.gd")
+const CardsDialog := preload("res://game/ui/cards_dialog.gd")
 const LeaderFace := preload("res://game/ui/leader_face.gd")
 const DiceStage := preload("res://game/ui/dice_stage.gd")
 const LandTip := preload("res://game/ui/land_tip.gd")
@@ -56,6 +57,9 @@ var _plate_round: Label
 var _plate_phase: Label
 var _cover: Control
 var _modal: Control
+var _claim_wait := false ## v1.14: a land was just claimed; the next turn hasn't been announced yet
+var _recap_at := 0 ## v1.14: when the round report came up (Space goes on from it, but not at once)
+const RECAP_KEY_MS := 900
 var _hover_tip: PanelContainer
 var _hover_label: Label
 var _loaded_map := ""
@@ -284,6 +288,7 @@ func _on_phase(ph: int) -> void:
 			## (the war's last reckoning keeps the battle playing until the ending)
 			_log_round()
 			recap.show_round()
+			_recap_at = Time.get_ticks_msec()
 			_react_to_round()
 			_lead_moment()
 			_maybe_defeat_notice()
@@ -430,7 +435,7 @@ func _refresh_plate() -> void:
 	match s.phase:
 		Session.Phase.DRAFT:
 			_plate_round.text = "Claiming the lands"
-			_plate_phase.text = ("%s's pick" % s.name_of(s.draft_turn())) if _draft_state == "picking" and s.draft_turn() != "" else "Rolling for the order"
+			_plate_phase.text = ("%s pick" % Style.owns(s.name_of(s.draft_turn()), true)) if _draft_state == "picking" and s.draft_turn() != "" else "Rolling for the order"
 		Session.Phase.OPENING:
 			_plate_phase.text = "Deployment — %s" % s.name_of(s.planner)
 		Session.Phase.PLANNING:
@@ -583,13 +588,13 @@ func _note_rival_marches() -> void:
 		if not session.is_human(str(g["owner"])):
 			n += int(g["strength"])
 	if n > 0:
-		log_line("Your rivals marched %d soldiers toward their fronts (the pale arrows)." % n, Style.PARCH)
+		log_line("Your rivals marched %s toward their fronts (the pale arrows)." % Style.plural(n, "soldier"), Style.PARCH)
 
 
 func _on_click(id: String, button: int) -> void:
 	var ph: int = session.phase
 	if ph == Session.Phase.DRAFT:
-		if _draft_state == "picking" and session.is_human(session.draft_turn()):
+		if _draft_state == "picking" and not _claim_wait and session.is_human(session.draft_turn()):
 			var who: String = session.draft_turn()
 			var err: String = session.claim(id)
 			if err != "":
@@ -650,6 +655,9 @@ func _on_click(id: String, button: int) -> void:
 	if selected != "" and session.world.get_territory(selected).owner == session.planner and session.map.is_adjacent(selected, id):
 		order_attack(selected, id)
 		return
+	if selected != "" and session.world.get_territory(selected).owner == session.planner and session.plan_step != "reinforce":
+		## v1.14: say why no attack was ordered (a drag said so; a click just moved the selection)
+		_toast("%s does not border %s: pick one of our lands beside it." % [session.hex_name(id), session.hex_name(selected)])
 	select(id)
 
 
@@ -720,7 +728,7 @@ func begin_orders() -> void:
 		_say_once("orders")
 	if session.income_left() > 0:
 		_say_once("unplaced", "alarm")
-		_confirm("%d recruits still unplaced" % session.income_left(),
+		_confirm("%s still unplaced" % Style.plural(session.income_left(), "recruit"),
 			"Anything you don't place is lost when you seal your orders.",
 			[["Place them for me", func():
 				session.auto_deploy()
@@ -741,7 +749,7 @@ func _on_drag(from_id: String, to_id: String) -> void:
 		return
 	if session.plan_step == "reinforce":
 		if session.income_left() > 0:
-			_toast("Place your %d recruits first, then press ORDERS to attack." % session.income_left())
+			_toast("Place your %s first, then press ORDERS to attack." % ("last recruit" if session.income_left() == 1 else "%d recruits" % session.income_left()))
 			Audio.sfx("error")
 			return
 		session.begin_orders()
@@ -969,7 +977,7 @@ func try_seal() -> void:
 		return
 	if session.income_left() > 0:
 		_say_once("unplaced", "alarm")
-		_confirm("%d troops still unplaced" % session.income_left(),
+		_confirm("%s still unplaced" % Style.plural(session.income_left(), "troop"),
 			"Anything you don't place is lost.",
 			[["Place them for me", func():
 				session.auto_deploy()
@@ -999,7 +1007,7 @@ func toggle_view() -> void:
 func open_cards() -> void:
 	if session.phase != Session.Phase.PLANNING or not session.map.cards:
 		return
-	var d: Control = load("res://game/ui/cards_dialog.gd").new()
+	var d: Control = CardsDialog.new()
 	d.session = session
 	d.closed.connect(func(): _refresh())
 	d.hover_land.connect(func(id: String):
@@ -1175,7 +1183,7 @@ func _on_beat(b: Dictionary) -> void:
 		## line used to cut theirs off, its bubble hidden under the film)
 		var filmed := false
 		if session.is_human(by2):
-			filmed = _film("capital_taken", "%s's capital falls" % session.name_of(victim2), "capital_taken", commander_says)
+			filmed = _film("capital_taken", "%s capital falls" % Style.owns(session.name_of(victim2), true), "capital_taken", commander_says)
 			if not filmed:
 				bar.advisor.react("happy", "capital_taken", 3.4)
 		elif session.is_human(victim2):
@@ -1355,6 +1363,7 @@ func _draft_order() -> void:
 
 
 func _draft_next() -> void:
+	_claim_wait = false
 	if session.phase != Session.Phase.DRAFT or not session.drafting():
 		return
 	var pid: String = session.draft_turn()
@@ -1374,7 +1383,7 @@ func _draft_next() -> void:
 
 func draft_advise() -> void:
 	## the advisor's choice, for a commander who'd rather not agonize
-	if session.phase != Session.Phase.DRAFT or _draft_state != "picking":
+	if session.phase != Session.Phase.DRAFT or _draft_state != "picking" or _claim_wait:
 		return
 	var pid: String = session.draft_turn()
 	if not session.is_human(pid):
@@ -1394,6 +1403,9 @@ func _draft_claimed(pid: String, land: String) -> void:
 		if Lines.has(voice, "claim"):
 			roster.faces[pid].react("win", "claim", 2.4)
 	if session.phase == Session.Phase.DRAFT:
+		## v1.14: until the next commander's turn is announced, a second click (or a double-click on
+		## the dial) can't claim a land in their name (hotseat: the next seat may be a person too)
+		_claim_wait = true
 		get_tree().create_timer(0.08 if draft_fast else 0.3).timeout.connect(func(): _draft_next())
 	else:
 		_draft_state = "done"
@@ -1699,7 +1711,7 @@ func _show_fallen(pid: String) -> void:
 	var seat: Dictionary = session.seat(pid)
 	var who: String = str(seat.get("portrait", "player"))
 	face.setup(who, pid, session.name_of(pid))
-	var n := Style.label("%s HAS FALLEN" % session.name_of(pid).to_upper(), 28, Style.seat_color(pid).lightened(0.4), "display")
+	var n := Style.label(("%s fallen" % Style.says(session.name_of(pid), "has")).to_upper(), 28, Style.seat_color(pid).lightened(0.4), "display")
 	n.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
 	v.add_child(n)
 	var q := Style.label("", 19, Style.PARCH, "italic")
@@ -1807,7 +1819,7 @@ func _maybe_defeat_notice() -> void:
 		return
 	_defeat_shown = true
 	bar.advisor.react("dead", "defeat", 3.0)
-	_confirm("%s ha%s been defeated" % [" and ".join(fell), "s" if fell.size() == 1 else "ve"],
+	_confirm(Recap.defeat_title(fell),
 		"The commanders will fight on without you. Watch them finish the war, or leave the field.",
 		[["Watch the rest", func(): pass], ["New game", func(): main.show_setup()], ["Main menu", func(): main.show_title()]])
 
@@ -1956,6 +1968,16 @@ func _confirm(title: String, body: String, choices: Array) -> void:
 			cb.call(), 0, 19))
 
 
+func _overlay_open() -> bool:
+	## v1.14: a pause menu, a confirm, the settings, the rules, the cards or the advisor's plan is up
+	if _modal != null or (main != null and main.settings_panel != null):
+		return true
+	for c in get_children():
+		if c is PlanDialog or c is HowTo or c is CardsDialog:
+			return true
+	return false
+
+
 func open_menu() -> void:
 	_confirm("Paused", "Your campaign is saved after every round.", [
 		["Resume", func(): pass],
@@ -1993,8 +2015,19 @@ func _unhandled_input(event: InputEvent) -> void:
 		elif session.phase != Session.Phase.CINEMA:
 			open_menu()
 		get_viewport().set_input_as_handled()
-	elif event.keycode == KEY_ENTER and (event.meta_pressed or event.ctrl_pressed):
-		try_seal()
+	elif _overlay_open():
+		return ## v1.14: a dialog or page over the table takes the keys (the seal key sealed behind the pause menu)
+	elif (event.keycode == KEY_SPACE or event.keycode == KEY_ENTER or event.keycode == KEY_KP_ENTER) and recap.visible and session.phase == Session.Phase.RECAP:
+		## (not in its first moment: a Space still being pressed through the battles mustn't skip it unread)
+		if Time.get_ticks_msec() - _recap_at > RECAP_KEY_MS:
+			recap.continue_pressed.emit() ## v1.14: the round report goes on with the key that ran the battles
+		get_viewport().set_input_as_handled()
+	elif (event.keycode == KEY_ENTER or event.keycode == KEY_KP_ENTER) and (event.meta_pressed or event.ctrl_pressed):
+		## v1.14: what the dial does (README: "SEAL on the dial (or ⌘↩)"): in the reinforcement step it
+		## moves on to the orders, as the dial does, rather than sealing a sheet with none; and it
+		## seals the regroup's marches too
+		if session.phase in [Session.Phase.PLANNING, Session.Phase.OPENING, Session.Phase.MANEUVER]:
+			primary_action()
 		get_viewport().set_input_as_handled()
 	elif (event.keycode == KEY_ENTER or event.keycode == KEY_KP_ENTER) and order_card.visible:
 		edit_order("", "") ## OK: keep the order, close the card

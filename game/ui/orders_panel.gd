@@ -240,7 +240,7 @@ func _selected() -> void:
 		if int(d["ceiling"]) > int(d["now"]):
 			box.add_child(_wrap("They could reinforce it to %d before battle." % d["ceiling"], 16, Style.PARCH))
 		if int(Income.home_split(ts)[1]) > 0:
-			box.add_child(_wrap("%d of those hold the garrison and never leave." % int(Income.home_split(ts)[1]), 16, Style.PARCH))
+			box.add_child(_wrap("%s the garrison and never leave." % ("1 of those holds" if int(Income.home_split(ts)[1]) == 1 else "%d of those hold" % int(Income.home_split(ts)[1])), 16, Style.PARCH))
 		## Who of ours can hit it?
 		for n in MapLib.neighbors(session.map, id):
 			var ns: Types.TerritoryState = session.world.get_territory(n)
