@@ -18,6 +18,7 @@ const BattleField := preload("res://game/ui/battle_field.gd")
 const DiceStage := preload("res://game/ui/dice_stage.gd")
 const FortunePips := preload("res://game/ui/fortune_pips.gd")
 const Moments := preload("res://game/ui/moments.gd")
+const LandField := preload("res://game/world3d/land_field.gd")
 
 signal finished(skip_rest: bool)
 
@@ -53,7 +54,13 @@ var _count_a: Label
 var _count_b: Label
 var _name_a: Label
 var _name_b: Label
-var _field: Control ## BattleField
+var _field: Control ## BattleField, or v2.0 the LandField when the battle is fought on the land
+var _flat_field: Control ## BattleField: the tin soldiers on a painted field
+var _land_field: Control ## LandField: the map's own ground in 3D
+var _on_land := false ## this battle is on the land
+var _shade: TextureRect
+var board: Control ## v2.0: the 2D board the land opens out of and closes back into
+var land: Node ## v2.0: the game's land in 3D (land.gd), shared with the board
 var _melee := false ## several invaders at once (v1.3): fronts, one per invader
 var _scramble := false ## v1.4: victors fighting each other for the prize, every army against every other
 var _fronts: Array = [] ## the melee's fronts from the event
@@ -100,12 +107,19 @@ func _ready() -> void:
 	_bg.set_anchors_and_offsets_preset(PRESET_FULL_RECT)
 	_bg.mouse_filter = Control.MOUSE_FILTER_IGNORE
 	add_child(_bg)
+	_land_field = LandField.new()
+	_land_field.land = land
+	_land_field.set_anchors_and_offsets_preset(PRESET_FULL_RECT)
+	_land_field.visible = false
+	add_child(_land_field)
 	var shade := TextureRect.new()
 	shade.texture = _shade_tex()
 	shade.set_anchors_and_offsets_preset(PRESET_FULL_RECT)
 	shade.mouse_filter = Control.MOUSE_FILTER_IGNORE
 	add_child(shade)
+	_shade = shade
 	_field = BattleField.new()
+	_flat_field = _field
 	_field.set_anchors_and_offsets_preset(PRESET_FULL_RECT)
 	_field.offset_top = 250
 	_field.offset_bottom = -226
@@ -369,13 +383,32 @@ func play(p_session: Node, beats: Array, human_involved: bool) -> void:
 	if human_involved:
 		_advisor.setup("advisor", "", "Chief of Staff")
 	visible = true
-	## the camera has swooped down on the map; the field opens out of it
-	modulate.a = 0.0
-	pivot_offset = size * 0.5
-	scale = Vector2(1.1, 1.1)
-	var tw := create_tween().set_parallel(true)
-	tw.tween_property(self, "modulate:a", 1.0, 0.35)
-	tw.tween_property(self, "scale", Vector2.ONE, 0.45).set_trans(Tween.TRANS_CUBIC).set_ease(Tween.EASE_OUT)
+	_on_land = _land_wanted()
+	_field = _land_field if _on_land else _flat_field
+	_flat_field.visible = not _on_land
+	_bg.visible = not _on_land
+	if _on_land:
+		## v2.0: the map tips up and the land rises; the battle's words come in over it
+		modulate.a = 1.0
+		scale = Vector2.ONE
+		_ui_alpha(0.0)
+		_state = "idle"
+		Audio.sfx("charge", -3.0)
+		var first: Dictionary = beats[0]
+		var land: String = _land_of(first)
+		await _land_field.open(land, _land_field.spots_for(land, first["event"], first))
+		if session == null or not visible:
+			return
+		var ui := create_tween()
+		ui.tween_method(_ui_alpha, 0.0, 1.0, 0.35)
+	else:
+		## the camera has swooped down on the map; the field opens out of it
+		modulate.a = 0.0
+		pivot_offset = size * 0.5
+		scale = Vector2(1.1, 1.1)
+		var tw := create_tween().set_parallel(true)
+		tw.tween_property(self, "modulate:a", 1.0, 0.35)
+		tw.tween_property(self, "scale", Vector2.ONE, 0.45).set_trans(Tween.TRANS_CUBIC).set_ease(Tween.EASE_OUT)
 	Audio.ambience(true, "ambience_battle")
 	Audio.music("charge")
 	Audio.sfx("charge", -3.0)
@@ -391,6 +424,36 @@ func play(p_session: Node, beats: Array, human_involved: bool) -> void:
 		_help.visible = true
 		get_tree().create_timer(9.0).timeout.connect(func(): _help.visible = false)
 	_next_engagement()
+
+
+func prepare_land() -> void:
+	## v2.0: build this map's land in the background, ready for the first battle
+	if board != null and _land_field != null and _land_wanted_setting():
+		_land_field.prepare(board)
+
+
+func _land_wanted_setting() -> bool:
+	return bool(Settings.get_value("battle_land", true))
+
+
+func _land_wanted() -> bool:
+	if _land_wanted_setting() and board != null and not _land_field.prepared:
+		_land_field.prepare(board) ## turned on mid-game: ready for the next battle
+	return _land_wanted_setting() and board != null and _land_field.prepared
+
+
+func _land_of(b: Dictionary) -> String:
+	var land: String = str(b.get("resolves", ""))
+	if land == "":
+		land = str((b.get("focus", [""]) as Array)[0])
+	return land
+
+
+func _ui_alpha(v: float) -> void:
+	## the battle's words, faces and dice over the land (not the land itself)
+	for c in get_children():
+		if c is CanvasItem and c != _land_field and c != _bg:
+			(c as CanvasItem).modulate.a = v
 
 
 func extend(beats: Array) -> void:
@@ -419,6 +482,10 @@ func abort() -> void:
 	## Closed from outside (the whole report was skipped): no signal, no fade.
 	_state = "idle"
 	visible = false
+	if _on_land:
+		_land_field.abort()
+		_ui_alpha(1.0)
+		_on_land = false
 	scale = Vector2.ONE
 	_face_a.hush()
 	_face_b.hush()
@@ -432,6 +499,20 @@ func _close(skip_rest: bool) -> void:
 	_call_plate.visible = false
 	Audio.ambience(true, "ambience_tent")
 	Audio.music(Audio.battle_music())
+	if _on_land:
+		## v2.0: the words go, the pieces come off the table, and the land sinks back into the map
+		var ui := create_tween()
+		ui.tween_method(_ui_alpha, 1.0, 0.0, 0.25)
+		await ui.finished
+		await _land_field.close()
+		_on_land = false
+		visible = false
+		_ui_alpha(1.0)
+		_face_a.hush()
+		_face_b.hush()
+		_advisor.hush()
+		finished.emit(skip_rest)
+		return
 	var tw := create_tween()
 	tw.tween_property(self, "modulate:a", 0.0, 0.25)
 	tw.tween_callback(func():
@@ -647,7 +728,10 @@ func _next_engagement() -> void:
 	_setup_side(_face_b, _name_b, _b_pid, false)
 	_setup_extras()
 	_update_counts()
-	_field.setup(list)
+	if _on_land:
+		_land_field.setup_at(list, land, e, b)
+	else:
+		_field.setup(list)
 	_result.text = ""
 	if _melee:
 		_score.text = "Every front throws at once: pips × 5 + its men, against pips × 5 + the defenders' share of the wall there."
@@ -681,6 +765,8 @@ func _next_engagement() -> void:
 	_state = "ready"
 	_update_fortune()
 	_auto_t = 1.4 ## let them march in
+	if _on_land:
+		_auto_t = maxf(_auto_t, _land_field.arrival()) ## v2.0: and row ashore
 	_dial.set_label("ROLL", "Space")
 
 

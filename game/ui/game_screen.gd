@@ -29,6 +29,8 @@ const DiceStage := preload("res://game/ui/dice_stage.gd")
 const LandTip := preload("res://game/ui/land_tip.gd")
 const Moments := preload("res://game/ui/moments.gd")
 const BoardFacts := preload("res://game/core/board_facts.gd")
+const Land := preload("res://game/world3d/land.gd")
+const LandBoard := preload("res://game/world3d/land_board.gd")
 
 const BAR := 156.0
 const TOP := 84.0
@@ -40,6 +42,9 @@ var surge_pick := -1
 var log_lines: Array = [] ## [text, color]
 
 var board: Control
+var land: Node ## v2.0: the map's land in 3D, one world a game (land.gd)
+var land_board: Control ## v2.0: the board standing on it (land_board.gd)
+var _land_chip: Button
 var bar: Control
 var roster: Control
 var cinema: Control
@@ -95,6 +100,12 @@ func _ready() -> void:
 	board.territory_hovered.connect(_on_hover)
 	board.arrow_clicked.connect(func(a, b): edit_order(a, b))
 	board.set_view_mode(int(Settings.get_value("map_view", 0)))
+	land = Land.new()
+	add_child(land)
+	land_board = LandBoard.new()
+	land_board.attach(board, land)
+	land_board.set_on(bool(Settings.get_value("map_land", true)))
+	Settings.changed.connect(_land_setting) ## the Settings panel's switch, mid-game
 	_build_plate()
 	roster = Roster.new()
 	roster.session = session
@@ -148,6 +159,8 @@ func _ready() -> void:
 	bar.offset_top = -BAR
 	add_child(bar)
 	theater = Theater.new()
+	theater.board = board
+	theater.land = land
 	add_child(theater)
 	cinema.theater = theater
 	cinema.theater_hook = _theater_wants
@@ -208,7 +221,7 @@ func _build_zoom() -> void:
 	var tools := VBoxContainer.new()
 	tools.set_anchors_preset(PRESET_BOTTOM_RIGHT)
 	tools.offset_left = -60
-	tools.offset_top = -BAR - 170
+	tools.offset_top = -BAR - 220
 	tools.offset_right = -12
 	tools.offset_bottom = -BAR - 14
 	tools.add_theme_constant_override("separation", 6)
@@ -218,6 +231,48 @@ func _build_zoom() -> void:
 		b.custom_minimum_size = Vector2(48, 44)
 		b.tooltip_text = {"+": "Zoom in (wheel / pinch)", "−": "Zoom out", "⤢": "Whole map"}[spec[0]]
 		tools.add_child(b)
+	## v2.0: the board on the land, or the chart
+	_land_chip = Style.chip("", toggle_land, Style.GOLD, 17)
+	_land_chip.custom_minimum_size = Vector2(48, 44)
+	tools.add_child(_land_chip)
+	tools.move_child(_land_chip, 0)
+	_land_chip_text()
+
+
+func _land_chip_text() -> void:
+	if _land_chip == null:
+		return
+	var on3d: bool = land_board != null and land_board.on
+	_land_chip.text = "2D" if on3d else "3D"
+	_land_chip.tooltip_text = "Back to the chart (L)" if on3d else "The land in 3D (L)"
+
+
+func toggle_land() -> void:
+	## v2.0: the board on the land in 3D, or the chart as it always was (L)
+	var v: bool = not land_board.on
+	Settings.set_value("map_land", v)
+	land_board.set_on(v)
+	_prepare_land()
+	_land_chip_text()
+	_toast("The map: %s" % ("the land" if v else "the chart"))
+
+
+func _land_setting() -> void:
+	var v: bool = bool(Settings.get_value("map_land", true))
+	if land_board != null and land_board.on != v:
+		land_board.set_on(v)
+		_prepare_land()
+		_land_chip_text()
+
+
+func _prepare_land() -> void:
+	## v2.0: build the land in the background once a map is loaded, if the board or the battles want it
+	if board.art == null:
+		return
+	if theater != null:
+		theater.prepare_land()
+	if land_board != null and land_board.on:
+		land.prepare(board)
 
 
 # ================================================================ phases
@@ -226,6 +281,7 @@ func _on_phase(ph: int) -> void:
 	if session.map != null and session.map.id != _loaded_map:
 		board.load_map(session.map)
 		_loaded_map = session.map.id
+		_prepare_land()
 	_cover.visible = false
 	recap.visible = false
 	surge_pick = -1
@@ -317,6 +373,7 @@ func _refresh() -> void:
 	if session.map != null and board.art == null:
 		board.load_map(session.map)
 		_loaded_map = session.map.id
+		_prepare_land()
 	if session.world == null:
 		return
 	var ph: int = session.phase
@@ -1910,8 +1967,14 @@ func _show_sealing() -> void:
 		_say_once("sealed")
 
 
+var _toast_panel: Control ## v2.0: the toast showing (a new one takes its place: V then L never stack two)
+
+
 func _toast(text: String) -> void:
+	if _toast_panel != null and is_instance_valid(_toast_panel):
+		_toast_panel.queue_free()
 	var p := PanelContainer.new()
+	_toast_panel = p
 	p.add_theme_stylebox_override("panel", Style.flat(Color(0.08, 0.05, 0.04, 0.95), Style.WARN, 1, 6, 12))
 	var l := Style.label(text, 18, Style.CREAM)
 	l.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
@@ -2040,4 +2103,7 @@ func _unhandled_input(event: InputEvent) -> void:
 		get_viewport().set_input_as_handled()
 	elif event.keycode == KEY_V and session.phase != Session.Phase.CINEMA:
 		toggle_view()
+		get_viewport().set_input_as_handled()
+	elif event.keycode == KEY_L and not event.meta_pressed and not event.ctrl_pressed:
+		toggle_land() ## v2.0: the land or the chart
 		get_viewport().set_input_as_handled()

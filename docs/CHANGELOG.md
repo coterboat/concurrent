@@ -2,6 +2,169 @@
 
 The bible says amendments come with a dated entry and the test or band that justified them. Everything below has both.
 
+## v2.0 (draft) — 2 Oct 2026: the map and its battles on the land
+
+No rule changes: new games still play **rules 20**, nothing in `engine/` or `session.gd` changed, and
+every save replays as it was played. Pure presentation. The owner, after playing v1.14: "the one thing
+that's obvious to me to improve is the combat visuals… what I really want is something that has the
+weight, the grit of the Risk 2 combat. The way it took the map to the battle." The answer: battles are
+fought on the map's own land, in 3D, generated from the map for any map, and the battle screen's UI
+(the faces, the odds, the dice tray, the calls, the words) is untouched over it. Then, on seeing the
+board's own UI over the land ("once you put our interface over it it all came together"): the board
+itself stands on the land, with the chart one key away.
+
+### Round two: the board on the land (`land.gd`, `land_board.gd`)
+
+- **One world a game.** `land.gd` builds the map's land once, in a background thread when the map
+  loads (the terrain, where every building goes, and their models), and both the board and the battles
+  look at it through the same camera. A battle tips down out of whatever the board shows (the chart, or
+  the land) and rises back to it; the camera ends where the board looks (probe: 0.1–0.3 units off).
+- **The board's UI is untouched.** Tokens, arrows, names, ceilings, fates, region pips, the land card:
+  `map_board.gd` draws them through its projector, at each land's point on the ground. Straight down it
+  is the chart to the pixel; then the land rises and the camera tips back (58° over the whole map, 42°
+  zoomed all the way in). Probe `v20b` on three maps: every token on screen, and a click on every token
+  comes back to its own land, whole map and zoomed in (0 wrong). A click on a token is its land even
+  when a hill stands in front of its ground (`land_at`). A zoom keeps the land under the cursor (0.3–0.5
+  px), and a drag pans the ground under your hand.
+- **The highlights are on the ground:** the selected land's gold rim, the hovered land, the pulsing
+  targets, the battle's lands, the regions view, the day's light (`ground.gdshader` mirrors the chart's).
+  The sea is the chart's own navy and grid, matte; it shines only in a battle.
+- **Living lands.** Every held land's garrison stands by its token, a tin soldier for every two men (five
+  at most), repainted when the land changes hands and re-formed when it grows or shrinks. In the battle
+  report every live arrow has its **column marching it** (rowed over a sea lane in a longboat), as the
+  chart's chevrons run.
+- **L**, or the 3D/2D chip over the zoom buttons, switches between the land and the chart at any moment
+  (Settings → *The land in 3D*: the map, the battles). The chart is exactly v1.14's.
+- **Fixed: the land never found its borders.** `terrain.gd` gathered each border's cells into a
+  `PackedVector2Array` held in a dictionary, and `(pts[key] as PackedVector2Array).append()` appends to a
+  copy (Godot 4's packed arrays are values). Every border kept no points, so round one's land had no
+  crossings, no roads and no passes, and a column halted halfway between the two lands' hearts instead of
+  at their border. Now an `Array`: the Known World has its 25 crossings (16 of them bridged over a
+  lowland river), every road and every pass.
+- **What it costs:** on the owner's Mac (1440×900 at 2×), the board on the land runs 74 fps over the
+  whole map and 89 zoomed in (the chart: 180). A slower machine sheds the dearest effects a step at a
+  time when it runs under 40 fps for three seconds (`land.gd` `set_quality`: shadow splits and SSAO,
+  then the woods' shadows and MSAA, then shadows, then a 0.7 render scale). Under Compatibility (forced
+  on the Mac, as a Linux machine without Vulkan would be) the land draws and `v20b` passes.
+- **Close to, the land is heard:** wind over the fields, surf when the view's middle is near a shore, a
+  ship's timbers as one sails by (`Audio.land_bed`); silent over the whole map and on the chart.
+
+### The land's buildings, from its names and its rules (`scenery.gd`)
+
+Wargame terrain pieces (Ludo: a hand-painted picture of each, then image to 3D), placed for any map by
+a plan seeded by the map (`Scenery.plan`, 6–26 ms a map, off the main thread with the terrain):
+
+- **A village in every land**, in its region's terrain: thatched cottages in the lowlands, log lodges in
+  the forests, a crofter's cottage on the moors, fishermen's cottages on the coast, adobe in the
+  desert, log cabins under snow, an alpine chalet, blackened ruins in the ash. Beside the stage, on the
+  side away from every border and beach a battle can come from (`test_v20`: every land, on six maps).
+  Ploughed fields round the lowland villages.
+- **A landmark where the name calls for one:** the Mill's windmill, the Beacon's and every Watch's
+  tower, a Gate's gatehouse, a Hold's or Keep's keep, a Spire's church, the Quarry, a Field's farm, the
+  Cairn's standing stones, the Oasis (a "light" far inland is a beacon tower).
+- **The rules as buildings:** a star fort on a fortress, a blockhouse on a pass, a quay on a port's
+  shore, a palace where a commander keeps a capital (it takes the village's place, flying its
+  commander's colours, and moves when the capital does), an earthwork redoubt round a garrison dug in
+  two deep, and the colours carried in a capital's garrison.
+- **Bridges** where a road crosses a lowland river; **ships** where the chart paints them (the chart's
+  painted ships give way to them on the land), and a **frigate plying every sea lane**.
+- Nobody forms up inside a wall (`clear_of`), and the battle camera counts a church as a hill.
+
+- **The table is cleared for a battle.** The buildings standing where a fight will be (a small land with
+  four neighbours has no room to spare: the Isthmus's Gate) shrink off the table as the camera comes
+  down and come back as it rises (probe `v20b`: two lifted at the Gate, all back after).
+
+### Battles: the rest of a fight's life
+
+New poses, each an edit of the same tin soldier: cheering the victory (and they keep cheering), the
+front rank reloading after it fires, running away with a look back, the fallen lying where they fell
+(the toppled toy becomes a fallen man), a gunner touching off his cannon and then ramming the next
+charge home, and the **commander himself, mounted, behind his army**. New sounds: a company's hurrah, a
+troop galloping, steel on steel at the charge, a beaten army's running feet, a fort's or a capital's
+guns on the walls when its defenders win a volley, the wind and surf and ship's timbers of the land.
+
+### The land, for any map (`game/world3d/terrain.gd`)
+
+Generated from what every map already carries (mapgen's data texture: which land each pixel is, the
+coast and border distances; and each region's terrain), seeded by the map so a map always has the same
+land: beaches, cliffs where mountains meet the sea, rolling hills by terrain, ridged ranges with
+foothills rolling into the lands below, dunes, snowfields with drifts, river valleys on the borders
+between lowland lands, a level stage round every token, and a **road** from each land's heart over the
+middle of every border it shares (in the hills, a pass). 0.5–2 s a map, built in a background thread
+when a game's map loads (the probe: ready before the first battle). Model-railway woods, pines and
+rocks (`props.gd`), off the roads and the stages.
+
+Round two: the ground wears Ludo's **terrain mats** (ten seamless textures: grass, forest floor, heather,
+sand, desert, snow, ash, rock, a dirt road, a ploughed field), laid as a ratio over the painted colour
+so the land keeps its palette and gains its grain; rock on the cliffs from the side they face, sand on
+the beaches. A land's stage now eases out to nothing at its border, so a small land in the hills is a
+mountain rather than a raised block with cliffs where its neighbours begin (the Isthmus's Gate).
+
+### Into the battle and back (`land_field.gd`, the theater's hooks)
+
+- **The handoff is exact.** The 3D camera stands where the board's view is (straight down, nearly
+  orthographic, a dolly zoom); the ground shader paints exactly what `map.gdshader` paints at
+  `realism` 0. Probe: the battle land's token is **0.0 px** from where the land has it. Then the map
+  tips up, the land rises and the camera comes down on the fight. At the end the pieces are lifted off
+  the table, the land sinks back into the chart, and the board is under it.
+- **Everyone stands where they came from.** A column at the middle of the border it crossed; a column
+  over a sea lane rowed ashore in **longboats** (they ground on the beach and the men wade out); the
+  defender split into a group facing each front, in proportion, as the rule splits him; a border clash
+  on the border itself.
+- **The camera** takes the side from which the armies spread across the screen rather than towards it
+  (the band the battle's words leave clear is about 1320 × 360), rises until no hill hides anyone, and
+  centres the fight in that band.
+- **One die, one man.** The theater's calls are the same (`setup`, `volley`, `set_count`…): the front
+  rank drops to aim (standing or kneeling) and fires, a crack and a flash per musket; the man falls as
+  the shot lands and stays down. Probe: the figures standing match the count after every exchange (18
+  exchanges at the Gate, 5 at the landing, 0 off).
+- **Sound:** a ragged volley (a crack per musket, `Audio.field`, its own pool: no 60 ms guard, no stolen
+  players), a fall on the ground's own material (grass, mud, sand, snow, stone), a cannonball's impact,
+  the drum that quickens as an army nears breaking, oars, a boat grounding, men wading ashore.
+- **Setting:** Battlefield: On the land (3D) / Painted field. The painted field is the fallback (and
+  what every older probe watches).
+
+### The pieces (Ludo, `tools/ludo/v20_content.py`, review batch `v20_diorama`)
+
+Nine painted tin figures, each an edit of the v1.9 infantry or hussar picture, then image to 3D: aiming,
+kneeling, bayonet charge, marching, an officer with his sword up, a drummer, an artilleryman with his
+rammer, the hussar at full gallop, and a longboat. Thirteen sounds, two takes each. The coat is
+repainted in the commander's colour by its own hue (`tin.gdshader`), so the sky-blue hussar takes every
+seat's colour too (v1's spike left every army's cavalry sky blue). Spent 87.5 credits (6,822.1 to
+6,734.6), the drum stroke rolled twice (its first takes came back 53 ms long).
+
+### The pieces, round two (Ludo, `tools/ludo/v20_content.py`, the same review batch `v20_diorama`)
+
+- **25 land models in** (every village style, the landmarks, the rules' buildings, the bridge, the ship
+  of the line and the frigate), with a second variant of each still building on Ludo; the game uses every
+  variant in the folder (a land picks one by its name), and the batch's *Take the rejected out of the
+  game* removes the ones you reject. The lowland village failed twice on Ludo ("try with different
+  inputs") and the alpine chalet's second variant once: their pictures were simplified (two cottages; a
+  plain chalet) and rolled again.
+- **Seven more figures:** cheering, reloading, running, fallen, the gunner firing and ramming, the
+  mounted general.
+- **Ten ground textures** (seamless: a 2×2 tiling shows no seam), a second take of each beside it.
+- **Nine sounds**, two takes each.
+- **Slimmed for the repo:** every model's textures as JPEG (`glb_slim.py`), embedded on import instead of
+  extracted beside the model: round one's figures went from 85 MB (with their PNG copies) to 12 MB for
+  sixteen; the land's 25 pieces are 16 MB, the textures 1.4 MB.
+- **Spent** 185 credits so far (6,734.6 to 6,549.6), the second variants still running. Ludo runs about
+  two jobs at a time on this account and a building takes 9–25 minutes, so the run goes in order of what
+  the land shows most (`--make ordered`: the textures, the villages, the ships, the bridges, the rules).
+
+### Forward+
+
+The project renders with Forward+ (the owner's call). **Probes are held to 60 fps** (`probe.gd`):
+Forward+ on Metal runs at the display's rate (120 Hz on a ProMotion screen), and the probes count
+frames, so `calls` and `v13` failed under Forward+ (and passed on Compatibility, and with the cap).
+
+### Proof that it could all go 3D (`tools/spike/board3d.tscn`)
+
+The real board, its whole UI unchanged (a projection hook in `map_to_screen`/`screen_to_map`), drawn
+over the land: the chart, the land under the chart, tilted, and living (every land's garrison on its
+ground). Probe `board3d`: straight down, every token is where the flat chart has it; tilted, a click on
+every token comes back to its own land.
+
 ## v1.14 — 2 Oct 2026: a senior pass on the polish
 
 No rule changes: new games still play **rules 20**, nothing in `engine/` changed, and every save

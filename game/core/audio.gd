@@ -33,6 +33,11 @@ func _ready() -> void:
 		_pool.append(_player("SFX"))
 	for i in 6:
 		_knocks.append(_player("SFX"))
+	for i in 14:
+		_field.append(_player("SFX"))
+	_field_loop = _player("SFX")
+	for k in LAND_BEDS:
+		_beds[k] = _player("Ambience")
 	apply_volumes()
 
 
@@ -92,6 +97,7 @@ func _stream(path_no_ext: String, loop: bool = false) -> AudioStream:
 const VARIANTS := {
 	"volley": ["musket_volley_1", "musket_volley_2", "musket_volley_3"],
 	"shot": ["musket_shot_1", "musket_shot_2"],
+	"musket": ["musket_shot_1", "musket_shot_2", "musket_shot_3", "musket_shot_4"], ## v2.0: one man of a ragged volley
 	"hoofs": ["cavalry_gallop"],
 	"cavalry": ["cavalry_charge"],
 	"far": ["far_cannon", "far_volley", "far_drums", "far_bugle", "far_shouts"],
@@ -139,6 +145,82 @@ func _play_sfx(name: String, volume_db: float, pitch_jitter: float) -> void:
 	p.volume_db = volume_db
 	p.pitch_scale = 1.0 + randf_range(-pitch_jitter, pitch_jitter)
 	p.play()
+
+
+## v2.0: the battle on the land. Its own pool, so a ragged volley (a crack per musket) and men
+## falling one by one never steal a player from the theater's sounds, and no 60 ms guard: twelve
+## muskets going off across half a second are twelve shots, not one.
+var _field: Array = []
+var _field_i := 0
+var _field_loop: AudioStreamPlayer
+
+
+func field(name: String, volume_db: float = 0.0, pitch_jitter: float = 0.06) -> void:
+	var pick := name
+	if VARIANTS.has(name):
+		var takes: Array = (VARIANTS[name] as Array).filter(func(t): return _stream(SFX_DIR + str(t)) != null)
+		if takes.is_empty():
+			return
+		pick = str(takes[randi() % takes.size()])
+	var s := _stream(SFX_DIR + pick)
+	if s == null:
+		return
+	var p: AudioStreamPlayer = _field[_field_i]
+	_field_i = (_field_i + 1) % _field.size()
+	p.stream = s
+	p.volume_db = volume_db
+	p.pitch_scale = 1.0 + randf_range(-pitch_jitter, pitch_jitter)
+	p.play()
+
+
+func field_loop(name: String, volume_db: float = -8.0) -> void:
+	## one looping sound under the battle (oars rowing a column ashore); "" stops it
+	if name == "":
+		if _field_loop.playing:
+			var tw := create_tween()
+			tw.tween_property(_field_loop, "volume_db", -40.0, 0.6)
+			tw.tween_callback(_field_loop.stop)
+		return
+	var s := _stream(SFX_DIR + name, true)
+	if s == null:
+		return
+	_field_loop.stream = s
+	_field_loop.volume_db = volume_db
+	_field_loop.play()
+
+
+## v2.0: the land under the board, heard when you come down close: wind over the fields, the
+## surf on a shore, a ship's timbers. Each bed loops at its own level (0..1), eased.
+const LAND_BEDS := ["land_wind", "shore_surf", "ship_creak"]
+var _beds := {}
+var _bed_level := {}
+
+
+func land_bed(levels: Dictionary) -> void:
+	## levels: bed -> 0..1 (a missing bed is 0); everything at 0 lets them all fall silent
+	for k in LAND_BEDS:
+		var want: float = clampf(float(levels.get(k, 0.0)), 0.0, 1.0)
+		var now: float = float(_bed_level.get(k, 0.0))
+		now = move_toward(now, want, 0.02)
+		_bed_level[k] = now
+		var p: AudioStreamPlayer = _beds[k]
+		if now <= 0.001:
+			if p.playing:
+				p.stop()
+			continue
+		if not p.playing:
+			var s := _stream(SFX_DIR + k, true)
+			if s == null:
+				continue
+			p.stream = s
+			p.play(randf() * 4.0)
+		p.volume_db = linear_to_db(now) - 6.0
+
+
+func land_bed_silence() -> void:
+	for k in LAND_BEDS:
+		(_beds[k] as AudioStreamPlayer).stop()
+		_bed_level[k] = 0.0
 
 
 ## v1.4: every die that hits the table knocks, by what it is made of, as hard as it hit.

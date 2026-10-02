@@ -53,6 +53,64 @@ shown: fine" is as useful as a bug.
   v1.8 Fortune.
 - **Probes run with films off** (`motion = "paintings"`). `v19` turns them on.
 
+## v2.0 (draft): the map and its battles on the land
+
+No rule changes (rules 20), nothing in `engine/` or `session.gd`. The board stands on the map's own
+land in 3D (L, or the 3D/2D chip by the zoom buttons, switches it back to the chart), and battles are
+fought on that land, with the battle screen's UI unchanged over it. Settings → *The land in 3D* has a
+switch for each. The project now renders with **Forward+**. On a Linux machine without Vulkan, Godot
+falls back to Compatibility: say which renderer your log's first lines show, and whether the land draws.
+
+- **The board on the land.** The same board (tokens, arrows, names, ceilings, fates, region pips, the
+  land card) drawn over the land: straight down it is the chart to the pixel, then the land rises and
+  the camera tips back; zoom in and it comes lower. **Poke:** play a whole round on it. Is any token,
+  name or plate unreadable over a hill, a wood or the sea? Does any click land on the wrong land (a
+  token behind a hill is the one to try)? Does a zoom keep the land under your cursor? Drag to pan:
+  does the ground follow your hand?
+- **Living lands.** Every held land's garrison stands by its token (one figure for two men, five at
+  most), repainted when the land changes hands. A village in every land in its region's style; a
+  landmark where the name calls for one (a mill, a gate, a beacon, a haven...); the rules as buildings:
+  a star fort on a fortress, a blockhouse on a pass, a quay on a port, a palace at a capital. Ships ride
+  the sea and a frigate plies every sea lane. **Poke:** does any building stand in the sea, on a road,
+  on a token, or in the middle of a battle?
+- **The battle report.** Every live arrow has its column of tin soldiers marching it (in a longboat over
+  a sea lane). A battle tips down out of the board's own camera, and rises back to it.
+- **L** switches the chart and the land at any moment. Does anything stay behind (garrisons on the
+  chart, a missing token, a wrong highlight)?
+- **Frame rate.** Say what fps you get on the land (and on which GPU), whole map and zoomed in. On a
+  slow machine the land gives up its dearest effects a step at a time (fewer shadow splits and no
+  ambient occlusion, then no shadows from the woods and no MSAA, then no shadows, then a lower
+  resolution) once it runs under 40 fps for a few seconds: say if you see it change.
+- **Compatibility** (Linux without Vulkan): on the Mac with `--rendering-method gl_compatibility` the
+  land draws and `v20b` passes; say whether it does for you.
+
+- **The handoff.** The board swoops in, then the same picture tips up into 3D and the land rises. At the
+  end the pieces lift off and the land sinks back into the board. **Poke:** any battle. Is there a jump,
+  a flash, or a token left floating at either end? Esc and "Skip battles" in the middle of it.
+- **Where they stand.** Columns at the border they crossed, boats for a sea lane, the defender split to
+  face every front, a border clash on the border. **Poke:** a three-way melee, a landing over a lane on
+  the Known World or the Thousand Isles, a border clash. Does any army stand in the sea, in another land,
+  or under the title, the call plate or the dice tray?
+- **One die, one man.** The front rank aims and fires, and the loser's man drops as the shot lands.
+  **Poke:** reserves arriving (more men walk in), a horse going down (four men step up), Fortune's
+  rethrow. Do the men standing always match the count?
+- **Sound.** A crack per musket, falls that sound like the ground (snow, sand, stone, mud), the drum
+  quickening near the end, oars and the beach on a landing; a hurrah when a side wins, horses at the
+  gallop, steel at the charge, the guns on a fort's or a capital's walls. Close over the land: wind,
+  surf, a ship's timbers.
+- **The fight's life.** The front rank reloads after it fires, the winners cheer, the beaten run with a
+  look back, the fallen lie where they fell, a gunner fires his cannon and rams the next charge, and
+  each army's commander watches from his horse behind it. **Poke:** does anyone stand inside a
+  building, or does a building hide a fight from the camera?
+- **Fixed: the land's borders.** Round one's land never found where two lands meet (no roads, no passes,
+  columns halfway between the hearts). Now every crossing is found (`tests/test_v20.gd`), the roads run
+  over them, bridges carry them over the lowland rivers, and columns halt at their real border.
+- **Probes** are held to 60 fps now (`tools/probe.gd`): under Forward+ on a 120 Hz screen the frame-
+  counting probes ran twice as fast and failed. If any probe is flaky on your machine, say at what fps.
+- New probes: `v20` (the real client: a melee at the Gate and a landing), `v20b` (the board on the
+  land in the real client: tokens, clicks, zoom, garrisons, the highlights, L, the report's columns, a
+  battle out of the board and back), `diorama` (every map's battle), `board3d` (the board over the land).
+
 ## v1.14: a senior pass on the polish (this push)
 
 No rule changes: new games still play **rules 20**, nothing in `engine/` changed, every save replays

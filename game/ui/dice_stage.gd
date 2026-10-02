@@ -680,6 +680,11 @@ func _make(spec: Dictionary, i: int, rng: RandomNumberGenerator) -> Dictionary:
 		var from: Vector3 = spec.get("from", Vector3(-1, 0, 0))
 		var side: float = -1.0 if from.x < 0.0 else 1.0
 		p0 = Vector3(to.x + side * rng.randf_range(0.5, 0.9), rng.randf_range(2.6, 3.3), to.y - rng.randf_range(2.0, 2.5))
+		if spec.has("from_dir"):
+			## the diorama: thrown in from the bearing its commander stands on
+			var fd: Vector2 = (spec["from_dir"] as Vector2).normalized().rotated(rng.randf_range(-0.25, 0.25))
+			var reach: float = rng.randf_range(2.6, 3.2)
+			p0 = Vector3(to.x + fd.x * reach, rng.randf_range(2.4, 3.1), to.y + fd.y * reach)
 		var flat := Vector2(to.x - p0.x, to.y - p0.z)
 		var land: Vector2 = Vector2(p0.x, p0.z) + flat * rng.randf_range(0.72, 0.86)
 		var tf2: float = rng.randf_range(0.36, 0.44)

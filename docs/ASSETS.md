@@ -186,6 +186,27 @@ is about 16,000 characters.
 - `assets/hud/fortune_star.png` and `fortune_empty.png` are Fortune's favours, a held star and
   an empty socket (`game/ui/fortune_pips.gd`; drawn stars stand in when they're missing).
 
+### 3D models: `assets/models/diorama/*.glb`, `assets/models/land/<piece>_<a|b>.glb` (v2.0)
+
+- **Figures** (`game/world3d/diorama.gd` MODELS): painted tin soldiers in poses, each an edit of the
+  v1.9 infantry or hussar picture, then Ludo's image to 3D. The coat's own hue is keyed and repainted in
+  the commander's colour (`tin.gdshader`). A model's height in men, its keyed hue and its turn are in
+  MODELS; a lying or long piece is sized by its length (`LONG`).
+- **The land's pieces** (`game/world3d/scenery.gd` SIZE): villages by terrain, landmarks, the rules'
+  buildings, bridges, ships. Every variant that's in the folder is used (a land picks one by its name),
+  so rejecting a variant in the review and pressing *Take the rejected out of the game* removes it.
+- **Slimmed for the repo** (`tools/ludo/glb_slim.py`): textures as JPEG (figures at most 1024 px,
+  buildings 512), and a `.import` with `gltf/embedded_image_handling=2`, so Godot embeds them
+  GPU-compressed instead of extracting PNG copies beside the model (the repo would carry them twice).
+  A figure is about 0.9 MB, a building about 0.5.
+
+### Ground textures: `assets/tex/ground/<terrain>.webp` (v2.0)
+
+Seamless 1024 px mats, one per terrain (`world_view.gd` DETAIL: grass, forest, moor, desert, snow,
+ash, rock, sand, field), layered into one `Texture2DArray`. The ground shader lays each as a ratio
+over the painted colour (the land keeps its palette and gains the mat's grain), blended by each
+terrain's share of the ground; rock from the side on cliffs, sand on the beaches.
+
 ### Music moods: `assets/audio/music/`
 
 `Audio.PLAYLISTS` maps a mood to its takes, and never plays the same take twice running.

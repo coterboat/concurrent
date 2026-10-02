@@ -25,6 +25,8 @@ var data := {
 	"dice_help_seen": 0, ## the battlefield opens "How a throw is scored" by itself the first two times
 	"stance": "judgment",
 	"calls_seen": 0,
+	"battle_land": true, ## v2.0: battles fought on the map's own land in 3D (false: the painted field)
+	"map_land": true, ## v2.0: the board stands on the map's own land in 3D (false: the chart); L in the game
 	"motion": "all", ## v1.9: all (cutscenes and living paintings) | paintings (no cutscenes) | off (stills)
 }
 

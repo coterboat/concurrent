@@ -60,6 +60,12 @@ var _region_font: FontVariation
 
 var zoom := 0.5
 var offset := Vector2.ZERO
+## v2.0: the board drawn over the land in 3D: map -> screen through the 3D camera, and back (a
+## ray onto the ground). Empty: the flat chart, as ever.
+var ships_drawn := true ## v2.0: the chart's painted ships (off when the land's own ships sail under the board)
+var view_fix: Callable = Callable() ## v2.0: (screen point, map point) -> moves the view so the point stays under it
+var projector: Callable = Callable()
+var unprojector: Callable = Callable()
 var fit := 0.5
 var _at_fit := true
 var terrain: TextureRect
@@ -171,11 +177,32 @@ func set_view_mode(m: int) -> void:
 # ------------------------------------------------------------------ view math
 
 func map_to_screen(p: Vector2) -> Vector2:
+	if projector.is_valid():
+		return projector.call(p)
 	return offset + p * zoom
 
 
 func screen_to_map(p: Vector2) -> Vector2:
+	if unprojector.is_valid():
+		return unprojector.call(p)
 	return (p - offset) / zoom
+
+
+func land_at(screen_p: Vector2) -> String:
+	## the land under a screen point: a token's own land first (v2.0: on the land a hill can stand
+	## in front of a token's ground), then the ground itself
+	if projector.is_valid() and art != null:
+		var r: float = token_radius()
+		var best := ""
+		var best_d := r * r
+		for id in art.order:
+			var d: float = anchor(id).distance_squared_to(screen_p)
+			if d < best_d:
+				best_d = d
+				best = id
+		if best != "":
+			return best
+	return art.territory_at(screen_to_map(screen_p))
 
 
 func anchor(id: String) -> Vector2:
@@ -222,6 +249,8 @@ func zoom_at(screen_p: Vector2, factor: float) -> void:
 	_at_fit = is_equal_approx(zoom, fit)
 	offset = screen_p - before * zoom
 	_apply_view()
+	if view_fix.is_valid() and not _at_fit:
+		view_fix.call(screen_p, before) ## on the land: the ground under the cursor stays under it
 
 
 func swoop_to(ids: Array, zmult: float, dur: float) -> Tween:
@@ -291,7 +320,11 @@ func _gui_input(event: InputEvent) -> void:
 	if event is InputEventMouseMotion:
 		_mouse = event.position
 		if _panning:
-			offset += event.relative
+			if unprojector.is_valid():
+				## v2.0, on the land: the ground under the cursor stays under it
+				offset += (screen_to_map(event.position) - screen_to_map(event.position - event.relative)) * zoom
+			else:
+				offset += event.relative
 			_at_fit = false
 			_apply_view()
 			return
@@ -300,7 +333,7 @@ func _gui_input(event: InputEvent) -> void:
 			return
 		if _pressing and _press_id != "" and event.position.distance_to(_press_pos) > 12:
 			drag_from = _press_id
-		var id: String = art.territory_at(screen_to_map(event.position))
+		var id: String = land_at(event.position)
 		if id != hovered:
 			hovered = id
 			territory_hovered.emit(id)
@@ -320,7 +353,7 @@ func _gui_input(event: InputEvent) -> void:
 			if mb.pressed:
 				_pressing = true
 				_press_pos = mb.position
-				_press_id = art.territory_at(screen_to_map(mb.position))
+				_press_id = land_at(mb.position)
 				drag_from = ""
 			else:
 				var was_pan := _panning
@@ -328,7 +361,7 @@ func _gui_input(event: InputEvent) -> void:
 				_panning = false
 				if was_pan:
 					return
-				var id: String = art.territory_at(screen_to_map(mb.position))
+				var id: String = land_at(mb.position)
 				if drag_from != "":
 					var from := drag_from
 					drag_from = ""
@@ -347,7 +380,7 @@ func _gui_input(event: InputEvent) -> void:
 				else:
 					territory_clicked.emit(id, MOUSE_BUTTON_LEFT)
 		elif mb.button_index == MOUSE_BUTTON_RIGHT and mb.pressed and interactive:
-			var id2: String = art.territory_at(screen_to_map(mb.position))
+			var id2: String = land_at(mb.position)
 			if id2 != "":
 				territory_clicked.emit(id2, MOUSE_BUTTON_RIGHT)
 		accept_event()
@@ -569,7 +602,7 @@ func _draw_ornaments(ci: CanvasItem) -> void:
 					ci.draw_texture_rect(t, Rect2(p - Vector2(r, r), Vector2(r, r) * 2.0), false, Color(1, 1, 1, 0.78))
 			"ship":
 				var t2: Texture2D = Style.tex("res://assets/art/chart_ship.png")
-				if t2 != null:
+				if t2 != null and ships_drawn:
 					var sz := Vector2(r * 2.0, r * 2.0 * t2.get_height() / maxf(1.0, t2.get_width()))
 					var bob: float = sin(_time * 1.1 + o["pos"].x * 0.01) * 0.035
 					ci.draw_set_transform(p, bob, Vector2(-1 if bool(o.get("flip", false)) else 1, 1))
@@ -1105,6 +1138,12 @@ func _draw_token(ci: CanvasItem, id: String) -> void:
 		return
 	var col: Color = Style.seat_color(owner)
 	var shape: String = Style.seat_shape(owner)
+	if projector.is_valid():
+		## v2.0, on the land: the token stands on its ground (a soft shadow on the land under it)
+		ci.draw_set_transform(p + Vector2(r * 0.15, r * 0.62), 0.0, Vector2(1.0, 0.42))
+		for k in 3:
+			ci.draw_circle(Vector2.ZERO, r * (1.25 - 0.18 * k), Color(0, 0, 0, 0.09))
+		ci.draw_set_transform(Vector2.ZERO, 0.0, Vector2.ONE)
 	ci.draw_circle(p + Vector2(2, 3), r + 1, Color(0, 0, 0, 0.35))
 	var edge := Color(0.96, 0.9, 0.76) if id != selected else Color(1.0, 0.85, 0.35)
 	Style.draw_shape(ci, shape, p, r + 2.5, Color(0.08, 0.06, 0.05), Color(0.08, 0.06, 0.05), 1.0)

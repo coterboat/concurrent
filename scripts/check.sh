@@ -70,8 +70,9 @@ fi
 step "compile every script" 120 "$GODOT" --headless --path . --script res://tools/compile_check.gd
 grep -q ", 0 failed" "$LOG" || { [ $failed = 0 ] && echo "check: FAIL  compile (no '0 failed' line)"; failed=1; }
 
-## the newest version's tests (test_v112 is 1.12, test_v19 is 1.9), plus any test file changed
-newest="$(ls tests/test_v1*.gd 2>/dev/null | sed -E 's#^tests/test_v1([0-9]+)\.gd$#\1 &#' | sort -n | tail -1 | cut -d' ' -f2)"
+## the newest version's tests (test_v20 is 2.0, test_v112 is 1.12, test_v19 is 1.9), plus any test file changed
+newest="$(ls tests/test_v2*.gd 2>/dev/null | sed -E 's#^tests/test_v2([0-9]+)\.gd$#\1 &#' | sort -n | tail -1 | cut -d' ' -f2)"
+[ -z "$newest" ] && newest="$(ls tests/test_v1*.gd 2>/dev/null | sed -E 's#^tests/test_v1([0-9]+)\.gd$#\1 &#' | sort -n | tail -1 | cut -d' ' -f2)"
 tests="$newest $(echo "$changed" | grep -E '^tests/test_.*\.gd$')"
 if echo "$changed" | grep -qE '^engine/|^game/core/session\.gd$|^game/view_events\.gd$'; then
 	tests="$tests tests/test_view_events.gd tests/test_properties.gd tests/test_match.gd"

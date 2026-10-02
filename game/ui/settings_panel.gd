@@ -29,6 +29,7 @@ func _ready() -> void:
 	v.add_child(_slider("Voices", "voices"))
 	v.add_child(_choice("Commander voices", "commander_voices", ["New take", "Classic (v1.2)"], ["new", "classic"]))
 	v.add_child(_choice("Battle scenes", "battles", ["Show my battles", "Show every battle", "Map only"], ["mine", "all", "off"]))
+	v.add_child(_toggles("The land in 3D", [["The map", "map_land"], ["Battles", "battle_land"]])) ## v2.0 (L in a game)
 	v.add_child(_toggle("Roll the dice yourself in your battles", "roll_yourself"))
 	v.add_child(_choice("Films", "motion", ["Cutscenes and living paintings", "Living paintings only", "Still paintings"], ["all", "paintings", "off"]))
 	v.add_child(_choice("Battle speed", "speed", ["Slow — savor every roll", "Normal", "Fast"], ["slow", "normal", "fast"]))
@@ -82,6 +83,19 @@ func _choice(title: String, key: String, labels: Array, values: Array) -> Contro
 	o.selected = idx
 	o.item_selected.connect(func(i): Settings.set_value(key, values[i]))
 	h.add_child(o)
+	return h
+
+
+func _toggles(title: String, pairs: Array) -> Control:
+	## several switches on one row: [[label, key], ...]
+	var h := _row(title)
+	for pr in pairs:
+		var t := CheckButton.new()
+		t.text = str(pr[0])
+		t.button_pressed = bool(Settings.get_value(str(pr[1]), true))
+		var key: String = str(pr[1])
+		t.toggled.connect(func(on): Settings.set_value(key, on))
+		h.add_child(t)
 	return h
 
 
