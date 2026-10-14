@@ -1,0 +1,36 @@
+{
+  "sensitive": [
+    {
+      "glob": "engine/**",
+      "why": "Deterministic replay engine; outcome changes break saved games"
+    },
+    {
+      "glob": "game/core/session.gd",
+      "why": "Save/load of user://savegame.json and rules-version stamping"
+    },
+    {
+      "glob": "game/core/rules.gd",
+      "why": "Rule switches saved with each game; defaults alter old saves"
+    },
+    {
+      "glob": "game/core/settings.gd",
+      "why": "Writes owner's user://settings.cfg preferences"
+    },
+    {
+      "glob": "maps/*.json",
+      "why": "Map amendments must stay stable so saves replay identically"
+    },
+    {
+      "glob": "tools/review/review.py",
+      "why": "Apply copies accepted files over game assets; spawns generators"
+    },
+    {
+      "glob": "tools/ludo/ludo.py",
+      "why": "Spends paid Ludo credits using LUDO_API_KEY"
+    },
+    {
+      "glob": ".claude/settings.json",
+      "why": "Session hooks auto-run sync_main.sh fetch and fast-forward"
+    }
+  ]
+}

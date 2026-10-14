@@ -1,0 +1,12 @@
+{
+  "round": "RV-001",
+  "reviewer": "grok",
+  "rubric_sha256": "c2303a6dd22f05fd48a8fa98def28e45ed0a79fb2606afa367c2e8f42eba0154",
+  "packet_sha256": "9c1387a5e7687c82d1ac62e5a50382d4e07caa5d9e4f0b812ffbb922ac4808df",
+  "prompt_sha256": "6c11c2f449114603ce47340b5b04bb60cc928a728d33e26a4eef8ed5fbfc2001",
+  "response_sha256": "1ddee674a34388f7123f9a803ad5cb1edce7bc8ca291f94abd10cf51a1d73f7e",
+  "started_at": "2026-10-08T22:36:00.129Z",
+  "duration_ms": 818171,
+  "canary": "I'll read the rest of the review packet and the outside-review skill, then check the claims against the diff.The packet is large; I’ll search it for the engine, fortune, join, and camera paths the builder asked us to attack.CANARY: workspace, tools, and skills are visible; findings are from the pack",
+  "packet_only": false
+}

@@ -100,6 +100,7 @@ func _process(delta: float) -> void:
 		_garrison(delta)
 		## the battle report: a column marches every live arrow
 		if board.flow and t > 0.6:
+			land.marches.clash = board.clash_clock() if board.has_method("clash_clock") else {}
 			land.marches.show_orders(board.orders)
 		elif land.marches.count() > 0:
 			land.marches.clear()
@@ -257,14 +258,18 @@ func _garrison(delta: float) -> void:
 		## same army from one look to the next
 		var ts = w.get_territory(id)
 		var n := 0
+		var men := 0
 		if ts != null and ts.owner != "" and ts.armies + ts.garrison > 0:
-			n = clampi(int(ceil(float(ts.armies + ts.garrison) / 2.0)), 1, 5)
+			men = ts.armies + ts.garrison
+			n = clampi(int(ceil(float(men) / 2.0)), 1, 5)
 		var a: Vector2 = board.art.anchors[id]
 		var at: Vector2 = a + garrison_offset(id)
 		var pid: String = ts.owner if ts != null else ""
+		var train: Dictionary = train_for(men)
 		list.append({"pid": pid, "color": Style.seat_color(pid), "n": n, "land": id,
-			"groups": [{"at": at, "dir": Vector2(0, 1), "share": n, "dist": 30.0, "colours": capital_lands.has(id)}]})
-		sig = hash([sig, id, pid, n, capital_lands.has(id)])
+			"groups": [{"at": at, "dir": Vector2(0, 1), "share": n, "dist": 30.0, "colours": capital_lands.has(id),
+				"horse": int(train["horse"]), "guns": int(train["guns"]), "train": true, "beside": true}]})
+		sig = hash([sig, id, pid, n, capital_lands.has(id), train["horse"], train["guns"]])
 	## the capitals: a palace where each commander keeps one (the one being chosen, too)
 	var caps := {}
 	var colors := {}
@@ -288,6 +293,13 @@ func _garrison(delta: float) -> void:
 	land.garrisons.regarrison(list)
 	land.scenery.set_capitals(caps, colors)
 	land.scenery.set_dug(dug)
+
+
+static func train_for(men: int) -> Dictionary:
+	## v2.0.2: an army that swells brings horse and guns along, as well as its men (the owner: "not
+	## to replace soldiers, but as additions"): a horseman from 10 men, a gun from 16, a second
+	## horseman from 22, a second gun from 30
+	return {"horse": (1 if men >= 10 else 0) + (1 if men >= 22 else 0), "guns": (1 if men >= 16 else 0) + (1 if men >= 30 else 0)}
 
 
 func garrison_offset(id: String) -> Vector2:

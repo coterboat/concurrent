@@ -17,13 +17,15 @@ const MISSED := "missed" ## didn't end the round holding it, for any other reaso
 const FAILED := [THROWN_BACK, FELL_BACK, OUTFOUGHT, CLASH, MISSED]
 
 
-static func ghosts(before: Types.World, after: Types.World, sheets: Array, events: Array) -> Array:
+static func ghosts(before: Types.World, after: Types.World, sheets: Array, events: Array, rules: int = 0) -> Array:
 	## [{from, to, strength, owner, surgeTo, result, by, left, fellTo, surgeFate, surgeBy}] for every
 	## packet sent. `result` is "" for a march between your own lands; `by` is who beat it; `left`
 	## how many fell back (FELL_BACK) to `fellTo`. `surgeFate` is CLASH when the surge it sent on
 	## met another on the border and died there.
-	## The engine marches all of a commander's columns bound for one land as one (their first
-	## origin names it), so a fate belongs to every column with that owner and destination.
+	## Before rules 21 the engine marched all of a commander's columns bound for one land as one
+	## (their first origin names it), so a fate belongs to every column with that owner and
+	## destination. v2.1 (rules 21): each column is its own front, so a border clash beats only the
+	## column on that border (RV-002's class: one commander's other column into the land marched on).
 	var packets := {} ## owner -> [Packet]
 	for s in sheets:
 		var sh: Types.Sheet = s
@@ -51,6 +53,12 @@ static func ghosts(before: Types.World, after: Types.World, sheets: Array, event
 						surge_beaten[pb + "|" + hb + "|" + ha] = won
 					else:
 						surge_beaten[pa + "|" + ha + "|" + hb] = won
+				elif rules >= 21:
+					## the one column on that border: A's from hexA to hexB, or B's from hexB to hexA
+					if won == pb:
+						beaten[pa + "|" + ha + "|" + hb] = won
+					else:
+						beaten[pb + "|" + hb + "|" + ha] = won
 				elif won == pb:
 					beaten[pa + "|" + hb] = won
 				else:
@@ -66,13 +74,16 @@ static func ghosts(before: Types.World, after: Types.World, sheets: Array, event
 				"surgeTo": pk.surge_to if surged.has(key) else "", "result": "", "by": "", "left": 0, "fellTo": "", "surgeFate": "", "surgeBy": ""}
 			var was: Types.TerritoryState = before.get_territory(pk.to_id) if before != null else null
 			var now: Types.TerritoryState = after.get_territory(pk.to_id) if after != null else null
-			if beaten.has(key):
+			var bkey: String = (pid + "|" + pk.from_id + "|" + pk.to_id) if rules >= 21 else key
+			if beaten.has(bkey):
 				g["result"] = CLASH
-				g["by"] = beaten[key]
+				g["by"] = beaten[bkey]
 			elif was != null and was.owner == pid:
 				pass ## a march between your own lands: nothing to say
 			elif now != null and now.owner == pid:
 				g["result"] = TOOK
+				if rules >= 21:
+					_own_front(g, pid, events) ## another of his fronts took it; this one may not have (RV-003 F1)
 			else:
 				_why(g, pid, events, now)
 			var sk: String = key + "|" + pk.surge_to
@@ -94,6 +105,26 @@ static func _clash_target(a_packets: Array, b_packets: Array, ha: String, hb: St
 		if pk.from_id == hb and a_from.has(pk.to_id):
 			return pk.to_id
 	return ha
+
+
+static func _own_front(g: Dictionary, pid: String, events: Array) -> void:
+	## v2.1 (rules 21): his column's own front in the melee for its land, though another front of
+	## his took it: fell back, or destroyed, it says so
+	for e in events:
+		if str(e.get("kind", "")) != Types.EVENT_MELEE or str(e.get("to", "")) != str(g["to"]):
+			continue
+		for f in e.get("fronts", []):
+			if str(f.get("attackerId", "")) != pid or not (f.get("fromIds", [f.get("from", "")]) as Array).has(str(g["from"])):
+				continue
+			if bool(f.get("fellBack", false)):
+				g["result"] = FELL_BACK
+				g["by"] = str(e.get("defenderId", ""))
+				g["left"] = int(f.get("left", 0))
+				g["fellTo"] = str(f.get("refuge", ""))
+			elif int(f.get("left", 0)) <= 0:
+				g["result"] = THROWN_BACK
+				g["by"] = str(e.get("defenderId", ""))
+			return
 
 
 static func _why(g: Dictionary, pid: String, events: Array, now: Types.TerritoryState) -> void:
@@ -119,6 +150,10 @@ static func _why(g: Dictionary, pid: String, events: Array, now: Types.Territory
 			Types.EVENT_MELEE:
 				for f in e.get("fronts", []):
 					if str(f.get("attackerId", "")) != pid:
+						continue
+					## v2.1: one commander's columns from two lands are two fronts: each its own fate
+					var ff: Array = f.get("fromIds", [f.get("from", "")])
+					if g.has("from") and not ff.has(str(g["from"])):
 						continue
 					if int(e.get("defenderLeft", 0)) <= 0 and not bool(f.get("fellBack", false)) and int(f.get("left", 0)) > 0:
 						continue ## the walls fell and this front stood: it lost what came after (a scramble)

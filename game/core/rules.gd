@@ -13,7 +13,7 @@ const RULES := [
 	{"id": "capitals", "name": "Capitals", "choices": [[true, "Every commander keeps a capital"], [false, "No capitals"]],
 		"help": "A capital pays 2 recruits a round and fights like a fortress. Take a rival's and plunder half their cards and raise 3 troops there."},
 	{"id": "fortune", "name": "Fortune", "choices": [[true, "Bad luck banks a throw-again ✦"], [false, "The dice are the dice"]],
-		"help": "Fortune keeps a ledger of your luck. When the dice have robbed you of about half a battle (any fight counts), she owes you a favour: throw a disastrous exchange again, in an assault or a melee. Start with one, hold up to three."},
+		"help": "Fortune keeps a ledger of your luck. When the dice have robbed you of about half a battle (any fight counts), she owes you a favour: throw a disastrous exchange again, in an assault or a melee (and a good exchange taken from you that way counts toward your next). Start with one, hold up to three."},
 	{"id": "levee", "name": "Levée en masse", "choices": [[3, "The commander behind rallies"], [0, "Off"]],
 		"help": "A recruit for every three lands you trail the leader by (up to 4 a round). A gentle hand for whoever is losing, so wars stay close."},
 	{"id": "firing_line", "name": "Battle odds", "choices": [[true, "Firing line (five fire at once)"], [false, "Every man counts (v1.5)"]],

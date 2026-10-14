@@ -47,6 +47,7 @@ var figs: Array = [] ## see _new_fig
 var boats: Array = [] ## {node, from, to, t, dur, army, group, landed}
 var puffs: Array = []
 var flashes: Array = []
+var tracers: Array = [] ## v2.2: shots in the air {node, from, to, t, dur, arc, gun, aim, army (who fired), foe (at whom)}
 var ground := "grass" ## the land's terrain: what a fall sounds like
 var heart := Vector2.ZERO
 var shake := 0.0 ## a cannon's thump, for the camera
@@ -146,8 +147,11 @@ func clear() -> void:
 		(p["node"] as Node3D).queue_free()
 	for b in boats:
 		(b["node"] as Node3D).queue_free()
+	for tr in tracers:
+		(tr["node"] as Node3D).queue_free()
 	figs.clear()
 	puffs.clear()
+	tracers.clear()
 	boats.clear()
 	armies.clear()
 	live = false
@@ -169,9 +173,12 @@ func place(list: Array) -> void:
 
 
 func regarrison(list: Array) -> void:
-	## The board's garrisons kept up to date without a fresh march: a land that changed hands is
-	## repainted and one that grew or shrank re-forms where it stands (list: as place's, a land a
-	## group, in the same order every time).
+	## The board's garrisons kept up to date without a fresh march (list: as place's, a land a
+	## group, in the same order every time). A land that changed hands marches in afresh in its new
+	## colours. v2.0.2: one that grew or shrank, or whose spot moved (it follows the token's size
+	## as the camera zooms), keeps its men: the new ones step in from just behind, the ones gone are
+	## lifted off the table, and the rest shuffle to their places. It used to re-form, every man
+	## marching in again, on every recruit placed (and every few frames while the camera moved).
 	if armies.size() != list.size():
 		place(list)
 		return
@@ -181,7 +188,14 @@ func regarrison(list: Array) -> void:
 		var n: int = int(w["n"])
 		var moved: bool = ((a["groups"][0]["at"]) as Vector2).distance_to(w["groups"][0]["at"]) > 1.0
 		var colours_changed: bool = bool(a["groups"][0].get("colours", false)) != bool(w["groups"][0].get("colours", false))
-		if a["color"] == w["color"] and int(a["n"]) == n and not moved and not colours_changed:
+		var train_changed: bool = int(a["groups"][0].get("horse", 0)) != int(w["groups"][0].get("horse", 0)) or int(a["groups"][0].get("guns", 0)) != int(w["groups"][0].get("guns", 0))
+		if a["color"] == w["color"] and int(a["n"]) == n and not moved and not colours_changed and not train_changed:
+			continue
+		if a["color"] == w["color"] and str(a["pid"]) == str(w["pid"]) and int(a["n"]) > 0 and n > 0:
+			a["n"] = n
+			a["n0"] = maxi(1, n)
+			a["groups"] = w["groups"]
+			_muster(ai)
 			continue
 		for i in range(figs.size() - 1, -1, -1):
 			if int(figs[i]["army"]) == ai:
@@ -196,6 +210,66 @@ func regarrison(list: Array) -> void:
 			_form(ai, gi, false)
 
 
+func _muster(ai: int) -> void:
+	## a garrison (one group) to its count where it stands: lift off what's gone (the last of each
+	## kind), step in what's new from just behind, shuffle the rest to their places
+	for i in range(figs.size() - 1, -1, -1):
+		var f0: Dictionary = figs[i]
+		if int(f0["army"]) == ai and not f0["alive"] and f0["state"] == "lift" and float(f0["t"]) > 0.6:
+			(f0["node"] as Node3D).queue_free()
+			figs.remove_at(i)
+	var g: Dictionary = armies[ai]["groups"][0]
+	var want: Dictionary = _want(g)
+	for k in ["inf", "cav", "gun"]:
+		var line: Array = figs.filter(func(f): return int(f["army"]) == ai and f["alive"] and f["kind"] == k)
+		for i in range(int(want[k]), line.size()):
+			_lift(line[i])
+	if not bool(g.get("colours", false)):
+		for f in figs:
+			if int(f["army"]) == ai and f["alive"] and f["kind"] == "flag":
+				_lift(f)
+	var had := {}
+	for f in figs:
+		if int(f["army"]) == ai:
+			had[(f["node"] as Node3D).get_instance_id()] = true
+	_form(ai, 0, false)
+	var dir: Vector2 = g["dir"]
+	for f in figs:
+		if int(f["army"]) != ai or not f["alive"]:
+			continue
+		if not had.has((f["node"] as Node3D).get_instance_id()):
+			f["from"] = (f["home"] as Vector2) - dir * FIG * size_mult * 0.9
+			f["at"] = f["from"]
+			f["dur"] = 0.8
+		elif (f["state"] == "stand" or f["state"] == "march") and (f["at"] as Vector2).distance_to(f["home"]) > 1.0:
+			var home: Vector2 = _dry(f["home"], dir)
+			if wv.scenery != null:
+				home = wv.scenery.clear_of(home, FIG * size_mult * 0.4)
+			f["home"] = home
+			f["from"] = f["at"]
+			f["state"] = "march"
+			f["t"] = 0.0
+			f["delay"] = 0.0
+			f["dur"] = 0.6
+		_place(f)
+
+
+func _lift(f: Dictionary) -> void:
+	## taken off the table: up and away (a garrison grown smaller)
+	f["alive"] = false
+	f["state"] = "lift"
+	f["t"] = 0.0
+
+
+func _want(g: Dictionary) -> Dictionary:
+	## the pieces a group stands, by kind: its men (pieces) and, on the board, the train an army
+	## that size brings along (v2.0.2: horse and guns as well as the men, not in their place)
+	var want: Dictionary = pieces(int(g["share"]))
+	want["cav"] = int(want["cav"]) + int(g.get("horse", 0))
+	want["gun"] = int(want["gun"]) + int(g.get("guns", 0))
+	return want
+
+
 func arrival() -> float:
 	## seconds until everyone has reached their place
 	var t := 0.0
@@ -205,6 +279,14 @@ func arrival() -> float:
 		if f["state"] == "march":
 			t = maxf(t, 2.6 + float(f["delay"]))
 	return t
+
+
+static func battle_train(n: int) -> Dictionary:
+	## v2.1: the train a big army brings into battle as well as its men (the owner: "i want to see
+	## what we can do with a big battle"): two horsemen from 14, a third from 26; a gun from 18, a
+	## second from 30. They stand with its biggest group and fire and charge with it, but they aren't
+	## its count: they fall only when the whole army does (not with their group, RV-002 F6).
+	return {"horse": (2 if n >= 14 else 0) + (1 if n >= 26 else 0), "guns": (1 if n >= 18 else 0) + (1 if n >= 30 else 0)}
 
 
 static func pieces(n: int) -> Dictionary:
@@ -226,14 +308,24 @@ func _form(ai: int, gi: int, fresh: bool) -> void:
 	var at: Vector2 = g["at"]
 	var dir: Vector2 = g["dir"]
 	var side := Vector2(-dir.y, dir.x)
-	var want: Dictionary = pieces(int(g["share"]))
+	var want: Dictionary = _want(g)
 	var have := {"inf": [], "cav": [], "gun": []}
 	for f in figs:
 		if int(f["army"]) == ai and int(f["group"]) == gi and f["alive"] and have.has(f["kind"]):
 			(have[f["kind"]] as Array).append(f)
+	var base: Dictionary = pieces(int(g["share"]))
 	for k in ["inf", "cav", "gun"]:
+		var counting := 0
+		for f0 in have[k]:
+			if bool(f0["counts"]):
+				counting += 1
 		for i in range(int(want[k]) - (have[k] as Array).size()):
-			(have[k] as Array).append(_new_fig(ai, gi, k, fresh))
+			var nf := _new_fig(ai, gi, k, fresh)
+			if counting < int(base[k]):
+				counting += 1 ## the count's own pieces first
+			elif bool(g.get("train", false)):
+				nf["counts"] = false ## the train: horse and guns as well as the men, not in their place
+			(have[k] as Array).append(nf)
 	var men: Array = have["inf"]
 	var files: int = clampi(int(ceil(sqrt(float(men.size()) * 1.6))), 1, 6)
 	for i in men.size():
@@ -244,11 +336,25 @@ func _form(ai: int, gi: int, fresh: bool) -> void:
 		men[i]["home"] = at + side * off - dir * float(rank) * FIG * 1.05 * size_mult
 		men[i]["rank"] = rank
 	var ranks: int = int(ceil(float(men.size()) / float(files)))
-	var back: float = float(ranks) * FIG * 1.05 + FIG * 0.6
+	var back: float = (float(ranks) * FIG * 1.05 + FIG * 0.6) * size_mult
 	var heavy: Array = (have["cav"] as Array) + (have["gun"] as Array)
+	if bool(g.get("beside", false)):
+		## the board's train, beside the men on the side away from the token: the guns (low) in
+		## front, the horse (tall) behind them and half a place over, so the camera sees both
+		var x0: float = float(files - 1) * 0.5 * GAP["inf"] * FIG * size_mult + FIG * size_mult * 0.85
+		var rows := {"cav": 0, "gun": 0}
+		for j in heavy.size():
+			var hk: String = heavy[j]["kind"]
+			var col_i: int = int(rows[hk])
+			rows[hk] = col_i + 1
+			var dx: float = x0 + (float(col_i) + (0.45 if hk == "cav" else 0.0)) * FIG * size_mult * 0.9
+			heavy[j]["home"] = at - side * dx - dir * FIG * size_mult * (0.55 if hk == "cav" else -0.45)
+			heavy[j]["rank"] = 9
 	for j in heavy.size():
+		if bool(g.get("beside", false)):
+			break
 		var k: String = heavy[j]["kind"]
-		var off: float = (float(j) - float(heavy.size() - 1) * 0.5) * GAP[k] * FIG
+		var off: float = (float(j) - float(heavy.size() - 1) * 0.5) * GAP[k] * FIG * size_mult
 		heavy[j]["home"] = at + side * off - dir * back
 		heavy[j]["rank"] = 9
 	if not extras and bool(g.get("colours", false)) and int(g["share"]) > 0 and has_model("flag"):
@@ -453,7 +559,9 @@ func volley(ai: int, foe: int = -1) -> String:
 	var target: Vector2 = _target_of(ai, gi, foe)
 	var mine: Array = figs.filter(func(f): return int(f["army"]) == ai and int(f["group"]) == gi and f["alive"] and f["state"] == "stand")
 	var guns: Array = mine.filter(func(f): return f["kind"] == "gun")
-	_shot_at = _clock + 0.22
+	## v2.2: the balls are seen to fly, so a man falls when the first one gets there
+	var reach: float = (armies[ai]["groups"][gi]["at"] as Vector2).distance_to(target)
+	_shot_at = _clock + 0.22 + _flight(reach)
 	if not guns.is_empty() and randf() < 0.45:
 		var gun: Dictionary = guns[randi() % guns.size()]
 		_aim(gun, target)
@@ -461,7 +569,8 @@ func volley(ai: int, foe: int = -1) -> String:
 		gun["t"] = -0.1
 		gun["fired"] = false
 		gun["target"] = target
-		_shot_at = _clock + 0.12
+		gun["foe"] = foe
+		_shot_at = _clock + 0.28 + BALL_FLIGHT
 		## its gunner touches it off, then rams the next charge home
 		var crew: Array = figs.filter(func(f): return int(f["army"]) == ai and int(f["group"]) == gi and f["alive"] and f["kind"] == "gunner")
 		if not crew.is_empty():
@@ -472,13 +581,21 @@ func volley(ai: int, foe: int = -1) -> String:
 	var men: Array = mine.filter(func(f): return f["kind"] == "inf")
 	men.sort_custom(func(p, q): return int(p["rank"]) < int(q["rank"]))
 	var n: int = mini(men.size(), 6)
+	var first := INF
 	for i in n:
 		var f: Dictionary = men[i]
 		_aim(f, target)
+		## each man picks his mark in the ranks across the way (v2.2: his ball is seen to go there)
+		f["target"] = target + Vector2(randf_range(-1.0, 1.0), randf_range(-1.0, 1.0)) * FIG * 1.1
+		f["foe"] = foe
 		f["state"] = "fire"
 		f["t"] = -randf() * 0.16
 		f["fired"] = false
 		f["kneel"] = int(f["rank"]) == 0 and i % 2 == 0
+		## when his ball gets there: his trigger (FIRE_AT after his turn comes), then its flight
+		first = minf(first, FIRE_AT - float(f["t"]) + _flight((f["at"] as Vector2).distance_to(f["target"])))
+	if n > 0:
+		_shot_at = _clock + first - 0.06 ## (RV-005 F5) the first man falls as the first ball arrives (set_count adds 0.06)
 	if n == 0:
 		var horse: Array = mine.filter(func(f): return f["kind"] == "cav")
 		if not horse.is_empty():
@@ -543,7 +660,8 @@ func _cull(ai: int, gi: int, delay: float) -> void:
 	var dir: Vector2 = armies[ai]["groups"][gi]["dir"]
 	var short := false
 	for k in ["gun", "cav", "inf"]:
-		var line: Array = figs.filter(func(f): return int(f["army"]) == ai and int(f["group"]) == gi and f["alive"] and f["kind"] == k)
+		## (v2.1: the train an army brings isn't its count: no casualty takes a gun of it)
+		var line: Array = figs.filter(func(f): return int(f["army"]) == ai and int(f["group"]) == gi and f["alive"] and f["kind"] == k and bool(f["counts"]))
 		line.sort_custom(func(p, q): return (p["at"] as Vector2).dot(dir) > (q["at"] as Vector2).dot(dir))
 		var extra: int = line.size() - int(want[k])
 		for i in maxi(0, extra):
@@ -553,8 +671,16 @@ func _cull(ai: int, gi: int, delay: float) -> void:
 	if short:
 		_form(ai, gi, false) ## a horse is down: four men step up in its place
 	if share == 0:
+		var army_down: bool = int(armies[ai]["n"]) <= 0
 		for f in figs:
 			if int(f["army"]) == ai and int(f["group"]) == gi and f["alive"] and not bool(f["counts"]):
+				if (f["kind"] == "cav" or f["kind"] == "gun") and not army_down:
+					continue ## v2.1: the army's train stands while the army fights on anywhere (RV-002 F6)
+				_topple(f, delay + randf_range(0.2, 0.7))
+	if int(armies[ai]["n"]) <= 0:
+		## the army is gone: its train falls with it, whichever group it stood with
+		for f in figs:
+			if int(f["army"]) == ai and f["alive"] and not bool(f["counts"]) and (f["kind"] == "cav" or f["kind"] == "gun"):
 				_topple(f, delay + randf_range(0.2, 0.7))
 
 
@@ -662,6 +788,9 @@ func _process(delta: float) -> void:
 		if k >= 1.0:
 			node.queue_free()
 			puffs.remove_at(i)
+	for i in range(tracers.size() - 1, -1, -1):
+		if _fly(tracers[i], delta):
+			tracers.remove_at(i)
 	for i in range(flashes.size() - 1, -1, -1):
 		var fl: Dictionary = flashes[i]
 		fl["t"] = float(fl["t"]) + delta
@@ -737,7 +866,7 @@ func _place(f: Dictionary) -> void:
 			node.transform = Transform3D(Basis(Vector3.UP, atan2(bd.x, bd.y)), (b["node"] as Node3D).position + Vector3(seat.x, FIG * 0.02, seat.y))
 			return
 		"march":
-			var dur := 2.6
+			var dur: float = float(f.get("dur", 2.6))
 			var k: float = clampf((t - float(f["delay"])) / dur, 0.0, 1.0)
 			f["at"] = (f["from"] as Vector2).lerp(f["home"], 1.0 - pow(1.0 - k, 1.6))
 			var dv: Vector2 = (f["home"] as Vector2) - (f["from"] as Vector2)
@@ -764,7 +893,7 @@ func _place(f: Dictionary) -> void:
 			if t > 0.0:
 				if f["kind"] == "inf":
 					_pose(f, "inf_kneel" if bool(f.get("kneel", false)) else "inf_aim")
-				var at_shot: float = 0.18
+				var at_shot: float = FIRE_AT
 				if t > at_shot and not bool(f.get("fired", true)):
 					f["fired"] = true
 					_muzzle(f)
@@ -879,18 +1008,86 @@ func _muzzle(f: Dictionary) -> void:
 	add_child(l)
 	flashes.append({"light": l, "t": 0.0, "e": 9.0 if gun else 6.0})
 	_puff(p, 2.4 if gun else 1.0, Color(0.88, 0.87, 0.84), top)
+	var aim: Vector2 = f.get("target", p + face * FIG * 8.0)
+	_tracer(top, aim, gun, int(f["army"]), int(f.get("foe", -1)))
 	if quiet:
 		return
 	if gun:
 		Audio.field("cannon_big", -2.0, 0.05)
 		shake = 1.0
-		var tgt: Vector2 = f.get("target", p + face * FIG * 8.0)
-		get_tree().create_timer(0.38).timeout.connect(func():
+		var tgt: Vector2 = aim
+		get_tree().create_timer(BALL_FLIGHT).timeout.connect(func():
 			_puff(tgt + Vector2(randf_range(-1, 1), randf_range(-1, 1)) * FIG, 1.6, Color(0.45, 0.38, 0.3))
 			shake = maxf(shake, 0.5)
 			Audio.field("ball_impact", -5.0, 0.06))
 	else:
 		Audio.field("musket", randf_range(-9.0, -5.0), 0.1)
+
+
+const BALL_FLIGHT := 0.38 ## a cannon's round shot, muzzle to the ground it strikes
+const FIRE_AT := 0.18 ## how far into his firing a man's musket goes off
+
+
+static func _flight(dist: float) -> float:
+	## a musket ball's time in the air: quick, but slow enough to be followed
+	return clampf(dist / (FIG * 40.0), 0.12, 0.26)
+
+
+func _tracer(from: Vector3, aim: Vector2, gun: bool, ai: int, foe: int) -> void:
+	## v2.2: the shot is seen to go where it's going: a streak in the firer's colours from the
+	## muzzle to the man it's meant for (a dark round shot, arcing, from a gun)
+	var to: Vector3 = wv.ground_at(aim) + Vector3(0.0, FIG * (0.15 if gun else 0.6), 0.0)
+	var mi := MeshInstance3D.new()
+	var m := StandardMaterial3D.new()
+	m.disable_receive_shadows = true
+	if gun:
+		var ball := SphereMesh.new()
+		ball.radius = FIG * 0.14
+		ball.height = FIG * 0.28
+		ball.radial_segments = 10
+		ball.rings = 6
+		mi.mesh = ball
+		m.albedo_color = Color(0.12, 0.11, 0.1)
+		m.emission_enabled = true
+		m.emission = Color(1.0, 0.55, 0.2)
+		m.emission_energy_multiplier = 0.6
+	else:
+		## a short hot streak, bright at the ball and thinning to nothing behind it, in the
+		## firer's colour (his shots are told from the other side's by it)
+		var streak := CylinderMesh.new()
+		streak.top_radius = FIG * 0.075
+		streak.bottom_radius = FIG * 0.008
+		streak.height = FIG * 1.1
+		streak.radial_segments = 6
+		streak.rings = 1
+		mi.mesh = streak
+		m.shading_mode = BaseMaterial3D.SHADING_MODE_UNSHADED
+		var col: Color = armies[ai]["color"]
+		var hot: Color = col.lightened(0.12).lerp(Color(1.0, 0.86, 0.5), 0.3)
+		m.albedo_color = Color(hot.r * 1.6, hot.g * 1.6, hot.b * 1.6, 1.0) ## over 1: the glow takes it
+	mi.material_override = m
+	mi.cast_shadow = GeometryInstance3D.SHADOW_CASTING_SETTING_OFF
+	mi.position = from
+	var d: Vector3 = to - from
+	if not gun and d.length() > 0.01:
+		mi.basis = Basis(Quaternion(Vector3.UP, d.normalized()))
+	add_child(mi)
+	tracers.append({"node": mi, "from": from, "to": to, "t": 0.0, "dur": BALL_FLIGHT if gun else _flight(d.length()),
+		"arc": FIG * 1.6 if gun else 0.0, "gun": gun, "aim": aim, "army": ai, "foe": foe})
+
+
+func _fly(tr: Dictionary, delta: float) -> bool:
+	## a shot in the air: true when it has struck (a musket ball kicks up a little dust)
+	tr["t"] = float(tr["t"]) + delta
+	var k: float = clampf(float(tr["t"]) / float(tr["dur"]), 0.0, 1.0)
+	var node: MeshInstance3D = tr["node"]
+	node.position = (tr["from"] as Vector3).lerp(tr["to"], k) + Vector3(0.0, float(tr["arc"]) * 4.0 * k * (1.0 - k), 0.0)
+	if k < 1.0:
+		return false
+	node.queue_free()
+	if not bool(tr["gun"]):
+		_puff(tr["aim"], 0.35, Color(0.62, 0.56, 0.46))
+	return true
 
 
 func _puff(at: Vector2, big: float, col: Color, pos: Variant = null) -> void:

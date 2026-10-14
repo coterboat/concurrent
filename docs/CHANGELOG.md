@@ -2,6 +2,328 @@
 
 The bible says amendments come with a dated entry and the test or band that justified them. Everything below has both.
 
+## v2.2 — 10 Oct 2026: Fortune owes you for an exchange it took (rules 22); which dice are rolling where
+
+The owner: "if you have fortune used against you and get screwed out of good rolls that should give
+you a little fortune score to tip the scales back." And: "there needs to be more identification for
+which dice are rolling where - either bullet animations or some sort of a UI effect indicating which
+shots are going where." **Rules 22**: new games play it, and every save replays under its own rules.
+
+- **The rebate** (`resolve.gd`, `fortune.gd`, gated `map.rules >= 22`). When a commander calls on
+  Fortune, the exchange thrown away had gone the other side's way. Fortune's ledger never booked it
+  (an exchange Fortune throws away isn't luck), so the side it was taken from got nothing for it. Now the
+  battle carries a `rebate`: what the exchange was worth to them (the change in their chance of winning
+  the battle), half of it, in hundredths of a battle, booked into their ledger at the round's end like
+  any bad luck. In a melee every front that stood in the exchange is owed its share, by its men; a
+  defender who loses an exchange to an invader's favour is owed the same way. The spender isn't
+  charged anything more than the favour. The battle says it: "Varek calls on Fortune: that exchange
+  never happened — Dad is owed for it" (the line shrinks to fit between the faces, so two full titles
+  don't run under a speech bubble).
+- Tests: `test_v22` (9 cases). An assault: Varek's favour throws away an exchange that had gone Dad's
+  way, and Dad's ledger under 22 is ahead of 21 by exactly the rebate on the battle (every seed where it
+  was spent and neither the floor nor the bar bites). Varek's ledger is the same under both. Rules 21 has
+  no rebate. A melee: every invader whose front stood in the thrown exchange is owed, none other, never
+  the spender. Whole wars on known24 and isles24 under 22 replay, conserve and rebuild.
+- **Arena** (known24, general/veteran/recruit/hask, 40 wars, same seeds, rules 21 → 22 with the whole
+  worth → 22 with half). Favours earned a game 9.6 → 14.7 → 11.8, spent 9.8 → 12.7 → 11.3. Won from
+  behind 20% → 30% → 27%; finishes within 3 on score 5 → 10 → 9 of 36; lead changes 1.5 → 1.8 → 1.7.
+  Wins within noise each way. The whole worth was more Fortune than "a little" (half again as many
+  favours), and half keeps most of the comebacks for under half the inflation: `Fortune.REBATE_22 = 50`
+  (try another with `frebate=`).
+- **Which dice are rolling where** (the owner, on two fronts of one colour). In a melee or a free-for-all:
+  - **Every pair on the table carries a tag** on the far rail naming its front ("from Ridge"), and that
+    front's plate on the field carries the same name ("9 from Ridge"). The defenders' plate has none.
+  - **A throw's pairs lie as their fronts stand**, left to right, so a front's dice sit under it.
+  - **As a pair is read, a thread runs from its tag up to its front's plate**, a spark running along it,
+    and the plate swells (`game/ui/front_marks.gd`, peeled from the theater). The thread is in the
+    colours of whoever won the pair, parchment for an even one (the owner, after seeing it: "let's make
+    the color of the arrows connecting the dice to the target reflect the winner's color").
+  - **The shots are seen to fly** (`diorama.gd` `_tracer`): every musket fired leaves a short hot streak
+    in the firer's colour, flying at a man in the group across from it, and kicks up dust where it lands; a
+    gun's round shot arcs over. A man falls when the first ball reaches him, not before.
+  - The "−1" and "tie!" over a pair rise above its tag instead of over it.
+- Probe `v22` (19 facts): his two columns carry their names on their plates; 30 tags in three
+  exchanges, each over its own pair and naming its front; pairs in field order; threads end on their own
+  front's plate (0 px off) for both fronts, each in its pair winner's colours (red, blue and an even
+  parchment one seen); 85 shots, each at the group facing its shooter; the tags gone
+  with the battle, and nothing of the melee (plate names, shots, tags) on the plain assault after it;
+  the first man falls as the first ball lands (8 volleys, 0 early); a free-for-all's pairs name both
+  armies and lie in field order; and the "Dad is owed for it" line, fitting between the faces, after
+  Varek spends his favour.
+- **The critics, calibrated (RV-005, `docs/reviews/RV-005-calibration.md`).** The owner asked whether
+  the hostile reviews find real things or invent them. Grok and Codex reviewed one packet with three
+  bugs planted in it (high, medium, low). Grok caught all three, Codex two (it missed the low one).
+  Neither reported anything that isn't there. Between them they found three real bugs nobody planted,
+  each confirmed by me and by a blind second verifier, and all fixed:
+  - **Each Fortune call names whom it owes** (Grok F3 = Codex F4). The narration read the battle's
+    summed rebate, so in a melee with two calls, one call named a commander owed for the other. Each
+    call now carries its own `owed` (the battle's `rebate` is still the sum, for the ledger; outcomes
+    and hashes are unchanged), and a call answered live finds its own in the re-resolved event.
+    `test_v22` `_each_call_its_own`: Varek and Dad both call in one melee (31 seeds), and Dad's call
+    owes Varek alone. It fails without the fix.
+  - **A free-for-all's pairs lie in field order too** (Codex F3), by the middle of their two armies.
+  - **The fall waits for the first ball actually fired** (Codex F5): the time is each man's own
+    trigger plus his ball's flight, not an estimate from the group's centre.
+  Over five rounds Grok has invented 5 of 17 findings, all confident "X never happens" misreads of a
+  big diff. The verify step is what makes the reviews safe to act on.
+
+## v2.1 — 8 Oct 2026: one commander's columns are separate fronts (rules 21); big battles
+
+The owner: "if i'm attacking from two places, rather than have my army show up as one large force,
+let's use the same logic for when two opponents are attacking a third opponent. both in terms of
+visuals and how the combat is structured. this matches risk 2's same time rules and i think it adds
+an interesting tactical layer. it allows for a pesky defender to hold out a huge force by separating
+the power between two different places." **Rules 21**: new games play it, and every save replays
+under the rules it was played with.
+
+- **Separate fronts** (`resolve.gd`, gated `map.rules >= 21`). A commander's columns into one land
+  from different lands used to be merged into one army before anything was fought
+  (`_merge_same_owner`). Now each is its own front, exactly as two commanders' would be:
+  - **A land stormed from two sides is a melee.** The defenders' whole firing line faces every front
+    in every salvo, so a front smaller than the line fires fewer men than the defenders do. Calls,
+    reserves and falling back are per front, from that front's own land.
+  - **A border clash is fought only by the column on that border.** A merged attack used to drag
+    every column bound for the land into the clash on one border.
+  - **One commander's fronts never fight each other.** Whichever stand when the walls fall join up
+    and take the land together; columns into an empty land walk in together. Surges are fronts too.
+  - Tests: `test_v21` (18 cases). Ridge and Harbor on The Gate make one melee of two fronts (9 and 9)
+    under 21, one invasion of 18 under 20. The defenders' line faces both fronts in every salvo. The
+    fronts join and take it with every man standing (36 of 40 seeds; the defenders hold the other 4).
+    The clash on Ridge's border is fought by Ridge's column (9, not 18). Two columns walk into an
+    empty land together, and two fronts push on with the land's one surge (20 of 20 seeds). Whole five-commander wars on two maps replay, conserve and rebuild under 21
+    (7 and 13 lands stormed from two sides by one commander).
+- **Arena** (known24, general/veteran/recruit/hask, draft, levée 3, 40 wars on the same seeds, rules 20
+  → 21). Wins 8/14/10/8 → 8/14/11/7 (noise). Domination 3/40 → 1/40. The attacker took even fights 61% →
+  56%, and capitals fell 3.73 → 3.27 a game: the stubborn defender the owner asked for, without a new
+  favourite. Melees 2.4 → 11.4 a game, walk-ins 6.67 → 10.05. Won from behind 5% → 7%. The AI still
+  plans a joined attack as one force's odds. It isn't hurt in the arena, but it doesn't yet know that
+  splitting has a price.
+- **On screen.** The report says "The Gate from two sides" and "Dad storms Varek's 9 from Ridge (9) and
+  Harbor (9) at once". The battle shows one face for him, his fronts' men side by side on his count ("9 +
+  9"; a third ring in that row ran into the words in the middle), his columns on the land coming at the
+  defenders from two sides, and the call plate names the front ("Dad's call, the front from Harbor"). Last round's fate marks know each front's own fate.
+  And the melee's words now say what the firing line does: the battle's odds line said the defenders
+  "must split themselves across every front", its scoring line spoke of "the defenders' share of the
+  wall", and How to Play said they "split their strength". That's how melees worked before v1.6. Since
+  the firing line, the defenders' whole line answers every front, which is why a stubborn defender can
+  hold off a split force. The old words stay for games without the firing line.
+- **Big battles bring their train** (the owner chose to see "what we can do with a big battle"). An
+  army brings horse and guns *as well as* its men: two horsemen from 14, a third from 26; a gun (with
+  its crew) from 18, a second from 30 (`Diorama.battle_train`). They stand with its biggest group, fire
+  and charge with it, and fall only when the army does. They aren't its count: no casualty takes one,
+  so "one die, one man" still holds for the counting pieces (a horse for 5, a gun for 10 past 12 men).
+- **The battle's words are wiped when it ends** (the owner: "the 'Last Man Standing' and 'Fall Back'
+  text remain into the next battle"). The theater's fade restored every piece of its UI to full when
+  it closed, the faded shout included, so the last shout was still up when the next battle opened. The
+  shout now keeps its own fade and is wiped at every engagement's start, at the close and on a skip.
+- **A soak: a whole war in the client on the land**, every battle opened and auto-rolled, the advisor
+  drafting Dad's sheets (Known World, four commanders, 7 rounds, 559 s). It finished with no script
+  error and no crash. It did log 266 "Invalid polygon data, triangulation failed" errors. While a
+  battle has the land's camera down among the troops, lands behind it project to a far-off sentinel
+  point, and the board still drew their arrows and tokens there as shapes of no size. The board now
+  draws nothing whose point is behind that camera (`MapBoard.behind`), and no arrowhead on an arrow of
+  no length. A second soak (world30, 9 rounds) still logged 23, from points just in front of the
+  camera's near plane thrown absurdly far off the screen; the guard covers those too. A third soak of
+  the same war: no errors at all.
+- Probe `v21` (13 facts): two fronts of his own on the land, the faces and words; a big battle's train
+  with the counting pieces still the count three exchanges in, and the loser destroyed to the last
+  piece, train and all; the shout wiped.
+- **Outside review** (Grok, red team, `docs/reviews/`). Round 1 found 3 things; 2 held up. F1 (high) was
+  partial. Its claim that joining a commander's fronts drops a column's surge was disproved: a surge
+  belongs to the land, and every column into it carries the same one, which `test_v21` now pins. But
+  the join and the empty-land merge are now gated on rules 21, so older saves take literally the old
+  code path, and the joined side is built the way merged columns always were. F2 (the train not
+  falling with a destroyed army) was rejected: `_cull` already topples a group's non-counting figures
+  when its count reaches nothing, and `v21` now states it. F3 (a region won and lost in one report kept
+  flaring) was confirmed and fixed; `v202` states it.
+  Round 2 found 6 things; 3 held up:
+  - **F1 (high), confirmed.** The report's clash still treated all of a commander's columns into the land
+    as the clash column. Under rules 21 the other column's arrow vanished, or wore the clash's survivor
+    count. Only the column on the clash's border is settled now. `v21` states it, and was watched failing
+    without the fix: Harbor's column showed the clash's 6 rather than its own 7.
+  - **The class:** last round's fate marks did the same, keying a lost clash by commander and land. Under
+    rules 21 they key it by column (`LastRound.ghosts` takes the rules). `test_v21` was watched failing
+    under the old keying.
+  - **F5, partial.** A report skipped mid-swoop left the camera in the battle's frame. The swoop's tween is
+    now kept, and a skip stops it. `v202` states it: skipped at zoom 1.22, back at the fit.
+  - **F6, confirmed.** The train fell with its group while its army fought on. It now falls only with the
+    army.
+  - Rejected: F2 (the surge belongs to the land; only the random test bot can make columns disagree, and
+    they get rules 20's treatment). F3 (the lift has always hidden the figure; `v203` now checks the node is
+    hidden). F4 (`fromIds` predates this change).
+  Round 3 found 3 things; 2 held up:
+  - **F1 (high), confirmed.** A front that fell back or was destroyed, while the same commander's other
+    front took the land, was marked as having taken it. Under rules 21 each column is now checked against
+    its own front (`LastRound._own_front`). `test_v21` was watched failing without the check: Ridge's front
+    destroyed, Harbor's taking The Gate, 51 seeds.
+  - **F2, confirmed.** An old save's clash (rules 20, columns merged) was drawn with one column's count,
+    not the army that fought it. The clash is now told with the event's sizes. `v202` loads a rules 20 game:
+    18 on the map, as in the event.
+  - **F3, rejected.** The settings panel is freed when it closes, so a hidden one never takes Esc. The
+    guard was added anyway.
+  - **The class:** the round's report said "held The Gate against Dad and Dad at once", and the war's
+    tally counted a two-front storm as two battles (and two won). A commander is now named once and
+    counted once per battle. `test_v21`: 1 battle, 1 won.
+  Round 4 found 2 things; both held up:
+  - **F1 (high).** In an old save's clash, both of a commander's columns now stand aside while their merged
+    army is told. Since round 3 the clash road carried that army's 18, and his other column still showed
+    its 9 beside it. `v202` states it.
+  - **F2.** A mixed melee is now titled by commanders: "2 armies storm it from three sides at once" (Dad
+    from Ridge and Harbor, Ysolde from Docks). `v21` states it. Its picture showed one thing more: the
+    "and from Harbor" ring, a third in the row of faces, ran into the scoring words in the middle at
+    1440×900. A commander's other fronts now stand on his own count instead ("8 + 8"). `v21` also checks
+    that all four armies on that field stand between the words and the dice.
+  - The arc ended at its four rounds, each with a high finding that held up; all are fixed. Every
+    finding, upheld or rejected, is in `docs/reviews/findings.jsonl`, and Grok's answers are in
+    `docs/reviews/inbox/`. The fourth round's findings were all in the "one commander, many columns"
+    class, now looked for across the report, the marks, the tally and the battle. Whether to run more
+    rounds is the owner's call.
+
+## v2.0.2 — 8 Oct 2026: the battle report on the land, made to feel like one
+
+No rule changes (rules 20); nothing in `engine/` or `session.gd`. The owner, after playing v2.0: "playing
+the game is great, feels very smooth… we've proven the 3d concept works and is better than the 2d, now
+let's make it feel great", starting with "make sure border clashes show both arrows colliding, with the
+winner's carrying through". Every item is a fact in the new probe `v202` (known24, on the land).
+
+- **A border clash, told on the map.** It used to be a starburst at the middle of the line, over two
+  arrows lying on top of each other (both bent to the same side), and when the dice landed the loser's
+  arrow vanished. Now (`MapBoard.clash_fx`, `_draw_clash`) the two columns' arrows charge down the road
+  between their lands, gathering speed, and meet head-on, each carrying its count. The tokens take the
+  shock and the crash sounds as they meet (it used to sound as they set off). They push there, the meeting
+  point swaying and sparks flying, for at least 0.45 s. When the dice land (`clash_won`, from the
+  cinema's `_settle_arrows`) the winner's arrow drives the loser's back into its own land. The loser's
+  goes dark and splintered and fades, and the winner's runs on to the land it marched on, its count
+  falling to the men still standing (13 → 5 in the probe). Then the winner's own arrow carries on. The
+  same happens on the chart, and when the player's own clash opens the battle on the land, the arrows meet
+  as the camera swoops down and the winner carries through as it rises. Probe: they meet head-on 4 px
+  from the middle of a 118 px border, the meeting point is driven 56 → 37 px toward the loser's land, and
+  afterward the winner's arrow (5) is the only one left. Tests: `test_v20` (6 cases): each column runs its
+  half of the road; dice that land early wait for the meeting; a clash is won once; a clash settled after
+  the report moved on breaks at once.
+- **The tin columns on the land do it too** (`marches.gd`). The two columns march to the middle of the road
+  and stand there face to face (they used to march through each other on a loop). At the break, the
+  loser's men topple backwards and sink, and the winner's march on through, with the men it lost falling
+  out of the column. Probe: both columns hold at the middle; the loser's figures down; the winners past
+  the middle.
+- **The report's camera leans in on the fights** (on the land; `lean_in`, `stand_back`). Every fight,
+  walk-in, surge and fallen or new capital gets a glide in to about 1.9× the fit, framed in the clear band
+  between the caption and the battle card. Fights far apart get a small hop out and back in between them.
+  It stands back for each new stage, and at the end it gives back the view the report found. Before, the
+  camera never moved at the fit zoom: Cairn and Wold's whole clash fit in 40 px between their tokens.
+  Films set to "Still paintings" keeps the camera still. Skipping the report puts the view back at once.
+  Probe: zoom 0.64 against the fit's 0.44, both lands on screen and 29 px clear of the card. Skipped: back at the
+  fit. Stills: it never moves. `v20b` measured the camera's handoff 40 frames after the report closed,
+  which is now mid-glide (27 units off); it waits for the glide home (`camera_moving`) and then holds the
+  same fact.
+- **A land taken changes colour as you watch.** Its new owner's colour spreads over it in 0.7 s, on the
+  chart and on the ground under the board (`_ink`), and its token pops with a ring in its new colours. It
+  used to swap in a frame. Probe: Wold on its way, then wholly red 27 frames later.
+- **A count that changes bumps.** A token whose number changes (men placed, men lost) swells for a moment,
+  gold going up and red going down. A token under the cursor lifts a little.
+- **A region won whole is a moment.** When the report hands every land of a region to one commander, the
+  region's name flares in their colours and a ring sweeps over each of its lands. Until now only a line
+  in the log said so, after the round. Probe: a region falling to red in the report.
+- **Arrows on the land cast a shadow**, so they ride over the ground rather than lying painted on it. At
+  "Orders revealed" every column's arrow grows out of its land at once.
+- **An order being dragged looks like the order.** It used to be a pale line to the cursor. Now it is the
+  arrow in the commander's colours (a march dashed), snapped onto the bordering land under the cursor.
+- **Surges that clash** (two surges running at each other's lands) are told the same way. Their columns
+  have no arrows of their own on the board (each is drawn on from the land just taken), so the clash takes
+  both columns from its event and hides the surges' own legs while it's told. Probe: both columns drawn.
+- **A stage's banner gives way.** "THE ASSAULTS" sat over the middle of the map through the first
+  assault (it holds 2.3 s; the stage beat is 1.5 s), hiding the fight the camera had just leaned in on.
+  It now slides up and out as the stage's first moment is told.
+- **A question about the planning goes with it.** With a turn timer, the clock could seal the orders while
+  "5 recruits still unplaced" was up. The question stayed over the whole battle report. In hotseat, the
+  next commander could answer it and place their own recruits. Planning questions now close when the phase
+  moves on (`_drop_planning_question`). Probe: gone after the timer seals each commander's orders.
+- **A crash at exit, closing a game while its land was still being built.** The land is built on a worker
+  thread, and the build writes into the land when it finishes. Nothing waited for it, so a game freed in
+  its first second or two (quit to the title or the desktop right after starting) could crash at exit
+  (signal 11 in `scenery.gd`). `v202` hit it: every fact passed, then exit 134. The land now waits for its
+  build before it's freed (`land.gd`, `NOTIFICATION_PREDELETE`). `v202` exits clean.
+
+### Round two: the garrisons kept, the army swelling, the land made solid
+
+The owner, on round one: "this all looks great. one quick fix - when troops are added it resets all of
+them in a region marching every time. it should be a seamless +1/-1 at each point… let's take a pass
+on the look of the 3d assets in game… make the map look and feel more solid… i also want to add in
+cavalry and cannons to the map and battles once forces gain enough size. not to replace soldiers, but
+as additions." Facts in the new probes `v203` (the garrisons and the train) and `v204` (the land's look,
+from the same cameras every time).
+
+- **A garrison keeps its men** (`Diorama.regarrison`, `_muster`). A land whose count changed used to free
+  every figure and re-form, so each recruit placed made the whole garrison march in again. The same
+  happened every half second while the camera zoomed, because a garrison's spot follows its token's
+  size; round one's report camera made that constant. Now the same commander's garrison keeps its men.
+  A new one steps in from just behind (0.8 s), one gone is lifted off the table, and the rest shuffle to
+  their places (0.6 s), on dry ground. A land that changes hands still marches in afresh in its new
+  colours. Probe: two recruits on Cairn keep both men standing and add one from just behind; nobody
+  comes from afar; Firth next door doesn't stir; taken back, the extra man is lifted off; zoomed in, all
+  42 figures on the map are the same 42.
+- **An army brings its train.** A land's garrison shows its men (one for every two, five at most), as
+  ever, and now horse and guns *as well*: a horseman from 10 men, a gun from 16, a second horseman from
+  22, a second gun from 30 (`LandBoard.train_for`). The guns stand in front and the horsemen behind them,
+  beside the men on the side away from the token. They don't count as men, so "one figure for every two"
+  still holds. A column on the march in the report has a horseman riding at its head from 10 and a gun
+  rolling at its tail from 16 (`marches.gd`). In a clash they fall with their column, or march on with
+  it. Battles already field horse and guns once a group passes 12 (a horse for 5, a gun for 10, with 8 to
+  12 men always standing), and that's unchanged: there they are the count. Probe: a land of 20 stands
+  its 5 men, a horseman and a gun; a land of 34, two of each; a column of 18 has both.
+- **Every building stands on its own shadow** (`Scenery._contact`): a soft dark pool on the ground round
+  its foot, reaching a little up its walls (a decal: Forward+ draws it, Compatibility doesn't).
+- **And sits in the land** (`seat.gdshader`, a second coat over each model's own material, which is kept).
+  The lime-green grass plate of a model (the villages of the moors) is toned toward the land's greens.
+  A chalet's near-black shingles, which read as a hole in the mountains from the board's height, are
+  lifted a little. The foot of every wall is darkened where it meets the ground.
+- **A fuller countryside** (`props.gd`). The oak's crown is four lumps (it was two), and the pine has four
+  tiers (it had three). Both are shaded darker underneath, so they read round from above. Lone trees
+  come twice as often, some in copses of two to four, still off the roads, the buildings and every land's
+  battlefield. Known World: 831 → 1169 trees and rocks.
+- **Firmer light** (`world_view.gd`): the sun at 1.7 (1.55), the sky's fill at 0.62 (0.75), ambient
+  occlusion deeper (2.1, from 1.6) and a little of it in the sunlight too, so the relief and every
+  contact read with more weight.
+- Probes: `v203` (10 facts), `v204` (6 facts: every building grounded and coated on two maps, 1169 and 1070
+  trees and rocks, none on any land's battlefield).
+
+## v2.0.1 — 3 Oct 2026: the play critic's crowding notes on e5764ba
+
+No rule changes (rules 20); nothing in `engine/` or `session.gd`. The playtester found no open bugs on
+e5764ba (0 open, 4 fixed). The play critic's review (`playtest/reviews/2026-10-03-e5764ba-v114-polish.md`)
+called v1.14 "keep" and asked for three crowding fixes at the fit zoom; all three are in, each a fact in
+the new probe `v201` (a 1280×800 window, the Ring at the fit zoom, on the chart and on the land).
+
+- **A capital's crown keeps off the other lands' names** (the critic: crowns hid "Greywatch" and
+  "Cinderhow"). `MapBoard.crown_rect`: on the token's brow, unless that covers another land's name; then
+  slid along the brow; then smaller and lower on it. Where no spot clears (the Ring's middle, where
+  Goldmarch's name sits about 30 px above the Throne's token), the name it touches is written again over
+  the crown. Probe: every land on all six maps crowned in turn. On five maps no crown touches a name (17
+  set aside from the brow's middle). On the Ring, 4 of 26 still touch one, and every one of those names is
+  written over the crown. Crowns now count among the tokens' boxes, so a region's bonus keeps off them too.
+- **A region's bonus and pips keep off the names on the land too** (the critic: the Greyfell's "+3"
+  pips on "Grey Gate"). The bonus's spot was found again only when the zoom changed. On the land the
+  camera tips and swings with no zoom change, so the spot it found while the land rose went stale.
+  `v201` reproduced it, with the Greyfell's bonus on Stonehold's name. The spot is now found again whenever
+  the lands move against each other on the screen (`_layout`). Probe: the Ring at the fit zoom, 6 bonuses,
+  none on a name or a crown, on the chart and on the land.
+- **Two fate marks of one kind that would touch are one mark with its count** (the critic: two red crosses
+  at Cinderhow's walls ran into one red blob). `_queue_fate` merges them, and the disc carries a cream
+  "×2" tab. Probe: 17 columns thrown back on the Ring make 14 marks, no two of a kind touching, 3 of them
+  "×n", and the counts add up to all 17.
+- **A land's tip goes when a report or a dialog opens** (the critic: Fenmoor's tip stayed up through a
+  whole round's report and the next round's battles). It used to hide only when the board heard the cursor
+  leave a land. A report or a battle that opens over the board takes the mouse, so the board never heard.
+  `LandTip.stale` now hides it when the cursor isn't on the board, when the phase turns, or the moment a
+  report, battle, film or dialog opens. Pointing at a land again brings the tip back. Tests: `test_v20`
+  (3 cases). Probe: shown on pointing, gone under the pause menu, back on pointing again, and never up
+  through the battles and the report with the cursor left where it was. Without the fix, the tip was up
+  in RESOLVING.
+- **Esc on Settings, not reproduced.** The critic's Esc once left the Settings up. It closes them every
+  way tried: opened directly, from the pause menu, and with focus on each of the panel's 16 controls, on
+  the chart and on the land. The panel now takes Esc in `_input`, ahead of everything under it, rather
+  than waiting its turn in `_unhandled_input`. v114's fact still holds.
+
 ## v2.0 (draft) — 2 Oct 2026: the map and its battles on the land
 
 No rule changes: new games still play **rules 20**, nothing in `engine/` or `session.gd` changed, and

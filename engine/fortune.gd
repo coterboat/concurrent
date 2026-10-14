@@ -26,6 +26,16 @@ const BATTLE_18 := 50 ## half a battle's worth of bad luck owes you a favour
 const FLOOR_18 := -20 ## ...and a lucky streak is held against you only a little
 static var tune_bar := 0 ## tools/arena.gd: try another bar or floor on the same seeds
 static var tune_floor := 0
+## v2.2 (rules 22): of what an exchange Fortune threw away was worth to you, the share the dice owe
+## you back, in percent (the arena set it: docs/CHANGELOG.md v2.2)
+const REBATE_22 := 50 ## half: most of the comebacks of the whole, a third the inflation (arena, v2.2)
+static var tune_rebate := 0 ## tools/arena.gd: try another share on the same seeds
+
+
+static func rebate(worth: float) -> int:
+	## what a thrown-away exchange worth `worth` battles is owed, in hundredths of a battle
+	var share: int = tune_rebate if tune_rebate > 0 else REBATE_22
+	return int(round(worth * float(share)))
 
 
 static func bar(map: Types.MapDef) -> int:
@@ -82,6 +92,11 @@ static func upkeep(before: Types.World, w: Types.World, map: Types.MapDef, event
 	var delta := {}
 	for e in events:
 		var kind: String = str(e.get("kind", ""))
+		if map.rules >= 22 and e.has("rebate"):
+			## v2.2: an exchange Fortune threw away from you is owed you (on top of the battle's luck)
+			var rb: Dictionary = e["rebate"]
+			for rp in rb.keys():
+				delta[rp] = int(delta.get(rp, 0)) + int(rb[rp])
 		if map.rules >= 19 and kind != Types.EVENT_INVASION:
 			## v1.10: every fight a commander fights counts, not only the one-on-one assaults
 			var fl: Dictionary = fight_luck(e, map.battle)

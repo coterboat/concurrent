@@ -53,6 +53,118 @@ shown: fine" is as useful as a bug.
   v1.8 Fortune.
 - **Probes run with films off** (`motion = "paintings"`). `v19` turns them on.
 
+## v2.2: Fortune owes you for an exchange it took (rules 22); which dice are rolling where (this push)
+
+**A rules change: new games play rules 22.** Older saves replay under their own rules.
+
+- **The rebate.** When someone calls on Fortune against you, the exchange they threw away had gone
+  your way, and half its worth now goes into your ledger toward your next favour. The battle says so:
+  "… — Dad is owed for it". **Poke:** a melee where the defender spends a favour
+  (every invader whose front stood should be owed); a commander already holding three favours (the
+  rebate can't push past three); a battle where both sides spend. Does a commander who was "screwed out
+  of good rolls" get their star back noticeably sooner, without favours flooding the game?
+- **Which dice are rolling where** (melees and free-for-alls). Each pair on the dice table carries a
+  tag ("from Ridge"); that front's plate on the field says the same; pairs lie left to right as their
+  fronts stand; as a pair is read, a thread in the pair winner's colours (parchment if even) runs from its tag to its front, and the musket balls are
+  seen to fly from the side that won the pair at the men facing it. **Poke:** a three-front melee (do
+  the tags stay readable, do threads cross?); a big battle with guns (round shot arcs); the 2D chart
+  battles (tags on the table, no threads: the chart has no plates); a scramble ("Ridge vs Harbor" tags).
+- Arena (40 wars, same seeds, 21 → 22): favours earned 9.6 → 11.8 a game; won from behind 20% → 27%;
+  close finishes 5 → 9 of 36; wins unchanged within noise. The bot's arena command
+  (`map=known24 n=6 … seed=500`) now prints `fingerprint 548347c5f849`.
+- **After the critics (RV-005):** each Fortune call in a melee now names only whom it owes; a
+  free-for-all's pairs lie in field order; a man falls when the first ball reaches him. **Poke:** a melee
+  of three commanders where the defender and one invader both call on Fortune: does each line name the
+  right people?
+- New tests and probes: `test_v22`, `v22`.
+
+## v2.1: one commander's columns are separate fronts (rules 21), big battles (this push)
+
+**A rules change: new games play rules 21.** Older saves replay under their own rules.
+
+- **Fronts.** Attack one land from two of yours: it's a melee of two fronts, not one army. The
+  defenders' firing line faces both. Your fronts never fight each other; whichever stand when the walls
+  fall take it together. **Poke:** two fronts of very different sizes (12 and 3); a two-front attack
+  while a third commander also storms the land; two fronts where one falls back and the other takes it;
+  a reserves call on one front; a two-front surge. Does every count add up on the map after the report?
+  Does the defender feel stubborn but beatable?
+- **Border clashes:** now only the column crossing that border fights it. **Poke:** attack a land from
+  two sides while its owner marches out at one of them. The other column should arrive untouched.
+- **On screen:** the report caption "X from two sides"; in the battle, one face for you with your fronts'
+  men side by side on your count ("9 + 9"); the call plate names which front you're calling for. **Poke:** a melee with
+  two commanders where one comes from two lands (three fronts). Do the faces and labels still make sense?
+- **Big battles:** 14+ men bring horsemen, 18+ a gun with its crew, more at 26 and 30. **Poke:** a
+  battle of 40 against 35. Is it readable? Does the frame rate hold? Does the train fall when its army does?
+- **The battle's words** ("THE LAST MAN STANDING!", "FALL BACK!") are gone when the next battle opens.
+- Arena (40 wars, same seeds, 20 → 21): wins unchanged within noise; attackers took even fights 61% →
+  56%; melees 2.4 → 11.4 a game. The AI still judges a joined attack as one force. Say if it now
+  blunders into split attacks it can't win.
+- New tests and probes: `test_v21`, `v21`.
+
+## v2.0.2: the battle report on the land, made to feel like one (this push)
+
+No rule changes (rules 20). Everything here is how the battle report looks and moves on the land (L).
+Play a few rounds with the land on, with **Battle scenes** set to "Map only" and then "Show my battles".
+
+- **Border clashes.** The two arrows charge at each other, meet head-on on the border and push there. When
+  the dice land, the winner's drives the loser's back and carries on, its count falling to the survivors.
+  On the land the two tin columns stand face to face at the middle of the road; the losers fall and the
+  winners march on. **Poke:** two lands very close together (Cairn and Wold on the Known World), a clash
+  over a sea lane, two clashes in one round, and a clash you skip past with Next before the dice land. Does
+  any arrow stay that shouldn't, or vanish too soon? Does the count on the winner's arrow match the card?
+- **The report's camera** leans in on each fight, hops between fights far apart, and goes back to your
+  view at the end (Esc or Skip: at once). **Poke:** does it ever put a fight under the battle card or the
+  caption at the top? Is it too much motion over a long report? If so, say whether a separate on/off
+  switch would help: right now "Still paintings" (Films) is the only way to keep it still.
+- **Lands taken** fill with their new colour and the token pops. **Counts** bump gold when they rise and
+  red when they fall. **Poke:** after Skip, a whole round's changes fill at once. Does it look right?
+- **A region won whole** flares its name in the winner's colours with a ring over each land. **Poke:** two
+  regions completed in one round, and a region won then lost again in the same report.
+- **Dragging an order** shows the arrow it will make, snapped onto the land under the cursor. **Poke:** a
+  march by sea and a surge drag (from the land you're attacking). Does the preview ever point somewhere the
+  order won't go?
+- **A stage's banner** ("THE ASSAULTS") now slides away when the stage's first fight starts.
+- **Turn timer:** let the timer run out with "N recruits still unplaced" up, in a solo game and in
+  hotseat. The question should be gone for the next commander and for the battles.
+- New probe: `v202` (a clash on the land, told step by step; the same clash out of the battle scene;
+  surges clashing; a region won; the camera still with Films off; the timer and the planning question).
+
+**Round two (same push): the garrisons kept, the army swelling, the land made solid.**
+
+- **Placing recruits** on the land: each recruit adds or takes away one figure where the others stand.
+  The whole garrison no longer marches in again. Zooming only shuffles them. **Poke:** place and take
+  back quickly on one land; zoom in and out during the report. Does any garrison re-march, or any man end
+  up in the sea or inside a building?
+- **Horse and guns** join a garrison as it grows: a horseman at 10 men, a gun at 16, two of each at 22 and
+  30. The 5 infantry figures stay. A big column on the march has a horseman at its head (10+) and a gun at
+  its tail (16+). **Poke:** a stack of 30+ on a small coastal land. Does the train spill into the sea or
+  over a neighbour's token? Does a column's horseman look right on a sea lane (it boards with the rest)?
+- **The land's look:** buildings sit on soft shadows; the moorland villages' green plates are toned down;
+  the mountain chalets' roofs no longer read as black holes; more trees, rounder, in copses; firmer light.
+  **Poke:** does anything look darker or muddier than before, especially on the "Compatibility" renderer
+  (it draws no decals)? Is the frame rate any worse on your machine?
+- New probes: `v203` (the garrisons kept, the train), `v204` (the land's look from the same cameras).
+
+## v2.0.1: your critic's crowding notes (this push)
+
+No rule changes (rules 20). These are the fit-zoom crowding notes from the review of e5764ba. Try them at
+1280×800 and at 1440×900, on the chart and on the land (L).
+
+- **Crowns.** A capital's crown moves along its token's brow, or shrinks, to keep off another land's name.
+  In the Ring's packed middle, where there's no room, the name is written over the crown. **Poke:** is
+  any land's name hidden by a crown? Is a smaller crown still easy to read as a capital?
+- **Region bonuses on the land.** The "+3" and its pips used to keep a spot found while the land was still
+  rising. Now they find a new spot whenever the view settles. **Poke:** on the land, pan, tip and zoom,
+  then let go. Does a bonus or its pips ever sit on a name or a crown?
+- **Merged fate marks.** Two marks of one kind that would touch are now one disc with a "×2" tab.
+  **Poke:** after a round where a land threw back several columns, can you count them? Does a "×2" tab
+  cover anything that matters?
+- **Tooltips.** A land's tip goes when you seal, when the battles or the round's report open, or when a
+  dialog opens. Pointing at the land again brings it back. **Poke:** does any tip stay up when the cursor
+  isn't on the board?
+- **Esc on Settings.** I couldn't make it fail (direct, from the pause menu, with any control focused).
+  If it ever leaves the Settings up, say how you opened them and what you'd clicked last.
+
 ## v2.0 (draft): the map and its battles on the land
 
 No rule changes (rules 20), nothing in `engine/` or `session.gd`. The board stands on the map's own
@@ -111,7 +223,7 @@ falls back to Compatibility: say which renderer your log's first lines show, and
   land in the real client: tokens, clicks, zoom, garrisons, the highlights, L, the report's columns, a
   battle out of the board and back), `diorama` (every map's battle), `board3d` (the board over the land).
 
-## v1.14: a senior pass on the polish (this push)
+## v1.14: a senior pass on the polish
 
 No rule changes: new games still play **rules 20**, nothing in `engine/` changed, every save replays
 as before, and the arena fingerprints are unchanged. Everything here is what the table shows, says,

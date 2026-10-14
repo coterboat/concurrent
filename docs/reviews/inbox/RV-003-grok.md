@@ -1,0 +1,19 @@
+The packet is incomplete in this message, so I am reading the rest of the diff before judging claims against the code.CANARY: not packet only — this session has tools, a workspace, and skill files; the findings below are checked against the packet diff.
+
+### F1 · high · correctness
+File: game/core/last_round.gd:80
+Claim: Under rules 21, if one of a commander's fronts falls back or dies and another of his fronts takes the land, the failed column is drawn as a success. Both packets share the destination, so `now.owner == pid` is true for the column that broke as well as the one that stood. That branch is unchanged and never reaches `_why`. The new per-front test lives only inside `_why`, and the clash key is the only fate applied before the owner check. Ridge takes The Gate, Harbor falls back with 4: Harbor's ghost has an empty `result` (no chevron, no cross) and reads as if those men arrived. Counts on the lands can still add up.
+Evidence: The clash path was special-cased before the owner test (`bkey` / `beaten.has(bkey)` → `CLASH`). The next branch, `elif now != null and now.owner == pid`, is not given a per-front exception. The fromIds filter is only in `_why` (`if g.has("from") and not ff.has(...) : continue`), which this branch does not enter. `test_v21._fates_by_column` only asserts the spared column's result is not `CLASH`.
+Fix: Under rules >= 21, decide each column from its own front before the "we hold the destination" success, same as the clash key: fell back, destroyed, or thrown back stays on that column even when a sibling front took the land. Pin it with a resolve case where one front falls back and the other takes the land.
+
+### F2 · medium · correctness
+File: game/ui/cinema.gd:896
+Claim: Rules 20 (and any rules < 21) still fight a border clash with every column of that commander merged into one army, but the new clash picture uses a single order's strength. `_clash_side` returns the first board order on that border and ignores `clash_sides`, which holds the event's merged `sizeA`/`sizeB`. `_settle_arrows` then overwrites `n0` and `lost_n` (initialized from the event) with that one order. Ridge 9 and Harbor 9 merge to 18 against 8: the arrow shows 9, the card shows 18, and the carry-through count lerps from 9 toward the merged survivors (often upward). The other column stays on the map until settle, then `win_done` drops it. Old saves and any game left on rules 20 hit this; the v202 probe only sends one column a side.
+Evidence: `resolve.gd` still runs `_merge_same_owner` when `map.rules < 21`. `clash_sides` stores the event sizes, but `_clash_side` returns the matching order first. In `_settle_arrows`, `n0 = int(o.get("strength", n0))` and `lost_n = int(o.get("strength", lost_n))` replace the event sizes whenever an order matches, with no rules check. `one_column` only changes which orders are kept.
+Fix: For rules < 21, draw and lerp the clash from the event sizes (the merged army), not from one order. Keep the rules 21 behavior of one border column.
+
+### F3 · medium · ux
+File: game/ui/settings_panel.gd:111
+Claim: Esc no longer opens the pause menu once the settings panel is in the tree but hidden. `_input` now consumes Escape and emits `closed` with no visibility check. `_input` is delivered to hidden nodes that still process input, and it runs before `_unhandled_input`, which is how the pause menu used to see Esc. Press Esc during planning with Settings closed: the key is marked handled, `closed` fires on the hidden panel, and the pause menu stays down.
+Evidence: The handler was moved from `_unhandled_input` to `_input` and always does `closed.emit()` plus `set_input_as_handled()` on Escape. Nothing tests `visible` or `is_visible_in_tree()`.
+Fix: Handle Escape only while the panel is visible in the tree; otherwise leave the event untouched.

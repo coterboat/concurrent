@@ -108,8 +108,10 @@ func _toggle(title: String, key: String) -> Control:
 	return h
 
 
-func _unhandled_input(e: InputEvent) -> void:
-	## v1.14: Esc closes the settings (in a game it used to open the pause menu, hidden behind them)
-	if e is InputEventKey and e.pressed and not e.echo and e.keycode == KEY_ESCAPE:
+func _input(e: InputEvent) -> void:
+	## v1.14: Esc closes the settings (in a game it used to open the pause menu, hidden behind them).
+	## v2.0.1: first in line, so nothing under the panel can take the key first (the play critic's
+	## Esc once left them up; not reproduced, so the panel no longer waits its turn for it)
+	if e is InputEventKey and e.pressed and not e.echo and e.keycode == KEY_ESCAPE and is_visible_in_tree():
 		closed.emit()
 		get_viewport().set_input_as_handled()

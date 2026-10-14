@@ -19,6 +19,7 @@ const DiceStage := preload("res://game/ui/dice_stage.gd")
 const FortunePips := preload("res://game/ui/fortune_pips.gd")
 const Moments := preload("res://game/ui/moments.gd")
 const LandField := preload("res://game/world3d/land_field.gd")
+const FrontMarks := preload("res://game/ui/front_marks.gd")
 
 signal finished(skip_rest: bool)
 
@@ -64,6 +65,7 @@ var land: Node ## v2.0: the game's land in 3D (land.gd), shared with the board
 var _melee := false ## several invaders at once (v1.3): fronts, one per invader
 var _scramble := false ## v1.4: victors fighting each other for the prize, every army against every other
 var _fronts: Array = [] ## the melee's fronts from the event
+var _marks: Control ## v2.2: FrontMarks, which front each pair of dice is
 var _left: Array = [] ## men standing per army: fronts (or the one attacker) first, the defender last
 var _extra: Array = [] ## [{face, name, count}] rings for the second and third invaders
 var _tray: Control ## DiceStage: the dice table at the foot of the field
@@ -176,6 +178,8 @@ func _ready() -> void:
 	_tray.table_w = 13.6
 	_tray.ground_h = 124.0
 	add_child(_tray)
+	_marks = FrontMarks.new() ## v2.2: each pair's front, named on the rail and threaded to the field
+	add_child(_marks)
 	_result = Style.label("", 32, Style.CREAM, "display")
 	_result.set_anchors_and_offsets_preset(PRESET_CENTER_BOTTOM)
 	_result.offset_bottom = -246
@@ -450,10 +454,23 @@ func _land_of(b: Dictionary) -> String:
 
 
 func _ui_alpha(v: float) -> void:
-	## the battle's words, faces and dice over the land (not the land itself)
+	## the battle's words, faces and dice over the land (not the land itself; the shout keeps its
+	## own fade: v2.0.2, this used to bring a faded "THE LAST MAN STANDING!" back at full strength
+	## when the battle closed, and it was still up when the next battle opened)
 	for c in get_children():
-		if c is CanvasItem and c != _land_field and c != _bg:
+		if c is CanvasItem and c != _land_field and c != _bg and c != _shout:
 			(c as CanvasItem).modulate.a = v
+
+
+func _wipe_words() -> void:
+	## v2.0.2: every battle starts and ends with nothing shouted ("FALL BACK!", "THE LAST MAN
+	## STANDING!" stayed into the next battle)
+	if _shout_tw != null and _shout_tw.is_valid():
+		_shout_tw.kill()
+	_shout.text = ""
+	if _marks != null:
+		_marks.clear() ## v2.2: and no front's tag outlives its dice
+	_shout.modulate.a = 0.0
 
 
 func extend(beats: Array) -> void:
@@ -481,6 +498,7 @@ func _skip() -> void:
 func abort() -> void:
 	## Closed from outside (the whole report was skipped): no signal, no fade.
 	_state = "idle"
+	_wipe_words()
 	visible = false
 	if _on_land:
 		_land_field.abort()
@@ -496,6 +514,7 @@ func abort() -> void:
 
 func _close(skip_rest: bool) -> void:
 	_state = "idle"
+	_wipe_words()
 	_call_plate.visible = false
 	Audio.ambience(true, "ambience_tent")
 	Audio.music(Audio.battle_music())
@@ -661,6 +680,7 @@ func _next_engagement() -> void:
 		land = str((b.get("focus", [""]) as Array)[0])
 	_melee = kind == Types.EVENT_MELEE
 	_scramble = kind == Types.EVENT_SCRAMBLE
+	_wipe_words()
 	_seen_calls = {}
 	_f_used = {}
 	_exchange = 0
@@ -717,11 +737,23 @@ func _next_engagement() -> void:
 		"Spoils":
 			_sub.text = "Two invaders, one prize — no retreat"
 		Types.EVENT_MELEE:
-			_sub.text = "%d armies storm it at once — the defenders must hold every front" % _fronts.size()
+			if _one_commander():
+				## v2.1: one commander's columns from several lands, each its own front
+				_sub.text = "%s it from %s sides at once — the defenders must hold every front" % [Style.says(session.name_of(_front_pid(0)), "storms"), ["", "one", "two", "three", "four", "five", "six"][mini(_fronts.size(), 6)]]
+			else:
+				var who: Dictionary = {}
+				for i in _fronts.size():
+					who[_front_pid(i)] = true
+				if who.size() < _fronts.size():
+					## v2.1: a commander on two fronts is one army (RV-004 F2)
+					_sub.text = "%d armies storm it from %s sides at once — the defenders must hold every front" % [who.size(), ["", "one", "two", "three", "four", "five", "six"][mini(_fronts.size(), 6)]]
+				else:
+					_sub.text = "%d armies storm it at once — the defenders must hold every front" % _fronts.size()
 		Types.EVENT_SCRAMBLE:
 			_sub.text = "%d armies, one prize — every man for himself" % _fronts.size()
 		_:
 			_sub.text = "%s from %s" % [Style.says(session.name_of(_a_pid), "attacks"), session.hex_name(str(e.get("from", "")))]
+	_fit_sub()
 	_pieces_final = false
 	_tray.clear_pieces()
 	_setup_side(_face_a, _name_a, _melee_lead_pid() if (_melee or _scramble) else _a_pid, true)
@@ -730,10 +762,15 @@ func _next_engagement() -> void:
 	_update_counts()
 	if _on_land:
 		_land_field.setup_at(list, land, e, b)
+		if _melee or _scramble:
+			for i in _fronts.size():
+				_land_field.set_tag(i, _front_tag(i))
 	else:
 		_field.setup(list)
 	_result.text = ""
-	if _melee:
+	if _melee and Combat.line > 0:
+		_score.text = "Every front throws at once: pips × 5 + its firing line, against pips × 5 + the defenders' whole firing line (at most %d a side)." % Combat.line
+	elif _melee:
 		_score.text = "Every front throws at once: pips × 5 + its men, against pips × 5 + the defenders' share of the wall there."
 	elif _scramble:
 		_score.text = "Every army duels every other at once, its men split among its foes: pips × 5 + men. Last army standing takes it."
@@ -827,6 +864,7 @@ func _setup_extras() -> void:
 		(x["name"] as Control).queue_free()
 		(x["count"] as Control).queue_free()
 	_extra = []
+	_joined = {}
 	if not _melee and not _scramble:
 		return
 	var k := 0
@@ -834,6 +872,18 @@ func _setup_extras() -> void:
 		if i == _lead_front() or (_scramble and i == _b_front()):
 			continue
 		var pid: String = _front_pid(i)
+		if _melee:
+			## v2.1: a commander's second front joins his own ring: no second face, its men counted
+			## beside his ("8 + 8"), so the row of rings never runs into the words in the middle
+			var host := -2
+			if pid == _melee_lead_pid():
+				host = -1
+			for xi in _extra.size():
+				if _front_pid(int(_extra[xi]["front"])) == pid:
+					host = xi
+			if host != -2:
+				_joined[i] = host
+				continue
 		var face: Control = LeaderFace.new()
 		face.bubble_side = "bottom"
 		var at := Vector2(236 + k * 138, 40)
@@ -858,9 +908,39 @@ func _setup_extras() -> void:
 		k += 1
 
 
+var _joined := {} ## v2.1: a commander's second (third…) front -> the ring it joins: -1 the lead's, else its index in _extra
+
+
+func _count_of(host: int, own: int) -> String:
+	## a ring's count: its own front's men, and any of the same commander's other fronts beside them
+	var parts: Array = [str(maxi(0, own))]
+	for fi in _joined.keys():
+		if int(_joined[fi]) == host:
+			parts.append(str(maxi(0, int(_left[int(fi)]))))
+	return " + ".join(parts)
+
+
+func _fronts_of(pid: String) -> int:
+	var n := 0
+	for i in _fronts.size():
+		if _front_pid(i) == pid:
+			n += 1
+	return n
+
+
+func _one_commander() -> bool:
+	## every front of this melee is one commander's (v2.1: his columns from several lands)
+	for i in _fronts.size():
+		if _front_pid(i) != _front_pid(0):
+			return false
+	return _fronts.size() >= 2
+
+
 func _face_of_front(i: int) -> Control:
 	if (not _melee and not _scramble) or i == _lead_front():
 		return _face_a
+	if _joined.has(i):
+		return _face_a if int(_joined[i]) < 0 else (_extra[int(_joined[i])]["face"] as Control)
 	if _scramble and i == _b_front():
 		return _face_b
 	for x in _extra:
@@ -895,13 +975,16 @@ func _setup_side(face: Control, name_l: Label, pid: String, left: bool) -> void:
 func _update_counts() -> void:
 	var na: int = maxi(0, _a_left)
 	var nb: int = maxi(0, _b_left)
+	var a_text := ""
 	if _melee or _scramble:
 		na = maxi(0, int(_left[_lead_front()]))
-		for x in _extra:
-			(x["count"] as Label).text = str(maxi(0, int(_left[int(x["front"])])))
+		for xi in _extra.size():
+			var x: Dictionary = _extra[xi]
+			(x["count"] as Label).text = _count_of(xi, int(_left[int(x["front"])]))
 		if _scramble:
 			nb = maxi(0, int(_left[_b_front()]))
-	_count_a.text = str(na)
+		a_text = _count_of(-1, na)
+	_count_a.text = a_text if a_text != "" else str(na)
 	_count_b.text = str(nb)
 	## the dice each side throws, by the men it has left
 	_tier_a.text = (DiceStage.tier_name(na) + " dice") if na > 0 else ""
@@ -924,6 +1007,7 @@ func _update_counts() -> void:
 
 func _clear_dice() -> void:
 	_tray.clear()
+	_marks.clear()
 	for r in _reads:
 		(r as Node).queue_free()
 	_reads = []
@@ -996,7 +1080,7 @@ func _next_throw(throws: Array, k: int) -> void:
 	if k >= throws.size():
 		_after_exchange()
 		return
-	var pairs: Array = _pairs_of(throws[k])
+	var pairs: Array = _in_field_order(_pairs_of(throws[k]))
 	_clear_dice()
 	if k > 0 and _volley_mode and not _melee and not _scramble:
 		_tray_note("EVEN VOLLEYS ARE FIRED AGAIN")
@@ -1014,7 +1098,63 @@ func _next_throw(throws: Array, k: int) -> void:
 		specs.append({"value": int(pr["rv"]), "n": int(pr["rn"]), "tint": Style.seat_color(str(pr["rp"])), "to": Vector2(cx + 0.72, -0.35 + randf_range(-0.12, 0.12)),
 			"from": Vector3(11.0, 2.6 + randf() * 0.6, randf_range(-1.0, 0.4)), "delay": 0.03 + 0.05 * i})
 	var dur: float = _tray.throw(specs)
+	if _melee or _scramble:
+		_marks.place(_tray, _pair_marks(pairs))
 	get_tree().create_timer(dur + 0.05).timeout.connect(func(): _reveal(pairs, 0, func(): _next_throw(throws, k + 1)))
+
+
+func _in_field_order(pairs: Array) -> Array:
+	## v2.2: a melee's pairs lie on the table as their fronts stand on the field, left to right,
+	## so a front's dice sit under it (each pair's thread then runs up to its own side); a
+	## free-for-all's by the middle of its two armies
+	if not (_melee or _scramble) or not _on_land or pairs.size() < 2:
+		return pairs
+	var keyed: Array = []
+	for i in pairs.size():
+		var x: float = _land_field.screen_of(int(pairs[i]["la"])).x
+		if _scramble:
+			x = (x + _land_field.screen_of(int(pairs[i]["ra"])).x) * 0.5 ## (RV-005 F3) between its two armies
+		keyed.append([x, i, pairs[i]])
+	keyed.sort_custom(func(x, y): return x[0] < y[0] or (x[0] == y[0] and x[1] < y[1]))
+	return keyed.map(func(x): return x[2])
+
+
+func _fit_sub() -> void:
+	## v2.2: a long line (two commanders' full titles) shrinks rather than run under a face's words
+	var room: float = maxf(400.0, size.x - 600.0)
+	var fs := 20
+	while fs > 14 and Style.font("italic").get_string_size(_sub.text, HORIZONTAL_ALIGNMENT_LEFT, -1, fs).x > room:
+		fs -= 1
+	_sub.add_theme_font_size_override("font_size", fs)
+
+
+func _front_tag(i: int) -> String:
+	## v2.2: a front by the land (or lands) it came from: "from Ridge"
+	if i < 0 or i >= _fronts.size():
+		return ""
+	var ids: Array = _fronts[i].get("fromIds", [])
+	if ids.is_empty() and str(_fronts[i].get("from", "")) != "":
+		ids = [_fronts[i]["from"]]
+	var names: Array = []
+	for id in ids:
+		names.append(session.hex_name(str(id)))
+	return ("from " + " & ".join(names)) if not names.is_empty() else ""
+
+
+func _pair_marks(pairs: Array) -> Array:
+	## what each pair on the table is, for its tag: a melee's front (the defenders answer every
+	## one), or a free-for-all's two armies
+	var out: Array = []
+	for pr in pairs:
+		var la: int = int(pr["la"])
+		if _scramble:
+			var ra: int = int(pr["ra"])
+			var a: String = _front_tag(la).trim_prefix("from ")
+			var b: String = _front_tag(ra).trim_prefix("from ")
+			out.append({"text": ("%s vs %s" % [a, b]) if a != "" and b != "" else "", "col": Style.seat_color(str(pr["lp"])), "armies": [la, ra]})
+		else:
+			out.append({"text": _front_tag(la), "col": Style.seat_color(str(pr["lp"])), "armies": [la]})
+	return out
 
 
 func _pairs_of(r: Variant) -> Array:
@@ -1071,6 +1211,7 @@ func _settle_pair(pr: Dictionary, k: int) -> void:
 	var tl: String = ("%s + %d = %s" % [_num(float(pr["lw"])), int(pr["lv"]), _num(sl)]) if dec else ("%d×5 + %s = %s" % [int(pr["lv"]), _num(float(pr["lw"])), _num(sl)])
 	var tr: String = ("%s + %d = %s" % [_num(float(pr["rw"])), int(pr["rv"]), _num(sr)]) if dec else ("%d×5 + %s = %s" % [int(pr["rv"]), _num(float(pr["rw"])), _num(sr)])
 	_plaque(k, sl, sr, tl, tr, w, str(pr["lp"]), str(pr["rp"]))
+	_marks.read(k, _field, str(pr["lp"]) if w == "a" else (str(pr["rp"]) if w == "b" else "")) ## v2.2: which front it was, in the winner's colours
 	if w == "":
 		_tray.mark(k * 2, "tie")
 		_tray.mark(k * 2 + 1, "tie")
@@ -1202,6 +1343,8 @@ func _float_at(i: int, text: String, col: Color) -> void:
 	l.mouse_filter = Control.MOUSE_FILTER_IGNORE
 	var at: Vector2 = _tray.position + _tray.die_screen(i)
 	l.position = at + Vector2(-16, -64)
+	if not _marks.tags.is_empty():
+		l.position.y -= 30.0 ## v2.2: over the pair's front tag on the rail, not on it
 	add_child(l)
 	var tw := create_tween().set_parallel(true)
 	tw.tween_property(l, "position:y", l.position.y - 34.0, 0.8)
@@ -1285,7 +1428,11 @@ func _update_odds() -> void:
 		bar.show_odds(p, _a_pid, _b_pid, head, edge)
 		return
 	if _melee:
-		edge = "%s on %s against %s, who must split themselves across every front" % [Style.plural(a, "attacker"), Style.plural(_fronts_up(), "front"), Style.plural(d, "defender")]
+		if Combat.line > 0:
+			## (v2.1: since the firing line, the defenders don't split: their whole line answers every front)
+			edge = "%s on %s against %s, whose whole firing line answers every front" % [Style.plural(a, "attacker"), Style.plural(_fronts_up(), "front"), Style.plural(d, "defender")]
+		else:
+			edge = "%s on %s against %s, who must split themselves across every front" % [Style.plural(a, "attacker"), Style.plural(_fronts_up(), "front"), Style.plural(d, "defender")]
 	elif diff == 0:
 		edge = "%s against %d: even numbers, the dice decide%s" % [men.call(a), d, tie_note]
 	else:
@@ -1474,7 +1621,10 @@ func _ask() -> void:
 	var refuge: String = str(p.get("refuge", ""))
 	var pr: float = Combat.capture_rate(a, d, Combat.MODE_VOLLEYS, _fort_bonus()) if a > 0 and d > 0 else (1.0 if d <= 0 else 0.0)
 	var who: String = session.name_of(str(p.get("attacker", "")))
-	_odds.text = ("%s call · " % Style.owns(who, true) if _melee else "") + "From here: %s — %d%% to take it" % [Combat.odds_word(a, d, Combat.MODE_VOLLEYS, _fort_bonus()), int(round(pr * 100.0))]
+	var whose: String = ("%s call · " % Style.owns(who, true)) if _melee else ""
+	if _melee and _fronts_of(str(p.get("attacker", ""))) >= 2 and str(p.get("from", "")) != "":
+		whose = "%s call, the front from %s · " % [Style.owns(who, true), session.hex_name(str(p["from"]))] ## v2.1: which of his fronts
+	_odds.text = whose + "From here: %s — %d%% to take it" % [Combat.odds_word(a, d, Combat.MODE_VOLLEYS, _fort_bonus()), int(round(pr * 100.0))]
 	## v1.8: Fortune offered (the exchange went badly for the one choosing)
 	var fortune: bool = bool(p.get("fortune", false))
 	var side: String = str(p.get("side", ""))
@@ -1623,6 +1773,20 @@ func _show_calls(calls: Array) -> void:
 			_dial.set_label("ROLL", "%d vs %d" % [_a_left, _b_left]))
 
 
+func _owed_by(by: String) -> Dictionary:
+	## v2.2: whom a commander's Fortune call in this battle owes, from the event (a call answered live
+	## is shown from the ask before the event has it: the session's re-resolve has put it there since).
+	## A commander calls on Fortune once a battle at most, so his call is the one.
+	var e: Dictionary = _event()
+	var calls: Array = (e.get("calls", []) as Array) + (e.get("defCalls", []) as Array)
+	for f in e.get("fronts", []):
+		calls.append_array((f as Dictionary).get("calls", []))
+	for c in calls:
+		if str(c.get("call", "")) == Combat.CALL_FORTUNE and str(c.get("by", "")) == by:
+			return c.get("owed", {})
+	return {}
+
+
 func _show_call(c: Dictionary) -> void:
 	var call: String = str(c.get("call", ""))
 	var fi: int = int(c.get("front", 0))
@@ -1658,6 +1822,15 @@ func _show_call(c: Dictionary) -> void:
 			_update_odds()
 			_shout_text("✦ FORTUNE!  THROWN AGAIN", Style.GOLD.lightened(0.25))
 			_sub.text = "%s on Fortune: that exchange never happened" % Style.says(session.name_of(by), "calls")
+			## v2.2 (rules 22): the exchange it threw away had gone someone's way: Fortune owes them
+			var owed: Dictionary = c["owed"] if c.has("owed") else _owed_by(by) ## this call's own (RV-005 F4), never the battle's sum
+			var owed_to: Array = []
+			for op in owed.keys():
+				if str(op) != by and int(owed[op]) > 0:
+					owed_to.append(session.name_of(str(op)))
+			if not owed_to.is_empty():
+				_sub.text += " — %s %s owed for it" % [" and ".join(owed_to), "is" if owed_to.size() == 1 else "are"]
+			_fit_sub()
 			Audio.sfx("fortune" if Audio.has_sfx("fortune") else "war_chest", -3.0)
 			get_tree().create_timer(0.4).timeout.connect(func(): Audio.sfx("dice_shake", -2.0))
 			var bw: String = _who(by)
@@ -1679,6 +1852,7 @@ func _show_call(c: Dictionary) -> void:
 			_field.set_count(army, int(_left[army]))
 			_shout_text("RESERVES!  +%d" % n, Style.GOLD)
 			_sub.text = "%s in the reserves from home" % Style.says(session.name_of(pid), "throws")
+			_fit_sub()
 			Audio.sfx("reserves", -2.0)
 			get_tree().create_timer(0.5).timeout.connect(func(): Audio.sfx("hurrah", -4.0))
 			if Lines.has(who, "reserves"):
@@ -1689,6 +1863,7 @@ func _show_call(c: Dictionary) -> void:
 		Combat.CALL_FALL_BACK:
 			_shout_text("FALL BACK!", Style.PARCH)
 			_sub.text = "%s the retreat to %s" % [Style.says(session.name_of(pid), "sounds"), session.hex_name(str(c.get("to", "")))]
+			_fit_sub()
 			Audio.sfx("retreat", -2.0)
 			_field.retreat(army)
 			_seen_calls["fell|%d" % fi] = true
@@ -1749,16 +1924,21 @@ func _update_fortune() -> void:
 		fp.tooltip_text = "Fortune ✦ %d: after an exchange that goes badly for %s (it ends the battle, or costs two more men than it costs the foe), %s can have it thrown again, once a battle." % [n, "you" if Style.who(session.name_of(pid)) == "you" else "them", Style.who(session.name_of(pid))]
 
 
+var _shout_tw: Tween
+
+
 func _shout_text(t: String, col: Color) -> void:
+	if _shout_tw != null and _shout_tw.is_valid():
+		_shout_tw.kill()
 	_shout.text = t
 	_shout.add_theme_color_override("font_color", col)
 	_shout.pivot_offset = _shout.size * 0.5
 	_shout.scale = Vector2(1.4, 1.4)
 	_shout.modulate.a = 1.0
-	var tw := create_tween()
-	tw.tween_property(_shout, "scale", Vector2.ONE, 0.25).set_trans(Tween.TRANS_BACK)
-	tw.tween_interval(0.9)
-	tw.tween_property(_shout, "modulate:a", 0.0, 0.4)
+	_shout_tw = create_tween()
+	_shout_tw.tween_property(_shout, "scale", Vector2.ONE, 0.25).set_trans(Tween.TRANS_BACK)
+	_shout_tw.tween_interval(0.9)
+	_shout_tw.tween_property(_shout, "modulate:a", 0.0, 0.4)
 
 
 func _finish_engagement() -> void:

@@ -265,6 +265,8 @@ func build() -> void:
 		node.position = Vector3(at.x, h, at.y)
 		node.rotation.y = float(spec["yaw"])
 		add_child(node)
+		if not (spec["role"] in ["ship", "lane"]) and spec["kind"] != "bridge":
+			_contact(node)
 		pieces.append({"kind": spec["kind"], "land": spec["land"], "node": node, "at": at, "role": spec["role"],
 			"r": float(node.get_meta("r")), "h": float(node.get_meta("h")), "base": h})
 		if spec["role"] == "village" or spec["kind"] == "camp":
@@ -441,6 +443,65 @@ static func load_all(list: Array) -> Dictionary:
 	return out
 
 
+static var _contact_tex: GradientTexture2D
+static var _coats := {} ## a model's own material -> it with the seating coat over it (one per model)
+
+
+static func _seat_coat(inst: Node) -> void:
+	## v2.0.2: the model's own material, with a second coat over it (seat.gdshader): its grass
+	## plate's lime toned toward the land's greens and its foot darkened where it meets the ground
+	for mi in inst.find_children("*", "MeshInstance3D", true, false):
+		var m: Mesh = (mi as MeshInstance3D).mesh
+		if m == null or m.get_surface_count() < 1:
+			continue
+		var src: Material = m.surface_get_material(0)
+		if not (src is StandardMaterial3D) or (src as StandardMaterial3D).albedo_texture == null:
+			continue
+		var key: int = src.get_instance_id()
+		if not _coats.has(key):
+			var coat := ShaderMaterial.new()
+			coat.shader = load("res://game/world3d/seat.gdshader")
+			coat.set_shader_parameter("albedo_tex", (src as StandardMaterial3D).albedo_texture)
+			var box: AABB = m.get_aabb()
+			coat.set_shader_parameter("base_y", box.position.y)
+			coat.set_shader_parameter("tall", box.size.y)
+			var dup: StandardMaterial3D = src.duplicate()
+			dup.next_pass = coat
+			_coats[key] = dup
+		(mi as MeshInstance3D).material_override = _coats[key]
+
+
+func _contact(node: Node3D) -> void:
+	## v2.0.2: a building stands on its own shadow: a soft dark pool on the ground round its foot,
+	## reaching a little up its walls, so it sits on the land rather than on top of it (Forward+;
+	## the Compatibility renderer draws no decals, and the building simply stands as before)
+	if _contact_tex == null:
+		var g := Gradient.new()
+		g.set_color(0, Color(1, 1, 1, 1))
+		g.set_color(1, Color(1, 1, 1, 0))
+		g.add_point(0.55, Color(1, 1, 1, 0.75))
+		_contact_tex = GradientTexture2D.new()
+		_contact_tex.gradient = g
+		_contact_tex.fill = GradientTexture2D.FILL_RADIAL
+		_contact_tex.fill_from = Vector2(0.5, 0.5)
+		_contact_tex.fill_to = Vector2(1.0, 0.5)
+		_contact_tex.width = 128
+		_contact_tex.height = 128
+	var r: float = float(node.get_meta("r"))
+	var h: float = float(node.get_meta("h"))
+	var dc := Decal.new()
+	var tall: float = clampf(h * 0.3, 8.0, 40.0)
+	dc.size = Vector3(r * 2.7, tall, r * 2.7)
+	dc.position = Vector3(0.0, tall * 0.2, 0.0)
+	dc.texture_albedo = _contact_tex
+	dc.modulate = Color(0.05, 0.04, 0.03, 0.6)
+	dc.albedo_mix = 1.0
+	dc.upper_fade = 0.6
+	dc.lower_fade = 0.2
+	node.add_child(dc)
+	node.set_meta("contact", true)
+
+
 func _make(kind: String, land: String, foot: float) -> Node3D:
 	var vs: Array = _variants(kind)
 	if vs.is_empty():
@@ -455,6 +516,8 @@ func _make(kind: String, land: String, foot: float) -> Node3D:
 	var want: float = foot if s[0] == "w" else foot / 0.8
 	var have: float = maxf(aabb.size.x, aabb.size.z) if s[0] == "w" else aabb.size.y
 	var sc: float = want / maxf(have, 0.0001)
+	if not (kind in ["ship", "frigate"]):
+		_seat_coat(inst)
 	var root := Node3D.new()
 	root.add_child(inst)
 	root.set_meta("h", aabb.size.y * sc)
@@ -526,6 +589,7 @@ func set_capitals(caps: Dictionary, colors: Dictionary) -> void:
 		node.rotation.y = float(spot["yaw"])
 		_add_flag(node, col)
 		add_child(node)
+		_contact(node)
 		_palaces[land] = node
 		pieces.append({"kind": "palace", "land": land, "node": node, "at": at, "role": "palace",
 			"r": float(node.get_meta("r")), "h": float(node.get_meta("h")), "base": node.position.y})

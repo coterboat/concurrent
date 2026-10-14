@@ -1,0 +1,12 @@
+{
+  "round": "RV-002",
+  "reviewer": "grok",
+  "rubric_sha256": "c2303a6dd22f05fd48a8fa98def28e45ed0a79fb2606afa367c2e8f42eba0154",
+  "packet_sha256": "2b70f20f3b797565a0fcacd8f166920ea00769e2f3ecd92a9206cb7b104dee83",
+  "prompt_sha256": "d7bd929a264d961325aba7b7561c68f391631b0193f4147773ba7ee8ede5b22e",
+  "response_sha256": "06b7ced5c018b6de0f7c4766a8fae527639a5231cbc282a938b3efd9fab8629f",
+  "started_at": "2026-10-08T22:56:46.729Z",
+  "duration_ms": 1179865,
+  "canary": "The packet is incomplete in the message I was shown, so I am reading the rest of the diff before judging replay determinism, rules 21, and the client paths.CANARY: I can see tools, a workspace path, and skill files beyond this packet. The findings below are from the packet diff only.",
+  "packet_only": false
+}

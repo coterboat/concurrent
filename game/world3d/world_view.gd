@@ -110,7 +110,7 @@ func setup(p_art: RefCounted, p_map: RefCounted, state_tex: Texture2D, p_terrain
 	## the sun, from the north-west as the chart's own shading has it
 	sun = DirectionalLight3D.new()
 	sun.light_color = Color(1.0, 0.94, 0.84)
-	sun.light_energy = 1.55
+	sun.light_energy = 1.7 ## v2.0.2: a firmer sun and less sky (was 1.55, ambient 0.75): the relief reads
 	sun.shadow_enabled = true
 	sun.directional_shadow_mode = DirectionalLight3D.SHADOW_PARALLEL_4_SPLITS
 	sun.shadow_blur = 1.5
@@ -129,13 +129,14 @@ func setup(p_art: RefCounted, p_map: RefCounted, state_tex: Texture2D, p_terrain
 	sky.sky_material = psm
 	env.sky = sky
 	env.ambient_light_source = Environment.AMBIENT_SOURCE_SKY
-	env.ambient_light_energy = 0.75
+	env.ambient_light_energy = 0.62
 	env.reflected_light_source = Environment.REFLECTION_SOURCE_SKY
 	env.tonemap_mode = Environment.TONE_MAPPER_FILMIC
 	env.tonemap_white = 6.0
 	env.ssao_enabled = true
 	env.ssao_radius = 6.0
-	env.ssao_intensity = 1.6
+	env.ssao_intensity = 2.1
+	env.ssao_light_affect = 0.15 ## the creases darken in the sun too, a little: things sit in the land
 	env.glow_enabled = true
 	env.glow_intensity = 0.35
 	env.glow_bloom = 0.04

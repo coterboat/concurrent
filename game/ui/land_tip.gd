@@ -123,3 +123,12 @@ static func _names(s: Node, ids: Array) -> String:
 	if names.size() <= 1:
 		return "".join(names)
 	return ", ".join(names.slice(0, names.size() - 1)) + " and " + str(names[-1])
+
+
+static func stale(board: Control, hovered: Control, just_covered: bool) -> bool:
+	## v2.0.1: a land's tip goes when the cursor is no longer on the board, or the moment the phase
+	## turns or a report, a battle or a dialog opens over it (the play critic: Fenmoor's tip stayed up through a whole
+	## round's report and the next round's battles; the board never heard the cursor leave, as the
+	## report took the mouse)
+	var on_board: bool = hovered != null and (hovered == board or board.is_ancestor_of(hovered))
+	return just_covered or not on_board

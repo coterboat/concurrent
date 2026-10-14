@@ -296,6 +296,11 @@ func _battle_from_land() -> void:
 		if not gs.cinema._waiting:
 			gs.cinema.advance()
 		await p.frames(1)
+	## v2.0.2: the report's camera glides back to the view it found as the report ends
+	guard = 0
+	while gs.board.camera_moving() and guard < 300:
+		guard += 1
+		await p.frames(1)
 	await p.frames(40)
 	var lb: Control = gs.land_board
 	var eye_now: Vector3 = gs.land.wv.cam.global_position

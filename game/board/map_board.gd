@@ -16,6 +16,7 @@ signal territory_hovered(id: String)
 signal drag_order(from_id: String, to_id: String)
 signal empty_clicked
 signal arrow_clicked(from_id: String, to_id: String)
+signal clash_met ## v2.0.2: a clash's two columns have just met on the border
 
 var art: RefCounted
 var map: Types.MapDef
@@ -26,7 +27,21 @@ var hovered := ""
 var targets := {} ## id -> true, pulsing gold
 var dimmed := {}
 var battle := {}
-var clash: Array = [] ## [land a, land b]: a border clash being fought on the line between them
+var clash: Array = []: ## [land a, land b]: a border clash being fought on the line between them
+	set(v):
+		clash = v
+		if v.size() >= 2 and (clash_fx.is_empty() or str(clash_fx["a"]) != str(v[0]) or str(clash_fx["b"]) != str(v[1])):
+			clash_fx = {"a": str(v[0]), "b": str(v[1]), "t0": _time, "hit": false}
+## v2.0.2: a border clash, told (the owner: "border clashes show both arrows colliding, with the
+## winner's carrying through"). The two columns charge down the road between their lands and meet
+## on the border; they push there while the dice roll; when the dice land, the winner's arrow shoves
+## the loser's back into its own land and carries on to the land it marched on, its count falling to
+## the men still standing. {a, b, t0, hit, won?: {owner, from, to, n0, n1, t}, lost?: {owner, n}}
+var clash_fx := {}
+const CLASH_DRIVE := 0.45 ## the columns charge to the border
+const CLASH_HOLD := 0.45 ## at least this long locked on the border before the break
+const CLASH_PUSH := 0.65 ## the winner carries through
+var drawn_clash := {} ## v2.0.2: this frame's clash, as drawn (the probe reads it): {meet, a_tip, b_tip, winner, w}
 var orders: Array = [] ## [{from, to, strength, owner, surge, kind: "attack"|"move", born?}]
 var flow := false ## columns on the move: marching chevrons run along the live arrows (the battle report)
 var ghosts: Array = [] ## last round's packets (v1.13: each with its fate, LastRound.ghosts)
@@ -56,6 +71,9 @@ var drawn_cut: Dictionary = {} ## v1.14: land -> where its CUT OFF plate sits th
 var drawn_bonus: Dictionary = {} ## v1.14: region -> the screen rect of its bonus and pips this frame (the probe reads it)
 var _names_now: Array = [] ## v1.14: this frame's name plates (found once a frame, when a fate mark needs them)
 var _fate_spots: Array = [] ## v1.14: where this frame's fate marks go, queued before the tokens draw
+var _fates_q: Array = [] ## v2.0.1: this frame's fate marks, [at, fate, toward, count]: two of a kind that would touch are one
+var names_over: Array = [] ## v2.0.1: lands whose name a crown touched, written again over it this frame (the probe reads it)
+var drawn_crowns: Dictionary = {} ## v2.0.1: capital -> the screen rect of its crown this frame (the probe reads it)
 var _region_font: FontVariation
 
 var zoom := 0.5
@@ -115,6 +133,12 @@ func load_map(p_map: Types.MapDef) -> void:
 	_mat.set_shader_parameter("n_terr", float(art.order.size()))
 	_state_img = Image.create(art.order.size(), 2, false, Image.FORMAT_RGBA8)
 	_state_tex = ImageTexture.create_from_image(_state_img)
+	_owner_seen.clear()
+	_ink.clear()
+	_count_seen.clear()
+	_count_fx.clear()
+	_region_seen.clear()
+	_region_fx.clear()
 	_mat.set_shader_parameter("state_tex", _state_tex)
 	var depths: Array = art.depth.values()
 	depths.sort()
@@ -126,6 +150,24 @@ func load_map(p_map: Types.MapDef) -> void:
 	_on_resized()
 
 
+## v2.0.2: a land changing hands: its new owner's colour spreads over it (on the chart and on the
+## land under the board) and its token pops with a ring, rather than the colour swapping in a frame
+var _owner_seen := {} ## id -> the owner last drawn
+var _ink := {} ## id -> {from: Color, to: Color, t0, owner}
+## v2.0.2: a land's count that changes (men placed, men lost) gives its number a bump, gold up and
+## red down, rather than the figure changing under the eye unseen
+var _count_seen := {}
+var _count_fx := {} ## id -> {t0, up}
+const COUNT_FX := 0.6
+var _hover_k := {} ## v2.0.2: id -> how far its token has lifted under the cursor (0..1)
+## v2.0.2: a region falling wholly to one commander is a moment: its name flares in their colours
+## and a ring sweeps over each of its lands
+var _region_seen := {} ## region -> who holds all of it ("" for no one)
+var _region_fx := {} ## region -> {t0, owner}
+const REGION_FX := 1.8
+const INK := 0.7 ## seconds for a taken land to take its new colour
+
+
 func refresh() -> void:
 	if art == null or world == null:
 		return
@@ -134,6 +176,15 @@ func refresh() -> void:
 		var ts: Types.TerritoryState = world.get_territory(id)
 		var owner: String = ts.owner if ts else ""
 		var col: Color = Style.seat_color(owner)
+		if _owner_seen.has(id) and str(_owner_seen[id]) != owner and not plain:
+			var was: Color = _ink_now(id) if _ink.has(id) else Style.seat_color(str(_owner_seen[id]))
+			_ink[id] = {"from": was, "to": col, "t0": _time, "owner": owner}
+		elif ts != null and _count_seen.has(id) and int(_count_seen[id]) != ts.armies + ts.garrison and not plain:
+			_count_fx[id] = {"t0": _time, "up": ts.armies + ts.garrison > int(_count_seen[id])}
+		_owner_seen[id] = owner
+		_count_seen[id] = ts.armies + ts.garrison if ts != null else 0
+		if _ink.has(id):
+			col = _ink_now(id)
 		var flags := 0
 		if targets.has(id):
 			flags |= 1
@@ -149,9 +200,47 @@ func refresh() -> void:
 		var region: String = map.get_territory(id).region
 		_state_img.set_pixel(i, 1, _region_tint(region))
 	_state_tex.update(_state_img)
+	if not plain:
+		for r in map.region_bonus.keys():
+			var holder := ""
+			for m in MapLib.region_members(map, str(r)):
+				var mts: Types.TerritoryState = world.get_territory(m)
+				var mo: String = mts.owner if mts != null else ""
+				if mo == Types.UNOCCUPIED or (holder != "" and mo != holder):
+					holder = ""
+					break
+				holder = mo
+			if _region_fx.has(r) and str(_region_fx[r]["owner"]) != holder:
+				_region_fx.erase(r) ## won and lost again in one report: its moment ends with it
+			if _region_seen.has(r) and holder != "" and str(_region_seen[r]) != holder:
+				_region_fx[r] = {"t0": _time, "owner": holder}
+				if art.regions.has(r):
+					## its bonus rises off its name: the commander's now, every round
+					fx.append({"map": art.regions[r], "text": "+%d A ROUND" % int(map.region_bonus[r]), "color": Style.seat_color(holder).lightened(0.45), "t": 0.0, "dur": 2.2, "size": 30})
+			_region_seen[r] = holder
 	_mat.set_shader_parameter("select_id", int(art.index.get(selected, -1)))
 	_mat.set_shader_parameter("hover_id", int(art.index.get(hovered, -1)) if interactive else -1)
 	overlay.queue_redraw()
+
+
+func _ink_now(id: String) -> Color:
+	var k: Dictionary = _ink[id]
+	var e: float = smoothstep(0.0, 1.0, clampf((_time - float(k["t0"])) / INK, 0.0, 1.0))
+	return (k["from"] as Color).lerp(k["to"], e)
+
+
+func region_won(region: String) -> float:
+	## v2.0.2: how far through its moment a region just won is (0..1), or -1 (the probe reads it)
+	if not _region_fx.has(region):
+		return -1.0
+	return clampf((_time - float(_region_fx[region]["t0"])) / REGION_FX, 0.0, 1.0)
+
+
+func taking(id: String) -> float:
+	## v2.0.2: how far through being taken this land is (0..1), or -1 (the probe reads it)
+	if not _ink.has(id):
+		return -1.0
+	return clampf((_time - float(_ink[id]["t0"])) / INK, 0.0, 1.0)
 
 
 func region_color(region: String) -> Color:
@@ -175,6 +264,14 @@ func set_view_mode(m: int) -> void:
 
 
 # ------------------------------------------------------------------ view math
+
+func behind(s: Vector2) -> bool:
+	## v2.0.2: a screen point the land's camera can't truly show: land.project's sentinel for a point
+	## behind it, or one just in front of its near plane thrown absurdly far off the screen (a battle's
+	## low camera). Drawing there made degenerate shapes ("triangulation failed": 266 in one soak, then
+	## 23 from the near plane in the next)
+	return absf(s.x) > 20000.0 or absf(s.y) > 20000.0 or not s.is_finite()
+
 
 func map_to_screen(p: Vector2) -> Vector2:
 	if projector.is_valid():
@@ -264,6 +361,9 @@ func swoop_to(ids: Array, zmult: float, dur: float) -> Tween:
 	if n == 0:
 		return null
 	c /= float(n)
+	keep_home()
+	_kill(_lean_tw)
+	_kill(_back_tw)
 	var z0: float = zoom
 	var o0: Vector2 = offset
 	var z1: float = clampf(fit * zmult, fit, fit * 3.5)
@@ -271,6 +371,7 @@ func swoop_to(ids: Array, zmult: float, dur: float) -> Tween:
 	var o1: Vector2 = mid - c * z1
 	_at_fit = false
 	var tw := create_tween()
+	_swoop_tw = tw ## (RV-002 F5: a report skipped mid-swoop stops it, so the view it found comes back)
 	tw.tween_method(func(t: float):
 		var e: float = ease(t, -2.2)
 		zoom = lerpf(z0, z1, e)
@@ -280,6 +381,8 @@ func swoop_to(ids: Array, zmult: float, dur: float) -> Tween:
 
 
 func swoop_back(dur: float) -> Tween:
+	_kill(_lean_tw)
+	_kill(_back_tw)
 	var z0: float = zoom
 	var o0: Vector2 = offset
 	var avail2 := Vector2(size.x, size.y - pad_top - pad_bottom)
@@ -293,7 +396,123 @@ func swoop_back(dur: float) -> Tween:
 	tw.tween_callback(func():
 		_at_fit = true
 		_on_resized())
+	_back_tw = tw
 	return tw
+
+
+## v2.0.2: the battle report's camera on the land. It leans in on each fight as it's told, close
+## enough to see the columns meet and with all its lands in view, hops (out a little and back in)
+## between fights far apart, and gives back the view it found when the report ends.
+const LEAN := 1.9 ## how close it leans, against the fit
+var _lean_tw: Tween
+var _back_tw: Tween
+var _swoop_tw: Tween ## a battle's swoop down (swoop_to): its finish opens the battle, so only a skip stops it
+var _cam_home := {} ## the view the report found: {zoom, offset, at_fit}
+
+
+func _kill(tw: Tween) -> void:
+	if tw != null and tw.is_valid():
+		tw.kill()
+
+
+func keep_home() -> void:
+	## remember the view the report found (on the land, where its camera moves), once
+	if _cam_home.is_empty() and projector.is_valid():
+		_cam_home = {"zoom": zoom, "offset": offset, "at_fit": _at_fit}
+
+
+func lean_in(ids: Array, aim_y: float = 0.5, dur: float = 0.75) -> void:
+	## frame these lands: their middle at aim_y of the free height, all of them in the middle band
+	if art == null or ids.is_empty():
+		return
+	var c := Vector2.ZERO
+	var lo := Vector2(INF, INF)
+	var hi := Vector2(-INF, -INF)
+	var n := 0
+	for id in ids:
+		if art.anchors.has(id):
+			var q: Vector2 = art.anchors[id]
+			c += q
+			lo = lo.min(q)
+			hi = hi.max(q)
+			n += 1
+	if n == 0:
+		return
+	c /= float(n)
+	keep_home()
+	var avail_h: float = size.y - pad_top - pad_bottom
+	var span: Vector2 = hi - lo
+	var z1: float = fit * LEAN
+	if span.x > 1.0:
+		z1 = minf(z1, size.x * 0.45 / span.x)
+	if span.y > 1.0:
+		z1 = minf(z1, avail_h * 0.25 / span.y)
+	_glide(c, clampf(z1, fit * 1.2, fit * 3.0), aim_y, dur)
+
+
+func camera_moving() -> bool:
+	## the report's camera is on its way somewhere (a lean, or back to the view it found)
+	return (_lean_tw != null and _lean_tw.is_valid() and _lean_tw.is_running()) or (_back_tw != null and _back_tw.is_valid() and _back_tw.is_running())
+
+
+func in_view(ids: Array, margin: float = 60.0) -> bool:
+	## every one of these lands is on the screen, clear of its edges
+	var r := Rect2(Vector2(margin, pad_top + margin), Vector2(size.x - margin * 2.0, size.y - pad_top - pad_bottom - margin * 2.0))
+	for id in ids:
+		if art.anchors.has(id) and not r.has_point(anchor(str(id))):
+			return false
+	return true
+
+
+func stand_back(dur: float = 0.9, keep: bool = false) -> void:
+	## the view the report found, again (keep: between its stages, it will lean in again)
+	if _cam_home.is_empty():
+		return
+	var home: Dictionary = _cam_home
+	if not keep:
+		_cam_home = {}
+	if bool(home["at_fit"]):
+		if not (_at_fit or (_back_tw != null and _back_tw.is_valid())):
+			swoop_back(dur)
+		return
+	var aim := Vector2(size.x * 0.5, pad_top + (size.y - pad_top - pad_bottom) * 0.5)
+	_glide((aim - (home["offset"] as Vector2)) / maxf(float(home["zoom"]), 0.0001), float(home["zoom"]), 0.5, dur)
+
+
+func restore_view() -> void:
+	## the report skipped: the view it found, at once
+	if _cam_home.is_empty():
+		return
+	var home: Dictionary = _cam_home
+	_cam_home = {}
+	_kill(_lean_tw)
+	_kill(_back_tw)
+	_kill(_swoop_tw)
+	if bool(home["at_fit"]):
+		reset_view()
+	else:
+		zoom = float(home["zoom"])
+		offset = home["offset"]
+		_at_fit = false
+		_apply_view()
+
+
+func _glide(c1: Vector2, z1: float, aim_y: float, dur: float) -> void:
+	## the camera to map point c1 at aim_y of the free height, at zoom z1: the point at the aim
+	## travels and the zoom eases, so the way there is straight; far apart, it hops out on the way
+	_kill(_lean_tw)
+	_kill(_back_tw)
+	var aim := Vector2(size.x * 0.5, pad_top + (size.y - pad_top - pad_bottom) * aim_y)
+	var z0: float = zoom
+	var c0: Vector2 = (aim - offset) / maxf(z0, 0.0001)
+	var hop: float = clampf((c1 - c0).length() * minf(z0, z1) / maxf(size.x, 1.0) - 0.15, 0.0, 0.6)
+	_at_fit = false
+	_lean_tw = create_tween()
+	_lean_tw.tween_method(func(t: float):
+		var e: float = ease(t, -2.0)
+		zoom = maxf(fit, lerpf(z0, z1, e) * (1.0 - hop * 0.5 * sin(PI * t)))
+		offset = aim - c0.lerp(c1, e) * zoom
+		_apply_view(), 0.0, 1.0, dur)
 
 
 func focus_on(ids: Array, min_zoom: float = 0.0) -> void:
@@ -418,7 +637,48 @@ func _process(delta: float) -> void:
 			bonus_seen.erase(k) ## the set was taken back: it shows afresh if it comes again
 		elif _time - float(bonus_seen[k]) < BONUS_SHOW + 0.1:
 			live = true
-	if not fx.is_empty() or not shake.is_empty() or not battle.is_empty() or not clash.is_empty() or drag_from != "" or flow:
+	for k in _region_fx.keys():
+		if _time - float(_region_fx[k]["t0"]) >= REGION_FX:
+			_region_fx.erase(k)
+		else:
+			live = true
+	for k in _count_fx.keys():
+		if _time - float(_count_fx[k]["t0"]) >= COUNT_FX:
+			_count_fx.erase(k)
+		else:
+			live = true
+	var hov: String = hovered if interactive else ""
+	if hov != "" and not _hover_k.has(hov):
+		_hover_k[hov] = 0.0
+	for k in _hover_k.keys():
+		var to: float = 1.0 if str(k) == hov else 0.0
+		_hover_k[k] = move_toward(float(_hover_k[k]), to, delta * 7.0)
+		if float(_hover_k[k]) != to:
+			live = true
+		if to == 0.0 and float(_hover_k[k]) <= 0.0:
+			_hover_k.erase(k)
+	if not _ink.is_empty():
+		live = true
+		for k in _ink.keys():
+			var ink_i: int = int(art.index.get(k, -1))
+			if _time - float(_ink[k]["t0"]) >= INK:
+				_ink.erase(k)
+			if ink_i >= 0:
+				var px: Color = _state_img.get_pixel(ink_i, 0)
+				var c2: Color = _ink_now(str(k)) if _ink.has(k) else Style.seat_color(str(_owner_seen.get(k, "")))
+				_state_img.set_pixel(ink_i, 0, Color(c2.r, c2.g, c2.b, px.a))
+		_state_tex.update(_state_img)
+	if not clash_fx.is_empty():
+		var cu: float = _time - float(clash_fx["t0"])
+		if not bool(clash_fx["hit"]) and cu >= CLASH_DRIVE:
+			## the columns meet: both lands' tokens take the shock
+			clash_fx["hit"] = true
+			shake[str(clash_fx["a"])] = 0.35
+			shake[str(clash_fx["b"])] = 0.35
+			clash_met.emit()
+		if clash.is_empty() and (not clash_fx.has("won") or _time - float(clash_fx["won"]["t"]) > CLASH_PUSH + 0.25):
+			clash_fx = {}
+	if not fx.is_empty() or not shake.is_empty() or not battle.is_empty() or not clash.is_empty() or not clash_fx.is_empty() or drag_from != "" or flow:
 		live = true
 	## the ships ride the swell
 	if art != null and not art.ornaments.is_empty() and Engine.get_frames_drawn() % 2 == 0:
@@ -533,6 +793,9 @@ func _draw_overlay() -> void:
 	drawn_cut.clear()
 	drawn_bonus.clear()
 	_fate_spots.clear()
+	_fates_q.clear()
+	drawn_crowns.clear()
+	names_over.clear()
 	_names_now = []
 	_draw_ornaments(ci)
 	_draw_lanes(ci)
@@ -543,14 +806,18 @@ func _draw_overlay() -> void:
 	_surges_drawn = {}
 	for g in ghosts:
 		_draw_ghost(ci, g)
+	for q in _fates_q:
+		_late.append(_draw_fate_mark.bind(q[0], q[1], q[2], q[3]))
+		_fate_spots.append(q[0])
 	_surges_drawn = {}
+	drawn_clash = {}
 	for o in orders:
+		if clash_hides(str(o["from"]), str(o["to"]), str(o.get("owner", ""))):
+			continue ## the clash draws these two columns itself, meeting on the border
 		var grow: float = clampf((_time - float(o["born"])) / 0.55, 0.0, 1.0) if o.has("born") else 1.0
 		_draw_arrow(ci, str(o["from"]), str(o["to"]), int(o.get("strength", 1)), str(o.get("owner", "")), str(o.get("surge", "")), str(o.get("kind", "attack")), float(o.get("alpha", 1.0)), true, grow, int(o.get("surge_n", 0)))
 	if drag_from != "":
-		var a: Vector2 = anchor(drag_from)
-		ci.draw_line(a, _mouse, Color(1, 0.9, 0.6, 0.85), 5.0, true)
-		ci.draw_circle(_mouse, 7.0, Color(1, 0.9, 0.6, 0.85))
+		_draw_drag(ci)
 	_draw_battle_marks(ci)
 	_draw_smoke(ci)
 	## v1.9: fallen capitals burn behind their tokens
@@ -639,29 +906,235 @@ func _draw_battle_marks(ci: CanvasItem) -> void:
 		ci.draw_arc(p, r * (1.3 + 0.1 * k), 0, TAU, 40, Color(0.9, 0.2, 0.1, 0.5), 2.0, true)
 
 
-func _draw_clash(ci: CanvasItem) -> void:
-	## two columns meeting on the border: a starburst and crossed swords where they collide
-	if clash.size() < 2 or not art.anchors.has(clash[0]) or not art.anchors.has(clash[1]):
+func clash_hides(from_id: String, to_id: String, owner: String = "") -> bool:
+	## v2.0.2: while a clash is being told, its two columns are drawn by it, not as plain arrows.
+	## Before rules 21 a commander's columns into one land were one army, and all of it fought the
+	## clash: every one of its orders into that land stands aside too, or the map shows the army and
+	## its parts at once (RV-004 F1)
+	if clash_fx.is_empty():
+		return false
+	var a: String = str(clash_fx["a"])
+	var b: String = str(clash_fx["b"])
+	var on_road: bool = (from_id == a and to_id == b) or (from_id == b and to_id == a)
+	if not on_road and bool(clash_fx.get("merged", false)) and owner != "":
+		var sides: Dictionary = clash_fx.get("sides", {})
+		on_road = (to_id == b and str((sides.get(a, {}) as Dictionary).get("owner", "")) == owner) \
+			or (to_id == a and str((sides.get(b, {}) as Dictionary).get("owner", "")) == owner)
+	if not on_road:
+		return false
+	return not clash_fx.has("won") or _time - float(clash_fx["won"]["t"]) < CLASH_PUSH
+
+
+func clash_won(winner: String, win_from: String, win_to: String, n0: int, n1: int, loser: String, lost_n: int) -> void:
+	## v2.0.2: the dice landed (the cinema says who won): the winner's column carries through, n0
+	## men in and n1 still standing; the loser's (lost_n men) is driven back into win_to
+	var pair: Array = [str(clash_fx.get("a", "")), str(clash_fx.get("b", ""))]
+	if clash_fx.is_empty() or not (pair.has(win_from) and pair.has(win_to)):
+		## told without its charge (the report went on before the dice landed): already locked
+		clash_fx = {"a": win_from, "b": win_to, "t0": _time - CLASH_DRIVE - CLASH_HOLD, "hit": true}
+	if clash_fx.has("won"):
 		return
-	var a: Vector2 = anchor(str(clash[0]))
-	var b: Vector2 = anchor(str(clash[1]))
-	var m: Vector2 = (a + b) * 0.5
-	var k: float = 0.5 + 0.5 * sin(_time * 9.0)
-	var R: float = token_radius() * (1.5 + 0.2 * k)
-	var star := PackedVector2Array()
-	for i in 24:
-		var ang: float = TAU * i / 24.0 + _time * 0.6
-		star.append(m + Vector2.from_angle(ang) * (R if i % 2 == 0 else R * 0.55))
-	ci.draw_colored_polygon(star, Color(1.0, 0.55, 0.15, 0.85))
-	var star2 := PackedVector2Array()
-	for i in 24:
-		var ang2: float = TAU * i / 24.0 - _time * 0.4
-		star2.append(m + Vector2.from_angle(ang2) * (R * 0.8 if i % 2 == 0 else R * 0.45))
-	ci.draw_colored_polygon(star2, Color(1.0, 0.9, 0.5, 0.95))
-	var sw: Texture2D = Style.icon("attack")
-	if sw != null:
-		var sz: float = R * 1.1
-		ci.draw_texture_rect(sw, Rect2(m - Vector2(sz, sz) * 0.5, Vector2(sz, sz)), false)
+	## dice that land before the columns have met (and pushed a moment) wait for them
+	var at: float = maxf(_time, float(clash_fx["t0"]) + CLASH_DRIVE + CLASH_HOLD)
+	clash_fx["won"] = {"owner": winner, "from": win_from, "to": win_to, "n0": n0, "n1": n1, "t": at, "m0": 0.5}
+	clash_fx["lost"] = {"owner": loser, "from": win_to, "to": win_from, "n": lost_n}
+
+
+func clash_clock() -> Dictionary:
+	## v2.0.2: the clash as the land's columns need it: which lands, how long since they set off,
+	## and how long since the break (-1 before it)
+	if clash_fx.is_empty():
+		return {}
+	var won: Dictionary = clash_fx.get("won", {})
+	var since: float = _time - float(won["t"]) if not won.is_empty() and _time >= float(won["t"]) else -1.0
+	return {"a": str(clash_fx["a"]), "b": str(clash_fx["b"]), "u": _time - float(clash_fx["t0"]), "won_from": str(won.get("from", "")), "since_won": since}
+
+
+func clash_sides(a_owner: String, a_n: int, b_owner: String, b_n: int, merged: bool = false) -> void:
+	## the clash's two columns as its event tells them (a surge's column has no arrow of its own on
+	## the board: it is drawn on from the land it set out from). merged: before rules 21, each side
+	## is all its commander's columns into the other's land, one army
+	if not clash_fx.is_empty():
+		clash_fx["sides"] = {str(clash_fx["a"]): {"owner": a_owner, "n": a_n}, str(clash_fx["b"]): {"owner": b_owner, "n": b_n}}
+		clash_fx["merged"] = merged
+
+
+func _clash_side(from_id: String, to_id: String) -> Dictionary:
+	## one of the two columns in the clash: {owner, n}, as its event tells it when the cinema has
+	## (the event's size is the army that fought: before rules 21 a commander's columns into one
+	## land were one army, RV-003 F2), else as its order on the board
+	var told: Dictionary = (clash_fx.get("sides", {}) as Dictionary).get(from_id, {})
+	if not told.is_empty() and not clash_fx.has("lost"):
+		return told
+	for o in orders:
+		if str(o["from"]) == from_id and str(o["to"]) == to_id:
+			return {"owner": str(o.get("owner", "")), "n": int(o.get("strength", 1))}
+	var lost: Dictionary = clash_fx.get("lost", {})
+	if not lost.is_empty() and str(lost["from"]) == from_id:
+		return lost
+	return (clash_fx.get("sides", {}) as Dictionary).get(from_id, {})
+
+
+func _road_at(road: PackedVector2Array, f: float) -> Vector2:
+	var i: int = clampi(int(f), 0, road.size() - 2)
+	return road[i].lerp(road[i + 1], clampf(f - float(i), 0.0, 1.0))
+
+
+func _road_part(road: PackedVector2Array, s0: float, s1: float) -> PackedVector2Array:
+	## the stretch of a road from s0 to s1 (shares of its length from its start; s1 < s0 runs back)
+	var n: int = road.size() - 1
+	var f0: float = clampf(s0, 0.0, 1.0) * n
+	var f1: float = clampf(s1, 0.0, 1.0) * n
+	var out := PackedVector2Array([_road_at(road, f0)])
+	if f1 >= f0:
+		for i in range(int(floor(f0)) + 1, int(ceil(f1))):
+			out.append(road[i])
+	else:
+		for i in range(int(ceil(f0)) - 1, int(floor(f1)), -1):
+			out.append(road[i])
+	out.append(_road_at(road, f1))
+	return out
+
+
+func _draw_clash_column(ci: CanvasItem, pts: PackedVector2Array, side: Dictionary, n: int, alpha: float, broken: bool) -> void:
+	## one column's arrow, from its land to where it has got to: a head on it while it fights, a
+	## splintered end once it's beaten
+	if pts.size() < 2 or pts[0].distance_to(pts[pts.size() - 1]) < 2.0:
+		return
+	var col: Color = Style.seat_color(str(side["owner"])).lightened(0.15)
+	if broken:
+		col = col.darkened(0.35)
+	col.a = alpha
+	var w: float = clampf(4.0 + sqrt(float(maxi(n, 1))) * 1.6, 4.0, 13.0)
+	var dark := Color(0.05, 0.04, 0.03, alpha * 0.9)
+	if projector.is_valid():
+		_arrow_shadow(ci, pts, w, alpha, false)
+	ci.draw_polyline(pts, dark, w + 4.0, true)
+	ci.draw_polyline(pts, col, w, true)
+	var tip: Vector2 = pts[pts.size() - 1]
+	var back: Vector2 = (tip - pts[maxi(0, pts.size() - 3)]).normalized()
+	var sd: Vector2 = back.orthogonal()
+	if broken:
+		for k in [-1.0, 1.0]:
+			ci.draw_line(tip, tip - back * (w + 4.0) + sd * k * (w + 2.0), dark, 3.0, true)
+	else:
+		ci.draw_colored_polygon(PackedVector2Array([tip + back * 4.0, tip - back * (w + 4.0) + sd * (w + 6.0), tip - back * (w + 4.0) - sd * (w + 6.0)]), dark)
+		ci.draw_colored_polygon(PackedVector2Array([tip, tip - back * (w + 2.0) + sd * (w + 2.5), tip - back * (w + 2.0) - sd * (w + 2.5)]), col)
+	## its count rides beside it (on its own left, so the two columns' counts sit either side of the road)
+	var fm: float = (pts.size() - 1) * 0.4
+	var along: Vector2 = (_road_at(pts, minf(fm + 0.5, pts.size() - 1)) - _road_at(pts, maxf(fm - 0.5, 0.0))).normalized()
+	var txt := str(n)
+	var f := Style.font("bold")
+	var tw: float = f.get_string_size(txt, HORIZONTAL_ALIGNMENT_LEFT, -1, 17).x
+	var rad: float = maxf(12.0, tw * 0.5 + 7.0)
+	var mid: Vector2 = _road_at(pts, fm) + along.orthogonal() * (rad + w * 0.5 + 3.0)
+	ci.draw_circle(mid, rad + 2.0, dark)
+	ci.draw_circle(mid, rad, Color(0.96, 0.92, 0.82, alpha))
+	ci.draw_string(f, mid + Vector2(-tw * 0.5, 6), txt, HORIZONTAL_ALIGNMENT_LEFT, -1, 17, Color(0.1, 0.08, 0.06, alpha))
+
+
+func _draw_clash(ci: CanvasItem) -> void:
+	## v2.0.2: two columns meeting on the border. They charge down the road between their lands,
+	## lock where they meet (a flare behind the two heads, sparks flying) and push there while the
+	## dice roll; then the winner's arrow drives the loser's back into its own land and carries on.
+	if clash_fx.is_empty():
+		return
+	var a_id: String = str(clash_fx["a"])
+	var b_id: String = str(clash_fx["b"])
+	if not art.anchors.has(a_id) or not art.anchors.has(b_id):
+		return
+	var won: Dictionary = clash_fx.get("won", {})
+	if not won.is_empty() and _time < float(won["t"]):
+		won = {} ## the dice are in, but the columns are still to meet
+	elif not won.is_empty() and not bool(clash_fx.get("broke", false)):
+		clash_fx["broke"] = true
+		won["m0"] = float(clash_fx.get("m", 0.5))
+		shake[str(won["to"])] = 0.5 ## the beaten land takes the blow
+	var w: float = clampf((_time - float(won["t"])) / CLASH_PUSH, 0.0, 1.0) if not won.is_empty() else 0.0
+	if w >= 1.0:
+		return ## the winner's own arrow has taken over
+	var side_a: Dictionary = _clash_side(a_id, b_id)
+	var side_b: Dictionary = _clash_side(b_id, a_id)
+	var r := token_radius()
+	var pa: Vector2 = anchor(a_id)
+	var pb: Vector2 = anchor(b_id)
+	var d: Vector2 = (pb - pa).normalized()
+	var road: PackedVector2Array = _curve(pa + d * (r + 2.0), pb - d * (r + 2.0), 0.14 if a_id < b_id else -0.14)
+	var nr: float = float(road.size() - 1)
+	var u: float = _time - float(clash_fx["t0"])
+	var drive: float = clampf(u / CLASH_DRIVE, 0.0, 1.0)
+	var charge: float = drive * drive ## they gather speed into each other
+	var locked: float = smoothstep(0.0, 0.3, u - CLASH_DRIVE)
+	## where they meet, as a share of the road from a: it sways while they push
+	var m: float = 0.5 + (sin(_time * 5.3) * 0.035 + sin(_time * 8.7) * 0.015) * locked
+	var a_tip: float = 0.5 * charge if drive < 1.0 else m
+	var b_tip: float = 1.0 - 0.5 * charge if drive < 1.0 else m
+	var a_won := false
+	var e := 0.0
+	if not won.is_empty():
+		a_won = str(won["from"]) == a_id
+		e = 1.0 - pow(1.0 - w, 3.0) ## the shove: fast, then home
+		m = lerpf(float(won["m0"]), 1.0 if a_won else 0.0, e)
+		a_tip = m
+		b_tip = m
+	else:
+		clash_fx["m"] = m
+	var meet: Vector2 = _road_at(road, m * nr)
+	## the flare where they meet, behind the two heads
+	if drive >= 1.0:
+		var pulse: float = 0.5 + 0.5 * sin(_time * 9.0)
+		var pop: float = clampf((u - CLASH_DRIVE) / 0.22, 0.0, 1.0)
+		var grow: float = (1.0 + 2.7 * pow(pop - 1.0, 3.0) + 1.7 * pow(pop - 1.0, 2.0)) * (1.0 + e * 1.1)
+		var fade: float = 1.0 - e
+		var R: float = r * (1.25 + 0.15 * pulse) * grow
+		for layer in 2:
+			var star := PackedVector2Array()
+			var spin: float = _time * (0.6 if layer == 0 else -0.45)
+			var k1: float = 1.0 if layer == 0 else 0.72
+			for i in 22:
+				star.append(meet + Vector2.from_angle(TAU * i / 22.0 + spin) * R * k1 * (1.0 if i % 2 == 0 else 0.5))
+			ci.draw_colored_polygon(star, Color(1.0, 0.55, 0.15, 0.85 * fade) if layer == 0 else Color(1.0, 0.92, 0.55, 0.95 * fade))
+		## the shock of the meeting, and of the break
+		var hit_t: float = (u - CLASH_DRIVE) / 0.4
+		if hit_t < 1.0:
+			ci.draw_arc(meet, r * (0.6 + 2.6 * hit_t), 0, TAU, 40, Color(1.0, 0.95, 0.8, 0.9 * (1.0 - hit_t)), 4.0, true)
+		if not won.is_empty():
+			ci.draw_arc(meet, r * (0.8 + 3.2 * w), 0, TAU, 40, Color(1.0, 0.85, 0.5, 0.85 * (1.0 - w)), 5.0 * (1.0 - w) + 1.0, true)
+	## the two columns: the winner's over the loser's
+	var parts := [[side_a, _road_part(road, 0.0, a_tip), a_id], [side_b, _road_part(road, 1.0, b_tip), b_id]]
+	if not won.is_empty() and not a_won:
+		parts.reverse()
+	for pt in parts:
+		var side: Dictionary = pt[0]
+		if side.is_empty():
+			continue
+		var beaten: bool = not won.is_empty() and str(pt[2]) != str(won["from"])
+		var n: int = int(side["n"])
+		if not won.is_empty() and not beaten:
+			n = int(round(lerpf(float(won["n0"]), float(won["n1"]), e))) ## its losses paid as it goes
+		_draw_clash_column(ci, pt[1], side, n, 1.0 - 0.85 * w if beaten else 1.0, beaten)
+	## sparks fly while they fight, and a spray of them through the break
+	if drive >= 1.0:
+		var since: float = u - CLASH_DRIVE
+		var beat: int = int(since / 0.55)
+		var ph: float = fmod(since, 0.55) / 0.55
+		var burst_n: int = 9
+		if not won.is_empty():
+			ph = w
+			beat = 99
+			burst_n = 14
+		for i in burst_n:
+			var h: float = fposmod(sin(float(i) * 12.9898 + float(beat) * 4.1) * 43758.5453, 1.0)
+			var ang: float = TAU * float(i) / float(burst_n) + float(beat) * 1.7 + h * 0.5
+			var dir: Vector2 = Vector2.from_angle(ang)
+			if not won.is_empty():
+				dir = (dir + (d if a_won else -d) * 1.4).normalized() ## carried on with the winner
+			var dist: float = r * (0.45 + 1.5 * ph) * (0.75 + 0.5 * h)
+			var p0: Vector2 = meet + dir * dist
+			ci.draw_line(p0, p0 + dir * r * 0.32 * (1.0 - ph), Color(1.0, 0.93, 0.7, 0.95 * (1.0 - ph)), 2.5, true)
+	drawn_clash = {"meet": meet, "a_tip": _road_at(road, a_tip * nr), "b_tip": _road_at(road, b_tip * nr), "m": m, "w": w,
+		"winner": str(won.get("owner", "")), "met": drive >= 1.0, "sides": int(not side_a.is_empty()) + int(not side_b.is_empty()),
+		"a_n": int(side_a.get("n", 0)), "b_n": int(side_b.get("n", 0))}
 
 
 func _draw_region_labels(ci: CanvasItem) -> void:
@@ -672,8 +1145,12 @@ func _draw_region_labels(ci: CanvasItem) -> void:
 	var k: float = zoom / maxf(fit, 0.01)
 	var sz: int = int(clampf(30.0 * sqrt(k) * (art.size.x / 2400.0 + 0.3), 20.0, 52.0))
 	var shares: Dictionary = BoardFacts.shares(world, map) if world != null and not plain else {}
-	if absf(zoom - _bonus_zoom) > zoom * 0.002 and _time - _bonus_t > 0.15:
-		_bonus_at.clear() ## the view zoomed: the spots are found again once it settles
+	## the view zoomed (or, v2.0.1, on the land the camera tipped or swung, which moves the lands
+	## against each other with no zoom: the Greyfell's bonus sat on Stonehold's name): the spots are
+	## found again once it settles
+	var lay: PackedVector2Array = _layout()
+	if (absf(zoom - _bonus_zoom) > zoom * 0.002 or _layout_moved(lay)) and _time - _bonus_t > 0.15:
+		_bonus_at.clear()
 	for r in art.regions.keys():
 		if not map.region_bonus.has(r):
 			continue
@@ -685,6 +1162,19 @@ func _draw_region_labels(ci: CanvasItem) -> void:
 		var col: Color = region_color(r).lightened(0.6)
 		col.a = 0.55
 		var at := p + Vector2(-w * 0.5, 0)
+		var won_k: float = region_won(str(r))
+		if won_k >= 0.0:
+			## won whole: the name flares in its new master's colours, a ring over each of its lands
+			var oc: Color = Style.seat_color(str(_region_fx[r]["owner"])).lightened(0.3)
+			var glow: float = sin(PI * minf(won_k * 2.5, 1.0)) * 0.5 + (1.0 - won_k) * 0.5
+			col = col.lerp(Color(oc, 0.95), clampf(glow * 1.4, 0.0, 1.0))
+			var ms: PackedStringArray = MapLib.region_members(map, str(r))
+			for mi in ms.size():
+				var rk: float = clampf((won_k * REGION_FX - 0.1 * float(mi)) / 0.9, 0.0, 1.0)
+				if rk > 0.0 and rk < 1.0 and art.anchors.has(ms[mi]):
+					ci.draw_arc(anchor(ms[mi]), token_radius() * (1.1 + 1.8 * rk), 0, TAU, 40, Color(oc, 0.95 * (1.0 - rk)), 7.0 * (1.0 - rk) + 1.5, true)
+					ci.draw_arc(anchor(ms[mi]), token_radius() * (1.0 + 1.2 * rk), 0, TAU, 40, Color(1.0, 0.9, 0.6, 0.7 * (1.0 - rk)), 2.0, true)
+			ci.draw_string_outline(_region_font, at, name, HORIZONTAL_ALIGNMENT_LEFT, -1, sz, 9, Color(0.05, 0.03, 0.02, 0.5 * glow))
 		ci.draw_string_outline(_region_font, at, name, HORIZONTAL_ALIGNMENT_LEFT, -1, sz, 5, Color(0.05, 0.03, 0.02, 0.35))
 		ci.draw_string(_region_font, at, name, HORIZONTAL_ALIGNMENT_LEFT, -1, sz, col)
 		var bf := Style.font("display")
@@ -709,6 +1199,26 @@ func _draw_region_labels(ci: CanvasItem) -> void:
 var _bonus_at := {} ## v1.14: region -> [where its bonus sits from its label at _bonus_zoom, its size]
 var _bonus_zoom := 0.0
 var _bonus_t := -1.0
+var _bonus_layout := PackedVector2Array()
+
+
+func _layout() -> PackedVector2Array:
+	## v2.0.1: how three far-apart lands sit against each other on the screen (a pan on the chart
+	## keeps it; a zoom, or the land's camera tipping or swinging, changes it)
+	var o: Array = art.order
+	if o.size() < 3:
+		return PackedVector2Array()
+	var a: Vector2 = anchor(str(o[0]))
+	return PackedVector2Array([anchor(str(o[o.size() / 2])) - a, anchor(str(o[o.size() - 1])) - a])
+
+
+func _layout_moved(lay: PackedVector2Array) -> bool:
+	if lay.size() != _bonus_layout.size():
+		return true
+	for i in lay.size():
+		if lay[i].distance_to(_bonus_layout[i]) > 1.0:
+			return true
+	return false
 var _bonus_offsets: Array = []
 
 
@@ -776,6 +1286,7 @@ func _bonus_spot(r: String, p: Vector2, home: Vector2, box: Vector2, name_w: flo
 		best = own_best
 	_bonus_at[r] = [best, box]
 	_bonus_zoom = zoom
+	_bonus_layout = _layout()
 	_bonus_t = _time
 	return best
 
@@ -785,6 +1296,46 @@ func _region_at(at: Vector2) -> String:
 	var id: String = art.territory_at(screen_to_map(at))
 	var td: Types.TerritoryDef = map.get_territory(id) if id != "" else null
 	return td.region if td != null else ""
+
+
+func _draw_name(ci: CanvasItem, id: String, r: float) -> void:
+	var f := Style.font("bold")
+	var name: String = map.get_territory(id).display_name
+	var ns := 15 if zoom < fit * 1.4 else 17
+	var nw: float = f.get_string_size(name, HORIZONTAL_ALIGNMENT_LEFT, -1, ns).x
+	var np: Vector2 = anchor(id) + Vector2(-nw * 0.5, r + ns + 1)
+	ci.draw_string_outline(f, np, name, HORIZONTAL_ALIGNMENT_LEFT, -1, ns, 5, Color(0.05, 0.04, 0.03, 0.85))
+	ci.draw_string(f, np, name, HORIZONTAL_ALIGNMENT_LEFT, -1, ns, Style.CREAM if id != selected else Style.GOLD)
+
+
+func crown_rect(id: String) -> Rect2:
+	## v2.0.1: where a capital's crown sits: on its token's brow, unless that covers another land's
+	## name (the play critic, at the Ring's fit zoom: crowns over "Greywatch" and "Cinderhow"); then
+	## slid along the brow, then smaller and lower on it, whichever clears first
+	if _names_now.is_empty():
+		_names_now = token_boxes(true, false)
+	var p: Vector2 = anchor(id)
+	var r := token_radius()
+	var cr: float = clampf(r * 0.85, 15.0, 24.0)
+	var own: int = art.order.find(id) ## token_boxes(true, false) lists one name a land, in art.order
+	var best := Rect2()
+	var best_hit := INF
+	for k in [1.0, 0.8, 0.62]:
+		for dx in [0.0, 0.45, -0.45, 0.75, -0.75]:
+			if k > 0.9 and absf(dx) > 0.5:
+				continue ## a full-size crown out past the brow would sit on the shield or the plates
+			var c: Vector2 = p + Vector2(r * dx, -r * (1.0 - 0.25 * (1.0 - k)) - cr * k * 0.25)
+			var box := Rect2(c - Vector2(cr, cr) * k, Vector2(cr, cr) * 2.0 * k)
+			var hit := 0.0
+			for i in _names_now.size():
+				if i != own:
+					hit += box.intersection(_names_now[i] as Rect2).get_area()
+			if hit <= 0.0:
+				return box
+			if hit < best_hit:
+				best_hit = hit
+				best = box
+	return best
 
 
 func token_boxes(names: bool = true, tokens: bool = true) -> Array:
@@ -797,6 +1348,8 @@ func token_boxes(names: bool = true, tokens: bool = true) -> Array:
 		var p: Vector2 = anchor(str(id))
 		if tokens:
 			out.append(Rect2(p - Vector2(r * 1.55, r * 1.3), Vector2(r * 2.9, r * 2.4)))
+			if world != null and world.territories.has(str(id)) and _is_capital(str(id), world.get_territory(str(id)).owner):
+				out.append(crown_rect(str(id))) ## v2.0.1: a crown stands above the token's box
 		var td: Types.TerritoryDef = map.get_territory(str(id)) if map != null else null
 		if td != null and names:
 			var nw: float = f.get_string_size(td.display_name, HORIZONTAL_ALIGNMENT_LEFT, -1, ns).x
@@ -951,17 +1504,25 @@ func _draw_ghost(ci: CanvasItem, g: Dictionary) -> void:
 	if failed and end != Vector2.INF:
 		end = _off_names(end, anchor(str(g["from"])), anchor(str(g["to"])))
 		var back: String = str(g.get("fellTo", "")) if str(g.get("fellTo", "")) != "" else str(g["from"])
-		_late.append(_draw_fate_mark.bind(end, res, anchor(back) if art.anchors.has(back) else Vector2.INF))
-		_fate_spots.append(end)
+		_queue_fate(end, res, anchor(back) if art.anchors.has(back) else Vector2.INF)
 	if surge_died:
 		## the surge it sent on met another surge on the border and died there
 		var se: Vector2 = _draw_arrow(ci, str(g["to"]), str(g["surgeTo"]), -1, str(g.get("owner", "")), "", kind, 0.42, false, 1.0, 0, 0.5)
 		if se != Vector2.INF:
-			_late.append(_draw_fate_mark.bind(se, LastRound.CLASH, Vector2.INF))
-			_fate_spots.append(se)
+			_queue_fate(se, LastRound.CLASH, Vector2.INF)
 
 
-func _draw_fate_mark(ci: CanvasItem, at: Vector2, fate: String, toward: Vector2) -> void:
+func _queue_fate(at: Vector2, fate: String, toward: Vector2) -> void:
+	## v2.0.1: two marks of one kind that would touch are one mark with a count (the play critic: two
+	## red crosses at Cinderhow's walls ran together into one red blob)
+	for q in _fates_q:
+		if str(q[1]) == fate and (q[0] as Vector2).distance_to(at) < (fate_mark_size() + 6.0) * 2.2:
+			q[3] = int(q[3]) + 1
+			return
+	_fates_q.append([at, fate, toward, 1])
+
+
+func _draw_fate_mark(ci: CanvasItem, at: Vector2, fate: String, toward: Vector2, count: int = 1) -> void:
 	## a column that failed, on a dark medal readable over any land or sea. v1.13.2: each fate its
 	## own mark (the play critic: "you can tell it failed, but not how, without hovering"). Thrown
 	## back or beaten on the border: a red cross. Fell back: a pale double chevron pointing the way
@@ -970,7 +1531,7 @@ func _draw_fate_mark(ci: CanvasItem, at: Vector2, fate: String, toward: Vector2)
 	## the pale chevron is the hardest to spot"), and the scramble's crossed swords became a broken
 	## banner: the swords were the threat plate's symbol, so the two read as one thing.
 	var s: float = fate_mark_size()
-	drawn_fates.append([fate, at])
+	drawn_fates.append([fate, at, count])
 	var rr: float = s + 6.0
 	ci.draw_circle(at + Vector2(1.5, 2.0), rr + 1.0, Color(0, 0, 0, 0.45))
 	ci.draw_circle(at, rr, Color(0.10, 0.05, 0.04, 0.97))
@@ -988,6 +1549,17 @@ func _draw_fate_mark(ci: CanvasItem, at: Vector2, fate: String, toward: Vector2)
 		var red := Color(0.98, 0.36, 0.28)
 		ci.draw_line(at + Vector2(-s, -s) * 0.85, at + Vector2(s, s) * 0.85, red, 4.0, true)
 		ci.draw_line(at + Vector2(-s, s) * 0.85, at + Vector2(s, -s) * 0.85, red, 4.0, true)
+	if count > 1:
+		## how many columns this one mark stands for: "×2" on a cream tab at the disc's lower right
+		var f := Style.font("bold")
+		var ct := "×%d" % count
+		var cs := 13
+		var cw: float = f.get_string_size(ct, HORIZONTAL_ALIGNMENT_LEFT, -1, cs).x
+		var tab := Rect2(at + Vector2(rr * 0.45, rr * 0.25), Vector2(cw + 8.0, 17.0))
+		ci.draw_rect(Rect2(tab.position + Vector2(1.0, 1.5), tab.size), Color(0, 0, 0, 0.45))
+		ci.draw_rect(tab, Color(0.98, 0.9, 0.72))
+		ci.draw_rect(tab, Color(0.10, 0.05, 0.04), false, 1.5)
+		ci.draw_string(f, tab.position + Vector2(4.0, 13.0), ct, HORIZONTAL_ALIGNMENT_LEFT, -1, cs, Color(0.25, 0.06, 0.04))
 
 
 func _off_names(at: Vector2, toward: Vector2, home: Vector2) -> Vector2:
@@ -1048,6 +1620,8 @@ func _draw_arrow(ci: CanvasItem, from_id: String, to_id: String, strength: int, 
 	var r := token_radius()
 	var a: Vector2 = anchor(from_id)
 	var b: Vector2 = anchor(to_id)
+	if behind(a) or behind(b) or a.distance_to(b) < 1.0:
+		return Vector2.INF ## v2.0.2: an end behind the land's camera (a battle's low camera): nothing to draw
 	var dir: Vector2 = (b - a).normalized()
 	a += dir * (r + 2)
 	b -= dir * (r + 8)
@@ -1069,6 +1643,8 @@ func _draw_arrow(ci: CanvasItem, from_id: String, to_id: String, strength: int, 
 	col.a = alpha
 	var w: float = clampf(4.0 + sqrt(float(strength if strength > 0 else 5)) * 1.6, 4.0, 13.0)
 	var dark := Color(0.05, 0.04, 0.03, alpha * 0.9)
+	if projector.is_valid():
+		_arrow_shadow(ci, pts, w, alpha, kind == "move")
 	if kind == "move":
 		for i in range(0, pts.size() - 1, 2):
 			ci.draw_line(pts[i], pts[i + 1], dark, w + 3.0, true)
@@ -1079,7 +1655,7 @@ func _draw_arrow(ci: CanvasItem, from_id: String, to_id: String, strength: int, 
 	var tip: Vector2 = pts[pts.size() - 1]
 	var back: Vector2 = (tip - pts[pts.size() - 3]).normalized()
 	var side: Vector2 = back.orthogonal()
-	if cut >= 1.0:
+	if cut >= 1.0 and back != Vector2.ZERO:
 		var head := PackedVector2Array([tip + back * (w + 8), tip + side * (w + 6), tip - side * (w + 6)])
 		ci.draw_colored_polygon(head, dark)
 		var inner := PackedVector2Array([tip + back * (w + 4), tip + side * (w + 2.5), tip - side * (w + 2.5)])
@@ -1098,7 +1674,7 @@ func _draw_arrow(ci: CanvasItem, from_id: String, to_id: String, strength: int, 
 			var fade: float = sin(u * PI)
 			ci.draw_polyline(chev, Color(0.05, 0.04, 0.03, alpha * 0.8 * fade), 4.5, true)
 			ci.draw_polyline(chev, Color(1, 0.96, 0.85, alpha * fade), 2.2, true)
-	if surge != "" and art.anchors.has(surge) and not _surges_drawn.has(owner + to_id + surge):
+	if surge != "" and art.anchors.has(surge) and not _surges_drawn.has(owner + to_id + surge) and not clash_hides(to_id, surge):
 		## the surge is a march like any other, on from the land being taken
 		_surges_drawn[owner + to_id + surge] = true
 		_draw_arrow(ci, to_id, surge, -1 if surge_n <= 0 else -(surge_n + 1), owner, "", kind, alpha, labeled, grow)
@@ -1115,23 +1691,71 @@ func _draw_arrow(ci: CanvasItem, from_id: String, to_id: String, strength: int, 
 	return tip ## the head's base: at a land's edge, just outside its token
 
 
+func _draw_drag(ci: CanvasItem) -> void:
+	## v2.0.2: an order being dragged is drawn as the arrow it will be, in the commander's colours
+	## (a march dashed), snapped onto the bordering land under the cursor; off any land it reaches
+	## for the cursor
+	var to: String = hovered if hovered != drag_from and art.anchors.has(hovered) and map.is_adjacent(drag_from, hovered) else ""
+	if to != "":
+		var ts: Types.TerritoryState = world.get_territory(to)
+		var kind: String = "move" if ts != null and ts.owner == viewer and viewer != "" else "attack"
+		var pulse: float = 0.78 + 0.18 * sin(_time * 6.0)
+		_draw_arrow(ci, drag_from, to, 0, viewer, "", kind, pulse, false)
+		return
+	var a: Vector2 = anchor(drag_from)
+	var col: Color = Style.seat_color(viewer).lightened(0.25) if viewer != "" else Color(1, 0.9, 0.6)
+	col.a = 0.8
+	var d: Vector2 = (_mouse - a)
+	if d.length() < token_radius():
+		return
+	var dir: Vector2 = d.normalized()
+	var start: Vector2 = a + dir * (token_radius() + 2.0)
+	ci.draw_line(start, _mouse, Color(0.05, 0.04, 0.03, 0.6), 8.0, true)
+	ci.draw_line(start, _mouse, col, 5.0, true)
+	var sd: Vector2 = dir.orthogonal()
+	ci.draw_colored_polygon(PackedVector2Array([_mouse + dir * 6.0, _mouse - dir * 10.0 + sd * 9.0, _mouse - dir * 10.0 - sd * 9.0]), col)
+
+
+func _arrow_shadow(ci: CanvasItem, pts: PackedVector2Array, w: float, alpha: float, dashed: bool) -> void:
+	## v2.0.2, on the land: an arrow casts a soft shadow on the ground under it, so it rides over
+	## the land rather than lying painted on it
+	var off := Vector2(w * 0.35 + 2.0, w * 0.5 + 3.0)
+	var sh := PackedVector2Array()
+	for q in pts:
+		sh.append(q + off)
+	var c := Color(0, 0, 0, 0.22 * alpha)
+	if dashed:
+		for i in range(0, sh.size() - 1, 2):
+			ci.draw_line(sh[i], sh[i + 1], c, w + 3.0, true)
+	else:
+		ci.draw_polyline(sh, c, w + 4.0, true)
+
+
 func _draw_token(ci: CanvasItem, id: String) -> void:
 	var ts: Types.TerritoryState = world.get_territory(id)
 	if ts == null:
 		return
 	var p: Vector2 = anchor(id)
+	if behind(p):
+		return ## v2.0.2: behind the land's camera (a battle's low camera)
 	var r := token_radius()
 	if shake.has(id):
 		r *= 1.0 + 0.18 * sin(float(shake[id]) * 18.0)
+	var lift: float = float(_hover_k.get(id, 0.0))
+	if lift > 0.0:
+		r *= 1.0 + 0.08 * smoothstep(0.0, 1.0, lift) ## pointed at: the token lifts a little toward you
+	var tk: float = taking(id)
+	if tk >= 0.0 and ts.owner != Types.UNOCCUPIED:
+		## v2.0.2: taken: the token pops up in its new colours, a ring of them going out over the land
+		var ring_col: Color = Style.seat_color(ts.owner).lightened(0.25)
+		ci.draw_arc(p, r * (1.0 + 1.6 * tk), 0, TAU, 40, Color(ring_col, 0.85 * (1.0 - tk)), 5.0 * (1.0 - tk) + 1.0, true)
+		ci.draw_arc(p, r * (1.0 + 1.0 * tk), 0, TAU, 40, Color(1.0, 0.9, 0.6, 0.7 * (1.0 - tk)), 2.0, true)
+		r *= 1.0 + 0.32 * sin(PI * minf(tk * 1.6, 1.0)) * (1.0 - tk)
 	var owner: String = ts.owner
 	var f := Style.font("bold")
 	## name plate under the token
-	var name: String = map.get_territory(id).display_name
 	var ns := 15 if zoom < fit * 1.4 else 17
-	var nw: float = f.get_string_size(name, HORIZONTAL_ALIGNMENT_LEFT, -1, ns).x
-	var np: Vector2 = p + Vector2(-nw * 0.5, r + ns + 1)
-	ci.draw_string_outline(f, np, name, HORIZONTAL_ALIGNMENT_LEFT, -1, ns, 5, Color(0.05, 0.04, 0.03, 0.85))
-	ci.draw_string(f, np, name, HORIZONTAL_ALIGNMENT_LEFT, -1, ns, Style.CREAM if id != selected else Style.GOLD)
+	_draw_name(ci, id, r)
 	if owner == Types.UNOCCUPIED:
 		ci.draw_arc(p, r * 0.8, 0, TAU, 28, Color(0.95, 0.9, 0.78, 0.55), 2.0, true)
 		ci.draw_string(f, p + Vector2(-6, 7), "–", HORIZONTAL_ALIGNMENT_LEFT, -1, 22, Color(0.95, 0.9, 0.78, 0.7))
@@ -1146,6 +1770,11 @@ func _draw_token(ci: CanvasItem, id: String) -> void:
 		ci.draw_set_transform(Vector2.ZERO, 0.0, Vector2.ONE)
 	ci.draw_circle(p + Vector2(2, 3), r + 1, Color(0, 0, 0, 0.35))
 	var edge := Color(0.96, 0.9, 0.76) if id != selected else Color(1.0, 0.85, 0.35)
+	if projector.is_valid():
+		## v2.0.2, on the land: the piece has a thickness, its edge showing under the face
+		var thick: Vector2 = Vector2(0, maxf(3.0, r * 0.16))
+		Style.draw_shape(ci, shape, p + thick, r + 2.5, Color(0.08, 0.06, 0.05), Color(0.08, 0.06, 0.05), 1.0)
+		Style.draw_shape(ci, shape, p + thick, r, col.darkened(0.5), col.darkened(0.6), 1.0)
 	Style.draw_shape(ci, shape, p, r + 2.5, Color(0.08, 0.06, 0.05), Color(0.08, 0.06, 0.05), 1.0)
 	Style.draw_shape(ci, shape, p, r, col.darkened(0.08), edge, 2.0 if id != selected else 3.5)
 	## lacquer sheen: a soft highlight up and to the left, a shade below
@@ -1160,8 +1789,13 @@ func _draw_token(ci: CanvasItem, id: String) -> void:
 	var home: int = int(split[1])
 	var txt := str(marching)
 	var fs := 22 if marching < 100 else 18
-	var tw: float = f.get_string_size(txt, HORIZONTAL_ALIGNMENT_LEFT, -1, fs).x
 	var num_col := Color(1, 0.98, 0.92) if marching > 0 else Color(1, 0.98, 0.92, 0.5)
+	if _count_fx.has(id):
+		var ck: float = clampf((_time - float(_count_fx[id]["t0"])) / COUNT_FX, 0.0, 1.0)
+		fs = int(round(float(fs) * (1.0 + 0.4 * sin(PI * minf(ck * 1.8, 1.0)) * (1.0 - ck))))
+		var flash: Color = Color(1.0, 0.82, 0.35) if bool(_count_fx[id]["up"]) else Color(1.0, 0.42, 0.34)
+		num_col = flash.lerp(num_col, smoothstep(0.35, 1.0, ck))
+	var tw: float = f.get_string_size(txt, HORIZONTAL_ALIGNMENT_LEFT, -1, fs).x
 	ci.draw_string_outline(f, p + Vector2(-tw * 0.5, fs * 0.36), txt, HORIZONTAL_ALIGNMENT_LEFT, -1, fs, 4, Color(0.05, 0.03, 0.02, 0.9))
 	ci.draw_string(f, p + Vector2(-tw * 0.5, fs * 0.36), txt, HORIZONTAL_ALIGNMENT_LEFT, -1, fs, num_col)
 	## the garrison's shield, on the token's left shoulder
@@ -1206,8 +1840,18 @@ func _draw_token(ci: CanvasItem, id: String) -> void:
 	## v1.8: a capital wears a crown on top of its token
 	if _is_capital(id, owner):
 		## the crown in its laurels, set on the token's brow with a warm glow behind it
-		var cr: float = clampf(r * 0.85, 15.0, 24.0)
-		var cp: Vector2 = p + Vector2(0, -r - cr * 0.25)
+		## v2.0.1: clear of the other lands' names (crown_rect)
+		var crect: Rect2 = crown_rect(id)
+		drawn_crowns[id] = crect
+		## where no spot clears (the Ring's middle, seven lands packed close: Goldmarch's name sits on
+		## the Throne's brow), the name it touches is written again over it
+		for i in _names_now.size():
+			var other: String = str(art.order[i])
+			if other != id and (_names_now[i] as Rect2).intersects(crect) and not names_over.has(other):
+				names_over.append(other)
+				_late.append(_draw_name.bind(other, token_radius()))
+		var cr: float = crect.size.y * 0.5
+		var cp: Vector2 = crect.get_center()
 		for k in 3:
 			ci.draw_circle(cp, cr * (0.95 - 0.18 * k), Color(1.0, 0.8, 0.35, 0.10 + 0.06 * k))
 		var ctex: Texture2D = Style.tex("res://assets/icons/crown.png")

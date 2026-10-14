@@ -58,7 +58,12 @@ static func resolve_round(world: Types.World, map: Types.MapDef, sheets: Array, 
 	_apply_regroups(w, map, by_player, events)
 	_apply_placements(w, map, by_player, events)
 	var transits: Array = _vacate(w, map, by_player, events)
-	transits = _merge_same_owner(transits)
+	if map.rules < 21:
+		transits = _merge_same_owner(transits)
+	## v2.1 (rules 21): one commander's columns from different lands are separate fronts, as two
+	## commanders' would be (Risk II's same-time rule): a border clash is fought by the one column
+	## crossing that border, and a land stormed from two sides is a melee whose defenders hold
+	## every front
 	transits = _resolve_clashes(w, map, transits, match_seed, events)
 	var surge_book := {}
 	_resolve_destinations(w, map, transits, match_seed, events, surge_book, ctx)
@@ -234,6 +239,16 @@ static func _invade(w: Types.World, map: Types.MapDef, t: Transit, dest: String,
 					fortuned[side] = true
 					(w.players[chooser] as Types.PlayerState).fortune -= 1
 					fight.calls.append({"at": fight.rolls.size(), "call": Combat.CALL_FORTUNE, "by": chooser, "side": side, "from": r0, "a": a0, "d": d0})
+					if map.rules >= 22:
+						## v2.2: the exchange thrown away had gone the other side's way: the dice owe
+						## them what it was worth (the owner: "if you have fortune used against you and
+						## get screwed out of good rolls that should give you a little fortune score")
+						var sw: float = _swing(a0, d0, a, d, map.battle, fortify)
+						var victim: String = def_owner if side == "a" else t.owner
+						var worth: float = -sw if side == "a" else sw
+						if worth > 0.0 and victim != Income.NEUTRAL_ID and victim != Types.UNOCCUPIED:
+							fight.rebate[victim] = int(fight.rebate.get(victim, 0)) + Fortune.rebate(worth)
+							(fight.calls[-1] as Dictionary)["owed"] = {victim: Fortune.rebate(worth)} ## (RV-005 F4: the call says whom it owes)
 					a = a0
 					d = d0
 					continue
@@ -628,6 +643,7 @@ static func _melee(w: Types.World, map: Types.MapDef, dest: String, invaders: Ar
 	## v1.10 (rules 19): the dice's swing for everyone in the melee, and Fortune for all of them
 	var v110: bool = map.rules >= 19
 	var luck := {}
+	var rebate := {} ## v2.2 (rules 22): pid -> what exchanges Fortune threw away were worth to them
 	var fortuned := {}
 	var def_calls: Array = []
 	var def_key := "melee|%s%s" % [tag, dest]
@@ -747,7 +763,26 @@ static func _melee(w: Types.World, map: Types.MapDef, dest: String, invaders: Ar
 				if dec == Combat.CALL_FORTUNE:
 					fortuned[pid] = true
 					(w.players[pid] as Types.PlayerState).fortune -= 1
+					var owed := {} ## this call's own debts (RV-005 F4: a melee can have several)
+					if map.rules >= 22 and a_was > 0:
+						## v2.2: what the thrown-away exchange was worth to the other side is owed them:
+						## the attackers together (shared by their numbers), or the defenders
+						var sw2: float = _swing(a_was, d_prev, a_now, d, map.battle, fortify)
+						if str(c["side"]) == "d" and sw2 > 0.0:
+							for i in fronts.size():
+								if bool(up_prev[i]):
+									var ow2: String = (fronts[i]["t"] as Transit).owner
+									owed[ow2] = float(owed.get(ow2, 0.0)) + sw2 * float(a_prev[i]) / float(a_was)
+						elif str(c["side"]) == "a" and sw2 < 0.0 and defender != Income.NEUTRAL_ID and defender != Types.UNOCCUPIED:
+							owed[defender] = -sw2
+						for op in owed.keys():
+							rebate[op] = float(rebate.get(op, 0.0)) + float(owed[op])
 					var entry := {"at": salvos.size(), "call": Combat.CALL_FORTUNE, "by": pid, "side": c["side"], "from": s_prev, "fronts": a_prev.duplicate(), "d": d_prev}
+					if not owed.is_empty():
+						var ow := {}
+						for op in owed.keys():
+							ow[op] = Fortune.rebate(float(owed[op]))
+						entry["owed"] = ow
 					if fi < 0:
 						def_calls.append(entry)
 					else:
@@ -844,6 +879,11 @@ static func _melee(w: Types.World, map: Types.MapDef, dest: String, invaders: Ar
 		ev["luck"] = lk
 		if not def_calls.is_empty():
 			ev["defCalls"] = def_calls
+	if not rebate.is_empty():
+		var rb := {}
+		for pid in rebate.keys():
+			rb[pid] = Fortune.rebate(float(rebate[pid]))
+		ev["rebate"] = rb
 	for f in fronts:
 		var t2: Transit = f["t"]
 		var fd := {"attackerId": t2.owner, "from": t2.from_id, "fromIds": Array(_froms(t2)), "size": int(f["size"]), "left": int(f["a"])}
@@ -865,11 +905,34 @@ static func _melee(w: Types.World, map: Types.MapDef, dest: String, invaders: Ar
 	if d > 0:
 		_apply_defender_remnant(ts, d)
 		return false
-	## the defender is gone: whoever is left fights for the prize
+	## the defender is gone: whoever is left fights for the prize (v2.1: one commander's fronts
+	## that stand join up and take it together; they never fight each other)
 	var alive: Array = []
-	for f in fronts:
-		if _front_up(f):
-			alive.append(f)
+	if map.rules >= 21:
+		## one side for each commander still standing: his fronts' men together, under one order
+		## made the way merged columns always were (their lands; their surge if they agree on it)
+		var by_owner := {}
+		var order: Array = []
+		for f in fronts:
+			if not _front_up(f):
+				continue
+			var ow: String = (f["t"] as Transit).owner
+			if not by_owner.has(ow):
+				by_owner[ow] = []
+				order.append(ow)
+			(by_owner[ow] as Array).append(f)
+		for ow in order:
+			var mine: Array = by_owner[ow]
+			var men := 0
+			var ts2: Array = []
+			for f in mine:
+				men += int(f["a"])
+				ts2.append(f["t"])
+			alive.append({"t": ts2[0] if ts2.size() == 1 else _merge_same_owner(ts2)[0], "a": men})
+	else:
+		for f in fronts:
+			if _front_up(f):
+				alive.append(f)
 	if map.scramble and alive.size() >= 2:
 		## v1.4: the victors turn on each other all at once
 		var sides: Array = []
@@ -896,6 +959,13 @@ static func _melee(w: Types.World, map: Types.MapDef, dest: String, invaders: Ar
 	_take(w, events, dest, winner.owner, int(champ["a"]))
 	_remember_surge(surge_book, dest, winner)
 	return false
+
+
+static func _swing(a0: int, d0: int, a: int, d: int, battle: String, fortify: int) -> float:
+	## an exchange's swing in the attacker's chances (a side gone is a certain outcome)
+	var p0: float = 1.0 if d0 <= 0 else (0.0 if a0 <= 0 else Combat.capture_rate(a0, d0, battle, fortify))
+	var p1: float = 1.0 if d <= 0 else (0.0 if a <= 0 else Combat.capture_rate(a, d, battle, fortify))
+	return p1 - p0
 
 
 static func _front_up(f: Dictionary) -> bool:
@@ -942,7 +1012,10 @@ static func _land_v14(w: Types.World, map: Types.MapDef, dest: String, pkts: Arr
 		else:
 			_apply_defender_remnant(ts, fight.winner_remaining)
 		return false
-	## nobody home: one comer walks in, several fight it out among themselves
+	## nobody home: one comer walks in, several fight it out among themselves (v2.1: one
+	## commander's columns from several lands walk in together)
+	if map.rules >= 21:
+		invaders = _merge_same_owner(invaders)
 	if invaders.size() == 1:
 		var t1: Transit = invaders[0]
 		_take(w, events, dest, t1.owner, t1.strength)
@@ -1062,7 +1135,7 @@ static func _resolve_surges(w: Types.World, map: Types.MapDef, match_seed: int, 
 	if map.scramble and map.battle == Combat.MODE_VOLLEYS:
 		var spent := {} ## a surge never surges again
 		for dest in surge_dests:
-			var pk: Array = _merge_same_owner(by_dest[dest])
+			var pk: Array = by_dest[dest] if map.rules >= 21 else _merge_same_owner(by_dest[dest])
 			pk.sort_custom(func(a, b): return _order_key(match_seed, w.round, "surge|" + dest, a) < _order_key(match_seed, w.round, "surge|" + dest, b))
 			if _land_v14(w, map, dest, pk, match_seed, ctx, events, spent, "surge|"):
 				return

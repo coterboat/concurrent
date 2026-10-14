@@ -29,21 +29,21 @@ func grow(p_wv: Node3D) -> void:
 		for cy in range(int(floor((at.y - r) / 24.0)), int(floor((at.y + r) / 24.0)) + 1):
 			for cx in range(int(floor((at.x - r) / 24.0)), int(floor((at.x + r) / 24.0)) + 1):
 				built[Vector2i(cx, cy)] = true
+	var clear := func(q: Vector2) -> bool:
+		## dry land off the roads, the buildings and every land's battlefield
+		if t.coast_at(q) < 5.0 or t.road_at(q) < 13.0 or built.has(Vector2i(int(floor(q.x / 24.0)), int(floor(q.y / 24.0)))):
+			return false
+		for s in stages:
+			if q.distance_to(s[0]) < s[1]:
+				return false
+		return true
 	var y := step * 0.5
 	while y < art.size.y:
 		var x := step * 0.5
 		while x < art.size.x:
 			var p := Vector2(x + rng.randf_range(-0.45, 0.45) * step, y + rng.randf_range(-0.45, 0.45) * step)
 			x += step
-			var c: float = t.coast_at(p)
-			if c < 5.0:
-				continue
-			var near_stage := false
-			for s in stages:
-				if p.distance_to(s[0]) < s[1]:
-					near_stage = true
-					break
-			if near_stage or t.road_at(p) < 13.0 or built.has(Vector2i(int(floor(p.x / 24.0)), int(floor(p.y / 24.0)))):
+			if not clear.call(p):
 				continue
 			var h: float = t.height_at(p)
 			var n: Vector3 = t.normal_at(p)
@@ -60,8 +60,15 @@ func grow(p_wv: Node3D) -> void:
 				(pine if h > 70.0 or rng.randf() < 0.35 else broad).append(_xf(p, h, rng, rng.randf_range(0.8, 1.25)))
 			elif h > 75.0 and r < 0.07:
 				pine.append(_xf(p, h, rng, rng.randf_range(0.7, 1.1)))
-			elif r < 0.012:
+			elif r < 0.024:
+				## v2.0.2: a fuller countryside: a lone tree, or a copse of two to four
 				broad.append(_xf(p, h, rng, rng.randf_range(0.8, 1.2)))
+				if r < 0.012:
+					for k in rng.randi_range(1, 3):
+						var q: Vector2 = p + Vector2.from_angle(rng.randf() * TAU) * rng.randf_range(6.0, 12.0)
+						var hq: float = t.height_at(q)
+						if clear.call(q) and hq < 140.0 and 1.0 - t.normal_at(q).y < 0.35:
+							broad.append(_xf(q, hq, rng, rng.randf_range(0.7, 1.1)))
 			elif h > 55.0 and r < 0.03:
 				rock.append(_xf(p, h, rng, rng.randf_range(2.0, 4.0)))
 		y += step
@@ -102,27 +109,26 @@ func _mat(col: Color, rough: float = 0.85) -> StandardMaterial3D:
 
 
 func _broadleaf() -> Mesh:
-	## a lollipop oak: a trunk and two lumps of crown
+	## a model-railway oak: a trunk and a crown of four lumps (v2.0.2: it was two), darker
+	## underneath where the light doesn't reach, so it reads round from above
 	var am := ArrayMesh.new()
 	var trunk := CylinderMesh.new()
 	trunk.top_radius = 0.7
 	trunk.bottom_radius = 1.0
-	trunk.height = 5.0
+	trunk.height = 5.5
 	trunk.radial_segments = 6
 	trunk.rings = 1
-	_append(am, trunk, Transform3D(Basis(), Vector3(0, 2.5, 0)), _mat(Color(0.33, 0.24, 0.16)))
-	var crown := SphereMesh.new()
-	crown.radius = 4.6
-	crown.height = 7.6
-	crown.radial_segments = 9
-	crown.rings = 5
-	_append(am, crown, Transform3D(Basis(), Vector3(0, 8.6, 0)), _mat(Color(0.24, 0.38, 0.16)))
-	var c2 := SphereMesh.new()
-	c2.radius = 3.0
-	c2.height = 5.0
-	c2.radial_segments = 8
-	c2.rings = 4
-	_append(am, c2, Transform3D(Basis(), Vector3(1.6, 11.0, 0.8)), _mat(Color(0.28, 0.43, 0.18)))
+	_append(am, trunk, Transform3D(Basis(), Vector3(0, 2.75, 0)), _mat(Color(0.33, 0.24, 0.16)), 0.0, 5.0, 0.6, 1.0)
+	var leaf := _mat(Color(0.25, 0.39, 0.16))
+	var leaf2 := _mat(Color(0.30, 0.45, 0.19))
+	for lobe in [[Vector3(0, 8.4, 0), 4.6, leaf], [Vector3(2.3, 9.8, 1.1), 3.1, leaf2], [Vector3(-2.2, 9.5, -1.3), 3.3, leaf],
+			[Vector3(0.5, 12.0, -0.5), 2.7, leaf2]]:
+		var s := SphereMesh.new()
+		s.radius = float(lobe[1])
+		s.height = float(lobe[1]) * 1.65
+		s.radial_segments = 10
+		s.rings = 6
+		_append(am, s, Transform3D(Basis(), lobe[0]), lobe[2], 4.5, 14.0, 0.5, 1.12)
 	return am
 
 
@@ -134,15 +140,18 @@ func _pine() -> Mesh:
 	trunk.height = 3.0
 	trunk.radial_segments = 6
 	trunk.rings = 1
-	_append(am, trunk, Transform3D(Basis(), Vector3(0, 1.5, 0)), _mat(Color(0.3, 0.22, 0.15)))
-	for k in 3:
+	_append(am, trunk, Transform3D(Basis(), Vector3(0, 1.5, 0)), _mat(Color(0.3, 0.22, 0.15)), 0.0, 3.0, 0.6, 1.0)
+	var needles := _mat(Color(0.15, 0.29, 0.17))
+	for k in 4:
 		var cone := CylinderMesh.new()
 		cone.top_radius = 0.0
-		cone.bottom_radius = 4.2 - k * 1.1
-		cone.height = 6.0 - k * 1.0
-		cone.radial_segments = 8
+		cone.bottom_radius = 4.4 - k * 0.95
+		cone.height = 5.6 - k * 0.8
+		cone.radial_segments = 9
 		cone.rings = 1
-		_append(am, cone, Transform3D(Basis(), Vector3(0, 5.0 + k * 3.4, 0)), _mat(Color(0.14, 0.27, 0.16)))
+		## each tier dark at its skirt and lit at its tip
+		var y0: float = 4.4 + k * 2.7
+		_append(am, cone, Transform3D(Basis(), Vector3(0, y0, 0)), needles, y0 - 2.8, y0 + 2.8, 0.55, 1.1)
 	return am
 
 
@@ -157,15 +166,21 @@ func _rock() -> Mesh:
 	return am
 
 
-func _append(am: ArrayMesh, prim: PrimitiveMesh, xf: Transform3D, mat: Material) -> void:
+func _append(am: ArrayMesh, prim: PrimitiveMesh, xf: Transform3D, mat: Material, y0: float = 0.0, y1: float = 1.0, lo: float = 1.0, hi: float = 1.0) -> void:
+	## (v2.0.2: shaded from lo at height y0 to hi at y1, in its vertex colours)
 	var arrays: Array = prim.get_mesh_arrays()
 	var verts: PackedVector3Array = arrays[Mesh.ARRAY_VERTEX]
 	var norms: PackedVector3Array = arrays[Mesh.ARRAY_NORMAL]
+	var cols := PackedColorArray()
+	cols.resize(verts.size())
 	for i in verts.size():
 		verts[i] = xf * verts[i]
 		norms[i] = (xf.basis * norms[i]).normalized()
+		var v: float = lerpf(lo, hi, clampf((verts[i].y - y0) / maxf(y1 - y0, 0.001), 0.0, 1.0))
+		cols[i] = Color(v, v, v)
 	arrays[Mesh.ARRAY_VERTEX] = verts
 	arrays[Mesh.ARRAY_NORMAL] = norms
+	arrays[Mesh.ARRAY_COLOR] = cols
 	arrays[Mesh.ARRAY_TANGENT] = null
 	am.add_surface_from_arrays(Mesh.PRIMITIVE_TRIANGLES, arrays)
 	am.surface_set_material(am.get_surface_count() - 1, mat)

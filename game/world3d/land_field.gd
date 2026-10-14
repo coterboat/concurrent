@@ -43,7 +43,8 @@ var _art: RefCounted:
 var _map: RefCounted:
 	get:
 		return land.wv.map if prepared else null
-var _plates: Array = [] ## {panel, num, army}
+var _plates: Array = [] ## {panel, num, tag, army, sb}
+var _tags := {} ## v2.2: army -> the name on its plate ("from Ridge")
 var _rig_base: Dictionary = {}
 var _clock := 0.0
 var _land := ""
@@ -366,6 +367,7 @@ func setup(list: Array) -> void:
 func setup_at(list: Array, land: String, e: Dictionary, b: Dictionary) -> void:
 	armies = list
 	_last_foe = {}
+	_tags = {}
 	## who holds the walls: a fort's or a capital's defenders have guns on them (they boom when they win)
 	_walls = -1
 	var kind: String = str(e.get("kind", ""))
@@ -458,13 +460,25 @@ func _plan(land: String, e: Dictionary, b: Dictionary, list: Array) -> Dictionar
 			var at: Vector2 = heart + across * sgn * Diorama.FIG * 3.5 + Vector2(0, Diorama.FIG * 2.5 * float(i / 2))
 			out.append({"pid": pid_of.call(i), "color": col.call(i), "n": n_of.call(i, 1), "groups": [{"at": at, "dir": -across * sgn, "share": n_of.call(i, 1), "foe": (i + 1) % 2, "dist": 160.0}]})
 			spots.append(at)
+	## v2.1: a big army brings its train into battle as well as its men, with its biggest group
+	for a in out:
+		var tr: Dictionary = Diorama.battle_train(int(a["n"]))
+		if (a["groups"] as Array).is_empty() or int(tr["horse"]) + int(tr["guns"]) == 0:
+			continue
+		var big: Dictionary = a["groups"][0]
+		for g in a["groups"]:
+			if int(g["share"]) > int(big["share"]):
+				big = g
+		big["horse"] = int(tr["horse"])
+		big["guns"] = int(tr["guns"])
+		big["train"] = true
 	## the camera frames every group whole: its front and its rear rank (and its horse and guns)
 	spots = []
 	for a in out:
 		for g in a["groups"]:
 			var men: int = int(Diorama.pieces(int(g["share"]))["inf"])
 			var files: int = clampi(int(ceil(sqrt(float(men) * 1.6))), 1, 6)
-			var heavy: bool = int(g["share"]) > 12
+			var heavy: bool = int(g["share"]) > 12 or bool(g.get("train", false))
 			var depth: float = ceil(float(men) / float(files)) * Diorama.FIG * 1.05 + Diorama.FIG * (2.4 if heavy else 1.0)
 			spots.append(g["at"])
 			spots.append((g["at"] as Vector2) - (g["dir"] as Vector2) * depth)
@@ -550,13 +564,28 @@ func _make_plates() -> void:
 		sb.content_margin_bottom = 1
 		panel.add_theme_stylebox_override("panel", sb)
 		panel.mouse_filter = Control.MOUSE_FILTER_IGNORE
+		var row := HBoxContainer.new()
+		row.add_theme_constant_override("separation", 7)
+		row.mouse_filter = Control.MOUSE_FILTER_IGNORE
+		panel.add_child(row)
 		var num := Label.new()
 		num.add_theme_font_override("font", Style.font("title"))
 		num.add_theme_font_size_override("font_size", 22)
 		num.add_theme_color_override("font_color", Color(1, 0.95, 0.85))
-		panel.add_child(num)
+		row.add_child(num)
+		## v2.2: a front's name, the same one its dice carry on the tray's rail
+		var tag := Label.new()
+		tag.add_theme_font_override("font", Style.font("italic"))
+		tag.add_theme_font_size_override("font_size", 15)
+		tag.add_theme_color_override("font_color", (a["color"] as Color).lightened(0.55))
+		tag.vertical_alignment = VERTICAL_ALIGNMENT_CENTER
+		tag.size_flags_vertical = Control.SIZE_FILL
+		tag.text = str(_tags.get(ai, ""))
+		tag.visible = tag.text != ""
+		row.add_child(tag)
 		add_child(panel)
-		_plates.append({"panel": panel, "num": num, "army": ai})
+		panel.pivot_offset = Vector2(20, 14)
+		_plates.append({"panel": panel, "num": num, "tag": tag, "army": ai, "sb": sb})
 
 
 func _update_plates() -> void:
@@ -583,6 +612,41 @@ func _update_plates() -> void:
 			var pj: Control = shown[j]["panel"]
 			if Rect2(pi.position, pi.size).grow(2.0).intersects(Rect2(pj.position, pj.size)):
 				pi.position.y = pj.position.y + pj.size.y + 3.0
+
+
+func set_tag(ai: int, text: String) -> void:
+	## v2.2: name an army's plate (a melee's fronts: "from Ridge"), so its dice can be found on it
+	_tags[ai] = text
+	for p in _plates:
+		if int(p["army"]) == ai:
+			(p["tag"] as Label).text = text
+			(p["tag"] as Label).visible = text != ""
+
+
+func plate_point(ai: int) -> Vector2:
+	## the foot of army ai's plate on screen (a pair's thread from the tray ends there), or
+	## (-1, -1) when it isn't shown
+	for p in _plates:
+		var panel: Control = p["panel"]
+		if int(p["army"]) == ai and panel.visible:
+			return position + panel.position + Vector2(panel.size.x * 0.5, panel.size.y)
+	return Vector2(-1, -1)
+
+
+func pulse(ai: int, col: Color) -> void:
+	## v2.2: army ai's dice are being read: its plate swells and its rim lights
+	for p in _plates:
+		if int(p["army"]) != ai:
+			continue
+		var panel: Control = p["panel"]
+		var sb: StyleBoxFlat = p["sb"]
+		var base: Color = dio.armies[ai]["color"] if dio != null and ai < dio.armies.size() else sb.border_color
+		panel.pivot_offset = panel.size * 0.5
+		var tw := panel.create_tween().set_parallel(true)
+		panel.scale = Vector2(1.22, 1.22)
+		tw.tween_property(panel, "scale", Vector2.ONE, 0.45).set_trans(Tween.TRANS_BACK).set_ease(Tween.EASE_OUT)
+		sb.border_color = col
+		tw.tween_method(func(c: Color): sb.border_color = c, col, base, 0.6)
 
 
 func screen_of(ai: int) -> Vector2:

@@ -25,3 +25,6 @@ review/*/
 # Python caches
 __pycache__/
 *.pyc
+
+# outside review packets (rebuilt on demand; pinned by sha256 in docs/reviews/inbox)
+docs/reviews/packets/

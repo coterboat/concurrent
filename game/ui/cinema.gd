@@ -131,6 +131,8 @@ func play(p_session: Node, p_board: Control) -> void:
 	board = p_board
 	if not session.extended.is_connected(_on_extended):
 		session.extended.connect(_on_extended)
+	if board.has_signal("clash_met") and not board.clash_met.is_connected(_on_clash_met):
+		board.clash_met.connect(_on_clash_met)
 	_events = session.events
 	_pre = session.pre_world
 	_packets = []
@@ -159,6 +161,12 @@ func play(p_session: Node, p_board: Control) -> void:
 		advance()
 	else:
 		_wait = 1.5 ## let THE BATTLES banner have its moment first
+
+
+func _on_clash_met() -> void:
+	## v2.0.2: the clash's crash as the two columns meet on the border, not as they set off
+	if _active:
+		Audio.sfx("border_clash", -2.0)
 
 
 func advance() -> void:
@@ -209,6 +217,8 @@ func skip() -> void:
 	board.world = ViewEvents.apply_through(_pre, _events, _events.size() - 1)
 	board.orders = []
 	board.battle = {}
+	if board.has_method("restore_view"):
+		board.restore_view()
 	board.refresh()
 	_finish()
 
@@ -223,6 +233,8 @@ func _finish() -> void:
 	board.clash = []
 	board.orders = []
 	board.flow = false
+	if board.has_method("stand_back"):
+		board.stand_back(0.9)
 	board.refresh()
 	finished.emit()
 
@@ -433,7 +445,20 @@ func _build_beats() -> Array:
 				if not held and i + 1 < n and str(evs[i + 1]["kind"]) == Types.EVENT_OCCUPIED:
 					upto3 = i + 1
 				var outcome: String = ("%s with %d left." % [Style.says(_name(str(e["defenderId"])), "holds"), int(e["defenderLeft"])]) if held else "The defenders are overrun!"
-				out.append({"upto": upto3, "caption": "Melee at %s" % _hex(to3), "sub": "%s storm %s %d at once. %s" % [" and ".join(names), Style.owns(_name(str(e["defenderId"]))), int(e["defenderSize"]), outcome],
+				## v2.1: one commander's columns from several lands are fronts of their own
+				var caption3: String = "Melee at %s" % _hex(to3)
+				var sub3: String = "%s storm %s %d at once. %s" % [" and ".join(_melee_names(e)), Style.owns(_name(str(e["defenderId"]))), int(e["defenderSize"]), outcome]
+				var pids3: Array = []
+				for ap3 in attackers:
+					if not pids3.has(ap3):
+						pids3.append(ap3)
+				if pids3.size() == 1:
+					var sides3: Array = []
+					for f in e.get("fronts", []):
+						sides3.append("%s (%d)" % [_hex(str(f["from"])), int(f["size"])])
+					caption3 = "%s from %s sides" % [_hex(to3), ["", "one", "two", "three", "four", "five", "six"][mini(sides3.size(), 6)]]
+					sub3 = "%s %s %d from %s at once. %s" % [Style.says(_name(str(pids3[0])), "storms"), Style.owns(_name(str(e["defenderId"]))), int(e["defenderSize"]), " and ".join(sides3), outcome]
+				out.append({"upto": upto3, "caption": caption3, "sub": sub3,
 					"fight": true, "melee": true, "event": e, "a": human if human != "" else attackers[0], "b": str(e["defenderId"]), "attackers": attackers,
 					"focus": froms, "resolves": to3, "delay": 2.6, "sound": "melee", "a_won": not held})
 				i = upto3
@@ -649,7 +674,9 @@ func _show(b: Dictionary) -> void:
 		board.orders = []
 		for pk in _packets:
 			if not bool(pk.get("late", false)):
-				board.orders.append(pk.duplicate(true))
+				var o: Dictionary = pk.duplicate(true)
+				o["born"] = board.now() ## v2.0.2: every column sets out at once, its arrow growing from its land
+				board.orders.append(o)
 	if b.has("surge_arrow"):
 		var sa: Dictionary = (b["surge_arrow"] as Dictionary).duplicate(true)
 		sa["born"] = board.now()
@@ -666,7 +693,7 @@ func _show(b: Dictionary) -> void:
 	board.battle = {}
 	for f in focus:
 		board.battle[f] = true
-	board.focus_on(focus)
+	_camera(b, focus)
 	## the fight that's on: its lands ringed, everyone else dimmed, its arrows bright
 	board.dimmed = {}
 	board.clash = []
@@ -683,8 +710,9 @@ func _show(b: Dictionary) -> void:
 			else:
 				o["alpha"] = 0.28 if _resolved.has(str(o["to"])) else 0.4
 	if str(ev.get("kind", "")) == Types.EVENT_CLASH:
-		board.clash = [str(ev["hexA"]), str(ev["hexB"])]
-		Audio.sfx("border_clash", -2.0)
+		board.clash = [str(ev["hexA"]), str(ev["hexB"])] ## its sound comes as the columns meet (_on_clash_met)
+		if board.has_method("clash_sides"):
+			board.clash_sides(str(ev.get("playerA", "")), int(ev.get("sizeA", 0)), str(ev.get("playerB", "")), int(ev.get("sizeB", 0)), session.map.rules < 21)
 		_caption.text = "BORDER CLASH!"
 	_card.visible = bool(b.get("fight", false)) and not bool(b.get("melee", false)) and not bool(b.get("scramble", false))
 	if _card.visible:
@@ -701,6 +729,41 @@ func _show(b: Dictionary) -> void:
 			if str(e["kind"]) == Types.EVENT_ENTRENCHED:
 				board.pulse_token(str(e["terrId"]), 0.7)
 	shown.emit()
+
+
+func _melee_names(e: Dictionary) -> Array:
+	## "Dad (9 + 9)" for a commander on two fronts, "Ysolde (12)" for one
+	var order: Array = []
+	var sizes := {}
+	for f in e.get("fronts", []):
+		var ap: String = str(f["attackerId"])
+		if not sizes.has(ap):
+			sizes[ap] = []
+			order.append(ap)
+		(sizes[ap] as Array).append(str(int(f["size"])))
+	var out: Array = []
+	for ap in order:
+		out.append("%s (%s)" % [_name(ap), " + ".join(sizes[ap])])
+	return out
+
+
+func _leans() -> bool:
+	## v2.0.2: on the land the report's camera leans in on the fights (stills: it stays put)
+	return board.has_method("lean_in") and board.projector.is_valid() and str(Settings.get_value("motion", "all")) != "off"
+
+
+func _camera(b: Dictionary, focus: Array) -> void:
+	if not _leans():
+		board.focus_on(focus)
+		return
+	var carded: bool = bool(b.get("fight", false)) and not bool(b.get("melee", false)) and not bool(b.get("scramble", false))
+	var dur: float = clampf(Settings.battle_delay() * 0.55, 0.45, 0.9)
+	var big: bool = bool(b.get("fight", false)) or b.has("walkin") or b.has("surge_arrow") or b.has("capital_taken") or str(b.get("flash_text", "")) == "NEW CAPITAL"
+	if not focus.is_empty() and (big or not board.in_view(focus)):
+		## the fight's card sits low over the map: the fight goes in the clear band above it
+		board.lean_in(focus, 0.29 if carded else 0.42, dur)
+	elif b.has("stage"):
+		board.stand_back(dur + 0.2, true) ## a new stage of the report: the whole map for a moment
 
 
 func _open_theater(first: Dictionary) -> void:
@@ -751,6 +814,9 @@ func _open_theater(first: Dictionary) -> void:
 		if not focus.has(str(t)):
 			board.dimmed[str(t)] = true
 	board.clash = [str(focus[0]), str(focus[1])] if bool(first.get("event", {}).get("kind", "") == Types.EVENT_CLASH) and focus.size() >= 2 else []
+	var fev: Dictionary = first.get("event", {})
+	if not board.clash.is_empty() and board.has_method("clash_sides") and str(fev.get("hexA", "")) == str(board.clash[0]):
+		board.clash_sides(str(fev.get("playerA", "")), int(fev.get("sizeA", 0)), str(fev.get("playerB", "")), int(fev.get("sizeB", 0)), session.map.rules < 21)
 	board.refresh()
 	Audio.sfx("zoom_in", -3.0)
 	var tw: Tween = board.swoop_to(focus if not focus.is_empty() else [land], 2.8, 0.8)
@@ -819,16 +885,25 @@ func _settle_arrows(b: Dictionary, k: int = -1) -> void:
 	var win_to: String = hb if wid == a_pid else ha
 	var keep: Array = []
 	var win_done := false
+	var n0: int = int(ev.get("sizeA", 0)) if wid == a_pid else int(ev.get("sizeB", 0))
+	var lost_n: int = int(ev.get("sizeB", 0)) if wid == a_pid else int(ev.get("sizeA", 0))
+	## v2.1 (rules 21): only the column on the clash's border fought it; another of the same
+	## commander's columns into the same land marches on untouched (RV-002 F1)
+	var one_column: bool = session.map != null and session.map.rules >= 21
 	for o in board.orders:
-		if str(o.get("owner", "")) == loser and str(o["to"]) == loser_to:
+		## (the counts the clash is told with are the event's: the army that fought it, RV-003 F2)
+		if str(o.get("owner", "")) == loser and str(o["to"]) == loser_to and (not one_column or str(o["from"]) == win_to):
 			continue
-		if str(o.get("owner", "")) == wid and str(o["to"]) == win_to:
+		if str(o.get("owner", "")) == wid and str(o["to"]) == win_to and (not one_column or str(o["from"]) == loser_to):
 			if win_done:
 				continue
 			win_done = true
 			o["strength"] = int(ev.get("winnerRemaining", o["strength"]))
 		keep.append(o)
 	board.orders = keep
+	## v2.0.2: on the map, the winner's column drives the loser's back and carries on through
+	if board.has_method("clash_won"):
+		board.clash_won(wid, loser_to, win_to, n0, int(ev.get("winnerRemaining", n0)), loser, lost_n)
 	board.refresh()
 
 

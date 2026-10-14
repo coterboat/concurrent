@@ -287,6 +287,7 @@ func _on_phase(ph: int) -> void:
 	surge_pick = -1
 	drawer.visible = false
 	edit_order("", "")
+	_drop_planning_question()
 	match ph:
 		Session.Phase.DRAFT:
 			select("")
@@ -769,6 +770,23 @@ func phase_banner(title: String, sub: String = "", quiet: bool = false) -> void:
 		Audio.sfx("phase_sting", -5.0)
 
 
+func _clear_banner() -> void:
+	## v2.0.2: the phase banner goes up and out of the way (it sat over the fights the report was
+	## leaning in on: "THE ASSAULTS" across Wold through its whole assault)
+	if _banner_node == null or not is_instance_valid(_banner_node) or _banner_node.has_meta("leaving"):
+		return
+	var root: Control = _banner_node
+	root.set_meta("leaving", true)
+	if root.get_child_count() == 0:
+		root.queue_free()
+		return
+	var pc: Control = root.get_child(0)
+	var tw := root.create_tween()
+	tw.tween_property(pc, "modulate:a", 0.0, 0.22)
+	tw.parallel().tween_property(pc, "position:y", pc.position.y - 26.0, 0.22).set_ease(Tween.EASE_IN)
+	tw.tween_callback(root.queue_free)
+
+
 func _placing() -> bool:
 	## deployment, or the reinforcement step of a round's planning
 	return session.phase == Session.Phase.OPENING or (session.phase == Session.Phase.PLANNING and session.plan_step == "reinforce")
@@ -790,6 +808,7 @@ func begin_orders() -> void:
 			[["Place them for me", func():
 				session.auto_deploy()
 				go.call()], ["On to the orders", func(): go.call()], ["Go back", func(): pass]])
+		_modal.set_meta("planning", true)
 		return
 	go.call()
 
@@ -845,6 +864,28 @@ func _on_hover(id: String) -> void:
 	## the words, the box and where it sits: game/ui/land_tip.gd
 	LandTip.show(_hover_tip, _hover_label, "\n".join(LandTip.lines(session, board, id)), board.anchor(id),
 		Rect2(4, TOP, size.x - 8, size.y - BAR - TOP - 4), board.token_radius() + 16.0)
+
+
+var _tip_was_covered := false
+var _tip_phase := -1
+
+
+func tip_covered() -> bool:
+	## a report, a battle, a film or a dialog is over the table
+	return recap.visible or theater.visible or bool(cinema.get("_active")) or (intro != null and intro.visible) or _overlay_open()
+
+
+func _tip_watch() -> void:
+	## v2.0.1: a land's tip goes when the phase turns, or a report or a dialog opens over the board (LandTip.stale)
+	var covered: bool = tip_covered()
+	var turned: bool = session.phase != _tip_phase ## sealing the sheet, the battles, the report: a new page
+	_tip_phase = session.phase
+	if _hover_tip.visible and LandTip.stale(board, get_viewport().gui_get_hovered_control(), turned or (covered and not _tip_was_covered)):
+		_hover_tip.visible = false
+		if board.hovered != "":
+			board.hovered = "" ## so the same land, pointed at again, brings its tip back
+			board.refresh()
+	_tip_was_covered = covered
 
 
 func _on_roster_hover(pid: String) -> void:
@@ -910,6 +951,7 @@ func place_order_card(ctrl: Control, a: String, b: String) -> void:
 
 func _process(_d: float) -> void:
 	_far_off(_d)
+	_tip_watch()
 	## cards follow the map when it pans or zooms
 	if land_card.visible and land_card.land != "":
 		place_popover(land_card, land_card.land)
@@ -1039,6 +1081,7 @@ func try_seal() -> void:
 			[["Place them for me", func():
 				session.auto_deploy()
 				_seal()], ["Seal anyway", func(): _seal()], ["Go back", func(): pass]])
+		_modal.set_meta("planning", true)
 		return
 	_seal()
 
@@ -1202,6 +1245,8 @@ var _behind_said := -9
 
 
 func _on_beat(b: Dictionary) -> void:
+	if not b.has("stage"):
+		_clear_banner() ## v2.0.2: a stage's banner gives way to the stage's first moment
 	bar.set_message("%s — %s" % [b.get("caption", ""), b.get("sub", "")] if str(b.get("sub", "")) != "" else str(b.get("caption", "")))
 	bar.refresh()
 	if bool(b.get("reveal", false)) and not session.living_humans().is_empty():
@@ -1882,6 +1927,15 @@ func _maybe_defeat_notice() -> void:
 
 
 # ================================================================ overlays
+
+func _drop_planning_question() -> void:
+	## v2.0.2: a question about one commander's planning goes with it (the turn's timer sealed the
+	## orders with "5 recruits still unplaced" still up: it stayed over the whole battle report, and
+	## in hotseat the next commander could answer it, placing their own recruits)
+	if _modal != null and is_instance_valid(_modal) and _modal.has_meta("planning"):
+		_modal.queue_free()
+		_modal = null
+
 
 func _clear_cover() -> void:
 	for c in _cover.get_children():

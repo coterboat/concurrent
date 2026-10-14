@@ -581,6 +581,13 @@ func rail_screen(x: float) -> Vector2:
 	return _cam.unproject_position(Vector3(x, 0.3, _depth * 0.9 * 0.5 + 0.34)) / _px
 
 
+func far_rail_screen(x: float) -> Vector2:
+	## v2.2: the top of the far rail at table x (a pair's front tag hangs there, toward the field)
+	if _cam == null:
+		return Vector2.ZERO
+	return _cam.unproject_position(Vector3(x, 0.3, -(_depth * 0.9 * 0.5 + 0.34))) / _px
+
+
 func table_x(i: int) -> float:
 	## where die i comes to rest across the table, in table units
 	if i < 0 or i >= _dice.size():

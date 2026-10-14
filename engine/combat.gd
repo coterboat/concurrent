@@ -80,6 +80,7 @@ class FightResult extends RefCounted:
 	var pending: bool = false ## stopped at a live call
 	var luck: float = 0.0 ## v1.9: the dice's swing in the attacker's chances, exchange by exchange
 	var luck_kept: bool = false ## v1.9 (rules 18): the event carries it, for Fortune's ledger
+	var rebate: Dictionary = {} ## v2.2 (rules 22): pid -> hundredths of a battle owed for an exchange Fortune threw away from them
 
 	func extras(d: Dictionary) -> Dictionary:
 		if not calls.is_empty():
@@ -97,6 +98,8 @@ class FightResult extends RefCounted:
 			d["attackerLeft"] = attacker_left
 		if luck_kept:
 			d["luck"] = int(round(luck * 100.0))
+		if not rebate.is_empty():
+			d["rebate"] = rebate
 		return d
 
 	func to_dict() -> Dictionary:

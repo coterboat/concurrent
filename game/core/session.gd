@@ -147,7 +147,7 @@ func _apply_length() -> void:
 	## v1.5 rules: surges clash head-on and carry a count; v1.6: the firing line, fair ties,
 	## and campaign cards with a land on each; v1.7: an even volley is fired again in every
 	## battle actually fought, and a pass holds to its column of six, surges and reserves too
-	map.rules = int(config.get("rules", 20)) ## v1.12: rules 20
+	map.rules = int(config.get("rules", 22)) ## v2.2: rules 22 (an exchange Fortune throws away from you is owed you)
 	config["rules"] = map.rules
 	map.first_digs_in = bool(config.get("first_digs_in", false))
 	config["first_digs_in"] = map.first_digs_in
@@ -691,7 +691,7 @@ func _absorb(sheets: Array, result: Dictionary) -> void:
 	hashes.append(Hash.world_hash(world))
 	## last round's marches, as they actually went, each with its fate (v1.13: game/core/last_round.gd;
 	## a column beaten in a border clash now shows where it died, and a surge only if it set off)
-	ghosts = LastRound.ghosts(before, world, sheets, events)
+	ghosts = LastRound.ghosts(before, world, sheets, events, map.rules)
 	_tally(events)
 	_luck(events, before)
 	for e in events:
@@ -808,13 +808,17 @@ func _tally(evs: Array) -> void:
 					stats[dp]["armies_lost"] += int(e.get("defenderSize", 0)) - int(e.get("defenderLeft", 0))
 					if held:
 						stats[dp]["won"] += 1
+				var counted := {} ## v2.1: a commander on two fronts fought one battle (won it once)
 				for f in e.get("fronts", []):
 					var ap: String = str(f.get("attackerId", ""))
 					if not stats.has(ap):
 						continue
-					stats[ap]["battles"] += 1
+					if not counted.has(ap):
+						counted[ap] = false
+						stats[ap]["battles"] += 1
 					stats[ap]["armies_lost"] += int(f.get("size", 0)) + int(f.get("reservesAdded", 0)) - int(f.get("left", 0))
-					if not held and int(f.get("left", 0)) > 0 and not bool(f.get("fellBack", false)):
+					if not held and int(f.get("left", 0)) > 0 and not bool(f.get("fellBack", false)) and not bool(counted[ap]):
+						counted[ap] = true
 						stats[ap]["won"] += 1
 			Types.EVENT_SCRAMBLE:
 				for f in e.get("fronts", []):

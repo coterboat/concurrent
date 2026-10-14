@@ -139,7 +139,9 @@ func _lines(evs: Array) -> Array:
 				if int(e.get("defenderLeft", 0)) > 0:
 					var foes: Array = []
 					for f in e.get("fronts", []):
-						foes.append(Style.who(s.name_of(str(f.get("attackerId", "")))))
+						var foe: String = Style.who(s.name_of(str(f.get("attackerId", ""))))
+						if not foes.has(foe):
+							foes.append(foe) ## v2.1: a commander on two fronts is named once
 					out.append(["shield", "%s held %s against %s at once." % [s.name_of(str(e.get("defenderId", ""))), s.hex_name(str(e.get("to", ""))), _join(foes)], Style.PARCH])
 			Types.EVENT_SCRAMBLE:
 				var rivals: Array = []

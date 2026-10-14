@@ -1,0 +1,12 @@
+{
+  "round": "RV-004",
+  "reviewer": "grok",
+  "rubric_sha256": "c2303a6dd22f05fd48a8fa98def28e45ed0a79fb2606afa367c2e8f42eba0154",
+  "packet_sha256": "12a9f757f64a7fa00e8fd8d1d5d11df3682d162b345bb72313e9c6dc5e43206c",
+  "prompt_sha256": "75bd007e57d95b8c76ea0d0a94fca9bed27ba337d45b82a0905b16f5b9242711",
+  "response_sha256": "bc7f83953ec302bb0488859f543dbb394d47e69d6c72d471d56648dfddaea5a7",
+  "started_at": "2026-10-09T00:41:27.019Z",
+  "duration_ms": 1070978,
+  "canary": "I'll review the packet against the diff, starting with the rest of the change and the review instructions.The packet is split. I'll read the rest of the diff and check rules-21 fronts, older-save replay, and conservation.CANARY: not packet-only. This session has tools and a workspace that holds the ",
+  "packet_only": false
+}

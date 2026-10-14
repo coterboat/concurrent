@@ -97,6 +97,14 @@ func busy() -> bool:
 	return _task >= 0
 
 
+func _notification(what: int) -> void:
+	## v2.0.2: freed while its land is still being built (a game closed in its first second or
+	## two): the build writes into this land, so it finishes first (it crashed at exit, signal 11)
+	if what == NOTIFICATION_PREDELETE and _task >= 0:
+		WorkerThreadPool.wait_for_task_completion(_task)
+		_task = -1
+
+
 func _process(delta: float) -> void:
 	if _task >= 0 and WorkerThreadPool.is_task_completed(_task):
 		WorkerThreadPool.wait_for_task_completion(_task)
