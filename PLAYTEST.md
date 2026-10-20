@@ -52,8 +52,56 @@ shown: fine" is as useful as a bug.
 - **Old saves replay under the rules they were played with** (`map.rules`). A v1.8 save plays
   v1.8 Fortune.
 - **Probes run with films off** (`motion = "paintings"`). `v19` turns them on.
+- **Recruits with no room go home.** A land takes 1 + your neighbouring lands, so lone lands can't
+  take every recruit. Since v2.3 the game says so once in the log and the tally ("· 2 no room") rather
+  than asking about them.
 
-## v2.2: Fortune owes you for an exchange it took (rules 22); which dice are rolling where (this push)
+## v2.3: the handoff pass (this push)
+
+No rule changes (rules 22): nothing in `resolve.gd`, every save replays, and the world's hash is as it
+was. The owner is handing the game to their dad, so this pass is about a first-time player's war. It was
+tested on Windows under **Godot 4.7.1** (the owner's choice): say which Godot you run.
+
+- **The tutorial, start to finish** (new probe `v23`, the real client on a fresh install's defaults:
+  the land, your own battles, your own dice). **Poke:** play the tutorial yourself from the title's
+  "First time? Play the Tutorial". Does any lesson contradict what the screen says? Does any SEAL or
+  ORDERS ask a question you can't answer?
+- **Deployment offers what fits.** The Isthmus dealt 15 to three lands that hold 14 (and on some deals
+  10 of 15 fit): it asked about the man who could never be placed. **Poke:** a two-commander game on the
+  Isthmus, several seeds: does "N of M placed" ever leave a number you can't place?
+- **Recruits with no room aren't asked about.** **Poke:** hold three lands that don't touch each other:
+  the log says the extras go home, the tally says "· N no room", and ORDERS goes on without a question.
+- **Two lands at one land, priced as two fronts.** The order card ("each a front"), the dispatch's odds
+  and the advisor's plan price a split as it fights (`Combat.fronts_capture_rate`), and so does the AI.
+  **Poke:** order 6 from Ridge and 5 from Harbor at a Gate of 9: the card should read worse than 11
+  from one land. Does the AI still send split attacks it can't win?
+- **The mix** (`game/data/levels.json`, a limiter on the master bus): effects no longer drown the
+  speech, the music's takes match, the tent's ambience is audible. **Poke:** anything now too quiet or
+  too loud? Any clipping when a big volley lands?
+- **The words:** How to Play, the dice help and the README now say what the engine does under rules 22
+  (fronts, the decisive roll's odds, six behind walls, supply from the capital); "You seiz", "You is
+  owed", "You raise… and carries off" are fixed. **Poke:** read How to Play at 1440×900: does any page
+  run off the screen? (Its words shrink to fit now.)
+- **The window fits the screen** it opens on (Windows/Linux): 85% of it. **Poke:** your resolution, and
+  the window size the game opened at.
+- **New 3D models** (the B variants of the land's buildings, the quarry, the oasis). **Poke:** the
+  Isthmus's Quarry and the Known World's Oasis now have landmarks: do they stand on the land, clear of
+  the battlefield?
+- The bot's arena command (`map=known24 n=6 … seed=500`) now prints `fingerprint 9890d7d7a2ad` (the AI
+  changed; on the PC under 4.7.1 the old one, `548347c5f849`, matched the Mac's before the change). With
+  `rules=20` added it prints `f782eba38886`, the same as before this pass: older games' AI is untouched.
+- **The review table on Windows** now runs its actions and cancels them (it couldn't before). **Poke:**
+  `python3 tools/review/test_review.py` on Linux too: 21 OK.
+- **Exported builds:** three maps (the Marches, the Ring, the Thousand Isles) had no data in any export
+  until now. **Poke:** if you can export (`./scripts/export.sh`), start a war on each of the six maps in
+  the build, not the editor; `tools/export_smoke.gd` does it headless against an exported pack.
+- **Fixed: the crash at exit** (signal 11, before this pass too) after a war left in its first second or
+  two for a war on another map: the war being left took the new one up and dropped its first land build
+  unwaited. **Poke:** `tools/study/quit_early.gd -- frames=120 maps=known24,world30` (and `frames=10,600`)
+  must exit 0 on Linux too; `./scripts/probes.sh v23b`.
+- New tests and probes: `test_v23`, `v23`, `v23b` (the crash at exit).
+
+## v2.2: Fortune owes you for an exchange it took (rules 22); which dice are rolling where
 
 **A rules change: new games play rules 22.** Older saves replay under their own rules.
 

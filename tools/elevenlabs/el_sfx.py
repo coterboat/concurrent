@@ -68,14 +68,14 @@ def finish(mp3, out, target):
 
 def state():
     try:
-        return json.load(open(os.path.join(BATCH_DIR, "state.json")))
+        return json.load(open(os.path.join(BATCH_DIR, "state.json"), encoding="utf-8"))
     except (OSError, ValueError):
         return {}
 
 
 def save(st):
     os.makedirs(BATCH_DIR, exist_ok=True)
-    json.dump(st, open(os.path.join(BATCH_DIR, "state.json"), "w"), indent=1)
+    json.dump(st, open(os.path.join(BATCH_DIR, "state.json"), "w", encoding="utf-8"), indent=1)
 
 
 def make_all():
@@ -108,7 +108,7 @@ def write_batch():
                "actions": [{"id": "install", "kind": "install", "label": "Put accepted in the game",
                             "help": "Each accepted take replaces that sound in the game (the old one stays in git history).",
                             "cmd": ["python3", me, "--install"]}],
-               "items": items}, open(os.path.join(BATCH_DIR, "batch.json"), "w"), indent=1, ensure_ascii=False)
+               "items": items}, open(os.path.join(BATCH_DIR, "batch.json"), "w", encoding="utf-8"), indent=1, ensure_ascii=False)
     print("batch: %d sounds" % len(items))
 
 

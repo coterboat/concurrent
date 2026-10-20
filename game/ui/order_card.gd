@@ -242,21 +242,19 @@ func rebuild() -> void:
 		pl.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
 		pl.custom_minimum_size = Vector2(300, 0)
 		_box.add_child(pl)
-	var total := 0
-	for raw in s.sheet().packets:
-		if (raw as Types.Packet).to_id == to_id:
-			total += (raw as Types.Packet).strength
 	var d: Dictionary = s.expected_defense(to_id)
-	var o: Dictionary = s.odds(total, int(d["now"]), to_id)
+	var o: Dictionary = s.odds_into(to_id, int(d["now"])) ## v2.3: two lands at it are two fronts, priced so
+	var total: int = int(o["total"])
 	var odds_row := HBoxContainer.new()
 	odds_row.add_theme_constant_override("separation", 8)
 	odds_row.add_child(Style.label("Odds", 15, Style.PARCH))
 	odds_row.add_child(Style.label(str(o["word"]).to_upper(), 20, ODDS.get(o["word"], Style.CREAM), "display"))
 	if total != p.strength:
-		odds_row.add_child(Style.label("(%d total with your other attacks)" % total, 13, Style.MUTED, "italic"))
+		var fronts: String = ("%d in all, from %d lands: each a front" % [total, int(o["fronts"])]) if int(o["fronts"]) > 1 and s.map.rules >= 21 else "%d total with your other attacks" % total
+		odds_row.add_child(Style.label("(%s)" % fronts, 13, Style.MUTED, "italic"))
 	_box.add_child(odds_row)
 	if int(d["ceiling"]) > int(d["now"]):
-		var o2: Dictionary = s.odds(total, int(d["ceiling"]), to_id)
+		var o2: Dictionary = s.odds_into(to_id, int(d["ceiling"]))
 		_box.add_child(Style.label("If they reinforce fully (%d): %s" % [d["ceiling"], o2["word"]], 14, Style.MUTED, "italic"))
 	var home: int = s.projected_world().get_territory(from_id).held()
 	var hl := Style.label("%s keeps %d at home" % [s.hex_name(from_id), home], 15, Style.CRIMSON.lightened(0.35) if home <= 1 else Style.PARCH)

@@ -118,6 +118,16 @@ points as noise.
 
 ## Gotchas that have bitten before
 
+- **On the Windows PC** (v2.3): Godot is `~/Documents/godot/Godot_v4.7.1-stable_win64_console.exe`
+  (4.7.1, the owner's choice there; pass it as `GODOT=` to the scripts, which run in Git Bash).
+  `python3` is the Microsoft Store's stub, not Python: use `python`, or put a `python3` shim on PATH.
+  4.7.1's import rewrites every `.import` (line endings, three new keys on the models): don't hand
+  those back. Its `.env.local` is written `KEY: value` (the tools read both forms now).
+- **A map's `maps/art/<id>_data.png` must import as "Keep File"** (`importer="keep"` in its .import).
+  `map_art.gd` reads its raw bytes; imported as a texture it works in the editor and is missing from
+  every exported build ("map data texture missing": three maps were broken that way until v2.3). The
+  editor imports a new map's data as a texture by default: switch it. Test an export with
+  `--export-pack` and `--main-pack <pck> --script` (v2.3's smoke), not just the editor.
 - **zsh doesn't word-split** `$var`. `cmd $args` passes one argument. Use `${=args}`, an array, or a
   script file. (Once this made the arena load a map called `known24 n=40 …`.)
 - **A GDScript runtime error doesn't quit headless Godot.** It hangs. Always check the

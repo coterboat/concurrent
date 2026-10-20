@@ -13,6 +13,7 @@ import json
 import os
 import secrets
 import shutil
+import subprocess
 import sys
 import textwrap
 import threading
@@ -27,6 +28,25 @@ sys.path.insert(0, str(Path(__file__).resolve().parent))
 import review as R  # noqa: E402
 
 TAG = "_test_" + secrets.token_hex(3)
+
+def _alive(pid):
+    ## v2.3: os.kill(pid, 0) asks on POSIX; on Windows it would kill the process instead
+    if os.name == "nt":
+        out = subprocess.run(["tasklist", "/FI", "PID eq %d" % pid, "/NH"], capture_output=True, text=True).stdout
+        return str(pid) in out
+    try:
+        os.kill(pid, 0)
+        return True
+    except ProcessLookupError:
+        return False
+
+
+def _kill(pid):
+    if os.name == "nt":
+        subprocess.run(["taskkill", "/F", "/PID", str(pid)], capture_output=True)
+    else:
+        os.kill(pid, 9)
+
 
 ## prints its argv, then `--lines` lines slowly; exits 1 with --fail; --forever runs until killed
 ## (and starts a child that would, too: cancel must take the whole process group down)
@@ -344,7 +364,7 @@ class ServerTests(unittest.TestCase):
         info, out, _ = self.run_to_end(self.name, "install", {"--lines": 1, "--fail": True})
         self.assertEqual((info["status"], info["code"]), ("failed", 1))
         # both landed in runs.log with a header
-        log = (R.REVIEW / self.name / "runs.log").read_text()
+        log = (R.REVIEW / self.name / "runs.log").read_text(encoding="utf-8")
         self.assertIn("=====", log)
         self.assertIn("line 5", log)
         self.assertIn("[failed · exit 1", log)
@@ -397,13 +417,11 @@ class ServerTests(unittest.TestCase):
         self.assertIn("tick", info["output"])
         # the script's own child went down with it (give launchd a moment to reap it)
         for _ in range(50):
-            try:
-                os.kill(child, 0)
-            except ProcessLookupError:
+            if not _alive(child):
                 break
             time.sleep(0.1)
         else:
-            os.kill(child, 9)
+            _kill(child)
             self.fail("the run's child process outlived the cancel")
 
     def test_regen_writes_rejected_first(self):

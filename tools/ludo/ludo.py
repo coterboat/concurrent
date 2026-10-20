@@ -55,8 +55,10 @@ def api_key():
     env = os.path.join(ROOT, ".env.local")
     if os.path.exists(env):
         for line in open(env):
-            if line.startswith("LUDO_API_KEY="):
-                return line.split("=", 1)[1].strip().strip('"')
+            ## v2.3: KEY=value, or KEY: value (how the Windows PC's file is written)
+            for sep in ("=", ":"):
+                if line.startswith("LUDO_API_KEY" + sep):
+                    return line.split(sep, 1)[1].strip().strip('"')
     sys.exit("LUDO_API_KEY not set")
 
 
@@ -155,11 +157,39 @@ def sniff(path):
     return None
 
 
+def _lock_file(f):
+    ## v2.3: fcntl is Unix only; on Windows a byte of the lock file is locked with msvcrt instead,
+    ## tried for as long as another run might reasonably hold it (closing the file releases it)
+    try:
+        import fcntl
+        fcntl.flock(f, fcntl.LOCK_EX)
+    except ImportError:
+        import msvcrt
+        for _ in range(600):
+            try:
+                msvcrt.locking(f.fileno(), msvcrt.LK_NBLCK, 1)
+                return
+            except OSError:
+                time.sleep(0.1)
+        raise OSError("the ledger stayed locked for a minute")
+
+
+def _slashes(v):
+    ## v2.3: paths in the ledger are written with "/" on every machine (RV-006 F6: Windows wrote "\\")
+    if isinstance(v, str):
+        return v.replace(os.sep, "/") if os.sep != "/" else v
+    if isinstance(v, list):
+        return [_slashes(x) for x in v]
+    return v
+
+
 def record(entry):
     ## two generator runs may share the ledger: lock across processes too
-    import fcntl
+    for k in ("file", "side_files"):
+        if k in entry:
+            entry[k] = _slashes(entry[k])
     with _ledger_lock, open(LEDGER + ".lock", "w") as lk:
-        fcntl.flock(lk, fcntl.LOCK_EX)
+        _lock_file(lk)
         led = {}
         if os.path.exists(LEDGER):
             led = json.load(open(LEDGER))
@@ -171,8 +201,22 @@ def record(entry):
             entry["history"] = hist
         led[entry["id"]] = entry
         tmp = LEDGER + ".tmp"
-        json.dump(led, open(tmp, "w"), indent=1, sort_keys=True)
-        os.replace(tmp, LEDGER)
+        with open(tmp, "w") as f:
+            json.dump(led, f, indent=1, sort_keys=True)
+        for attempt in range(120):
+            try:
+                os.replace(tmp, LEDGER)
+                return
+            except PermissionError:
+                ## v2.3: Windows refuses the swap while anything (a scanner, another reader) has the
+                ## ledger open; it lets go in a moment
+                time.sleep(0.25)
+        ## still refused after half a minute: the asset is paid for, so its entry is kept beside the
+        ## ledger rather than lost (merge it by hand: it's one entry of the same shape)
+        side = LEDGER + ".unmerged-%s.json" % entry["id"].replace("~", "_")
+        with open(side, "w") as f:
+            json.dump(entry, f, indent=1, sort_keys=True)
+        log("WARN", entry["id"], "the ledger couldn't be written; its entry is in", os.path.relpath(side, ROOT))
 
 
 MANIFEST_V = {}
@@ -297,7 +341,8 @@ TAKE_KINDS = ("speech", "voice", "sfx")
 
 def take_out(out, k):
     """Take k (2, 3, ...) of an asset sits beside it: <dir>/.takes/<name>.t<k>.<ext>."""
-    return os.path.join(os.path.dirname(out), ".takes", "%s.t%d" % (os.path.basename(out), k))
+    ## v2.3: "/" on Windows too, as the manifest writes it
+    return _slashes(os.path.join(os.path.dirname(out), ".takes", "%s.t%d" % (os.path.basename(out), k)))
 
 
 def with_takes(assets, n=None):

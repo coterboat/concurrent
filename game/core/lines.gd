@@ -50,7 +50,12 @@ static func has(who: String, key: String) -> bool:
 static func voice_path(who: String, key: String) -> String:
 	if not has(who, key):
 		return ""
-	return _voice_of(who, key, _choose(who, key))
+	var path := _voice_of(who, key, _choose(who, key))
+	## v2.3: a line with words but no voice, written down for a probe's ear (Audio.trace)
+	var au: Node = Engine.get_main_loop().root.get_node_or_null("Audio") if Engine.get_main_loop() is SceneTree else null
+	if au != null and au.tracing:
+		au.note("line", who + "/" + key, path != "")
+	return path
 
 
 static func _voice_of(who: String, key: String, i: int) -> String:

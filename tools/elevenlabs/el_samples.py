@@ -79,7 +79,7 @@ def refs(who, sid):
     else:
         files = [os.path.join(ROOT, "review", "vs_designs", who, sid, "card.mp3")]
         try:
-            rv = json.load(open(os.path.join(ROOT, "review", "vs_lines", "review.json")))["items"]
+            rv = json.load(open(os.path.join(ROOT, "review", "vs_lines", "review.json"), encoding="utf-8"))["items"]
         except (OSError, ValueError):
             rv = {}
         for aid, v in sorted(rv.items()):
@@ -136,7 +136,7 @@ def plan_chars():
 
 def state():
     try:
-        return json.load(open(os.path.join(BATCH_DIR, "state.json")))
+        return json.load(open(os.path.join(BATCH_DIR, "state.json"), encoding="utf-8"))
     except (OSError, ValueError):
         return {}
 
@@ -144,7 +144,7 @@ def state():
 def save(st):
     os.makedirs(BATCH_DIR, exist_ok=True)
     p = os.path.join(BATCH_DIR, "state.json")
-    json.dump(st, open(p + ".tmp", "w"), indent=1)
+    json.dump(st, open(p + ".tmp", "w", encoding="utf-8"), indent=1)
     os.replace(p + ".tmp", p)
 
 
@@ -228,7 +228,7 @@ def write_batch():
     os.makedirs(BATCH_DIR, exist_ok=True)
     out = os.path.join(BATCH_DIR, "batch.json")
     json.dump({"batch": BATCH, "title": "ElevenLabs v4 samples: clones of our voices, and new designed voices (0 = the game's take)",
-               "items": items}, open(out + ".tmp", "w"), indent=1, ensure_ascii=False)
+               "items": items}, open(out + ".tmp", "w", encoding="utf-8"), indent=1, ensure_ascii=False)
     os.replace(out + ".tmp", out)
     print("batch: %d items" % len(items))
 

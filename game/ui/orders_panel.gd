@@ -132,14 +132,14 @@ func _header() -> void:
 	h.add_child(v)
 	var who := Style.label(session.name_of(session.planner), 26, Style.seat_color(session.planner).lightened(0.35), "display")
 	v.add_child(who)
-	var sub := "Place your starting armies" if session.phase == Session.Phase.OPENING else "Your sealed orders for this round"
+	var sub := "Place your starting armies" if session.phase == Session.Phase.OPENING else "Your orders for this round: secret until everyone seals" ## v2.3: they aren't sealed while you write them
 	v.add_child(Style.label(sub, 17, Style.PARCH, "italic"))
 	_body.add_child(h)
 
 
 func _reinforcements() -> void:
 	var box := _section("Recruits" if session.phase == Session.Phase.PLANNING else "Starting armies", "reinforce")
-	var left: int = session.income_left()
+	var left: int = session.placeable_left() ## v2.3: the ones with somewhere to go
 	var total: int = session.income_total()
 	var h := HBoxContainer.new()
 	h.add_theme_constant_override("separation", 12)
@@ -148,6 +148,8 @@ func _reinforcements() -> void:
 	var v := VBoxContainer.new()
 	v.add_theme_constant_override("separation", -2)
 	v.add_child(Style.label("left to place of %d" % total, 18, Style.CREAM))
+	if session.no_room() > 0:
+		v.add_child(Style.label("%d with no room on your lands" % session.no_room(), 14, Style.PARCH, "italic"))
 	if session.phase == Session.Phase.PLANNING:
 		var b: Dictionary = session.income_breakdown()
 		var parts := ["lands %d" % b["lands"]]
@@ -240,7 +242,7 @@ func _selected() -> void:
 		if int(d["ceiling"]) > int(d["now"]):
 			box.add_child(_wrap("They could reinforce it to %d before battle." % d["ceiling"], 16, Style.PARCH))
 		if int(Income.home_split(ts)[1]) > 0:
-			box.add_child(_wrap("%s the garrison and never leave." % ("1 of those holds" if int(Income.home_split(ts)[1]) == 1 else "%d of those hold" % int(Income.home_split(ts)[1])), 16, Style.PARCH))
+			box.add_child(_wrap("1 of those holds the garrison and never leaves." if int(Income.home_split(ts)[1]) == 1 else "%d of those hold the garrison and never leave." % int(Income.home_split(ts)[1]), 16, Style.PARCH))
 		## Who of ours can hit it?
 		for n in MapLib.neighbors(session.map, id):
 			var ns: Types.TerritoryState = session.world.get_territory(n)
@@ -380,17 +382,16 @@ func _orders() -> void:
 		mid.add_child(Style.chip(" + ", func(): session.set_packet_strength(idx, p.strength + 1), Style.CREAM, 17))
 		mid.add_child(Style.chip("all", func(): session.set_packet_strength(idx, 999), Style.PARCH, 14))
 		var d: Dictionary = session.expected_defense(p.to_id)
-		var total_in := 0
-		for raw in s.packets:
-			if (raw as Types.Packet).to_id == p.to_id:
-				total_in += (raw as Types.Packet).strength
-		var o_now: Dictionary = session.odds(total_in, int(d["now"]), p.to_id)
+		var o_now: Dictionary = session.odds_into(p.to_id, int(d["now"])) ## v2.3: each land a front (rules 21)
+		var total_in: int = int(o_now["total"])
 		var ow := Style.label(o_now["word"], 18, ODDS_COLOR.get(o_now["word"], Style.CREAM), "bold")
 		ow.tooltip_text = "Your %d against their %d as the map stands" % [total_in, d["now"]]
+		if int(o_now["fronts"]) > 1 and session.map.rules >= 21:
+			ow.tooltip_text = "Your %d, from %d lands (each a front), against their %d as the map stands" % [total_in, int(o_now["fronts"]), d["now"]]
 		mid.add_child(ow)
 		v.add_child(mid)
 		if int(d["ceiling"]) > int(d["now"]):
-			var o_max: Dictionary = session.odds(total_in, int(d["ceiling"]), p.to_id)
+			var o_max: Dictionary = session.odds_into(p.to_id, int(d["ceiling"]))
 			v.add_child(Style.label("if they reinforce to %d: %s" % [d["ceiling"], o_max["word"]], 14, Style.MUTED, "italic"))
 		var left: int = w.get_territory(p.from_id).held()
 		var home := Style.label("%s keeps %d at home" % [session.hex_name(p.from_id), left], 14, Style.CRIMSON.lightened(0.25) if left <= 1 else Style.MUTED)

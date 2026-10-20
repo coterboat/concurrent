@@ -31,6 +31,7 @@ const V114Test = preload("res://tests/test_v114.gd")
 const V20Test = preload("res://tests/test_v20.gd")
 const V21Test = preload("res://tests/test_v21.gd")
 const V22Test = preload("res://tests/test_v22.gd")
+const V23Test = preload("res://tests/test_v23.gd")
 
 const KNIFE7 := "res://maps/knife7.json"
 
@@ -99,6 +100,8 @@ func _initialize() -> void:
 	V21Test.new().run(Callable(self, "_ok"), self)
 	_section("v2.2 an exchange Fortune throws away is owed")
 	V22Test.new().run(Callable(self, "_ok"), self)
+	_section("v2.3 the handoff: the words, and two fronts priced as they fight")
+	V23Test.new().run(Callable(self, "_ok"), self)
 	_section("ai commanders")
 	AiTest.new().run(Callable(self, "_ok"))
 	print("")

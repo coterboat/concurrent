@@ -266,6 +266,20 @@ RETRY = {"v20_model_lm_village_grass_a": (3, 9000), "v20_pic_lm_village_grass_a"
          ## the quarry's and the oasis's first pictures failed the same way: simpler, and again
          "v20_pic_lm_quarry_a": (2, 0), "v20_model_lm_quarry_a": (2, 7000),
          "v20_pic_lm_oasis_a": (2, 0), "v20_model_lm_oasis_a": (2, 7000)}
+## v2.3 (on the PC): 25 models were never made (every B variant but four, and the quarry and the oasis),
+## and by then their pictures had expired on Ludo's storage (404) and lived only on the Mac (assets/raw
+## is not in git), so each picture was drawn once more and its model made from that
+REDRAWN = [
+    "windmill_b", "watchtower_b", "lighthouse_b", "gatehouse_b", "keep_b", "palace_b", "church_b",
+    "farm_b", "harbour_b", "bridge_b", "starfort_b", "redoubt_b", "blockhouse_b", "camp_b", "oasis_a",
+    "oasis_b", "stones_b", "quarry_a", "quarry_b", "ship_b", "frigate_b", "village_desert_b",
+    "village_snow_b", "village_mountain_b", "village_ash_b"
+]
+for _k in REDRAWN:
+    for _kind in ("pic", "model"):
+        _id = "v20_%s_lm_%s" % (_kind, _k)
+        _v, _f = RETRY.get(_id, (1, 0))
+        RETRY[_id] = (_v + 1, _f)
 
 
 def entries():
@@ -307,7 +321,7 @@ def entries():
     for e in out:
         if e["id"] in RETRY:
             e["v"] = RETRY[e["id"]][0]
-            if e["kind"] == "model3d":
+            if e["kind"] == "model3d" and RETRY[e["id"]][1]:
                 e["faces"] = RETRY[e["id"]][1]
     return out
 
@@ -356,11 +370,11 @@ def _interleaved():
 
 
 def write_manifest():
-    m = json.load(open(MAN))
+    m = json.load(open(MAN, encoding="utf-8"))
     mine = {e["id"]: e for e in _interleaved()}
     kept = [a for a in m["assets"] if a["id"] not in mine]
     m["assets"] = kept + list(mine.values())
-    with open(MAN, "w") as f:
+    with open(MAN, "w", encoding="utf-8") as f:
         json.dump(m, f, indent=1)
         f.write("\n")
 
@@ -440,7 +454,7 @@ def post():
     bd = os.path.join(ROOT, "review", BATCH)
     for sub in ("models", "land", "tex/.takes", "sfx/.takes"):
         os.makedirs(os.path.join(bd, sub), exist_ok=True)
-    ledger = json.load(open(os.path.join(ROOT, "assets", "ludo_ledger.json")))
+    ledger = json.load(open(os.path.join(ROOT, "assets", "ludo_ledger.json"), encoding="utf-8"))
     led = ledger if isinstance(ledger, dict) else {}
     items = []
 
@@ -549,7 +563,7 @@ def post():
     ]
     batch = {"batch": BATCH, "title": "v2.0 the land in 3D: figures, buildings, ships, ground, sounds", "actions": actions,
              "items": items}
-    with open(os.path.join(bd, "batch.json"), "w") as f:
+    with open(os.path.join(bd, "batch.json"), "w", encoding="utf-8") as f:
         json.dump(batch, f, indent=1)
     print("batch %s: %d items" % (BATCH, len(items)))
 
@@ -557,9 +571,9 @@ def post():
 def drop_rejected(dry):
     """Every item here was installed as it came: a rejected one's file leaves the game."""
     bd = os.path.join(ROOT, "review", BATCH)
-    batch = json.load(open(os.path.join(bd, "batch.json")))
+    batch = json.load(open(os.path.join(bd, "batch.json"), encoding="utf-8"))
     rv = os.path.join(bd, "review.json")
-    verdicts = (json.load(open(rv)).get("items") or {}) if os.path.exists(rv) else {}
+    verdicts = (json.load(open(rv, encoding="utf-8")).get("items") or {}) if os.path.exists(rv) else {}
     n = 0
     for it in batch["items"]:
         v = verdicts.get(it["id"]) or {}

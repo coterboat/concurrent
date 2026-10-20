@@ -278,6 +278,10 @@ func _prepare_land() -> void:
 # ================================================================ phases
 
 func _on_phase(ph: int) -> void:
+	## v2.3: a war being left (main._swap) lives to the frame's end and hears the next war start: it
+	## must not take it up (it loaded the new map and began building that land too: a crash at exit)
+	if is_queued_for_deletion():
+		return
 	if session.map != null and session.map.id != _loaded_map:
 		board.load_map(session.map)
 		_loaded_map = session.map.id
@@ -371,6 +375,8 @@ func _on_phase(ph: int) -> void:
 
 
 func _refresh() -> void:
+	if is_queued_for_deletion():
+		return ## v2.3: a war being left (see _on_phase)
 	if session.map != null and board.art == null:
 		board.load_map(session.map)
 		_loaded_map = session.map.id
@@ -427,7 +433,7 @@ func _refresh() -> void:
 		land_card.show_for(selected if not order_card.visible else "")
 		if order_card.visible:
 			order_card.rebuild()
-		bar.set_counsel([{"key": "maneuver", "text": "Regroup phase. The battles are done: march troops one land at a time toward the front. Soldiers who arrive stay put, and dug-in defenders never leave.", "mood": "neutral", "voice": "", "focus": [], "rank": 50}])
+		bar.set_counsel([{"key": "maneuver", "text": "Regroup phase. The battles are done: march troops one land at a time toward the front. Drag from one of our lands onto a neighbour of ours (or press Advisor's marches), then press MARCH. Soldiers who arrive stay put, and dug-in defenders never leave.", "mood": "neutral", "voice": "", "focus": [], "rank": 50}])
 	elif planning:
 		board.interactive = true
 		board.viewer = session.planner
@@ -801,9 +807,10 @@ func begin_orders() -> void:
 		select("")
 		phase_banner("ORDERS PHASE", "Choose where to strike. Every commander's orders happen at once.")
 		_say_once("orders")
-	if session.income_left() > 0:
+	_no_room_note()
+	if session.placeable_left() > 0:
 		_say_once("unplaced", "alarm")
-		_confirm("%s still unplaced" % Style.plural(session.income_left(), "recruit"),
+		_confirm("%s still unplaced" % Style.plural(session.placeable_left(), "recruit"),
 			"Anything you don't place is lost when you seal your orders.",
 			[["Place them for me", func():
 				session.auto_deploy()
@@ -811,6 +818,18 @@ func begin_orders() -> void:
 		_modal.set_meta("planning", true)
 		return
 	go.call()
+
+
+func _no_room_note() -> void:
+	## v2.3: recruits with nowhere to go are said once, not asked about (nothing could place them)
+	var n: int = session.no_room()
+	if n <= 0 or _no_room_said == "%d|%s" % [session.world.round, session.planner]:
+		return
+	_no_room_said = "%d|%s" % [session.world.round, session.planner]
+	log_line("%s no room on our lands and %s home (a land takes 1 + your neighbouring lands)." % [Style.plural(n, "recruit") + (" has" if n == 1 else " have"), "goes" if n == 1 else "go"], Style.PARCH)
+
+
+var _no_room_said := ""
 
 
 func _on_drag(from_id: String, to_id: String) -> void:
@@ -824,8 +843,8 @@ func _on_drag(from_id: String, to_id: String) -> void:
 	if session.phase != Session.Phase.PLANNING:
 		return
 	if session.plan_step == "reinforce":
-		if session.income_left() > 0:
-			_toast("Place your %s first, then press ORDERS to attack." % ("last recruit" if session.income_left() == 1 else "%d recruits" % session.income_left()))
+		if session.placeable_left() > 0:
+			_toast("Place your %s first, then press ORDERS to attack." % ("last recruit" if session.placeable_left() == 1 else "%d recruits" % session.placeable_left()))
 			Audio.sfx("error")
 			return
 		session.begin_orders()
@@ -1074,9 +1093,10 @@ func primary_action() -> void:
 func try_seal() -> void:
 	if session.phase != Session.Phase.PLANNING and session.phase != Session.Phase.OPENING:
 		return
-	if session.income_left() > 0:
+	_no_room_note()
+	if session.placeable_left() > 0:
 		_say_once("unplaced", "alarm")
-		_confirm("%s still unplaced" % Style.plural(session.income_left(), "troop"),
+		_confirm("%s still unplaced" % Style.plural(session.placeable_left(), "troop"),
 			"Anything you don't place is lost.",
 			[["Place them for me", func():
 				session.auto_deploy()

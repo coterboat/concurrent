@@ -2,6 +2,187 @@
 
 The bible says amendments come with a dated entry and the test or band that justified them. Everything below has both.
 
+## v2.3 — 14 Oct 2026: the handoff pass (no rule change: rules 22)
+
+The owner: "we're getting to a point where i want to hand this off to my dad to start letting him
+playtest/have fun. time to take a full polish pass on what we've built… throw the kitchen sink at
+testing this every which way and fix what you find along the way." Done on the Windows PC, on
+**Godot 4.7.1** (the owner: "ultimately this is going to be built on the latest version"). No rule
+changes: new games still play rules 22, nothing in `resolve.gd` or the world's hash changed, and every
+save replays as it was played.
+
+### What was thrown at it
+
+- **The suite under 4.7.1:** 719 passed, 0 failed, no SCRIPT ERROR (the project still says 4.5; it
+  compiles and runs unchanged on 4.7.1, Forward+ on an RTX 3070).
+- **Determinism across machines and engines:** the bot's arena command printed `548347c5f849` on the
+  PC under 4.7.1, the Mac's fingerprint under 4.5.1, before anything here changed the AI.
+- **Every probe**, windowed: all passed but `v113`, whose How to Play page ran off the foot of the
+  screen (below). 220 AI wars on all six maps (0 violations), the text CLI, the monkey (1,000 games,
+  nothing leaked), and two read-only audits: every sound, voice, sheet and model the code asks for, and
+  every word a first-time player reads against what the engine does under rules 22.
+- **A new probe, `v23`: the tutorial played start to finish as a first-time player meets it**, on a
+  fresh install's defaults (the land, his own battles, his own dice), with real clicks for the title's
+  button, every recruit placed and every attack ordered: every lesson in its round, 13 battles opened
+  on the land and closed, the ending, and the title with nothing left to continue. A watchdog fails
+  it if the war ever stands still for 15 s, and it found the two below in its first runs.
+- **A probe's ear** (`Audio.tracing`): a sound that isn't on disk plays as silence, so nobody notices
+  it missing. With tracing on, every sound the game asks for is written down; `v23` checks the whole
+  tutorial's 1,000-odd requests exist (sfx, field, music, ambience, voices, and lines with words but
+  no voice), that the mix's levels are applied (the music playing sits at its take's level), and that
+  the master bus has its limiter.
+- **Soaks:** a whole war in the real client on the land, every battle opened and auto-rolled, on four
+  maps (Known World 7 rounds, Wide World 9, Thousand Isles 9, the Ring 9; 8 to 12 minutes each): no
+  script or runtime error on any of them.
+- **After the pass:** the full suite 738 passed (719 + `test_v23`'s 19, before its last three cases),
+  `test_v23` 22, the tool tests 21 + 7, and the touched probes re-run.
+- **Outside review (RV-006).** Grok wasn't signed in on the PC and Codex isn't installed there, so a fresh
+  Claude reviewer read only the rubric and the packet (less independent than either; it said "packet
+  only"). 8 findings, no high: 7 held up, all fixed. The two mediums: three fronts were priced by
+  folding the small ones together, kind by 7 to 9 points (now exact, `test_v23` watched failing on the
+  fold); and "the AI is unchanged under rules 20" had no proof (now the `rules=20` fingerprint above).
+  It also caught `session.warnings()` still calling no-room recruits "not placed yet", review-table
+  actions swapped to the table's own Python on the Mac too (now Windows only), the Ludo ledger getting
+  Windows paths and a lock that could give up after the asset was paid for. Rejected: models missing
+  from the ledger (the packet was built while the last four generated). `docs/reviews/findings.jsonl`.
+
+### Fixed: what a first-time player would have tripped on
+
+- **"1 troop still unplaced" on the tutorial's very first SEAL** (`session.income_total`). The Isthmus
+  deals 15 starting armies to a shore whose three lands hold 4, 6 and 4; the 15th could only ever be
+  lost, and the game asked about him. On some Isthmus deals only 10 of 15 fit. Deployment now offers
+  what the lands can take ("0 of 14"). The world after deployment is the same either way.
+- **"2 recruits still unplaced" every round, with nothing to be done** (`session.placeable_left`). Lands
+  that border none of yours take one recruit each, so a deal of three lone lands places 3 of 5, and
+  the other 2 only ever went home; the game asked every round, and "Place them for me" did nothing.
+  Recruits with no room are now said once in the log ("2 recruits have no room on our lands and go
+  home") and never asked about; the tally reads "3 of 5 recruits placed · 2 no room". Tests:
+  `test_v23` (both deals).
+- **The tutorial's first lesson contradicted the banner** ("Name your capital…" over "First, place your
+  starting armies"): it now says what the crown is, and, once everything is placed, to press SEAL
+  (`t-open2`). The regroup phase's counsel says how (drag, or Advisor's marches, then MARCH). The
+  "fresh troops wait" counsel in the orders step said to click a land (a click only selects there): it
+  says to press ◀ Recruits.
+- **How to Play's "Reading the map" ran off the screen** at 1440×900 (Windows' fonts set a little taller
+  than the Mac's): a page too long now shrinks its words (23 down to 16) to fit. `v113` passes.
+- **The words, checked against the engine.** How to Play said two attacks on one land "join together
+  into one force" (not since rules 21); that one decisive roll gives "the same odds" (not with the
+  firing line: 10 against 8 is 71% roll by roll, 83% in one roll); that two to one "wins almost always"
+  (2 against 1 is 79%); that supply runs from "the largest run of your lands" (from the capital, when
+  there is one); and to choose the deal "in Settings" (it's on the setup screen). The dice help said "at
+  most five a side" (six behind a fort's or a capital's walls). The README said the defenders "split
+  their strength across the fronts", "both styles give the same odds", "? Rules", and offered a
+  colourblind switch that isn't one (shapes are always on). The rules label "Every man counts (v1.5)"
+  lost its version number. All corrected.
+- **The seat called "You", again:** "You seiz Varek's war chest" (`Style.says` stripped "zes" from
+  "seizes"), "— You is owed for it" (v2.2's rebate line), "You raise 3 fresh troops in the city and
+  carries off…", "Victory for You!". Also "1 of those holds the garrison and never leave", "1 more from
+  Ridge join its garrison", "(1 + your 1 neighboring lands)", "Each plans… then pass it on". New
+  `Style.verb_for` for a second verb in one sentence. Tests: every verb the game hands `says`.
+- **Keys nobody could find:** the Cards chip names C, and Skip battles names Esc.
+- **The dice help covered the Fortune button.** In a first battle the dice help opens by itself, over the
+  right end of the call plate, which is where "✦ Fortune: throw it again" sits; and the exchange's
+  shout ("ONE MAN LEFT") was printed across the plate's words. When a call plate opens for you, both now
+  give way (? Dice brings the help back). `v23` states it at the first Fortune offered.
+- **"Your sealed orders for this round"** headed the Review drawer while you were still writing them:
+  "Your orders for this round: secret until everyone seals". The war's tally showed a luck of "-0.0".
+- **The window fits the screen it opens on** (Windows and Linux): 85% of the usable screen at 16:10,
+  centred, so a 1366×768 laptop isn't overrun and a 4K monitor isn't a postage stamp. This PC's 2560×1440
+  screen opens it at 1904×1190. The Mac sizes in points and is left as it was; probes and fullscreen too.
+
+### Two lands at one land, priced as they fight
+
+Since rules 21 a commander's columns from two lands are two fronts, and the defenders' whole line
+answers each, but every odds the game quoted still added them up as one force (the v2.1 entry: "The AI
+still plans a joined attack as one force's odds"). `tools/study/fronts.gd` stormed The Gate with every
+split, 400 seeds each: 11 against 9 is 70% as one force, 58% as 6 + 5 from two lands.
+
+- **`Combat.fronts_capture_rate`**: the exact chance for up to three fronts (each salvo every front
+  fires one volley at the defenders' line); a fourth or more fold the two smallest together, and a fight
+  too big to count (over 20,000 states) is priced scaled down. Two fronts within 2–4 points of the
+  battles across the whole table; three lands at a Gate of 7 (4 + 3 + 3) priced 0.59, taken 0.61 of 300
+  times; nothing is fought by it. Its worst first pricing is about 50 ms (two 40s against 40).
+- **Where the game quotes odds:** the order card ("LIKELY (11 in all, from 2 lands: each a front)"), the
+  dispatch's odds word and its tooltip, and the advisor's plan.
+- **The AI** prices a split as the fronts it is, tries every land that could carry the attack alone, and
+  brings more men to a split it still wants (The Gate held by 6: 12 men a split attack, against 10).
+  Gated on rules ≥ 21: the arena under `rules=20` prints the same fingerprint, `f782eba38886`, from a
+  clean worktree of the code before this pass and from this one, so older games' AI is untouched.
+  Arena, one front-aware commander against old-style ones (`fronts=false`; their search still predicts
+  front-aware enemies), same seeds and chairs rotated, with the final pricing: Known World veterans 15 of
+  80 (20 expected), Wide World veterans 15 of 50 (10), Known World generals 25 of 80 (20); with the first
+  pricing, the Ring's generals 14 of 60 (12). Neutral to slightly stronger, and it no longer walks into a
+  split it can't win. The bot's arena command now prints `fingerprint 9890d7d7a2ad`.
+
+### The mix
+
+The audit measured all 555 sounds (EBU R128). Effects ran from -27 to -5 LUFS against the voices'
+-21 (melee, border clash, charge, surge and hurrah 14–16 LU over the speech), 13 of them peaked over
+0 dBFS, a music take sat 8 LU off another in its own playlist, the commanders' new ElevenLabs casts
+spread 4 LU (Quill -17.7, Ysolde -21.8), and the tent's ambience measured -41 LUFS: under its bus,
+silence.
+
+- **`game/data/levels.json`**, written by `tools/audio/levels.py`, is added to each sound at play time
+  (the files aren't touched; run it again when sounds change): every speaker's lines to one level
+  (inside a speaker the performance is kept), every music take to the takes' middle, a hot effect down
+  to -12 LUFS (quiet ones stay quiet), the tent's bed up, and no boost past a -1 dBTP peak. 386 of 555
+  moved.
+- **A limiter on the master bus**, so twelve muskets, a cannon and a cheer in one frame never clip.
+- **The land-claim thud** started 0.58 s after the click (silence at the head of `flag_plant.wav`):
+  trimmed, so it lands on the click.
+
+### A Windows build for Dad
+
+`build/CONCURRENT-windows.zip` (389 MB): `CONCURRENT.exe` (the whole game in one file, made with Godot
+4.7.1's export templates, checked against the release's SHA-512) and "Read me first.txt"
+(`scripts/dad_readme.txt`). `./scripts/export.sh windows` builds it on the PC now (it only knew the Mac's
+template folder).
+
+- **Three of the six maps were broken in every exported build.** `map_art.gd` reads each map's data image
+  (which land every pixel is) as raw bytes, and the Marches', the Ring's and the Thousand Isles' were set to
+  import as textures, so the build shipped compressed textures and no raw file: "map data texture
+  missing", nothing to click. The editor has the raw file on disk, so no probe could see it. They import as
+  "Keep File" now, like the other three, and a smoke test run inside the exported pack itself
+  (`--main-pack`) loads all six maps' data and starts a war on each.
+- **The Ludo ledger shipped inside the game** (Godot exports every `.json`): excluded.
+- **The board asked the land for heights before it was built** (`land.gd`): starting wars back to back
+  threw "Nonexistent function 'height_at' in base 'Nil'" (986 in one stress run, before this pass too); the
+  land is flat until it's built now.
+- **The crash when the game was closed** (signal 11, before this pass too), after a war was left in its
+  first second or two for a war on another map. The war being left lives to the end of its frame, and it
+  heard the new war start: it loaded the new map and began building that land too, and `land.gd` dropped
+  its first build for the second without waiting for it. Godot frees a task nobody waited for at
+  shutdown, after GDScript has gone, and freeing the map that build held died on GDScript's lock (a Godot
+  4.7.1 debug build under lldb: `Main::cleanup` → `WorkerThreadPool::finish` → the build's lambda →
+  `~GDScriptInstance`). No button reached it (Play again keeps the map, and a single frame of the title
+  between two wars frees the first): back-to-back wars from a script did, as the stress run's and
+  `quit_early.gd`'s. Now the war being left takes up nothing (`game_screen.gd`), and the land waits for
+  every build it started, a replaced one too, each handing its land over rather than writing into the
+  node (`land.gd`). `tools/study/quit_early.gd` closes clean in every case it crashed in and every one it
+  didn't, headless and windowed; probe `v23b` holds it (the war left behind keeps its own map, every build
+  is waited for, and `probes.sh` fails on the exit code). Saves and rules untouched.
+- The real `.exe` opens on its title at 1904×1190 on this PC's 2560×1440 screen and plays the intro film.
+
+### Assets
+
+- **Voices (ElevenLabs, the cast's own voices):** Imre's "Check." (`taunt_v4`) was a 0.24 s clip; the
+  advisor's first "Fortune, favour us now!" and Quill's "A clerical error! Again!" had words and no
+  voice. Three takes each, in the review batch `el_lines` on the PC (198 characters, about $0.02). The
+  tool's loudness match took the broken 0.24 s take's -70 LUFS as its target and made the first takes
+  silent: a reference it can't measure now falls back to the voices' level.
+- **The land's models (Ludo):** 25 were never made (every B variant but four, the quarry and the oasis:
+  the Isthmus's Quarry, the Known World's Oasis and the Wide World's Mirage and Kelwell had no landmark).
+  By now their pictures had expired on Ludo's storage, so each was drawn again and modelled
+  (`v20_content.py` REDRAWN), into the review batch `v20_diorama` on the PC.
+- **The tools run on Windows:** `.env.local` there is written `KEY: value`; the Ludo ledger's lock was
+  Unix-only (`fcntl`) and its swap needed a retry; the voice tools named the Mac's ffmpeg, and wrote
+  their batches in the Windows code page (the review table couldn't read the "·" in a label); a take's
+  path came out with backslashes. **The review table on Windows:** its actions say `python3`, which
+  there is the Microsoft Store's stub, so nothing ran: the table now runs them with its own Python;
+  Cancel took down the action but not its children, which held the output open so the run never ended
+  (`taskkill /T` now); a child's CRLF double-spaced the run log. `test_review.py` (21) and
+  `test_notes.py` (7) pass on the PC; three of them failed there before.
+
 ## v2.2 — 10 Oct 2026: Fortune owes you for an exchange it took (rules 22); which dice are rolling where
 
 The owner: "if you have fortune used against you and get screwed out of good rolls that should give

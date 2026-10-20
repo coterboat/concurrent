@@ -508,7 +508,7 @@ func _build_beats() -> Array:
 			Types.EVENT_SURGE when bool(e.get("joins", false)):
 				## v1.10: the second wave finds the land already taken, and marches in to hold it
 				out.append({"upto": i, "caption": "The second wave marches in",
-					"sub": "%s already fell to %s: %d more from %s join its garrison." % [_hex(str(e["to"])), Style.who(_name(str(e["playerId"]))), int(e["strength"]), _hex(str(e["from"]))],
+					"sub": "%s already fell to %s: %d more from %s %s its garrison." % [_hex(str(e["to"])), Style.who(_name(str(e["playerId"]))), int(e["strength"]), _hex(str(e["from"])), "joins" if int(e["strength"]) == 1 else "join"],
 					"sound": "march", "delay": 1.4, "focus": [str(e["from"]), str(e["to"])], "flash": str(e["to"]), "flash_text": "+%d" % int(e["strength"])})
 			Types.EVENT_SURGE:
 				## the surge marches like any column, on from the land just taken; its arrow
@@ -526,7 +526,7 @@ func _build_beats() -> Array:
 				var sub4 := ""
 				if int(e.get("levy", 0)) > 0:
 					sub4 = "%s %d fresh troops in the city" % [Style.says(_name(by), "raises"), int(e["levy"])]
-					sub4 += (" and carries off %d of %s cards." % [loot.size(), Style.owns(_name(str(e["playerId"])))]) if not loot.is_empty() else "."
+					sub4 += (" and %s off %d of %s cards." % [Style.verb_for(_name(by), "carries"), loot.size(), Style.owns(_name(str(e["playerId"])))]) if not loot.is_empty() else "."
 				var up4 := i
 				if i + 1 < n and bool((evs[i + 1] as Dictionary).get("capitalLevy", false)):
 					up4 = i + 1 ## the levy shows with the fall

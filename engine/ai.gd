@@ -640,6 +640,21 @@ class Planner extends RefCounted:
 			if int(x[2]) != int(y[2]):
 				return int(x[2]) < int(y[2])
 			return int(x[1]) > int(y[1]))
+		var best: Dictionary = _build(e, es, d_eff, p_want, offers)
+		## v2.3 (rules 21): columns from different lands are separate fronts, each facing the defenders'
+		## whole firing line, so a split is priced as it will fight, and every land that could carry the
+		## attack alone is tried as well: one strong column usually beats the same men split.
+		if _fronts() and srcs.size() > 1:
+			for s in srcs:
+				var one: Dictionary = _build(e, es, d_eff, p_want, offers.filter(func(o): return str(o[0]) == str(s)))
+				if not one.is_empty() and (best.is_empty() or float(one["ev"]) > float(best["ev"])):
+					best = one
+		return best
+
+	func _fronts() -> bool:
+		return map.rules >= 21 and map.battle == Combat.MODE_VOLLEYS and Combat.line > 0 and bool(prof.get("fronts", true))
+
+	func _build(e: String, es: Types.TerritoryState, d_eff: int, p_want: float, offers: Array) -> Dictionary:
 		var fort: int = MapLib.defender_bonus(w, map, e)
 		var need := 1
 		if d_eff > 0:
@@ -664,6 +679,40 @@ class Planner extends RefCounted:
 			if int(o[2]) == 0:
 				spare_total += int(o[1])
 		var want: int = maxi(need, mini(spare_total, need + 3))
+		var tk: Dictionary = _take(offers, want, col)
+		var froms: Dictionary = tk["froms"]
+		var places: Dictionary = tk["places"]
+		var got: int = int(tk["got"])
+		var used_place: int = int(tk["used_place"])
+		if got < need:
+			return {}
+		var p_win: float = 1.0 if d_eff == 0 else Combat.capture_rate(got, d_eff, map.battle, fort)
+		if _fronts() and d_eff > 0 and froms.size() > 1:
+			## v2.3: two fronts need more men for the same odds: bring them while there are any
+			p_win = Combat.fronts_capture_rate(froms.values(), d_eff, map.battle, fort)
+			while p_win < p_want and got < total:
+				want = got + 2
+				tk = _take(offers, want, col)
+				if int(tk["got"]) <= got:
+					break
+				froms = tk["froms"]
+				places = tk["places"]
+				got = int(tk["got"])
+				used_place = int(tk["used_place"])
+				p_win = Combat.fronts_capture_rate(froms.values(), d_eff, map.battle, fort)
+		var value: float = target_value(e, targeted)
+		var loss_win: float = float(d_eff / 2)
+		var exp_loss: float = p_win * loss_win + (1.0 - p_win) * float(got)
+		var exposure := 0.0
+		for s in froms.keys():
+			var before: int = remaining_defense(s) + int(places.get(s, 0))
+			var after: int = before - int(froms[s])
+			exposure += (loss_risk(s, after) - loss_risk(s, before)) * hex_value(s)
+		var ev: float = value * p_win - exp_loss * float(prof.get("army_cost", ARMY_COST)) - exposure - float(used_place) * 0.04
+		return {"to": e, "froms": froms, "places": places, "strength": got, "def": d_eff, "p": p_win, "ev": ev, "surge": ""}
+
+	func _take(offers: Array, want: int, col: int) -> Dictionary:
+		## the men for an attack of `want`, in the offers' order (spare, then placed, then reserves)
 		var froms := {}
 		var places := {}
 		var got := 0
@@ -684,19 +733,7 @@ class Planner extends RefCounted:
 				used_place += take
 			froms[o[0]] = int(froms.get(o[0], 0)) + take
 			got += take
-		if got < need:
-			return {}
-		var p_win: float = 1.0 if d_eff == 0 else Combat.capture_rate(got, d_eff, map.battle, fort)
-		var value: float = target_value(e, targeted)
-		var loss_win: float = float(d_eff / 2)
-		var exp_loss: float = p_win * loss_win + (1.0 - p_win) * float(got)
-		var exposure := 0.0
-		for s in froms.keys():
-			var before: int = remaining_defense(s) + int(places.get(s, 0))
-			var after: int = before - int(froms[s])
-			exposure += (loss_risk(s, after) - loss_risk(s, before)) * hex_value(s)
-		var ev: float = value * p_win - exp_loss * float(prof.get("army_cost", ARMY_COST)) - exposure - float(used_place) * 0.04
-		return {"to": e, "froms": froms, "places": places, "strength": got, "def": d_eff, "p": p_win, "ev": ev, "surge": ""}
+		return {"froms": froms, "places": places, "got": got, "used_place": used_place}
 
 	func _needed(d: int, p_want: float, d_bonus: int = 0) -> int:
 		var top: int = d + maxi(12, d / 2) ## under the v1.6 firing line a big stack needs a real margin

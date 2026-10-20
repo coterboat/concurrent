@@ -7761,7 +7761,7 @@
    "prompt": "A small stone quarry: a low block of pale cut stone in two stepped ledges, a few square cut stone blocks stacked beside it. A hand-painted miniature tabletop wargame terrain model, like a painted model-railway building, made to stand beside antique tin toy soldiers: chunky simplified shapes, crisp clean painted colours, a toy-like charm. The model stands on its own with its walls meeting the floor and clear space on every side, three-quarter view from a little above, even studio lighting, plain light grey background",
    "out": "assets/raw/v20/land/quarry_a_ref",
    "group": "v20_land_pics",
-   "v": 2
+   "v": 3
   },
   {
    "id": "v20_model_lm_quarry_a",
@@ -7772,7 +7772,7 @@
    "texture_type": "pbr",
    "out": "assets/raw/v20/land/quarry_a",
    "group": "v20_land_models",
-   "v": 2
+   "v": 3
   },
   {
    "id": "v20_pic_lm_oasis_a",
@@ -7784,7 +7784,7 @@
    "prompt": "A desert oasis: a small round pool of blue water with three tall date palm trees beside it, on a flat patch of golden sand. A hand-painted miniature tabletop wargame terrain model, like a painted model-railway building, made to stand beside antique tin toy soldiers: chunky simplified shapes, crisp clean painted colours, a toy-like charm. The model stands on its own with its walls meeting the floor and clear space on every side, three-quarter view from a little above, even studio lighting, plain light grey background",
    "out": "assets/raw/v20/land/oasis_a_ref",
    "group": "v20_land_pics",
-   "v": 2
+   "v": 3
   },
   {
    "id": "v20_model_lm_oasis_a",
@@ -7795,7 +7795,7 @@
    "texture_type": "pbr",
    "out": "assets/raw/v20/land/oasis_a",
    "group": "v20_land_models",
-   "v": 2
+   "v": 3
   },
   {
    "id": "v20_pic_lm_camp_a",
@@ -8319,7 +8319,8 @@
    "style": false,
    "prompt": "A cluster of flat-roofed sand-coloured adobe mud-brick houses with small dark windows, a wooden ladder to a roof, clay pots, one palm tree. A hand-painted miniature tabletop wargame terrain model, like a painted model-railway building, made to stand beside antique tin toy soldiers: chunky simplified shapes, crisp clean painted colours, a toy-like charm. The model stands on its own with its walls meeting the floor and clear space on every side, three-quarter view from a little above, even studio lighting, plain light grey background",
    "out": "assets/raw/v20/land/village_desert_b_ref",
-   "group": "v20_land_pics"
+   "group": "v20_land_pics",
+   "v": 2
   },
   {
    "id": "v20_model_lm_village_desert_b",
@@ -8329,7 +8330,8 @@
    "texture_size": 1024,
    "texture_type": "pbr",
    "out": "assets/raw/v20/land/village_desert_b",
-   "group": "v20_land_models"
+   "group": "v20_land_models",
+   "v": 2
   },
   {
    "id": "v20_pic_lm_village_snow_b",
@@ -8340,7 +8342,8 @@
    "style": false,
    "prompt": "Two log cabins with roofs thick with white snow, icicles along the eaves, a stack of firewood under snow, a little snow on the ground around them. A hand-painted miniature tabletop wargame terrain model, like a painted model-railway building, made to stand beside antique tin toy soldiers: chunky simplified shapes, crisp clean painted colours, a toy-like charm. The model stands on its own with its walls meeting the floor and clear space on every side, three-quarter view from a little above, even studio lighting, plain light grey background",
    "out": "assets/raw/v20/land/village_snow_b_ref",
-   "group": "v20_land_pics"
+   "group": "v20_land_pics",
+   "v": 2
   },
   {
    "id": "v20_model_lm_village_snow_b",
@@ -8350,7 +8353,8 @@
    "texture_size": 1024,
    "texture_type": "pbr",
    "out": "assets/raw/v20/land/village_snow_b",
-   "group": "v20_land_models"
+   "group": "v20_land_models",
+   "v": 2
   },
   {
    "id": "v20_pic_lm_village_mountain_b",
@@ -8362,7 +8366,7 @@
    "prompt": "A simple alpine chalet: a whitewashed stone ground floor, a dark timber upper floor with one wooden balcony, a wide overhanging shingled roof. A hand-painted miniature tabletop wargame terrain model, like a painted model-railway building, made to stand beside antique tin toy soldiers: chunky simplified shapes, crisp clean painted colours, a toy-like charm. The model stands on its own with its walls meeting the floor and clear space on every side, three-quarter view from a little above, even studio lighting, plain light grey background",
    "out": "assets/raw/v20/land/village_mountain_b_ref",
    "group": "v20_land_pics",
-   "v": 2
+   "v": 3
   },
   {
    "id": "v20_model_lm_village_mountain_b",
@@ -8373,7 +8377,7 @@
    "texture_type": "pbr",
    "out": "assets/raw/v20/land/village_mountain_b",
    "group": "v20_land_models",
-   "v": 2
+   "v": 3
   },
   {
    "id": "v20_pic_lm_village_ash_b",
@@ -8384,7 +8388,8 @@
    "style": false,
    "prompt": "The blackened ruins of two stone houses: charred roof beams, broken walls, scattered rubble and a lone standing chimney, grey ash on the ground. A hand-painted miniature tabletop wargame terrain model, like a painted model-railway building, made to stand beside antique tin toy soldiers: chunky simplified shapes, crisp clean painted colours, a toy-like charm. The model stands on its own with its walls meeting the floor and clear space on every side, three-quarter view from a little above, even studio lighting, plain light grey background",
    "out": "assets/raw/v20/land/village_ash_b_ref",
-   "group": "v20_land_pics"
+   "group": "v20_land_pics",
+   "v": 2
   },
   {
    "id": "v20_model_lm_village_ash_b",
@@ -8394,7 +8399,8 @@
    "texture_size": 1024,
    "texture_type": "pbr",
    "out": "assets/raw/v20/land/village_ash_b",
-   "group": "v20_land_models"
+   "group": "v20_land_models",
+   "v": 2
   },
   {
    "id": "v20_pic_lm_ship_b",
@@ -8405,7 +8411,8 @@
    "style": false,
    "prompt": "A Napoleonic three-masted ship of the line under full white sails, a black and ochre striped hull with two rows of gun ports, a red ensign at the stern, floating level. A hand-painted miniature tabletop wargame terrain model, like a painted model-railway building, made to stand beside antique tin toy soldiers: chunky simplified shapes, crisp clean painted colours, a toy-like charm. The model stands on its own with its walls meeting the floor and clear space on every side, three-quarter view from a little above, even studio lighting, plain light grey background",
    "out": "assets/raw/v20/land/ship_b_ref",
-   "group": "v20_land_pics"
+   "group": "v20_land_pics",
+   "v": 2
   },
   {
    "id": "v20_model_lm_ship_b",
@@ -8415,7 +8422,8 @@
    "texture_size": 1024,
    "texture_type": "pbr",
    "out": "assets/raw/v20/land/ship_b",
-   "group": "v20_land_models"
+   "group": "v20_land_models",
+   "v": 2
   },
   {
    "id": "v20_pic_lm_frigate_b",
@@ -8426,7 +8434,8 @@
    "style": false,
    "prompt": "A Napoleonic frigate: a sleek three-masted warship under full white sails, a black hull with one ochre stripe and a row of gun ports, floating level. A hand-painted miniature tabletop wargame terrain model, like a painted model-railway building, made to stand beside antique tin toy soldiers: chunky simplified shapes, crisp clean painted colours, a toy-like charm. The model stands on its own with its walls meeting the floor and clear space on every side, three-quarter view from a little above, even studio lighting, plain light grey background",
    "out": "assets/raw/v20/land/frigate_b_ref",
-   "group": "v20_land_pics"
+   "group": "v20_land_pics",
+   "v": 2
   },
   {
    "id": "v20_model_lm_frigate_b",
@@ -8436,7 +8445,8 @@
    "texture_size": 1024,
    "texture_type": "pbr",
    "out": "assets/raw/v20/land/frigate_b",
-   "group": "v20_land_models"
+   "group": "v20_land_models",
+   "v": 2
   },
   {
    "id": "v20_pic_lm_bridge_b",
@@ -8447,7 +8457,8 @@
    "style": false,
    "prompt": "An old stone bridge with three round arches over nothing, a low parapet wall along each side, its two ends sloping down to the floor, seen from the side and a little above. A hand-painted miniature tabletop wargame terrain model, like a painted model-railway building, made to stand beside antique tin toy soldiers: chunky simplified shapes, crisp clean painted colours, a toy-like charm. The model stands on its own with its walls meeting the floor and clear space on every side, three-quarter view from a little above, even studio lighting, plain light grey background",
    "out": "assets/raw/v20/land/bridge_b_ref",
-   "group": "v20_land_pics"
+   "group": "v20_land_pics",
+   "v": 2
   },
   {
    "id": "v20_model_lm_bridge_b",
@@ -8457,7 +8468,8 @@
    "texture_size": 1024,
    "texture_type": "pbr",
    "out": "assets/raw/v20/land/bridge_b",
-   "group": "v20_land_models"
+   "group": "v20_land_models",
+   "v": 2
   },
   {
    "id": "v20_pic_lm_harbour_b",
@@ -8468,7 +8480,8 @@
    "style": false,
    "prompt": "A small stone harbour quay: a stone pier with mooring bollards, a wooden jetty on pilings, a timber crane, barrels and crates stacked, a little harbour-master's hut. A hand-painted miniature tabletop wargame terrain model, like a painted model-railway building, made to stand beside antique tin toy soldiers: chunky simplified shapes, crisp clean painted colours, a toy-like charm. The model stands on its own with its walls meeting the floor and clear space on every side, three-quarter view from a little above, even studio lighting, plain light grey background",
    "out": "assets/raw/v20/land/harbour_b_ref",
-   "group": "v20_land_pics"
+   "group": "v20_land_pics",
+   "v": 2
   },
   {
    "id": "v20_model_lm_harbour_b",
@@ -8478,7 +8491,8 @@
    "texture_size": 1024,
    "texture_type": "pbr",
    "out": "assets/raw/v20/land/harbour_b",
-   "group": "v20_land_models"
+   "group": "v20_land_models",
+   "v": 2
   },
   {
    "id": "v20_pic_lm_palace_b",
@@ -8489,7 +8503,8 @@
    "style": false,
    "prompt": "A grand baroque palace: a long pale cream stone facade with rows of tall windows, a central portico of white columns under a green copper dome, a tall flagpole on the dome, a gravel forecourt with low hedges. A hand-painted miniature tabletop wargame terrain model, like a painted model-railway building, made to stand beside antique tin toy soldiers: chunky simplified shapes, crisp clean painted colours, a toy-like charm. The model stands on its own with its walls meeting the floor and clear space on every side, three-quarter view from a little above, even studio lighting, plain light grey background",
    "out": "assets/raw/v20/land/palace_b_ref",
-   "group": "v20_land_pics"
+   "group": "v20_land_pics",
+   "v": 2
   },
   {
    "id": "v20_model_lm_palace_b",
@@ -8499,7 +8514,8 @@
    "texture_size": 1024,
    "texture_type": "pbr",
    "out": "assets/raw/v20/land/palace_b",
-   "group": "v20_land_models"
+   "group": "v20_land_models",
+   "v": 2
   },
   {
    "id": "v20_pic_lm_starfort_b",
@@ -8510,7 +8526,8 @@
    "style": false,
    "prompt": "A star-shaped Vauban fortress seen from above at an angle: low sloping stone-faced earth ramparts with pointed bastions at every corner, black cannons on the ramparts, a gate with a little bridge, two barracks buildings with red roofs inside, a flagpole in the middle. A hand-painted miniature tabletop wargame terrain model, like a painted model-railway building, made to stand beside antique tin toy soldiers: chunky simplified shapes, crisp clean painted colours, a toy-like charm. The model stands on its own with its walls meeting the floor and clear space on every side, three-quarter view from a little above, even studio lighting, plain light grey background",
    "out": "assets/raw/v20/land/starfort_b_ref",
-   "group": "v20_land_pics"
+   "group": "v20_land_pics",
+   "v": 2
   },
   {
    "id": "v20_model_lm_starfort_b",
@@ -8520,7 +8537,8 @@
    "texture_size": 1024,
    "texture_type": "pbr",
    "out": "assets/raw/v20/land/starfort_b",
-   "group": "v20_land_models"
+   "group": "v20_land_models",
+   "v": 2
   },
   {
    "id": "v20_pic_lm_blockhouse_b",
@@ -8531,7 +8549,8 @@
    "style": false,
    "prompt": "A stone toll house and wooden barrier across a mountain road: a small fortified stone guardhouse with a slate roof and loopholes, a striped red and white barrier pole beside it. A hand-painted miniature tabletop wargame terrain model, like a painted model-railway building, made to stand beside antique tin toy soldiers: chunky simplified shapes, crisp clean painted colours, a toy-like charm. The model stands on its own with its walls meeting the floor and clear space on every side, three-quarter view from a little above, even studio lighting, plain light grey background",
    "out": "assets/raw/v20/land/blockhouse_b_ref",
-   "group": "v20_land_pics"
+   "group": "v20_land_pics",
+   "v": 2
   },
   {
    "id": "v20_model_lm_blockhouse_b",
@@ -8541,7 +8560,8 @@
    "texture_size": 1024,
    "texture_type": "pbr",
    "out": "assets/raw/v20/land/blockhouse_b",
-   "group": "v20_land_models"
+   "group": "v20_land_models",
+   "v": 2
   },
   {
    "id": "v20_pic_lm_keep_b",
@@ -8552,7 +8572,8 @@
    "style": false,
    "prompt": "A square stone castle keep: a tall Norman tower with crenellated battlements and corner turrets, narrow arrow-slit windows, a wooden door at the top of a stone stair, a flagpole on the roof. A hand-painted miniature tabletop wargame terrain model, like a painted model-railway building, made to stand beside antique tin toy soldiers: chunky simplified shapes, crisp clean painted colours, a toy-like charm. The model stands on its own with its walls meeting the floor and clear space on every side, three-quarter view from a little above, even studio lighting, plain light grey background",
    "out": "assets/raw/v20/land/keep_b_ref",
-   "group": "v20_land_pics"
+   "group": "v20_land_pics",
+   "v": 2
   },
   {
    "id": "v20_model_lm_keep_b",
@@ -8562,7 +8583,8 @@
    "texture_size": 1024,
    "texture_type": "pbr",
    "out": "assets/raw/v20/land/keep_b",
-   "group": "v20_land_models"
+   "group": "v20_land_models",
+   "v": 2
   },
   {
    "id": "v20_pic_lm_watchtower_b",
@@ -8573,7 +8595,8 @@
    "style": false,
    "prompt": "A round stone watchtower with crenellated battlements and an iron beacon brazier with a small fire on top, a little arched wooden door, narrow windows. A hand-painted miniature tabletop wargame terrain model, like a painted model-railway building, made to stand beside antique tin toy soldiers: chunky simplified shapes, crisp clean painted colours, a toy-like charm. The model stands on its own with its walls meeting the floor and clear space on every side, three-quarter view from a little above, even studio lighting, plain light grey background",
    "out": "assets/raw/v20/land/watchtower_b_ref",
-   "group": "v20_land_pics"
+   "group": "v20_land_pics",
+   "v": 2
   },
   {
    "id": "v20_model_lm_watchtower_b",
@@ -8583,7 +8606,8 @@
    "texture_size": 1024,
    "texture_type": "pbr",
    "out": "assets/raw/v20/land/watchtower_b",
-   "group": "v20_land_models"
+   "group": "v20_land_models",
+   "v": 2
   },
   {
    "id": "v20_pic_lm_windmill_b",
@@ -8594,7 +8618,8 @@
    "style": false,
    "prompt": "A tall Napoleonic-era post windmill: a white-washed wooden body on a round stone base, a dark shingled roof, four large lattice sails with canvas, a wooden stair up to the door. A hand-painted miniature tabletop wargame terrain model, like a painted model-railway building, made to stand beside antique tin toy soldiers: chunky simplified shapes, crisp clean painted colours, a toy-like charm. The model stands on its own with its walls meeting the floor and clear space on every side, three-quarter view from a little above, even studio lighting, plain light grey background",
    "out": "assets/raw/v20/land/windmill_b_ref",
-   "group": "v20_land_pics"
+   "group": "v20_land_pics",
+   "v": 2
   },
   {
    "id": "v20_model_lm_windmill_b",
@@ -8604,7 +8629,8 @@
    "texture_size": 1024,
    "texture_type": "pbr",
    "out": "assets/raw/v20/land/windmill_b",
-   "group": "v20_land_models"
+   "group": "v20_land_models",
+   "v": 2
   },
   {
    "id": "v20_pic_lm_church_b",
@@ -8615,7 +8641,8 @@
    "style": false,
    "prompt": "A village church of grey stone with a tall slender spire topped by a golden weathercock, a slate roof, an arched wooden door and a few gravestones beside it. A hand-painted miniature tabletop wargame terrain model, like a painted model-railway building, made to stand beside antique tin toy soldiers: chunky simplified shapes, crisp clean painted colours, a toy-like charm. The model stands on its own with its walls meeting the floor and clear space on every side, three-quarter view from a little above, even studio lighting, plain light grey background",
    "out": "assets/raw/v20/land/church_b_ref",
-   "group": "v20_land_pics"
+   "group": "v20_land_pics",
+   "v": 2
   },
   {
    "id": "v20_model_lm_church_b",
@@ -8625,7 +8652,8 @@
    "texture_size": 1024,
    "texture_type": "pbr",
    "out": "assets/raw/v20/land/church_b",
-   "group": "v20_land_models"
+   "group": "v20_land_models",
+   "v": 2
   },
   {
    "id": "v20_pic_lm_gatehouse_b",
@@ -8636,7 +8664,8 @@
    "style": false,
    "prompt": "A fortified town gatehouse: two squat round stone towers with conical slate roofs either side of an arched gateway with a raised iron portcullis, a short stretch of crenellated stone wall on each side. A hand-painted miniature tabletop wargame terrain model, like a painted model-railway building, made to stand beside antique tin toy soldiers: chunky simplified shapes, crisp clean painted colours, a toy-like charm. The model stands on its own with its walls meeting the floor and clear space on every side, three-quarter view from a little above, even studio lighting, plain light grey background",
    "out": "assets/raw/v20/land/gatehouse_b_ref",
-   "group": "v20_land_pics"
+   "group": "v20_land_pics",
+   "v": 2
   },
   {
    "id": "v20_model_lm_gatehouse_b",
@@ -8646,7 +8675,8 @@
    "texture_size": 1024,
    "texture_type": "pbr",
    "out": "assets/raw/v20/land/gatehouse_b",
-   "group": "v20_land_models"
+   "group": "v20_land_models",
+   "v": 2
   },
   {
    "id": "v20_pic_lm_farm_b",
@@ -8657,7 +8687,8 @@
    "style": false,
    "prompt": "A farmstead: a white-washed farmhouse with a thatched roof, a large red timber barn, a round haystack and a short wooden fence. A hand-painted miniature tabletop wargame terrain model, like a painted model-railway building, made to stand beside antique tin toy soldiers: chunky simplified shapes, crisp clean painted colours, a toy-like charm. The model stands on its own with its walls meeting the floor and clear space on every side, three-quarter view from a little above, even studio lighting, plain light grey background",
    "out": "assets/raw/v20/land/farm_b_ref",
-   "group": "v20_land_pics"
+   "group": "v20_land_pics",
+   "v": 2
   },
   {
    "id": "v20_model_lm_farm_b",
@@ -8667,7 +8698,8 @@
    "texture_size": 1024,
    "texture_type": "pbr",
    "out": "assets/raw/v20/land/farm_b",
-   "group": "v20_land_models"
+   "group": "v20_land_models",
+   "v": 2
   },
   {
    "id": "v20_pic_lm_stones_b",
@@ -8678,7 +8710,8 @@
    "style": false,
    "prompt": "A ring of seven ancient grey standing stones with a large flat stone in the middle, patches of moss on them. A hand-painted miniature tabletop wargame terrain model, like a painted model-railway building, made to stand beside antique tin toy soldiers: chunky simplified shapes, crisp clean painted colours, a toy-like charm. The model stands on its own with its walls meeting the floor and clear space on every side, three-quarter view from a little above, even studio lighting, plain light grey background",
    "out": "assets/raw/v20/land/stones_b_ref",
-   "group": "v20_land_pics"
+   "group": "v20_land_pics",
+   "v": 2
   },
   {
    "id": "v20_model_lm_stones_b",
@@ -8688,7 +8721,8 @@
    "texture_size": 1024,
    "texture_type": "pbr",
    "out": "assets/raw/v20/land/stones_b",
-   "group": "v20_land_models"
+   "group": "v20_land_models",
+   "v": 2
   },
   {
    "id": "v20_pic_lm_redoubt_b",
@@ -8699,7 +8733,8 @@
    "style": false,
    "prompt": "A small earthwork redoubt: a ring of raised brown earth ramparts reinforced with woven wicker gabions and a sharpened wooden palisade, a black cannon pointing out through a gap, a small powder store inside. A hand-painted miniature tabletop wargame terrain model, like a painted model-railway building, made to stand beside antique tin toy soldiers: chunky simplified shapes, crisp clean painted colours, a toy-like charm. The model stands on its own with its walls meeting the floor and clear space on every side, three-quarter view from a little above, even studio lighting, plain light grey background",
    "out": "assets/raw/v20/land/redoubt_b_ref",
-   "group": "v20_land_pics"
+   "group": "v20_land_pics",
+   "v": 2
   },
   {
    "id": "v20_model_lm_redoubt_b",
@@ -8709,7 +8744,8 @@
    "texture_size": 1024,
    "texture_type": "pbr",
    "out": "assets/raw/v20/land/redoubt_b",
-   "group": "v20_land_models"
+   "group": "v20_land_models",
+   "v": 2
   },
   {
    "id": "v20_pic_lm_lighthouse_b",
@@ -8720,7 +8756,8 @@
    "style": false,
    "prompt": "A tall stone lighthouse painted in white and red bands with a glass lantern room and a gallery rail on top, a small keeper's cottage with a slate roof at its foot, on a low rocky outcrop. A hand-painted miniature tabletop wargame terrain model, like a painted model-railway building, made to stand beside antique tin toy soldiers: chunky simplified shapes, crisp clean painted colours, a toy-like charm. The model stands on its own with its walls meeting the floor and clear space on every side, three-quarter view from a little above, even studio lighting, plain light grey background",
    "out": "assets/raw/v20/land/lighthouse_b_ref",
-   "group": "v20_land_pics"
+   "group": "v20_land_pics",
+   "v": 2
   },
   {
    "id": "v20_model_lm_lighthouse_b",
@@ -8730,7 +8767,8 @@
    "texture_size": 1024,
    "texture_type": "pbr",
    "out": "assets/raw/v20/land/lighthouse_b",
-   "group": "v20_land_models"
+   "group": "v20_land_models",
+   "v": 2
   },
   {
    "id": "v20_pic_lm_quarry_b",
@@ -8741,7 +8779,8 @@
    "style": false,
    "prompt": "A small stone quarry: a low block of pale cut stone in two stepped ledges, a few square cut stone blocks stacked beside it. A hand-painted miniature tabletop wargame terrain model, like a painted model-railway building, made to stand beside antique tin toy soldiers: chunky simplified shapes, crisp clean painted colours, a toy-like charm. The model stands on its own with its walls meeting the floor and clear space on every side, three-quarter view from a little above, even studio lighting, plain light grey background",
    "out": "assets/raw/v20/land/quarry_b_ref",
-   "group": "v20_land_pics"
+   "group": "v20_land_pics",
+   "v": 2
   },
   {
    "id": "v20_model_lm_quarry_b",
@@ -8751,7 +8790,8 @@
    "texture_size": 1024,
    "texture_type": "pbr",
    "out": "assets/raw/v20/land/quarry_b",
-   "group": "v20_land_models"
+   "group": "v20_land_models",
+   "v": 2
   },
   {
    "id": "v20_pic_lm_oasis_b",
@@ -8762,7 +8802,8 @@
    "style": false,
    "prompt": "A desert oasis: a small round pool of blue water with three tall date palm trees beside it, on a flat patch of golden sand. A hand-painted miniature tabletop wargame terrain model, like a painted model-railway building, made to stand beside antique tin toy soldiers: chunky simplified shapes, crisp clean painted colours, a toy-like charm. The model stands on its own with its walls meeting the floor and clear space on every side, three-quarter view from a little above, even studio lighting, plain light grey background",
    "out": "assets/raw/v20/land/oasis_b_ref",
-   "group": "v20_land_pics"
+   "group": "v20_land_pics",
+   "v": 2
   },
   {
    "id": "v20_model_lm_oasis_b",
@@ -8772,7 +8813,8 @@
    "texture_size": 1024,
    "texture_type": "pbr",
    "out": "assets/raw/v20/land/oasis_b",
-   "group": "v20_land_models"
+   "group": "v20_land_models",
+   "v": 2
   },
   {
    "id": "v20_pic_lm_camp_b",
@@ -8783,7 +8825,8 @@
    "style": false,
    "prompt": "A Napoleonic army camp: three white canvas bell tents, muskets stacked in a pyramid, a campfire with a cooking pot on a tripod, a drum resting on the ground. A hand-painted miniature tabletop wargame terrain model, like a painted model-railway building, made to stand beside antique tin toy soldiers: chunky simplified shapes, crisp clean painted colours, a toy-like charm. The model stands on its own with its walls meeting the floor and clear space on every side, three-quarter view from a little above, even studio lighting, plain light grey background",
    "out": "assets/raw/v20/land/camp_b_ref",
-   "group": "v20_land_pics"
+   "group": "v20_land_pics",
+   "v": 2
   },
   {
    "id": "v20_model_lm_camp_b",
@@ -8793,7 +8836,8 @@
    "texture_size": 1024,
    "texture_type": "pbr",
    "out": "assets/raw/v20/land/camp_b",
-   "group": "v20_land_models"
+   "group": "v20_land_models",
+   "v": 2
   },
   {
    "id": "v20_sfx_fall_grass",

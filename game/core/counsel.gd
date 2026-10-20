@@ -37,9 +37,12 @@ static func advice(s: Node) -> Array:
 		out.append(_item("deploy", "Place your starting armies: click one of your lands to add one (right-click takes one back). Put strength where enemies touch you — and on lands that could complete a region.", "neutral", "deploy", [], 50))
 		return out
 	## 1. unplaced men
-	var left: int = s.income_left()
+	var left: int = s.placeable_left() ## v2.3: only the recruits that have somewhere to go
 	if left > 0:
-		out.append(_item("place", ("1 fresh troop waits" if left == 1 else "%d fresh troops wait" % left) + " for orders. Click one of our lands to put them there — unplaced men go home.", "neutral", "reinforce", [], 40))
+		## v2.3: in the orders step a click only selects; say how to get back to placing
+		var how: String = ("Click one of our lands to put %s there" % ("it" if left == 1 else "them")) if s.plan_step == "reinforce" \
+			else "Press ◀ Recruits (beside the tally) to go back and place %s" % ("it" if left == 1 else "them")
+		out.append(_item("place", ("1 fresh troop waits" if left == 1 else "%d fresh troops wait" % left) + " for orders. " + how + " — unplaced men go home.", "neutral", "reinforce", [], 40))
 	## 2. threats
 	var proj: Types.World = s.projected_world()
 	for t in MapLib.player_territory_ids(w, pid):
@@ -149,13 +152,21 @@ static func explain(s: Node, sheet: Types.Sheet) -> Array:
 	for raw in sheet.packets:
 		var p: Types.Packet = raw
 		if not by_target.has(p.to_id):
-			by_target[p.to_id] = {"n": 0, "from": [], "surge": p.surge_to}
+			by_target[p.to_id] = {"n": 0, "from": [], "sizes": [], "surge": p.surge_to}
 		by_target[p.to_id]["n"] += p.strength
 		by_target[p.to_id]["from"].append(s.hex_name(p.from_id))
+		by_target[p.to_id]["sizes"].append(p.strength)
 	for to in by_target.keys():
 		var info: Dictionary = by_target[to]
 		var d: int = s.world.get_territory(to).held()
-		var word: String = Combat.odds_word(int(info["n"]), maxi(1, d), s.map.battle, MapLib.defender_bonus(s.world, s.map, str(to))) if d > 0 else "certain"
+		var bonus: int = MapLib.defender_bonus(s.world, s.map, str(to))
+		## v2.3: from two lands it is two fronts (rules 21), and the word says what that is worth
+		var word: String = "certain"
+		if d > 0:
+			if s.map.rules >= 21 and (info["sizes"] as Array).size() > 1:
+				word = Combat.word_for(Combat.fronts_capture_rate(info["sizes"], d, s.map.battle, bonus))
+			else:
+				word = Combat.odds_word(int(info["n"]), maxi(1, d), s.map.battle, bonus)
 		var txt := "Attack %s with %d from %s — %s." % [s.hex_name(to), info["n"], " and ".join(info["from"]), word]
 		if str(info["surge"]) != "":
 			txt += " If it falls, surge on into %s." % s.hex_name(str(info["surge"]))
@@ -209,10 +220,13 @@ static func lesson(s: Node, surge_pick: int) -> Dictionary:
 	if bool(s.config.get("tutorial", false)):
 		var r: int = s.world.round
 		if ph == Session.Phase.OPENING:
-			return _item("t-open", "Welcome, Commander. This is the Isthmus: a north shore and a south shore joined only by The Gate. First, place your starting armies — click one of our lands to add one there.", "neutral", "welcome", [], 150)
+			## v2.3: the banner says to name the capital; the lesson says what the crown is, and how deployment ends
+			if s.placeable_left() <= 0:
+				return _item("t-open2", "All placed. Press SEAL on the dial and every commander's armies take the field at once.", "pleased", "", [], 150)
+			return _item("t-open", "Welcome, Commander. This is the Isthmus: a north shore and a south shore joined only by The Gate. The crown is our capital (I have pencilled one in): it pays two recruits a round and fights like a fortress. First, place your starting armies — click one of our lands to add one there.", "neutral", "welcome", [], 150)
 		if r == 1:
 			if s.plan_step == "reinforce":
-				if s.placed_total() < s.income_total():
+				if s.placeable_left() > 0:
 					return _item("t-r1a", "Every round begins with the reinforcement phase. Click our lands to place the recruits — they can attack this very round. The ≤ badge on an enemy land is the most it could hold after they secretly reinforce.", "neutral", "reinforce", [], 150)
 				return _item("t-r1a2", "All placed. Press ORDERS to move on to the orders phase and choose where to strike.", "pleased", "", [], 150)
 			if s.sheet().packets.is_empty():

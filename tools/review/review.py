@@ -923,17 +923,17 @@ def _signal_run(run: Run, sig) -> None:
     try:
         if os.name == "posix":
             os.killpg(p.pid, sig)  # the whole group: a script's own children (ludo.py, Godot) too
-        elif sig == signal.SIGTERM:
-            p.terminate()
         else:
-            p.kill()
+            ## v2.3: Windows has no group to signal, and a child left alive holds the output pipe open
+            ## (the run never ends): taskkill /T takes the whole tree
+            subprocess.run(["taskkill", "/F", "/T", "/PID", str(p.pid)], capture_output=True)
     except (ProcessLookupError, PermissionError, OSError):
         pass
 
 
 def _open_log(d: Path):
     try:
-        return open(d / "runs.log", "a", encoding="utf-8")
+        return open(d / "runs.log", "a", encoding="utf-8", newline="\n")
     except OSError:
         return None
 
@@ -943,6 +943,7 @@ def _pump(run: Run, logf) -> None:
     fd = run.proc.stdout.fileno()
 
     def out(s: str) -> None:
+        s = s.replace("\r\n", "\n") ## v2.3: a Windows child prints CRLF (the log and the page double-spaced it)
         run.append(s)
         if logf:
             try:
@@ -1080,8 +1081,13 @@ def start_run(name: str, action_id: str, options=None) -> Run:
                     logf.write(msg)
             kw: dict = {"start_new_session": True} if os.name == "posix" else \
                 {"creationflags": getattr(subprocess, "CREATE_NEW_PROCESS_GROUP", 0)}
+            if os.name == "nt" and argv and argv[0] in ("python3", "python"):
+                ## v2.3: the batches' actions say python3; on Windows that name is the Microsoft Store's
+                ## stub, not Python, so the table's own interpreter runs them there. The Mac is as it was
+                ## (RV-006 F4: its python3 on PATH may not be the one that started the table)
+                argv = [sys.executable] + list(argv[1:])
             run.proc = subprocess.Popen(argv, cwd=str(REPO), stdin=subprocess.DEVNULL, stdout=subprocess.PIPE,
-                                        stderr=subprocess.STDOUT, env=dict(os.environ, PYTHONUNBUFFERED="1"), **kw)
+                                        stderr=subprocess.STDOUT, env=dict(os.environ, PYTHONUNBUFFERED="1", PYTHONIOENCODING="utf-8"), **kw)
         except (OSError, ReviewError) as e:
             run.append(f"review: couldn't start it: {e}\n[failed]\n")
             run.status, run.t1 = "failed", time.monotonic()

@@ -292,7 +292,7 @@ func _refresh() -> void:
 	if humans == 0:
 		notes.append("No human seats: you will watch the commanders fight it out.")
 	elif humans > 1:
-		notes.append("Hotseat: %d people share this computer. Each plans behind a cover screen, then pass it on." % humans)
+		notes.append("Hotseat: %d people share this computer. Each plans behind a cover screen, then passes it on." % humans)
 	if seats.size() == 2:
 		notes.append("Two commanders: a Neutral army holds some lands as a doorstop. It never attacks.")
 	if length == "conquest":

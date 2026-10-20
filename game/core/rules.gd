@@ -16,7 +16,7 @@ const RULES := [
 		"help": "Fortune keeps a ledger of your luck. When the dice have robbed you of about half a battle (any fight counts), she owes you a favour: throw a disastrous exchange again, in an assault or a melee (and a good exchange taken from you that way counts toward your next). Start with one, hold up to three."},
 	{"id": "levee", "name": "Levée en masse", "choices": [[3, "The commander behind rallies"], [0, "Off"]],
 		"help": "A recruit for every three lands you trail the leader by (up to 4 a round). A gentle hand for whoever is losing, so wars stay close."},
-	{"id": "firing_line", "name": "Battle odds", "choices": [[true, "Firing line (five fire at once)"], [false, "Every man counts (v1.5)"]],
+	{"id": "firing_line", "name": "Battle odds", "choices": [[true, "Firing line (five fire at once)"], [false, "Every man counts"]],
 		"help": "Firing line: at most five men of a side fire in a volley, so a big army wins by staying power. Every man counts: a big army wins nearly every volley."},
 	{"id": "battle", "name": "Battles", "choices": [["volleys", "Roll by roll (volleys)"], ["decisive", "One decisive roll"]],
 		"help": "Roll by roll you throw the dice yourself, make battle calls and can call on Fortune. One decisive roll settles each battle at once."},

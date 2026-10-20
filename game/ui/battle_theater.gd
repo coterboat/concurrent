@@ -294,7 +294,7 @@ func _ready() -> void:
 	ctl.add_child(dh)
 	var skip := Style.chip("Skip battles ▶▶", func(): _skip(), Style.PARCH, 16)
 	skip.size_flags_vertical = Control.SIZE_SHRINK_CENTER
-	skip.tooltip_text = "Settle this round's remaining battles on the map (your standing orders decide the calls)"
+	skip.tooltip_text = "Settle this round's remaining battles on the map (Esc): your standing orders decide the calls"
 	ctl.add_child(skip)
 	## the chief of staff, at your elbow
 	_advisor = LeaderFace.new()
@@ -1239,7 +1239,8 @@ func _settle_pair(pr: Dictionary, k: int) -> void:
 	_b_left = int(_left[_def()]) if not _scramble else int(_left[_b_front()])
 	_update_counts()
 	_update_odds()
-	Audio.sfx(sound, -1.5 if sound == "volley" or sound == "shot" else -3.0, 0.08)
+	if sound != "": ## on the land the field plays its own (a crack per musket), and hands back none
+		Audio.sfx(sound, -1.5 if sound == "volley" or sound == "shot" else -3.0, 0.08)
 	get_tree().create_timer(0.12).timeout.connect(func(): Audio.sfx("hit", -9.0, 0.15))
 
 
@@ -1470,7 +1471,7 @@ func _dice_help() -> PanelContainer:
 	v.add_theme_constant_override("separation", 6)
 	pc.add_child(v)
 	v.add_child(Style.label("HOW A THROW IS SCORED", 18, Style.GOLD, "display"))
-	var rule_txt: String = "Each side throws a die. Its pips count five men apiece; add the men in the firing line, at most five a side. The higher total wins the volley and the loser loses a man; an even volley is fired again.\n\nA big army can't win every volley: only its front rank fires. It wins by staying power, able to lose men long after the other side is gone. Numbers still tell: a lone holdout firing one man against five needs a miracle." if Combat.line > 0 else "Each side throws a die. Its pips count five men apiece; add the men still standing. The higher total wins the volley and the loser loses a man.\n\nSo every five men you bring is worth a whole pip on every throw — a big army wins most volleys even on a bad roll, and a lone holdout needs a miracle."
+	var rule_txt: String = "Each side throws a die. Its pips count five men apiece; add the men in the firing line, at most five a side (six behind a fortress's or a capital's walls). The higher total wins the volley and the loser loses a man; an even volley is fired again.\n\nA big army can't win every volley: only its front rank fires. It wins by staying power, able to lose men long after the other side is gone. Numbers still tell: a lone holdout firing one man against five needs a miracle." if Combat.line > 0 else "Each side throws a die. Its pips count five men apiece; add the men still standing. The higher total wins the volley and the loser loses a man.\n\nSo every five men you bring is worth a whole pip on every throw — a big army wins most volleys even on a bad roll, and a lone holdout needs a miracle."
 	rule_txt += "\n\nEach duel's two totals sit on the brass plate on the rail beneath it, the winner's in their colour (hover a plate to see how each was made)."
 	if session != null and session.map != null and session.map.fortune:
 		rule_txt += "\n\n✦ Fortune: the stars under each commander are their favours. After an exchange that goes badly for you, spend one and that exchange is thrown again, once a battle. Lit stars can be called on now."
@@ -1660,6 +1661,15 @@ func _ask() -> void:
 		_dial.set_label("LET IT STAND" if only_fortune else "PRESS ON", "Space")
 		_call_plate.modulate.a = 0.0
 		create_tween().tween_property(_call_plate, "modulate:a", 1.0, 0.15)
+		## v2.3: the call is the moment. The dice help that opens by itself in a first battle covered
+		## the plate's Fortune button (? Dice brings it back), and the exchange's shout sat across the
+		## plate's words: both give way
+		_help.visible = false
+		if _shout.modulate.a > 0.0:
+			if _shout_tw != null and _shout_tw.is_valid():
+				_shout_tw.kill()
+			_shout_tw = create_tween()
+			_shout_tw.tween_property(_shout, "modulate:a", 0.0, 0.15)
 	else:
 		_auto_t = 0.7
 		_dial.set_label("…", "")
@@ -1829,7 +1839,9 @@ func _show_call(c: Dictionary) -> void:
 				if str(op) != by and int(owed[op]) > 0:
 					owed_to.append(session.name_of(str(op)))
 			if not owed_to.is_empty():
-				_sub.text += " — %s %s owed for it" % [" and ".join(owed_to), "is" if owed_to.size() == 1 else "are"]
+				## v2.3: "— you are owed for it" for the seat called You (it read "You is owed")
+				var owed_names: Array = owed_to.map(func(nm): return Style.who(str(nm)))
+				_sub.text += " — %s owed for it" % (Style.says(str(owed_names[0]), "is") if owed_names.size() == 1 else " and ".join(owed_names) + " are")
 			_fit_sub()
 			Audio.sfx("fortune" if Audio.has_sfx("fortune") else "war_chest", -3.0)
 			get_tree().create_timer(0.4).timeout.connect(func(): Audio.sfx("dice_shake", -2.0))

@@ -3,6 +3,7 @@ extends Node
 
 const SFX_DIR := "res://assets/audio/sfx/"
 const MUSIC_DIR := "res://assets/audio/music/"
+const LEVELS := "res://game/data/levels.json"
 
 var _music_a: AudioStreamPlayer
 var _music_b: AudioStreamPlayer
@@ -14,6 +15,48 @@ var _current := ""
 var _last_play := {}
 var _voice: AudioStreamPlayer
 var _ducked := false
+## v2.3: a probe's ear. A sound that isn't on disk plays as silence, so nobody notices it missing;
+## with tracing on, every sound the game asks for is written down ({kind, name, ok}) for a probe
+## to check (tools/shots/v23.gd). Off in the game.
+var tracing := false
+var trace: Array = []
+
+
+func note(kind: String, name: String, ok: bool) -> void:
+	if tracing:
+		trace.append({"kind": kind, "name": name, "ok": ok})
+
+
+## v2.3: the mix's levels. tools/audio/levels.py measures every sound and writes the dB that brings
+## an outlier into line (game/data/levels.json: a voice cast louder than the advisor, a music take
+## 8 dB off its playlist, the tent's bed at -41 LUFS, effects 16 dB over the speech); it's added
+## here at play time, so the files themselves are never touched. A sound not listed plays as it is.
+var _levels := {}
+
+
+func gain(path: String) -> float:
+	## the level for a sound, by its path with or without the extension
+	return float(_levels.get(path.get_basename() if path.get_extension() != "" else path, 0.0))
+
+
+func _load_levels() -> void:
+	if not FileAccess.file_exists(LEVELS):
+		return
+	var doc: Variant = JSON.parse_string(FileAccess.get_file_as_string(LEVELS))
+	if typeof(doc) == TYPE_DICTIONARY:
+		_levels = (doc as Dictionary).get("gains", {})
+
+
+func _guard_master() -> void:
+	## v2.3: a hard limiter on the master bus, so twelve muskets, a cannon and a cheer landing in one
+	## frame never clip (thirteen of the effects peak over 0 dBFS on their own)
+	var m: int = AudioServer.get_bus_index("Master")
+	for i in AudioServer.get_bus_effect_count(m):
+		if AudioServer.get_bus_effect(m, i) is AudioEffectHardLimiter:
+			return
+	var lim := AudioEffectHardLimiter.new()
+	lim.ceiling_db = -0.5
+	AudioServer.add_bus_effect(m, lim)
 
 
 func _ready() -> void:
@@ -38,6 +81,8 @@ func _ready() -> void:
 	_field_loop = _player("SFX")
 	for k in LAND_BEDS:
 		_beds[k] = _player("Ambience")
+	_load_levels()
+	_guard_master()
 	apply_volumes()
 
 
@@ -110,8 +155,19 @@ func has_sfx(name: String) -> bool:
 	return _stream(SFX_DIR + name) != null
 
 
+func _sfx_ok(name: String) -> bool:
+	if VARIANTS.has(name):
+		for t in VARIANTS[name]:
+			if _stream(SFX_DIR + str(t)) != null:
+				return true
+		return false
+	return _stream(SFX_DIR + name) != null
+
+
 func sfx(name: String, volume_db: float = 0.0, pitch_jitter: float = 0.04) -> void:
 	## Same sound within 60 ms is dropped so a burst of events does not stack.
+	if tracing:
+		note("sfx", name, _sfx_ok(name))
 	if VARIANTS.has(name):
 		var takes: Array = []
 		for t in VARIANTS[name]:
@@ -142,7 +198,7 @@ func _play_sfx(name: String, volume_db: float, pitch_jitter: float) -> void:
 	var p: AudioStreamPlayer = _pool[_next]
 	_next = (_next + 1) % _pool.size()
 	p.stream = s
-	p.volume_db = volume_db
+	p.volume_db = volume_db + gain(SFX_DIR + name)
 	p.pitch_scale = 1.0 + randf_range(-pitch_jitter, pitch_jitter)
 	p.play()
 
@@ -156,6 +212,8 @@ var _field_loop: AudioStreamPlayer
 
 
 func field(name: String, volume_db: float = 0.0, pitch_jitter: float = 0.06) -> void:
+	if tracing:
+		note("field", name, _sfx_ok(name))
 	var pick := name
 	if VARIANTS.has(name):
 		var takes: Array = (VARIANTS[name] as Array).filter(func(t): return _stream(SFX_DIR + str(t)) != null)
@@ -168,13 +226,15 @@ func field(name: String, volume_db: float = 0.0, pitch_jitter: float = 0.06) -> 
 	var p: AudioStreamPlayer = _field[_field_i]
 	_field_i = (_field_i + 1) % _field.size()
 	p.stream = s
-	p.volume_db = volume_db
+	p.volume_db = volume_db + gain(SFX_DIR + pick)
 	p.pitch_scale = 1.0 + randf_range(-pitch_jitter, pitch_jitter)
 	p.play()
 
 
 func field_loop(name: String, volume_db: float = -8.0) -> void:
 	## one looping sound under the battle (oars rowing a column ashore); "" stops it
+	if tracing and name != "":
+		note("field", name, _sfx_ok(name))
 	if name == "":
 		if _field_loop.playing:
 			var tw := create_tween()
@@ -185,7 +245,7 @@ func field_loop(name: String, volume_db: float = -8.0) -> void:
 	if s == null:
 		return
 	_field_loop.stream = s
-	_field_loop.volume_db = volume_db
+	_field_loop.volume_db = volume_db + gain(SFX_DIR + name)
 	_field_loop.play()
 
 
@@ -214,7 +274,7 @@ func land_bed(levels: Dictionary) -> void:
 				continue
 			p.stream = s
 			p.play(randf() * 4.0)
-		p.volume_db = linear_to_db(now) - 6.0
+		p.volume_db = linear_to_db(now) - 6.0 + gain(SFX_DIR + k)
 
 
 func land_bed_silence() -> void:
@@ -230,6 +290,8 @@ var _knock_i := 0
 
 
 func knock(name: String, strength: float) -> void:
+	if tracing:
+		note("knock", name, _stream(SFX_DIR + name) != null)
 	var s := _stream(SFX_DIR + name)
 	if s == null:
 		s = _stream(SFX_DIR + "dice_click")
@@ -238,7 +300,7 @@ func knock(name: String, strength: float) -> void:
 	var p: AudioStreamPlayer = _knocks[_knock_i]
 	_knock_i = (_knock_i + 1) % _knocks.size()
 	p.stream = s
-	p.volume_db = linear_to_db(clampf(0.18 + 0.82 * strength, 0.05, 1.0)) - 3.0
+	p.volume_db = linear_to_db(clampf(0.18 + 0.82 * strength, 0.05, 1.0)) - 3.0 + gain(SFX_DIR + name)
 	p.pitch_scale = randf_range(0.9, 1.12) * (1.0 + (1.0 - strength) * 0.08)
 	p.play()
 
@@ -297,6 +359,8 @@ func has_music(name: String) -> bool:
 
 
 func music(name: String, fade: float = 1.2, loop: bool = true) -> void:
+	if tracing and name != "":
+		note("music", name, has_music(name))
 	if name == _current:
 		return
 	_current = name
@@ -339,7 +403,7 @@ func _crossfade(take: String, fade: float) -> void:
 	nxt.play()
 	_player_now = nxt
 	var tw2 := create_tween()
-	tw2.tween_property(nxt, "volume_db", 0.0, fade)
+	tw2.tween_property(nxt, "volume_db", gain(MUSIC_DIR + take), fade)
 
 
 func _process(_delta: float) -> void:
@@ -371,6 +435,8 @@ func voice(path: String, urgent: bool = false, on_start: Callable = Callable()) 
 	## Plays one spoken line and ducks the music. Returns its length in seconds (0 if silent).
 	## If another line is still being spoken and this one isn't urgent (nor the player's doing),
 	## it is queued: returns -1, and on_start(seconds) is called if and when it plays.
+	if tracing and path != "":
+		note("voice", path, ResourceLoader.exists(path))
 	if path == "" or not ResourceLoader.exists(path):
 		return 0.0
 	var s := get_node_or_null("/root/Settings")
@@ -390,6 +456,7 @@ func voice(path: String, urgent: bool = false, on_start: Callable = Callable()) 
 func _play_line(path: String) -> float:
 	var st: AudioStream = load(path)
 	_voice.stream = st
+	_voice.volume_db = gain(path)
 	_voice.play()
 	_duck(true)
 	return st.get_length()
@@ -446,18 +513,20 @@ func distant(volume_db: float = -20.0) -> void:
 		return
 	_far_last = str(takes[randi() % takes.size()])
 	_far.stream = _stream(SFX_DIR + _far_last)
-	_far.volume_db = volume_db
+	_far.volume_db = volume_db + gain(SFX_DIR + _far_last)
 	_far.pitch_scale = randf_range(0.94, 1.04)
 	_far.play()
 
 
 func ambience(on: bool, name: String = "ambience_tent") -> void:
+	if tracing and on:
+		note("ambience", name, _stream(MUSIC_DIR + name, true) != null)
 	if on and _amb.playing and _amb.has_meta("name") and str(_amb.get_meta("name")) != name:
 		_amb.stop()
 	if on and not _amb.playing:
 		_amb.set_meta("name", name)
 		_amb.stream = _stream(MUSIC_DIR + name, true)
-		_amb.volume_db = -6.0
+		_amb.volume_db = -6.0 + gain(MUSIC_DIR + name)
 		_amb.play()
 	elif not on and _amb.playing:
 		_amb.stop()

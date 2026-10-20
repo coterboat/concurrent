@@ -16328,6 +16328,27 @@
   "url": "https://storage.googleapis.com/ludo-assets/api/8bb3183dd87c129693cf4ed0d2717062.glb",
   "v": 1
  },
+ "v20_model_lm_blockhouse_b": {
+  "credits": 4,
+  "endpoint": "/assets/3d-model",
+  "file": "assets/raw/v20/land/blockhouse_b.glb",
+  "id": "v20_model_lm_blockhouse_b",
+  "job": "945f07c4-3f2c-412e-bac1-48fa6f752541",
+  "params": {
+   "image": "https://storage.googleapis.com/ludo-assets/api/0e56b536d1cca8cce6e830e1814a2833.webp",
+   "target_num_faces": 8000,
+   "texture_size": 1024,
+   "texture_type": "pbr"
+  },
+  "side_files": [
+   "assets/raw/v20/land/blockhouse_b_snap0.png",
+   "assets/raw/v20/land/blockhouse_b_snap1.png",
+   "assets/raw/v20/land/blockhouse_b_snap2.png",
+   "assets/raw/v20/land/blockhouse_b_snap3.png"
+  ],
+  "url": "https://storage.googleapis.com/ludo-assets/api/d1a7325996ece5f4fc1172848ac89d3f.glb",
+  "v": 2
+ },
  "v20_model_lm_bridge_a": {
   "credits": 3,
   "endpoint": "/assets/3d-model",
@@ -16348,6 +16369,27 @@
   ],
   "url": "https://storage.googleapis.com/ludo-assets/api/b4ca4acefa43dd6ec2529a24c18de6bb.glb",
   "v": 1
+ },
+ "v20_model_lm_bridge_b": {
+  "credits": 4,
+  "endpoint": "/assets/3d-model",
+  "file": "assets/raw/v20/land/bridge_b.glb",
+  "id": "v20_model_lm_bridge_b",
+  "job": "f3e2e296-460d-4f8f-9bf9-5a729104d74a",
+  "params": {
+   "image": "https://storage.googleapis.com/ludo-assets/api/eefc070ed76d7bbbaa47bb81554f4a8a.webp",
+   "target_num_faces": 7000,
+   "texture_size": 1024,
+   "texture_type": "pbr"
+  },
+  "side_files": [
+   "assets/raw/v20/land/bridge_b_snap0.png",
+   "assets/raw/v20/land/bridge_b_snap1.png",
+   "assets/raw/v20/land/bridge_b_snap2.png",
+   "assets/raw/v20/land/bridge_b_snap3.png"
+  ],
+  "url": "https://storage.googleapis.com/ludo-assets/api/a5452a680b4312cca55e23a33b58c6d2.glb",
+  "v": 2
  },
  "v20_model_lm_camp_a": {
   "credits": 3,
@@ -16370,6 +16412,27 @@
   "url": "https://storage.googleapis.com/ludo-assets/api/b43948e4bf78ad39c8f567d5fab1e948.glb",
   "v": 1
  },
+ "v20_model_lm_camp_b": {
+  "credits": 4,
+  "endpoint": "/assets/3d-model",
+  "file": "assets/raw/v20/land/camp_b.glb",
+  "id": "v20_model_lm_camp_b",
+  "job": "60c0d636-578d-47a2-96f0-2465672d86ab",
+  "params": {
+   "image": "https://storage.googleapis.com/ludo-assets/api/94a2044a980bee954b4f9f3fe2b37a42.webp",
+   "target_num_faces": 9000,
+   "texture_size": 1024,
+   "texture_type": "pbr"
+  },
+  "side_files": [
+   "assets/raw/v20/land/camp_b_snap0.png",
+   "assets/raw/v20/land/camp_b_snap1.png",
+   "assets/raw/v20/land/camp_b_snap2.png",
+   "assets/raw/v20/land/camp_b_snap3.png"
+  ],
+  "url": "https://storage.googleapis.com/ludo-assets/api/c22ec56be27c9956487c251611c47d58.glb",
+  "v": 2
+ },
  "v20_model_lm_church_a": {
   "credits": 3,
   "endpoint": "/assets/3d-model",
@@ -16390,6 +16453,27 @@
   ],
   "url": "https://storage.googleapis.com/ludo-assets/api/2a1aee985ca8661ffe114187f8b58880.glb",
   "v": 1
+ },
+ "v20_model_lm_church_b": {
+  "credits": 4,
+  "endpoint": "/assets/3d-model",
+  "file": "assets/raw/v20/land/church_b.glb",
+  "id": "v20_model_lm_church_b",
+  "job": "593a9c5b-7892-4892-99c4-ae1e082fe720",
+  "params": {
+   "image": "https://storage.googleapis.com/ludo-assets/api/b1843c03374f01a0cbf27a3299486f95.webp",
+   "target_num_faces": 9000,
+   "texture_size": 1024,
+   "texture_type": "pbr"
+  },
+  "side_files": [
+   "assets/raw/v20/land/church_b_snap0.png",
+   "assets/raw/v20/land/church_b_snap1.png",
+   "assets/raw/v20/land/church_b_snap2.png",
+   "assets/raw/v20/land/church_b_snap3.png"
+  ],
+  "url": "https://storage.googleapis.com/ludo-assets/api/8f319ea233070550e5df1edd171207c3.glb",
+  "v": 2
  },
  "v20_model_lm_farm_a": {
   "credits": 3,
@@ -16412,6 +16496,27 @@
   "url": "https://storage.googleapis.com/ludo-assets/api/5e85221491cc41b35540306f438d14ba.glb",
   "v": 1
  },
+ "v20_model_lm_farm_b": {
+  "credits": 4,
+  "endpoint": "/assets/3d-model",
+  "file": "assets/raw/v20/land/farm_b.glb",
+  "id": "v20_model_lm_farm_b",
+  "job": "85d00770-44db-4134-ae32-0f15970a5ad8",
+  "params": {
+   "image": "https://storage.googleapis.com/ludo-assets/api/7133d10ff4170143cdcef73c3ef77b2e.webp",
+   "target_num_faces": 10000,
+   "texture_size": 1024,
+   "texture_type": "pbr"
+  },
+  "side_files": [
+   "assets/raw/v20/land/farm_b_snap0.png",
+   "assets/raw/v20/land/farm_b_snap1.png",
+   "assets/raw/v20/land/farm_b_snap2.png",
+   "assets/raw/v20/land/farm_b_snap3.png"
+  ],
+  "url": "https://storage.googleapis.com/ludo-assets/api/c165aaa3ce695dabdc43b69b3fa72895.glb",
+  "v": 2
+ },
  "v20_model_lm_frigate_a": {
   "credits": 3,
   "endpoint": "/assets/3d-model",
@@ -16432,6 +16537,27 @@
   ],
   "url": "https://storage.googleapis.com/ludo-assets/api/cbc310cd7ba8c085883be03981ad2979.glb",
   "v": 1
+ },
+ "v20_model_lm_frigate_b": {
+  "credits": 4,
+  "endpoint": "/assets/3d-model",
+  "file": "assets/raw/v20/land/frigate_b.glb",
+  "id": "v20_model_lm_frigate_b",
+  "job": "4a40da4e-e960-4bbb-991a-fe151f08a610",
+  "params": {
+   "image": "https://storage.googleapis.com/ludo-assets/api/af2acef59b8bbcb255cffb3a60520ddb.webp",
+   "target_num_faces": 10000,
+   "texture_size": 1024,
+   "texture_type": "pbr"
+  },
+  "side_files": [
+   "assets/raw/v20/land/frigate_b_snap0.png",
+   "assets/raw/v20/land/frigate_b_snap1.png",
+   "assets/raw/v20/land/frigate_b_snap2.png",
+   "assets/raw/v20/land/frigate_b_snap3.png"
+  ],
+  "url": "https://storage.googleapis.com/ludo-assets/api/f7055ec32af0bfd460c5e59a33ece02c.glb",
+  "v": 2
  },
  "v20_model_lm_gatehouse_a": {
   "credits": 3,
@@ -16454,6 +16580,27 @@
   "url": "https://storage.googleapis.com/ludo-assets/api/32c01b410f7b265ea403b921a16596bc.glb",
   "v": 1
  },
+ "v20_model_lm_gatehouse_b": {
+  "credits": 4,
+  "endpoint": "/assets/3d-model",
+  "file": "assets/raw/v20/land/gatehouse_b.glb",
+  "id": "v20_model_lm_gatehouse_b",
+  "job": "c4e3b558-400f-4bb3-852c-7ddcaa8c0c0b",
+  "params": {
+   "image": "https://storage.googleapis.com/ludo-assets/api/f4add354fba0ef25cb6fe306722d3977.webp",
+   "target_num_faces": 10000,
+   "texture_size": 1024,
+   "texture_type": "pbr"
+  },
+  "side_files": [
+   "assets/raw/v20/land/gatehouse_b_snap0.png",
+   "assets/raw/v20/land/gatehouse_b_snap1.png",
+   "assets/raw/v20/land/gatehouse_b_snap2.png",
+   "assets/raw/v20/land/gatehouse_b_snap3.png"
+  ],
+  "url": "https://storage.googleapis.com/ludo-assets/api/93c51f1b420add57a57c96ee3706ba09.glb",
+  "v": 2
+ },
  "v20_model_lm_harbour_a": {
   "credits": 3,
   "endpoint": "/assets/3d-model",
@@ -16474,6 +16621,27 @@
   ],
   "url": "https://storage.googleapis.com/ludo-assets/api/b0449c5bda935932ef47f65cd5887c03.glb",
   "v": 1
+ },
+ "v20_model_lm_harbour_b": {
+  "credits": 4,
+  "endpoint": "/assets/3d-model",
+  "file": "assets/raw/v20/land/harbour_b.glb",
+  "id": "v20_model_lm_harbour_b",
+  "job": "5c6a0ac2-58e2-48a1-9bfe-d40c02461ebd",
+  "params": {
+   "image": "https://storage.googleapis.com/ludo-assets/api/0c43040aeafc4a0c57f2b0cd8bec48c2.webp",
+   "target_num_faces": 10000,
+   "texture_size": 1024,
+   "texture_type": "pbr"
+  },
+  "side_files": [
+   "assets/raw/v20/land/harbour_b_snap0.png",
+   "assets/raw/v20/land/harbour_b_snap1.png",
+   "assets/raw/v20/land/harbour_b_snap2.png",
+   "assets/raw/v20/land/harbour_b_snap3.png"
+  ],
+  "url": "https://storage.googleapis.com/ludo-assets/api/e895f1c5ecebdba536c082be432d2614.glb",
+  "v": 2
  },
  "v20_model_lm_keep_a": {
   "credits": 3,
@@ -16496,6 +16664,27 @@
   "url": "https://storage.googleapis.com/ludo-assets/api/b82240d3911465e60ccecab6828c73b1.glb",
   "v": 1
  },
+ "v20_model_lm_keep_b": {
+  "credits": 4,
+  "endpoint": "/assets/3d-model",
+  "file": "assets/raw/v20/land/keep_b.glb",
+  "id": "v20_model_lm_keep_b",
+  "job": "09730eb0-d8af-4a73-98af-e1cee889e5d3",
+  "params": {
+   "image": "https://storage.googleapis.com/ludo-assets/api/c3f98c507038f4e58fb4ec3f880b18e1.webp",
+   "target_num_faces": 9000,
+   "texture_size": 1024,
+   "texture_type": "pbr"
+  },
+  "side_files": [
+   "assets/raw/v20/land/keep_b_snap0.png",
+   "assets/raw/v20/land/keep_b_snap1.png",
+   "assets/raw/v20/land/keep_b_snap2.png",
+   "assets/raw/v20/land/keep_b_snap3.png"
+  ],
+  "url": "https://storage.googleapis.com/ludo-assets/api/9ed90e9859403d5e83fb04be35649d32.glb",
+  "v": 2
+ },
  "v20_model_lm_lighthouse_a": {
   "credits": 3,
   "endpoint": "/assets/3d-model",
@@ -16516,6 +16705,69 @@
   ],
   "url": "https://storage.googleapis.com/ludo-assets/api/e81225c9a23f7a1d8caec0cf7c047d0e.glb",
   "v": 1
+ },
+ "v20_model_lm_lighthouse_b": {
+  "credits": 4,
+  "endpoint": "/assets/3d-model",
+  "file": "assets/raw/v20/land/lighthouse_b.glb",
+  "id": "v20_model_lm_lighthouse_b",
+  "job": "10b93fd9-6aba-4f5a-9d8a-e30ffee4e936",
+  "params": {
+   "image": "https://storage.googleapis.com/ludo-assets/api/650fcee8bdc90c6b5ffd3e715afde33f.webp",
+   "target_num_faces": 9000,
+   "texture_size": 1024,
+   "texture_type": "pbr"
+  },
+  "side_files": [
+   "assets/raw/v20/land/lighthouse_b_snap0.png",
+   "assets/raw/v20/land/lighthouse_b_snap1.png",
+   "assets/raw/v20/land/lighthouse_b_snap2.png",
+   "assets/raw/v20/land/lighthouse_b_snap3.png"
+  ],
+  "url": "https://storage.googleapis.com/ludo-assets/api/892d093505f0bd4cbe393b435f9fdf28.glb",
+  "v": 2
+ },
+ "v20_model_lm_oasis_a": {
+  "credits": 4,
+  "endpoint": "/assets/3d-model",
+  "file": "assets/raw/v20/land/oasis_a.glb",
+  "id": "v20_model_lm_oasis_a",
+  "job": "cb451765-6c4a-4827-a3f9-b6d598b7ce70",
+  "params": {
+   "image": "https://storage.googleapis.com/ludo-assets/api/e95b078d017e763af19550de85bbe350.webp",
+   "target_num_faces": 7000,
+   "texture_size": 1024,
+   "texture_type": "pbr"
+  },
+  "side_files": [
+   "assets/raw/v20/land/oasis_a_snap0.png",
+   "assets/raw/v20/land/oasis_a_snap1.png",
+   "assets/raw/v20/land/oasis_a_snap2.png",
+   "assets/raw/v20/land/oasis_a_snap3.png"
+  ],
+  "url": "https://storage.googleapis.com/ludo-assets/api/4b0a733c86a4443470286fd869d73a9e.glb",
+  "v": 3
+ },
+ "v20_model_lm_oasis_b": {
+  "credits": 4,
+  "endpoint": "/assets/3d-model",
+  "file": "assets/raw/v20/land/oasis_b.glb",
+  "id": "v20_model_lm_oasis_b",
+  "job": "7b6f0b32-67dc-4b75-ba41-22354209c6b8",
+  "params": {
+   "image": "https://storage.googleapis.com/ludo-assets/api/f4465d126b6fcc380442627de1172c23.webp",
+   "target_num_faces": 7000,
+   "texture_size": 1024,
+   "texture_type": "pbr"
+  },
+  "side_files": [
+   "assets/raw/v20/land/oasis_b_snap0.png",
+   "assets/raw/v20/land/oasis_b_snap1.png",
+   "assets/raw/v20/land/oasis_b_snap2.png",
+   "assets/raw/v20/land/oasis_b_snap3.png"
+  ],
+  "url": "https://storage.googleapis.com/ludo-assets/api/4e1ad7e635b3cf7e7811c5c8b775fd89.glb",
+  "v": 2
  },
  "v20_model_lm_palace_a": {
   "credits": 3,
@@ -16538,6 +16790,69 @@
   "url": "https://storage.googleapis.com/ludo-assets/api/d2d74ac9400790d7afe02cdd2e7d516b.glb",
   "v": 1
  },
+ "v20_model_lm_palace_b": {
+  "credits": 4,
+  "endpoint": "/assets/3d-model",
+  "file": "assets/raw/v20/land/palace_b.glb",
+  "id": "v20_model_lm_palace_b",
+  "job": "15d3349d-a510-4aaf-a1a3-aef5a986d9ba",
+  "params": {
+   "image": "https://storage.googleapis.com/ludo-assets/api/6a5fce4054396a6659388fab64e98065.webp",
+   "target_num_faces": 14000,
+   "texture_size": 1024,
+   "texture_type": "pbr"
+  },
+  "side_files": [
+   "assets/raw/v20/land/palace_b_snap0.png",
+   "assets/raw/v20/land/palace_b_snap1.png",
+   "assets/raw/v20/land/palace_b_snap2.png",
+   "assets/raw/v20/land/palace_b_snap3.png"
+  ],
+  "url": "https://storage.googleapis.com/ludo-assets/api/d653d7b903109a9e70672baef334ddb9.glb",
+  "v": 2
+ },
+ "v20_model_lm_quarry_a": {
+  "credits": 4,
+  "endpoint": "/assets/3d-model",
+  "file": "assets/raw/v20/land/quarry_a.glb",
+  "id": "v20_model_lm_quarry_a",
+  "job": "005acb67-44c8-40bb-abd3-b6baf0c2113e",
+  "params": {
+   "image": "https://storage.googleapis.com/ludo-assets/api/3db710660216d61eee525dcede9b775f.webp",
+   "target_num_faces": 7000,
+   "texture_size": 1024,
+   "texture_type": "pbr"
+  },
+  "side_files": [
+   "assets/raw/v20/land/quarry_a_snap0.png",
+   "assets/raw/v20/land/quarry_a_snap1.png",
+   "assets/raw/v20/land/quarry_a_snap2.png",
+   "assets/raw/v20/land/quarry_a_snap3.png"
+  ],
+  "url": "https://storage.googleapis.com/ludo-assets/api/47d6895b6d51807fd35fe1e69725e97e.glb",
+  "v": 3
+ },
+ "v20_model_lm_quarry_b": {
+  "credits": 4,
+  "endpoint": "/assets/3d-model",
+  "file": "assets/raw/v20/land/quarry_b.glb",
+  "id": "v20_model_lm_quarry_b",
+  "job": "c3b754e1-dcbb-4075-aedf-7b2a5586ec72",
+  "params": {
+   "image": "https://storage.googleapis.com/ludo-assets/api/ded3224e81ee2b84d248a478c1297c6f.webp",
+   "target_num_faces": 7000,
+   "texture_size": 1024,
+   "texture_type": "pbr"
+  },
+  "side_files": [
+   "assets/raw/v20/land/quarry_b_snap0.png",
+   "assets/raw/v20/land/quarry_b_snap1.png",
+   "assets/raw/v20/land/quarry_b_snap2.png",
+   "assets/raw/v20/land/quarry_b_snap3.png"
+  ],
+  "url": "https://storage.googleapis.com/ludo-assets/api/a046de1539600a2173b0338b689fd399.glb",
+  "v": 2
+ },
  "v20_model_lm_redoubt_a": {
   "credits": 3,
   "endpoint": "/assets/3d-model",
@@ -16558,6 +16873,27 @@
   ],
   "url": "https://storage.googleapis.com/ludo-assets/api/c1a1122cfd45f708d0188bfad7962c2b.glb",
   "v": 1
+ },
+ "v20_model_lm_redoubt_b": {
+  "credits": 4,
+  "endpoint": "/assets/3d-model",
+  "file": "assets/raw/v20/land/redoubt_b.glb",
+  "id": "v20_model_lm_redoubt_b",
+  "job": "3050a022-41df-4425-968c-286854957d6c",
+  "params": {
+   "image": "https://storage.googleapis.com/ludo-assets/api/06f2a0f699269f90d4a26d010799ed22.webp",
+   "target_num_faces": 10000,
+   "texture_size": 1024,
+   "texture_type": "pbr"
+  },
+  "side_files": [
+   "assets/raw/v20/land/redoubt_b_snap0.png",
+   "assets/raw/v20/land/redoubt_b_snap1.png",
+   "assets/raw/v20/land/redoubt_b_snap2.png",
+   "assets/raw/v20/land/redoubt_b_snap3.png"
+  ],
+  "url": "https://storage.googleapis.com/ludo-assets/api/a51540abb1aaebcac60d441025d9eb5d.glb",
+  "v": 2
  },
  "v20_model_lm_ship_a": {
   "credits": 3,
@@ -16580,6 +16916,27 @@
   "url": "https://storage.googleapis.com/ludo-assets/api/cb419c6922f9ad4e9149e5beebd57344.glb",
   "v": 1
  },
+ "v20_model_lm_ship_b": {
+  "credits": 4,
+  "endpoint": "/assets/3d-model",
+  "file": "assets/raw/v20/land/ship_b.glb",
+  "id": "v20_model_lm_ship_b",
+  "job": "5d6894c0-a5a2-41b7-80f2-24a13425adcc",
+  "params": {
+   "image": "https://storage.googleapis.com/ludo-assets/api/244c0da93484bbe40f0f592b36c085a2.webp",
+   "target_num_faces": 12000,
+   "texture_size": 1024,
+   "texture_type": "pbr"
+  },
+  "side_files": [
+   "assets/raw/v20/land/ship_b_snap0.png",
+   "assets/raw/v20/land/ship_b_snap1.png",
+   "assets/raw/v20/land/ship_b_snap2.png",
+   "assets/raw/v20/land/ship_b_snap3.png"
+  ],
+  "url": "https://storage.googleapis.com/ludo-assets/api/aa66e56746157342b0c0ad536004c92f.glb",
+  "v": 2
+ },
  "v20_model_lm_starfort_a": {
   "credits": 3,
   "endpoint": "/assets/3d-model",
@@ -16600,6 +16957,27 @@
   ],
   "url": "https://storage.googleapis.com/ludo-assets/api/12fb5a0a562d9ea678ad86fe6beb63d0.glb",
   "v": 1
+ },
+ "v20_model_lm_starfort_b": {
+  "credits": 4,
+  "endpoint": "/assets/3d-model",
+  "file": "assets/raw/v20/land/starfort_b.glb",
+  "id": "v20_model_lm_starfort_b",
+  "job": "9a036531-369a-4349-9c7e-f25f02f5611f",
+  "params": {
+   "image": "https://storage.googleapis.com/ludo-assets/api/b6a72abea6c0b0f51fde08ad8436d2bd.webp",
+   "target_num_faces": 14000,
+   "texture_size": 1024,
+   "texture_type": "pbr"
+  },
+  "side_files": [
+   "assets/raw/v20/land/starfort_b_snap0.png",
+   "assets/raw/v20/land/starfort_b_snap1.png",
+   "assets/raw/v20/land/starfort_b_snap2.png",
+   "assets/raw/v20/land/starfort_b_snap3.png"
+  ],
+  "url": "https://storage.googleapis.com/ludo-assets/api/e42fedc291da6e745dda2a23df0f2c89.glb",
+  "v": 2
  },
  "v20_model_lm_stones_a": {
   "credits": 3,
@@ -16622,6 +17000,27 @@
   "url": "https://storage.googleapis.com/ludo-assets/api/8c6bb3b312e239e705c579c969cd35af.glb",
   "v": 1
  },
+ "v20_model_lm_stones_b": {
+  "credits": 4,
+  "endpoint": "/assets/3d-model",
+  "file": "assets/raw/v20/land/stones_b.glb",
+  "id": "v20_model_lm_stones_b",
+  "job": "cd784301-338c-4831-9ad0-5de3c53311b3",
+  "params": {
+   "image": "https://storage.googleapis.com/ludo-assets/api/55254b3b2c1b2a46b64c000d1922e6b9.webp",
+   "target_num_faces": 6000,
+   "texture_size": 1024,
+   "texture_type": "pbr"
+  },
+  "side_files": [
+   "assets/raw/v20/land/stones_b_snap0.png",
+   "assets/raw/v20/land/stones_b_snap1.png",
+   "assets/raw/v20/land/stones_b_snap2.png",
+   "assets/raw/v20/land/stones_b_snap3.png"
+  ],
+  "url": "https://storage.googleapis.com/ludo-assets/api/2a5f533d7d289a57a5b9de9fba00ca88.glb",
+  "v": 2
+ },
  "v20_model_lm_village_ash_a": {
   "credits": 3,
   "endpoint": "/assets/3d-model",
@@ -16642,6 +17041,27 @@
   ],
   "url": "https://storage.googleapis.com/ludo-assets/api/d80c9dae80badaac2dc7119f362a3729.glb",
   "v": 1
+ },
+ "v20_model_lm_village_ash_b": {
+  "credits": 4,
+  "endpoint": "/assets/3d-model",
+  "file": "assets/raw/v20/land/village_ash_b.glb",
+  "id": "v20_model_lm_village_ash_b",
+  "job": "7354a7b3-1a20-42ee-9157-7390cbff723c",
+  "params": {
+   "image": "https://storage.googleapis.com/ludo-assets/api/8877d30deaa26a8fc8eba96fec0bbf45.webp",
+   "target_num_faces": 10000,
+   "texture_size": 1024,
+   "texture_type": "pbr"
+  },
+  "side_files": [
+   "assets/raw/v20/land/village_ash_b_snap0.png",
+   "assets/raw/v20/land/village_ash_b_snap1.png",
+   "assets/raw/v20/land/village_ash_b_snap2.png",
+   "assets/raw/v20/land/village_ash_b_snap3.png"
+  ],
+  "url": "https://storage.googleapis.com/ludo-assets/api/9ebcfebc9d973d06ed4c61ac122ade47.glb",
+  "v": 2
  },
  "v20_model_lm_village_coast_a": {
   "credits": 3,
@@ -16705,6 +17125,27 @@
   ],
   "url": "https://storage.googleapis.com/ludo-assets/api/8521da6af758acec5e68a75ac1c04d7f.glb",
   "v": 1
+ },
+ "v20_model_lm_village_desert_b": {
+  "credits": 4,
+  "endpoint": "/assets/3d-model",
+  "file": "assets/raw/v20/land/village_desert_b.glb",
+  "id": "v20_model_lm_village_desert_b",
+  "job": "ec63a990-7b71-44c6-8e04-21ebda159393",
+  "params": {
+   "image": "https://storage.googleapis.com/ludo-assets/api/58922aadf5291bf58f5fef2a5e255f10.webp",
+   "target_num_faces": 11000,
+   "texture_size": 1024,
+   "texture_type": "pbr"
+  },
+  "side_files": [
+   "assets/raw/v20/land/village_desert_b_snap0.png",
+   "assets/raw/v20/land/village_desert_b_snap1.png",
+   "assets/raw/v20/land/village_desert_b_snap2.png",
+   "assets/raw/v20/land/village_desert_b_snap3.png"
+  ],
+  "url": "https://storage.googleapis.com/ludo-assets/api/0fea40434eccddd01b7f738dacd53929.glb",
+  "v": 2
  },
  "v20_model_lm_village_forest_a": {
   "credits": 3,
@@ -16862,6 +17303,27 @@
   "url": "https://storage.googleapis.com/ludo-assets/api/90438c2a929a220920c0232aea2db56e.glb",
   "v": 2
  },
+ "v20_model_lm_village_mountain_b": {
+  "credits": 4,
+  "endpoint": "/assets/3d-model",
+  "file": "assets/raw/v20/land/village_mountain_b.glb",
+  "id": "v20_model_lm_village_mountain_b",
+  "job": "fe637100-33e1-4008-95e6-8e67a9975ec0",
+  "params": {
+   "image": "https://storage.googleapis.com/ludo-assets/api/b4d4de5c34ea96ebab87de8e42beacae.webp",
+   "target_num_faces": 8000,
+   "texture_size": 1024,
+   "texture_type": "pbr"
+  },
+  "side_files": [
+   "assets/raw/v20/land/village_mountain_b_snap0.png",
+   "assets/raw/v20/land/village_mountain_b_snap1.png",
+   "assets/raw/v20/land/village_mountain_b_snap2.png",
+   "assets/raw/v20/land/village_mountain_b_snap3.png"
+  ],
+  "url": "https://storage.googleapis.com/ludo-assets/api/34a708b50b7d460f03ee04546a7858c4.glb",
+  "v": 3
+ },
  "v20_model_lm_village_snow_a": {
   "credits": 3,
   "endpoint": "/assets/3d-model",
@@ -16882,6 +17344,27 @@
   ],
   "url": "https://storage.googleapis.com/ludo-assets/api/bb8c5ebc1ab53bc30d59bdbb4ec2a555.glb",
   "v": 1
+ },
+ "v20_model_lm_village_snow_b": {
+  "credits": 4,
+  "endpoint": "/assets/3d-model",
+  "file": "assets/raw/v20/land/village_snow_b.glb",
+  "id": "v20_model_lm_village_snow_b",
+  "job": "45434fc1-c9d6-4e8b-a607-e0338a139468",
+  "params": {
+   "image": "https://storage.googleapis.com/ludo-assets/api/811a1725d2758ecb1141edf1e14b7d43.webp",
+   "target_num_faces": 11000,
+   "texture_size": 1024,
+   "texture_type": "pbr"
+  },
+  "side_files": [
+   "assets/raw/v20/land/village_snow_b_snap0.png",
+   "assets/raw/v20/land/village_snow_b_snap1.png",
+   "assets/raw/v20/land/village_snow_b_snap2.png",
+   "assets/raw/v20/land/village_snow_b_snap3.png"
+  ],
+  "url": "https://storage.googleapis.com/ludo-assets/api/2bb39fa0f6f0edc6f39622b8a02071f8.glb",
+  "v": 2
  },
  "v20_model_lm_watchtower_a": {
   "credits": 3,
@@ -16904,6 +17387,27 @@
   "url": "https://storage.googleapis.com/ludo-assets/api/071c2a50f15e94c39faa2fc8c88be049.glb",
   "v": 1
  },
+ "v20_model_lm_watchtower_b": {
+  "credits": 4,
+  "endpoint": "/assets/3d-model",
+  "file": "assets/raw/v20/land/watchtower_b.glb",
+  "id": "v20_model_lm_watchtower_b",
+  "job": "ef279586-bfa3-4ece-9fe8-bd8d8a6f644e",
+  "params": {
+   "image": "https://storage.googleapis.com/ludo-assets/api/8e5b5a8c414c3e2604d6c7409c552df9.webp",
+   "target_num_faces": 8000,
+   "texture_size": 1024,
+   "texture_type": "pbr"
+  },
+  "side_files": [
+   "assets/raw/v20/land/watchtower_b_snap0.png",
+   "assets/raw/v20/land/watchtower_b_snap1.png",
+   "assets/raw/v20/land/watchtower_b_snap2.png",
+   "assets/raw/v20/land/watchtower_b_snap3.png"
+  ],
+  "url": "https://storage.googleapis.com/ludo-assets/api/df0c44c7d6d8ca1ab454706861e7e4e0.glb",
+  "v": 2
+ },
  "v20_model_lm_windmill_a": {
   "credits": 3,
   "endpoint": "/assets/3d-model",
@@ -16924,6 +17428,27 @@
   ],
   "url": "https://storage.googleapis.com/ludo-assets/api/3234d2591987ad4021ba7a7af8fe70e0.glb",
   "v": 1
+ },
+ "v20_model_lm_windmill_b": {
+  "credits": 4,
+  "endpoint": "/assets/3d-model",
+  "file": "assets/raw/v20/land/windmill_b.glb",
+  "id": "v20_model_lm_windmill_b",
+  "job": "faed39ef-440c-47a1-bb02-f2a285e5ce1c",
+  "params": {
+   "image": "https://storage.googleapis.com/ludo-assets/api/3a0e10b828f587dda99ec5a2629e18bf.webp",
+   "target_num_faces": 9000,
+   "texture_size": 1024,
+   "texture_type": "pbr"
+  },
+  "side_files": [
+   "assets/raw/v20/land/windmill_b_snap0.png",
+   "assets/raw/v20/land/windmill_b_snap1.png",
+   "assets/raw/v20/land/windmill_b_snap2.png",
+   "assets/raw/v20/land/windmill_b_snap3.png"
+  ],
+  "url": "https://storage.googleapis.com/ludo-assets/api/53ec472befeef036e1b42e198395f442.glb",
+  "v": 2
  },
  "v20_model_officer": {
   "credits": 3,
@@ -17196,8 +17721,17 @@
   "credits": 0.5,
   "endpoint": "/assets/image",
   "file": "assets/raw/v20/land/blockhouse_b_ref.webp",
+  "history": [
+   {
+    "credits": 0.5,
+    "endpoint": "/assets/image",
+    "job": "3ac0f992-2538-441c-8393-901b1ca2f975",
+    "url": "https://storage.googleapis.com/ludo-assets/api/a0ed992976330ee499da791263ba1780.webp",
+    "v": 1
+   }
+  ],
   "id": "v20_pic_lm_blockhouse_b",
-  "job": "3ac0f992-2538-441c-8393-901b1ca2f975",
+  "job": "df84f2b5-cd2c-4673-9c3e-6949dc842701",
   "params": {
    "art_style": "Hand-Painted",
    "aspect_ratio": "ar_1_1",
@@ -17207,8 +17741,8 @@
    "perspective": "Any perspective",
    "prompt": "A stone toll house and wooden barrier across a mountain road: a small fortified stone guardhouse with a slate roof and loopholes, a striped red and white barrier pole beside it. A hand-painted miniature tabletop wargame terrain model, like a painted model-railway building, made to stand beside antique tin toy soldiers: chunky simplified shapes, crisp clean painted colours, a toy-like charm. The model stands on its own with its walls meeting the floor and clear space on every side, three-quarter view from a little above, even studio lighting, plain light grey background"
   },
-  "url": "https://storage.googleapis.com/ludo-assets/api/a0ed992976330ee499da791263ba1780.webp",
-  "v": 1
+  "url": "https://storage.googleapis.com/ludo-assets/api/0e56b536d1cca8cce6e830e1814a2833.webp",
+  "v": 2
  },
  "v20_pic_lm_bridge_a": {
   "credits": 0.5,
@@ -17232,8 +17766,17 @@
   "credits": 0.5,
   "endpoint": "/assets/image",
   "file": "assets/raw/v20/land/bridge_b_ref.webp",
+  "history": [
+   {
+    "credits": 0.5,
+    "endpoint": "/assets/image",
+    "job": "bd44892b-8e01-43d5-8f11-c10b8520c11e",
+    "url": "https://storage.googleapis.com/ludo-assets/api/819b6153dac219592c7f24c74de6be4f.webp",
+    "v": 1
+   }
+  ],
   "id": "v20_pic_lm_bridge_b",
-  "job": "bd44892b-8e01-43d5-8f11-c10b8520c11e",
+  "job": "68295609-7180-42ee-bab4-fdf43251591f",
   "params": {
    "art_style": "Hand-Painted",
    "aspect_ratio": "ar_4_3",
@@ -17243,8 +17786,8 @@
    "perspective": "Any perspective",
    "prompt": "An old stone bridge with three round arches over nothing, a low parapet wall along each side, its two ends sloping down to the floor, seen from the side and a little above. A hand-painted miniature tabletop wargame terrain model, like a painted model-railway building, made to stand beside antique tin toy soldiers: chunky simplified shapes, crisp clean painted colours, a toy-like charm. The model stands on its own with its walls meeting the floor and clear space on every side, three-quarter view from a little above, even studio lighting, plain light grey background"
   },
-  "url": "https://storage.googleapis.com/ludo-assets/api/819b6153dac219592c7f24c74de6be4f.webp",
-  "v": 1
+  "url": "https://storage.googleapis.com/ludo-assets/api/eefc070ed76d7bbbaa47bb81554f4a8a.webp",
+  "v": 2
  },
  "v20_pic_lm_camp_a": {
   "credits": 0.5,
@@ -17268,8 +17811,17 @@
   "credits": 0.5,
   "endpoint": "/assets/image",
   "file": "assets/raw/v20/land/camp_b_ref.webp",
+  "history": [
+   {
+    "credits": 0.5,
+    "endpoint": "/assets/image",
+    "job": "9f8abd5a-5bd7-44dc-bbba-7a7e9f919b21",
+    "url": "https://storage.googleapis.com/ludo-assets/api/bfb55a68b263aa4b951170d3b7705972.webp",
+    "v": 1
+   }
+  ],
   "id": "v20_pic_lm_camp_b",
-  "job": "9f8abd5a-5bd7-44dc-bbba-7a7e9f919b21",
+  "job": "e8af5d46-86da-408d-b2c4-6c849108ab0a",
   "params": {
    "art_style": "Hand-Painted",
    "aspect_ratio": "ar_1_1",
@@ -17279,8 +17831,8 @@
    "perspective": "Any perspective",
    "prompt": "A Napoleonic army camp: three white canvas bell tents, muskets stacked in a pyramid, a campfire with a cooking pot on a tripod, a drum resting on the ground. A hand-painted miniature tabletop wargame terrain model, like a painted model-railway building, made to stand beside antique tin toy soldiers: chunky simplified shapes, crisp clean painted colours, a toy-like charm. The model stands on its own with its walls meeting the floor and clear space on every side, three-quarter view from a little above, even studio lighting, plain light grey background"
   },
-  "url": "https://storage.googleapis.com/ludo-assets/api/bfb55a68b263aa4b951170d3b7705972.webp",
-  "v": 1
+  "url": "https://storage.googleapis.com/ludo-assets/api/94a2044a980bee954b4f9f3fe2b37a42.webp",
+  "v": 2
  },
  "v20_pic_lm_church_a": {
   "credits": 0.5,
@@ -17304,8 +17856,17 @@
   "credits": 0.5,
   "endpoint": "/assets/image",
   "file": "assets/raw/v20/land/church_b_ref.webp",
+  "history": [
+   {
+    "credits": 0.5,
+    "endpoint": "/assets/image",
+    "job": "6635fb12-3bd4-498f-944b-29775fb99960",
+    "url": "https://storage.googleapis.com/ludo-assets/api/9277310aeea1328f20c0018c616392c0.webp",
+    "v": 1
+   }
+  ],
   "id": "v20_pic_lm_church_b",
-  "job": "6635fb12-3bd4-498f-944b-29775fb99960",
+  "job": "afef09dc-6fdd-43c2-bbe6-96456bb7c84d",
   "params": {
    "art_style": "Hand-Painted",
    "aspect_ratio": "ar_1_1",
@@ -17315,8 +17876,8 @@
    "perspective": "Any perspective",
    "prompt": "A village church of grey stone with a tall slender spire topped by a golden weathercock, a slate roof, an arched wooden door and a few gravestones beside it. A hand-painted miniature tabletop wargame terrain model, like a painted model-railway building, made to stand beside antique tin toy soldiers: chunky simplified shapes, crisp clean painted colours, a toy-like charm. The model stands on its own with its walls meeting the floor and clear space on every side, three-quarter view from a little above, even studio lighting, plain light grey background"
   },
-  "url": "https://storage.googleapis.com/ludo-assets/api/9277310aeea1328f20c0018c616392c0.webp",
-  "v": 1
+  "url": "https://storage.googleapis.com/ludo-assets/api/b1843c03374f01a0cbf27a3299486f95.webp",
+  "v": 2
  },
  "v20_pic_lm_farm_a": {
   "credits": 0.5,
@@ -17340,8 +17901,17 @@
   "credits": 0.5,
   "endpoint": "/assets/image",
   "file": "assets/raw/v20/land/farm_b_ref.webp",
+  "history": [
+   {
+    "credits": 0.5,
+    "endpoint": "/assets/image",
+    "job": "534aa86d-42fe-4ef4-818d-54c1834bfd56",
+    "url": "https://storage.googleapis.com/ludo-assets/api/41000554daa864a2e6971ba780ddada3.webp",
+    "v": 1
+   }
+  ],
   "id": "v20_pic_lm_farm_b",
-  "job": "534aa86d-42fe-4ef4-818d-54c1834bfd56",
+  "job": "c34e8418-ee1e-41d8-998c-54ef4cf35a73",
   "params": {
    "art_style": "Hand-Painted",
    "aspect_ratio": "ar_4_3",
@@ -17351,8 +17921,8 @@
    "perspective": "Any perspective",
    "prompt": "A farmstead: a white-washed farmhouse with a thatched roof, a large red timber barn, a round haystack and a short wooden fence. A hand-painted miniature tabletop wargame terrain model, like a painted model-railway building, made to stand beside antique tin toy soldiers: chunky simplified shapes, crisp clean painted colours, a toy-like charm. The model stands on its own with its walls meeting the floor and clear space on every side, three-quarter view from a little above, even studio lighting, plain light grey background"
   },
-  "url": "https://storage.googleapis.com/ludo-assets/api/41000554daa864a2e6971ba780ddada3.webp",
-  "v": 1
+  "url": "https://storage.googleapis.com/ludo-assets/api/7133d10ff4170143cdcef73c3ef77b2e.webp",
+  "v": 2
  },
  "v20_pic_lm_frigate_a": {
   "credits": 0.5,
@@ -17376,8 +17946,17 @@
   "credits": 0.5,
   "endpoint": "/assets/image",
   "file": "assets/raw/v20/land/frigate_b_ref.webp",
+  "history": [
+   {
+    "credits": 0.5,
+    "endpoint": "/assets/image",
+    "job": "3a612420-b33c-4d1c-bd44-3ccf15e7cbf4",
+    "url": "https://storage.googleapis.com/ludo-assets/api/d612888499a34f133ae11a4d3b3591c5.webp",
+    "v": 1
+   }
+  ],
   "id": "v20_pic_lm_frigate_b",
-  "job": "3a612420-b33c-4d1c-bd44-3ccf15e7cbf4",
+  "job": "aa5ee2dc-40a4-44ff-831d-7094aa0b17ff",
   "params": {
    "art_style": "Hand-Painted",
    "aspect_ratio": "ar_4_3",
@@ -17387,8 +17966,8 @@
    "perspective": "Any perspective",
    "prompt": "A Napoleonic frigate: a sleek three-masted warship under full white sails, a black hull with one ochre stripe and a row of gun ports, floating level. A hand-painted miniature tabletop wargame terrain model, like a painted model-railway building, made to stand beside antique tin toy soldiers: chunky simplified shapes, crisp clean painted colours, a toy-like charm. The model stands on its own with its walls meeting the floor and clear space on every side, three-quarter view from a little above, even studio lighting, plain light grey background"
   },
-  "url": "https://storage.googleapis.com/ludo-assets/api/d612888499a34f133ae11a4d3b3591c5.webp",
-  "v": 1
+  "url": "https://storage.googleapis.com/ludo-assets/api/af2acef59b8bbcb255cffb3a60520ddb.webp",
+  "v": 2
  },
  "v20_pic_lm_gatehouse_a": {
   "credits": 0.5,
@@ -17412,8 +17991,17 @@
   "credits": 0.5,
   "endpoint": "/assets/image",
   "file": "assets/raw/v20/land/gatehouse_b_ref.webp",
+  "history": [
+   {
+    "credits": 0.5,
+    "endpoint": "/assets/image",
+    "job": "87828686-d7c3-4c26-876b-8135605cf2a6",
+    "url": "https://storage.googleapis.com/ludo-assets/api/a723123c550815037d3cbf5a25405149.webp",
+    "v": 1
+   }
+  ],
   "id": "v20_pic_lm_gatehouse_b",
-  "job": "87828686-d7c3-4c26-876b-8135605cf2a6",
+  "job": "c6723b9b-ce00-4fa7-aab0-4f5d8c9c56dc",
   "params": {
    "art_style": "Hand-Painted",
    "aspect_ratio": "ar_1_1",
@@ -17423,8 +18011,8 @@
    "perspective": "Any perspective",
    "prompt": "A fortified town gatehouse: two squat round stone towers with conical slate roofs either side of an arched gateway with a raised iron portcullis, a short stretch of crenellated stone wall on each side. A hand-painted miniature tabletop wargame terrain model, like a painted model-railway building, made to stand beside antique tin toy soldiers: chunky simplified shapes, crisp clean painted colours, a toy-like charm. The model stands on its own with its walls meeting the floor and clear space on every side, three-quarter view from a little above, even studio lighting, plain light grey background"
   },
-  "url": "https://storage.googleapis.com/ludo-assets/api/a723123c550815037d3cbf5a25405149.webp",
-  "v": 1
+  "url": "https://storage.googleapis.com/ludo-assets/api/f4add354fba0ef25cb6fe306722d3977.webp",
+  "v": 2
  },
  "v20_pic_lm_harbour_a": {
   "credits": 0.5,
@@ -17448,8 +18036,17 @@
   "credits": 0.5,
   "endpoint": "/assets/image",
   "file": "assets/raw/v20/land/harbour_b_ref.webp",
+  "history": [
+   {
+    "credits": 0.5,
+    "endpoint": "/assets/image",
+    "job": "375a79cb-66fc-4c5b-844b-9a228f0f71fc",
+    "url": "https://storage.googleapis.com/ludo-assets/api/664a338a0c9cbeb068dd3c20cb1d2441.webp",
+    "v": 1
+   }
+  ],
   "id": "v20_pic_lm_harbour_b",
-  "job": "375a79cb-66fc-4c5b-844b-9a228f0f71fc",
+  "job": "5f61f287-faa0-46e3-a8f8-122cfffdf647",
   "params": {
    "art_style": "Hand-Painted",
    "aspect_ratio": "ar_4_3",
@@ -17459,8 +18056,8 @@
    "perspective": "Any perspective",
    "prompt": "A small stone harbour quay: a stone pier with mooring bollards, a wooden jetty on pilings, a timber crane, barrels and crates stacked, a little harbour-master's hut. A hand-painted miniature tabletop wargame terrain model, like a painted model-railway building, made to stand beside antique tin toy soldiers: chunky simplified shapes, crisp clean painted colours, a toy-like charm. The model stands on its own with its walls meeting the floor and clear space on every side, three-quarter view from a little above, even studio lighting, plain light grey background"
   },
-  "url": "https://storage.googleapis.com/ludo-assets/api/664a338a0c9cbeb068dd3c20cb1d2441.webp",
-  "v": 1
+  "url": "https://storage.googleapis.com/ludo-assets/api/0c43040aeafc4a0c57f2b0cd8bec48c2.webp",
+  "v": 2
  },
  "v20_pic_lm_keep_a": {
   "credits": 0.5,
@@ -17484,8 +18081,17 @@
   "credits": 0.5,
   "endpoint": "/assets/image",
   "file": "assets/raw/v20/land/keep_b_ref.webp",
+  "history": [
+   {
+    "credits": 0.5,
+    "endpoint": "/assets/image",
+    "job": "08ec7141-5dc4-4804-b193-eff742ff9643",
+    "url": "https://storage.googleapis.com/ludo-assets/api/dde3135d94c259cc111906859daa2a2c.webp",
+    "v": 1
+   }
+  ],
   "id": "v20_pic_lm_keep_b",
-  "job": "08ec7141-5dc4-4804-b193-eff742ff9643",
+  "job": "4875e600-0048-4dfa-8171-5665019aa00b",
   "params": {
    "art_style": "Hand-Painted",
    "aspect_ratio": "ar_1_1",
@@ -17495,8 +18101,8 @@
    "perspective": "Any perspective",
    "prompt": "A square stone castle keep: a tall Norman tower with crenellated battlements and corner turrets, narrow arrow-slit windows, a wooden door at the top of a stone stair, a flagpole on the roof. A hand-painted miniature tabletop wargame terrain model, like a painted model-railway building, made to stand beside antique tin toy soldiers: chunky simplified shapes, crisp clean painted colours, a toy-like charm. The model stands on its own with its walls meeting the floor and clear space on every side, three-quarter view from a little above, even studio lighting, plain light grey background"
   },
-  "url": "https://storage.googleapis.com/ludo-assets/api/dde3135d94c259cc111906859daa2a2c.webp",
-  "v": 1
+  "url": "https://storage.googleapis.com/ludo-assets/api/c3f98c507038f4e58fb4ec3f880b18e1.webp",
+  "v": 2
  },
  "v20_pic_lm_lighthouse_a": {
   "credits": 0.5,
@@ -17520,8 +18126,17 @@
   "credits": 0.5,
   "endpoint": "/assets/image",
   "file": "assets/raw/v20/land/lighthouse_b_ref.webp",
+  "history": [
+   {
+    "credits": 0.5,
+    "endpoint": "/assets/image",
+    "job": "1dd91515-3b74-433b-953e-b2c0c71006f7",
+    "url": "https://storage.googleapis.com/ludo-assets/api/ac954cb61677fb114b057f07113f5fb4.webp",
+    "v": 1
+   }
+  ],
   "id": "v20_pic_lm_lighthouse_b",
-  "job": "1dd91515-3b74-433b-953e-b2c0c71006f7",
+  "job": "c77933ae-11a0-438b-91aa-e8f3e45eb2cf",
   "params": {
    "art_style": "Hand-Painted",
    "aspect_ratio": "ar_1_1",
@@ -17531,15 +18146,24 @@
    "perspective": "Any perspective",
    "prompt": "A tall stone lighthouse painted in white and red bands with a glass lantern room and a gallery rail on top, a small keeper's cottage with a slate roof at its foot, on a low rocky outcrop. A hand-painted miniature tabletop wargame terrain model, like a painted model-railway building, made to stand beside antique tin toy soldiers: chunky simplified shapes, crisp clean painted colours, a toy-like charm. The model stands on its own with its walls meeting the floor and clear space on every side, three-quarter view from a little above, even studio lighting, plain light grey background"
   },
-  "url": "https://storage.googleapis.com/ludo-assets/api/ac954cb61677fb114b057f07113f5fb4.webp",
-  "v": 1
+  "url": "https://storage.googleapis.com/ludo-assets/api/650fcee8bdc90c6b5ffd3e715afde33f.webp",
+  "v": 2
  },
  "v20_pic_lm_oasis_a": {
   "credits": 0.5,
   "endpoint": "/assets/image",
   "file": "assets/raw/v20/land/oasis_a_ref.webp",
+  "history": [
+   {
+    "credits": 0.5,
+    "endpoint": "/assets/image",
+    "job": "9c8e4f96-2c60-402d-9a37-338e58a2c336",
+    "url": "https://storage.googleapis.com/ludo-assets/api/cdcfe9085d5077be07def17116b8469d.webp",
+    "v": 1
+   }
+  ],
   "id": "v20_pic_lm_oasis_a",
-  "job": "9c8e4f96-2c60-402d-9a37-338e58a2c336",
+  "job": "2465489b-433a-4061-b5d9-45bda62c2fb2",
   "params": {
    "art_style": "Hand-Painted",
    "aspect_ratio": "ar_1_1",
@@ -17547,17 +18171,26 @@
    "image_type": "asset",
    "n": 1,
    "perspective": "Any perspective",
-   "prompt": "A desert oasis: a small round pool of blue water ringed by tall date palm trees and a stone well with a wooden winch, on a patch of golden sand. A hand-painted miniature tabletop wargame terrain model, like a painted model-railway building, made to stand beside antique tin toy soldiers: chunky simplified shapes, crisp clean painted colours, a toy-like charm. The model stands on its own with its walls meeting the floor and clear space on every side, three-quarter view from a little above, even studio lighting, plain light grey background"
+   "prompt": "A desert oasis: a small round pool of blue water with three tall date palm trees beside it, on a flat patch of golden sand. A hand-painted miniature tabletop wargame terrain model, like a painted model-railway building, made to stand beside antique tin toy soldiers: chunky simplified shapes, crisp clean painted colours, a toy-like charm. The model stands on its own with its walls meeting the floor and clear space on every side, three-quarter view from a little above, even studio lighting, plain light grey background"
   },
-  "url": "https://storage.googleapis.com/ludo-assets/api/cdcfe9085d5077be07def17116b8469d.webp",
-  "v": 1
+  "url": "https://storage.googleapis.com/ludo-assets/api/e95b078d017e763af19550de85bbe350.webp",
+  "v": 3
  },
  "v20_pic_lm_oasis_b": {
   "credits": 0.5,
   "endpoint": "/assets/image",
   "file": "assets/raw/v20/land/oasis_b_ref.webp",
+  "history": [
+   {
+    "credits": 0.5,
+    "endpoint": "/assets/image",
+    "job": "58ddb8c8-5c75-4010-b2cc-1fbaf53508b3",
+    "url": "https://storage.googleapis.com/ludo-assets/api/8122c0af7f0e15043846e8b3cf5c33cb.webp",
+    "v": 1
+   }
+  ],
   "id": "v20_pic_lm_oasis_b",
-  "job": "58ddb8c8-5c75-4010-b2cc-1fbaf53508b3",
+  "job": "a0734140-5d03-441e-96de-840e16409337",
   "params": {
    "art_style": "Hand-Painted",
    "aspect_ratio": "ar_1_1",
@@ -17565,10 +18198,10 @@
    "image_type": "asset",
    "n": 1,
    "perspective": "Any perspective",
-   "prompt": "A desert oasis: a small round pool of blue water ringed by tall date palm trees and a stone well with a wooden winch, on a patch of golden sand. A hand-painted miniature tabletop wargame terrain model, like a painted model-railway building, made to stand beside antique tin toy soldiers: chunky simplified shapes, crisp clean painted colours, a toy-like charm. The model stands on its own with its walls meeting the floor and clear space on every side, three-quarter view from a little above, even studio lighting, plain light grey background"
+   "prompt": "A desert oasis: a small round pool of blue water with three tall date palm trees beside it, on a flat patch of golden sand. A hand-painted miniature tabletop wargame terrain model, like a painted model-railway building, made to stand beside antique tin toy soldiers: chunky simplified shapes, crisp clean painted colours, a toy-like charm. The model stands on its own with its walls meeting the floor and clear space on every side, three-quarter view from a little above, even studio lighting, plain light grey background"
   },
-  "url": "https://storage.googleapis.com/ludo-assets/api/8122c0af7f0e15043846e8b3cf5c33cb.webp",
-  "v": 1
+  "url": "https://storage.googleapis.com/ludo-assets/api/f4465d126b6fcc380442627de1172c23.webp",
+  "v": 2
  },
  "v20_pic_lm_palace_a": {
   "credits": 0.5,
@@ -17592,8 +18225,17 @@
   "credits": 0.5,
   "endpoint": "/assets/image",
   "file": "assets/raw/v20/land/palace_b_ref.webp",
+  "history": [
+   {
+    "credits": 0.5,
+    "endpoint": "/assets/image",
+    "job": "644a29a2-d207-40fd-9ed2-ef7d195c5463",
+    "url": "https://storage.googleapis.com/ludo-assets/api/359b659685fcb5a7efcce5bddcdda1b0.webp",
+    "v": 1
+   }
+  ],
   "id": "v20_pic_lm_palace_b",
-  "job": "644a29a2-d207-40fd-9ed2-ef7d195c5463",
+  "job": "0dca8d05-a13e-4e3b-ab2c-7fd859bfc92c",
   "params": {
    "art_style": "Hand-Painted",
    "aspect_ratio": "ar_4_3",
@@ -17603,15 +18245,24 @@
    "perspective": "Any perspective",
    "prompt": "A grand baroque palace: a long pale cream stone facade with rows of tall windows, a central portico of white columns under a green copper dome, a tall flagpole on the dome, a gravel forecourt with low hedges. A hand-painted miniature tabletop wargame terrain model, like a painted model-railway building, made to stand beside antique tin toy soldiers: chunky simplified shapes, crisp clean painted colours, a toy-like charm. The model stands on its own with its walls meeting the floor and clear space on every side, three-quarter view from a little above, even studio lighting, plain light grey background"
   },
-  "url": "https://storage.googleapis.com/ludo-assets/api/359b659685fcb5a7efcce5bddcdda1b0.webp",
-  "v": 1
+  "url": "https://storage.googleapis.com/ludo-assets/api/6a5fce4054396a6659388fab64e98065.webp",
+  "v": 2
  },
  "v20_pic_lm_quarry_a": {
   "credits": 0.5,
   "endpoint": "/assets/image",
   "file": "assets/raw/v20/land/quarry_a_ref.webp",
+  "history": [
+   {
+    "credits": 0.5,
+    "endpoint": "/assets/image",
+    "job": "07168bde-33ec-4401-9d50-e8cdaa640719",
+    "url": "https://storage.googleapis.com/ludo-assets/api/efb626403a76922cc4d5865e92ed1f84.webp",
+    "v": 1
+   }
+  ],
   "id": "v20_pic_lm_quarry_a",
-  "job": "07168bde-33ec-4401-9d50-e8cdaa640719",
+  "job": "74b89164-2eec-42fe-80aa-1843923913ba",
   "params": {
    "art_style": "Hand-Painted",
    "aspect_ratio": "ar_1_1",
@@ -17619,17 +18270,26 @@
    "image_type": "asset",
    "n": 1,
    "perspective": "Any perspective",
-   "prompt": "A small stone quarry: a cut cliff face of pale stone in stepped ledges, cut stone blocks stacked, a wooden crane and a little cart. A hand-painted miniature tabletop wargame terrain model, like a painted model-railway building, made to stand beside antique tin toy soldiers: chunky simplified shapes, crisp clean painted colours, a toy-like charm. The model stands on its own with its walls meeting the floor and clear space on every side, three-quarter view from a little above, even studio lighting, plain light grey background"
+   "prompt": "A small stone quarry: a low block of pale cut stone in two stepped ledges, a few square cut stone blocks stacked beside it. A hand-painted miniature tabletop wargame terrain model, like a painted model-railway building, made to stand beside antique tin toy soldiers: chunky simplified shapes, crisp clean painted colours, a toy-like charm. The model stands on its own with its walls meeting the floor and clear space on every side, three-quarter view from a little above, even studio lighting, plain light grey background"
   },
-  "url": "https://storage.googleapis.com/ludo-assets/api/efb626403a76922cc4d5865e92ed1f84.webp",
-  "v": 1
+  "url": "https://storage.googleapis.com/ludo-assets/api/3db710660216d61eee525dcede9b775f.webp",
+  "v": 3
  },
  "v20_pic_lm_quarry_b": {
   "credits": 0.5,
   "endpoint": "/assets/image",
   "file": "assets/raw/v20/land/quarry_b_ref.webp",
+  "history": [
+   {
+    "credits": 0.5,
+    "endpoint": "/assets/image",
+    "job": "27706ff9-8e2f-4ae3-97c3-38d5b5540cf7",
+    "url": "https://storage.googleapis.com/ludo-assets/api/bbba6bf7e4d6a950868d8295da9cb40c.webp",
+    "v": 1
+   }
+  ],
   "id": "v20_pic_lm_quarry_b",
-  "job": "27706ff9-8e2f-4ae3-97c3-38d5b5540cf7",
+  "job": "66200156-e163-411d-a610-ab0e8b0662da",
   "params": {
    "art_style": "Hand-Painted",
    "aspect_ratio": "ar_1_1",
@@ -17637,10 +18297,10 @@
    "image_type": "asset",
    "n": 1,
    "perspective": "Any perspective",
-   "prompt": "A small stone quarry: a cut cliff face of pale stone in stepped ledges, cut stone blocks stacked, a wooden crane and a little cart. A hand-painted miniature tabletop wargame terrain model, like a painted model-railway building, made to stand beside antique tin toy soldiers: chunky simplified shapes, crisp clean painted colours, a toy-like charm. The model stands on its own with its walls meeting the floor and clear space on every side, three-quarter view from a little above, even studio lighting, plain light grey background"
+   "prompt": "A small stone quarry: a low block of pale cut stone in two stepped ledges, a few square cut stone blocks stacked beside it. A hand-painted miniature tabletop wargame terrain model, like a painted model-railway building, made to stand beside antique tin toy soldiers: chunky simplified shapes, crisp clean painted colours, a toy-like charm. The model stands on its own with its walls meeting the floor and clear space on every side, three-quarter view from a little above, even studio lighting, plain light grey background"
   },
-  "url": "https://storage.googleapis.com/ludo-assets/api/bbba6bf7e4d6a950868d8295da9cb40c.webp",
-  "v": 1
+  "url": "https://storage.googleapis.com/ludo-assets/api/ded3224e81ee2b84d248a478c1297c6f.webp",
+  "v": 2
  },
  "v20_pic_lm_redoubt_a": {
   "credits": 0.5,
@@ -17664,8 +18324,17 @@
   "credits": 0.5,
   "endpoint": "/assets/image",
   "file": "assets/raw/v20/land/redoubt_b_ref.webp",
+  "history": [
+   {
+    "credits": 0.5,
+    "endpoint": "/assets/image",
+    "job": "693d76aa-bb91-41c0-aee7-da1941ff5a95",
+    "url": "https://storage.googleapis.com/ludo-assets/api/c16fc56bad5fca714379bf60c9bca879.webp",
+    "v": 1
+   }
+  ],
   "id": "v20_pic_lm_redoubt_b",
-  "job": "693d76aa-bb91-41c0-aee7-da1941ff5a95",
+  "job": "b97ed97a-44f7-466a-bb7f-2be8f9c977ef",
   "params": {
    "art_style": "Hand-Painted",
    "aspect_ratio": "ar_1_1",
@@ -17675,8 +18344,8 @@
    "perspective": "Any perspective",
    "prompt": "A small earthwork redoubt: a ring of raised brown earth ramparts reinforced with woven wicker gabions and a sharpened wooden palisade, a black cannon pointing out through a gap, a small powder store inside. A hand-painted miniature tabletop wargame terrain model, like a painted model-railway building, made to stand beside antique tin toy soldiers: chunky simplified shapes, crisp clean painted colours, a toy-like charm. The model stands on its own with its walls meeting the floor and clear space on every side, three-quarter view from a little above, even studio lighting, plain light grey background"
   },
-  "url": "https://storage.googleapis.com/ludo-assets/api/c16fc56bad5fca714379bf60c9bca879.webp",
-  "v": 1
+  "url": "https://storage.googleapis.com/ludo-assets/api/06f2a0f699269f90d4a26d010799ed22.webp",
+  "v": 2
  },
  "v20_pic_lm_ship_a": {
   "credits": 0.5,
@@ -17700,8 +18369,17 @@
   "credits": 0.5,
   "endpoint": "/assets/image",
   "file": "assets/raw/v20/land/ship_b_ref.webp",
+  "history": [
+   {
+    "credits": 0.5,
+    "endpoint": "/assets/image",
+    "job": "8fce7054-160c-483e-ba2f-73e6b2b0921a",
+    "url": "https://storage.googleapis.com/ludo-assets/api/c07e98244dbafdf9cb8922e3f2a6085b.webp",
+    "v": 1
+   }
+  ],
   "id": "v20_pic_lm_ship_b",
-  "job": "8fce7054-160c-483e-ba2f-73e6b2b0921a",
+  "job": "14644d71-de95-437d-9e2c-82dd4fa85d19",
   "params": {
    "art_style": "Hand-Painted",
    "aspect_ratio": "ar_4_3",
@@ -17711,8 +18389,8 @@
    "perspective": "Any perspective",
    "prompt": "A Napoleonic three-masted ship of the line under full white sails, a black and ochre striped hull with two rows of gun ports, a red ensign at the stern, floating level. A hand-painted miniature tabletop wargame terrain model, like a painted model-railway building, made to stand beside antique tin toy soldiers: chunky simplified shapes, crisp clean painted colours, a toy-like charm. The model stands on its own with its walls meeting the floor and clear space on every side, three-quarter view from a little above, even studio lighting, plain light grey background"
   },
-  "url": "https://storage.googleapis.com/ludo-assets/api/c07e98244dbafdf9cb8922e3f2a6085b.webp",
-  "v": 1
+  "url": "https://storage.googleapis.com/ludo-assets/api/244c0da93484bbe40f0f592b36c085a2.webp",
+  "v": 2
  },
  "v20_pic_lm_starfort_a": {
   "credits": 0.5,
@@ -17736,8 +18414,17 @@
   "credits": 0.5,
   "endpoint": "/assets/image",
   "file": "assets/raw/v20/land/starfort_b_ref.webp",
+  "history": [
+   {
+    "credits": 0.5,
+    "endpoint": "/assets/image",
+    "job": "83dbe5e7-3f2a-4da0-9c55-047b6f877741",
+    "url": "https://storage.googleapis.com/ludo-assets/api/3ca439b46a4af22652e7dcca3d736253.webp",
+    "v": 1
+   }
+  ],
   "id": "v20_pic_lm_starfort_b",
-  "job": "83dbe5e7-3f2a-4da0-9c55-047b6f877741",
+  "job": "49fff75b-ce34-4999-ac0b-dfd0f70e81c0",
   "params": {
    "art_style": "Hand-Painted",
    "aspect_ratio": "ar_4_3",
@@ -17747,8 +18434,8 @@
    "perspective": "Any perspective",
    "prompt": "A star-shaped Vauban fortress seen from above at an angle: low sloping stone-faced earth ramparts with pointed bastions at every corner, black cannons on the ramparts, a gate with a little bridge, two barracks buildings with red roofs inside, a flagpole in the middle. A hand-painted miniature tabletop wargame terrain model, like a painted model-railway building, made to stand beside antique tin toy soldiers: chunky simplified shapes, crisp clean painted colours, a toy-like charm. The model stands on its own with its walls meeting the floor and clear space on every side, three-quarter view from a little above, even studio lighting, plain light grey background"
   },
-  "url": "https://storage.googleapis.com/ludo-assets/api/3ca439b46a4af22652e7dcca3d736253.webp",
-  "v": 1
+  "url": "https://storage.googleapis.com/ludo-assets/api/b6a72abea6c0b0f51fde08ad8436d2bd.webp",
+  "v": 2
  },
  "v20_pic_lm_stones_a": {
   "credits": 0.5,
@@ -17772,8 +18459,17 @@
   "credits": 0.5,
   "endpoint": "/assets/image",
   "file": "assets/raw/v20/land/stones_b_ref.webp",
+  "history": [
+   {
+    "credits": 0.5,
+    "endpoint": "/assets/image",
+    "job": "ae6e4b84-16f6-4f79-9175-3be72c45c5ec",
+    "url": "https://storage.googleapis.com/ludo-assets/api/62c109a7e57a2e5851c748aebc1112e0.webp",
+    "v": 1
+   }
+  ],
   "id": "v20_pic_lm_stones_b",
-  "job": "ae6e4b84-16f6-4f79-9175-3be72c45c5ec",
+  "job": "9a31090d-f8a2-4bf9-9938-e1d543997921",
   "params": {
    "art_style": "Hand-Painted",
    "aspect_ratio": "ar_1_1",
@@ -17783,8 +18479,8 @@
    "perspective": "Any perspective",
    "prompt": "A ring of seven ancient grey standing stones with a large flat stone in the middle, patches of moss on them. A hand-painted miniature tabletop wargame terrain model, like a painted model-railway building, made to stand beside antique tin toy soldiers: chunky simplified shapes, crisp clean painted colours, a toy-like charm. The model stands on its own with its walls meeting the floor and clear space on every side, three-quarter view from a little above, even studio lighting, plain light grey background"
   },
-  "url": "https://storage.googleapis.com/ludo-assets/api/62c109a7e57a2e5851c748aebc1112e0.webp",
-  "v": 1
+  "url": "https://storage.googleapis.com/ludo-assets/api/55254b3b2c1b2a46b64c000d1922e6b9.webp",
+  "v": 2
  },
  "v20_pic_lm_village_ash_a": {
   "credits": 0.5,
@@ -17808,8 +18504,17 @@
   "credits": 0.5,
   "endpoint": "/assets/image",
   "file": "assets/raw/v20/land/village_ash_b_ref.webp",
+  "history": [
+   {
+    "credits": 0.5,
+    "endpoint": "/assets/image",
+    "job": "a1b852dd-d19f-4460-9414-727c2dce429c",
+    "url": "https://storage.googleapis.com/ludo-assets/api/dd917c3b0e8c84da20326db0816762c0.webp",
+    "v": 1
+   }
+  ],
   "id": "v20_pic_lm_village_ash_b",
-  "job": "a1b852dd-d19f-4460-9414-727c2dce429c",
+  "job": "a85aea83-59c2-4d7b-b341-e18f2546d8f6",
   "params": {
    "art_style": "Hand-Painted",
    "aspect_ratio": "ar_1_1",
@@ -17819,8 +18524,8 @@
    "perspective": "Any perspective",
    "prompt": "The blackened ruins of two stone houses: charred roof beams, broken walls, scattered rubble and a lone standing chimney, grey ash on the ground. A hand-painted miniature tabletop wargame terrain model, like a painted model-railway building, made to stand beside antique tin toy soldiers: chunky simplified shapes, crisp clean painted colours, a toy-like charm. The model stands on its own with its walls meeting the floor and clear space on every side, three-quarter view from a little above, even studio lighting, plain light grey background"
   },
-  "url": "https://storage.googleapis.com/ludo-assets/api/dd917c3b0e8c84da20326db0816762c0.webp",
-  "v": 1
+  "url": "https://storage.googleapis.com/ludo-assets/api/8877d30deaa26a8fc8eba96fec0bbf45.webp",
+  "v": 2
  },
  "v20_pic_lm_village_coast_a": {
   "credits": 0.5,
@@ -17880,8 +18585,17 @@
   "credits": 0.5,
   "endpoint": "/assets/image",
   "file": "assets/raw/v20/land/village_desert_b_ref.webp",
+  "history": [
+   {
+    "credits": 0.5,
+    "endpoint": "/assets/image",
+    "job": "5f3657eb-bc5a-4ae9-9a0e-3b824c7346fb",
+    "url": "https://storage.googleapis.com/ludo-assets/api/8cf3ad22383a10b592e69c2fa467d43b.webp",
+    "v": 1
+   }
+  ],
   "id": "v20_pic_lm_village_desert_b",
-  "job": "5f3657eb-bc5a-4ae9-9a0e-3b824c7346fb",
+  "job": "c6d0808b-f1ae-4d0a-9454-8e61900d0a7d",
   "params": {
    "art_style": "Hand-Painted",
    "aspect_ratio": "ar_1_1",
@@ -17891,8 +18605,8 @@
    "perspective": "Any perspective",
    "prompt": "A cluster of flat-roofed sand-coloured adobe mud-brick houses with small dark windows, a wooden ladder to a roof, clay pots, one palm tree. A hand-painted miniature tabletop wargame terrain model, like a painted model-railway building, made to stand beside antique tin toy soldiers: chunky simplified shapes, crisp clean painted colours, a toy-like charm. The model stands on its own with its walls meeting the floor and clear space on every side, three-quarter view from a little above, even studio lighting, plain light grey background"
   },
-  "url": "https://storage.googleapis.com/ludo-assets/api/8cf3ad22383a10b592e69c2fa467d43b.webp",
-  "v": 1
+  "url": "https://storage.googleapis.com/ludo-assets/api/58922aadf5291bf58f5fef2a5e255f10.webp",
+  "v": 2
  },
  "v20_pic_lm_village_forest_a": {
   "credits": 0.5,
@@ -18051,8 +18765,17 @@
   "credits": 0.5,
   "endpoint": "/assets/image",
   "file": "assets/raw/v20/land/village_mountain_b_ref.webp",
+  "history": [
+   {
+    "credits": 0.5,
+    "endpoint": "/assets/image",
+    "job": "062ddb52-aba3-4433-9dba-982c4d43bcc6",
+    "url": "https://storage.googleapis.com/ludo-assets/api/42b07d42ee8f81f4e2e60069ea0e4efd.webp",
+    "v": 2
+   }
+  ],
   "id": "v20_pic_lm_village_mountain_b",
-  "job": "062ddb52-aba3-4433-9dba-982c4d43bcc6",
+  "job": "25930b95-4c6b-4f5c-b2ee-3f6bbd95614f",
   "params": {
    "art_style": "Hand-Painted",
    "aspect_ratio": "ar_1_1",
@@ -18062,8 +18785,8 @@
    "perspective": "Any perspective",
    "prompt": "A simple alpine chalet: a whitewashed stone ground floor, a dark timber upper floor with one wooden balcony, a wide overhanging shingled roof. A hand-painted miniature tabletop wargame terrain model, like a painted model-railway building, made to stand beside antique tin toy soldiers: chunky simplified shapes, crisp clean painted colours, a toy-like charm. The model stands on its own with its walls meeting the floor and clear space on every side, three-quarter view from a little above, even studio lighting, plain light grey background"
   },
-  "url": "https://storage.googleapis.com/ludo-assets/api/42b07d42ee8f81f4e2e60069ea0e4efd.webp",
-  "v": 2
+  "url": "https://storage.googleapis.com/ludo-assets/api/b4d4de5c34ea96ebab87de8e42beacae.webp",
+  "v": 3
  },
  "v20_pic_lm_village_snow_a": {
   "credits": 0.5,
@@ -18087,8 +18810,17 @@
   "credits": 0.5,
   "endpoint": "/assets/image",
   "file": "assets/raw/v20/land/village_snow_b_ref.webp",
+  "history": [
+   {
+    "credits": 0.5,
+    "endpoint": "/assets/image",
+    "job": "49689be2-f0d0-4143-b60e-7ca621b0f62a",
+    "url": "https://storage.googleapis.com/ludo-assets/api/e672d7851350ec7cdb502d116feef7b3.webp",
+    "v": 1
+   }
+  ],
   "id": "v20_pic_lm_village_snow_b",
-  "job": "49689be2-f0d0-4143-b60e-7ca621b0f62a",
+  "job": "aa1bd5c3-0a22-4789-83ae-94d63308c2a8",
   "params": {
    "art_style": "Hand-Painted",
    "aspect_ratio": "ar_1_1",
@@ -18098,8 +18830,8 @@
    "perspective": "Any perspective",
    "prompt": "Two log cabins with roofs thick with white snow, icicles along the eaves, a stack of firewood under snow, a little snow on the ground around them. A hand-painted miniature tabletop wargame terrain model, like a painted model-railway building, made to stand beside antique tin toy soldiers: chunky simplified shapes, crisp clean painted colours, a toy-like charm. The model stands on its own with its walls meeting the floor and clear space on every side, three-quarter view from a little above, even studio lighting, plain light grey background"
   },
-  "url": "https://storage.googleapis.com/ludo-assets/api/e672d7851350ec7cdb502d116feef7b3.webp",
-  "v": 1
+  "url": "https://storage.googleapis.com/ludo-assets/api/811a1725d2758ecb1141edf1e14b7d43.webp",
+  "v": 2
  },
  "v20_pic_lm_watchtower_a": {
   "credits": 0.5,
@@ -18123,8 +18855,17 @@
   "credits": 0.5,
   "endpoint": "/assets/image",
   "file": "assets/raw/v20/land/watchtower_b_ref.webp",
+  "history": [
+   {
+    "credits": 0.5,
+    "endpoint": "/assets/image",
+    "job": "189ccc1a-60c5-4c17-8fd5-54af607ec1dd",
+    "url": "https://storage.googleapis.com/ludo-assets/api/23c93f4aa1de7190d19f00b221283f95.webp",
+    "v": 1
+   }
+  ],
   "id": "v20_pic_lm_watchtower_b",
-  "job": "189ccc1a-60c5-4c17-8fd5-54af607ec1dd",
+  "job": "47414efa-47f9-4297-ba69-1b92341b0270",
   "params": {
    "art_style": "Hand-Painted",
    "aspect_ratio": "ar_1_1",
@@ -18134,8 +18875,8 @@
    "perspective": "Any perspective",
    "prompt": "A round stone watchtower with crenellated battlements and an iron beacon brazier with a small fire on top, a little arched wooden door, narrow windows. A hand-painted miniature tabletop wargame terrain model, like a painted model-railway building, made to stand beside antique tin toy soldiers: chunky simplified shapes, crisp clean painted colours, a toy-like charm. The model stands on its own with its walls meeting the floor and clear space on every side, three-quarter view from a little above, even studio lighting, plain light grey background"
   },
-  "url": "https://storage.googleapis.com/ludo-assets/api/23c93f4aa1de7190d19f00b221283f95.webp",
-  "v": 1
+  "url": "https://storage.googleapis.com/ludo-assets/api/8e5b5a8c414c3e2604d6c7409c552df9.webp",
+  "v": 2
  },
  "v20_pic_lm_windmill_a": {
   "credits": 0.5,
@@ -18159,8 +18900,17 @@
   "credits": 0.5,
   "endpoint": "/assets/image",
   "file": "assets/raw/v20/land/windmill_b_ref.webp",
+  "history": [
+   {
+    "credits": 0.5,
+    "endpoint": "/assets/image",
+    "job": "c71cfb62-621d-43a0-aee4-0c5407c05bbf",
+    "url": "https://storage.googleapis.com/ludo-assets/api/4cf4390869425c87955dd686c417996d.webp",
+    "v": 1
+   }
+  ],
   "id": "v20_pic_lm_windmill_b",
-  "job": "c71cfb62-621d-43a0-aee4-0c5407c05bbf",
+  "job": "3693ed94-f2b1-4b8e-810c-1c748c284cf7",
   "params": {
    "art_style": "Hand-Painted",
    "aspect_ratio": "ar_1_1",
@@ -18170,8 +18920,8 @@
    "perspective": "Any perspective",
    "prompt": "A tall Napoleonic-era post windmill: a white-washed wooden body on a round stone base, a dark shingled roof, four large lattice sails with canvas, a wooden stair up to the door. A hand-painted miniature tabletop wargame terrain model, like a painted model-railway building, made to stand beside antique tin toy soldiers: chunky simplified shapes, crisp clean painted colours, a toy-like charm. The model stands on its own with its walls meeting the floor and clear space on every side, three-quarter view from a little above, even studio lighting, plain light grey background"
   },
-  "url": "https://storage.googleapis.com/ludo-assets/api/4cf4390869425c87955dd686c417996d.webp",
-  "v": 1
+  "url": "https://storage.googleapis.com/ludo-assets/api/3a0e10b828f587dda99ec5a2629e18bf.webp",
+  "v": 2
  },
  "v20_pic_officer": {
   "credits": 0.5,

@@ -50,7 +50,7 @@ def take_path(who, name, k):
 
 def state():
     try:
-        return json.load(open(os.path.join(BATCH_DIR, "state.json")))
+        return json.load(open(os.path.join(BATCH_DIR, "state.json"), encoding="utf-8"))
     except (OSError, ValueError):
         return {}
 
@@ -59,7 +59,7 @@ def save(st):
     with _lock:
         os.makedirs(BATCH_DIR, exist_ok=True)
         p = os.path.join(BATCH_DIR, "state.json")
-        json.dump(st, open(p + ".tmp", "w"), indent=1, ensure_ascii=False)
+        json.dump(st, open(p + ".tmp", "w", encoding="utf-8"), indent=1, ensure_ascii=False)
         os.replace(p + ".tmp", p)
 
 
@@ -100,6 +100,10 @@ def samples_finish(audio, out, match):
     with open(raw, "wb") as f:
         f.write(audio)
     target = base.lufs(match) if os.path.exists(match) else -18.0
+    if target < -35.0:
+        ## v2.3: a game take too short or broken to measure (Imre's 0.24 s "Check." read -70 LUFS)
+        ## would level the new takes down to silence: the voices' usual level instead
+        target = -20.0
     base.run("-i", raw, "-af", "loudnorm=I=%.1f:TP=-1.5:LRA=11" % target, "-ar", 44100, "-ac", 1, "-c:a", "libmp3lame", "-q:a", 2, out)
     os.remove(raw)
 
@@ -177,7 +181,7 @@ def write_batch(quiet=False):
                     "cmd": ["python3", me, "--regen"],
                     "options": [{"flag": "--takes", "label": "Takes per line", "type": "int", "default": 3, "min": 1, "max": 6},
                                 {"flag": "--no-notes", "label": "Ignore the notes", "type": "bool", "default": False}]}],
-               "items": items}, open(out + ".tmp", "w"), indent=1, ensure_ascii=False)
+               "items": items}, open(out + ".tmp", "w", encoding="utf-8"), indent=1, ensure_ascii=False)
     os.replace(out + ".tmp", out)
     if not quiet:
         print("batch: %d lines with takes (of %d)" % (len(items), len(plan())))

@@ -126,14 +126,14 @@ def dirs(who, ident):
 
 def state():
     try:
-        return json.load(open(os.path.join(BATCH_DIR, "cast.json")))
+        return json.load(open(os.path.join(BATCH_DIR, "cast.json"), encoding="utf-8"))
     except (OSError, ValueError):
         return {}
 
 
 def save(st):
     os.makedirs(BATCH_DIR, exist_ok=True)
-    json.dump(st, open(os.path.join(BATCH_DIR, "cast.json"), "w"), indent=1, ensure_ascii=False)
+    json.dump(st, open(os.path.join(BATCH_DIR, "cast.json"), "w", encoding="utf-8"), indent=1, ensure_ascii=False)
 
 
 def audition(who, ident, traits, st):
@@ -278,7 +278,7 @@ def write_batch():
                           "meta": {"voice": "voicestudio-cast:%s" % who, "context": ctx, "speak": sp if sp and sp != base.spoken(text) else "",
                                    "engine": "VoiceStudio: " + traits, "identity": ident, "traits": traits}})
     json.dump({"batch": BATCH, "title": "VoiceStudio casting, round 2: the liveliest of 5 seeds, checked by Whisper (0 = today's voice)",
-               "actions": actions(), "items": items}, open(os.path.join(BATCH_DIR, "batch.json.tmp"), "w"), indent=1, ensure_ascii=False)
+               "actions": actions(), "items": items}, open(os.path.join(BATCH_DIR, "batch.json.tmp"), "w", encoding="utf-8"), indent=1, ensure_ascii=False)
     os.replace(os.path.join(BATCH_DIR, "batch.json.tmp"), os.path.join(BATCH_DIR, "batch.json"))
     print("batch: %d clips" % len(items))
 

@@ -238,7 +238,7 @@ func refresh() -> void:
 	_coin.visible = planning
 	_plan_btn.visible = ph == Session.Phase.PLANNING
 	if planning:
-		_coin.value = s.income_left()
+		_coin.value = s.placeable_left() ## v2.3: recruits with no room left aren't waiting on you
 		_coin.total = s.income_total()
 		_coin.queue_redraw()
 	## log
@@ -266,6 +266,8 @@ func refresh() -> void:
 			## v1.5 the reinforcement phase: recruits (and cards) first
 			_tally_title.text = ("FINAL ROUND · " if s.is_last_round() and not s.conquest() else "") + "REINFORCEMENT PHASE · ROUND %d" % s.world.round
 			_tally.text = "%d of %d recruits placed" % [s.placed_total(), s.income_total()]
+			if s.no_room() > 0 and s.placeable_left() == 0:
+				_tally.text += " · %d no room" % s.no_room()
 			var sub_r := "Click your lands to place them · right-click takes one back"
 			if s.map.cards and s.hand().size() > 0:
 				sub_r = "%d card%s in hand · %s" % [s.hand().size(), "" if s.hand().size() == 1 else "s", sub_r]
@@ -273,7 +275,7 @@ func refresh() -> void:
 			var ap2 := Style.chip("Auto-place", func():
 				s.auto_deploy()
 				Audio.sfx("place"), Style.CREAM, 14)
-			ap2.disabled = s.income_left() <= 0
+			ap2.disabled = s.placeable_left() <= 0
 			_tally_row.add_child(ap2)
 			_tally_row.add_child(Style.chip("Clear", func(): s.clear_placements(), Style.MUTED, 14))
 			if s.map.cards:
@@ -283,7 +285,9 @@ func refresh() -> void:
 					label2 = "Cards ✓ +%d" % s.set_value_now()
 				elif ready2:
 					label2 = "Cards ✦ set!"
-				_tally_row.add_child(Style.chip(label2, func(): gs.open_cards(), Style.GOLD if ready2 or not s.sheet().cash_set.is_empty() else Style.CREAM, 14))
+				var cc2: Control = Style.chip(label2, func(): gs.open_cards(), Style.GOLD if ready2 or not s.sheet().cash_set.is_empty() else Style.CREAM, 14)
+				cc2.tooltip_text = "Your hand of cards (C): three alike or one of each turn in for fresh troops"
+				_tally_row.add_child(cc2)
 			_dial.set_label("ORDERS", "next ▸")
 		Session.Phase.PLANNING:
 			var sh: Types.Sheet = s.sheet()
@@ -313,7 +317,9 @@ func refresh() -> void:
 					label = "Cards ✓ +%d" % s.set_value_now()
 				elif ready:
 					label = "Cards ✦ set!"
-				_tally_row.add_child(Style.chip(label, func(): gs.open_cards(), Style.GOLD if ready or not s.sheet().cash_set.is_empty() else Style.CREAM, 14))
+				var cc: Control = Style.chip(label, func(): gs.open_cards(), Style.GOLD if ready or not s.sheet().cash_set.is_empty() else Style.CREAM, 14)
+				cc.tooltip_text = "Your hand of cards (C): three alike or one of each turn in for fresh troops"
+				_tally_row.add_child(cc)
 			_dial.set_label("SEAL", "orders")
 		Session.Phase.DRAFT:
 			var turn: String = s.draft_turn()

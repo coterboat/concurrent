@@ -13,6 +13,9 @@ var _body: Label
 var _count: Label
 var _prev: Button
 var _next: Button
+var _head: Control
+var _nav: Control
+const BODY_SIZE := 23
 
 const PAGES := [
 	["The big idea", "howto_sealed",
@@ -22,13 +25,13 @@ const PAGES := [
 	["Recruits", "howto_cards",
 	"Each round you get new armies: one for every three lands you hold (at least 3), a little extra for a big connected empire, and a bonus for every region you hold completely.\n\nYou can place at most 1 + (the number of your own lands touching it) on any single land — so a lonely outpost can't become a fortress overnight. Anything you don't place is lost."],
 	["Attack — and leave home", "howto_march",
-	"To attack, pick one of your lands and send armies at a neighboring land. Those armies LEAVE HOME the moment orders are sealed. They do not defend the land they left.\n\nEvery land keeps its garrison at home (the gold shield, see Digging in); everyone else may march. Several of your attacks on the same target join together into one force."],
+	"To attack, pick one of your lands and send armies at a neighboring land. Those armies LEAVE HOME the moment orders are sealed. They do not defend the land they left.\n\nEvery land keeps its garrison at home (the gold shield, see Digging in); everyone else may march. Attack one land from two of yours and they go as two fronts, not one army: the defenders hold both (see Battles)."],
 	["The walk-in", "howto_walkin",
 	"While your armies are away, somebody else may attack the land you just emptied. If you left one army behind, one attacker might be all it takes.\n\nThis is the groan the game is built on. The faded ghost arrows on the map show where everyone marched last round."],
 	["Battles", "howto_clash",
-	"Roll by roll (the usual way): each volley, both sides roll a die, multiply it by five and add the men in their firing line (at most five). The lower score loses one man; an even volley is fired again. Roll until one side is gone — or the attacker calls it off (next page). In your own battles you press ROLL.\n\nOne decisive roll (a setup option): armies plus one die, higher total wins, and the winner loses half the loser's size. Both styles give the same odds.\n\nTwo lands attacking each other meet in the field first — a border clash. On the map their two arrows meet on the border, and when the dice land the winner's drives the loser's back and carries on to the land it marched on, with the men still standing.\n\nA melee: when two or more commanders storm the same land, they all fight at once. Every salvo each front fires its own volley, and the defenders' whole firing line answers every front, so a defender can lose a man on every front at once, or win them all. (Without the firing line, a setup option, the defenders split their strength across the fronts.)\n\nYour own columns from different lands are separate fronts too: storm a land from two sides and it's a melee, the defenders holding both. Your fronts never fight each other: whichever stand when the walls fall take the land together. A border clash is fought only by the column crossing that border."],
+	"Roll by roll (the usual way): each volley, both sides roll a die, multiply it by five and add the men in their firing line (at most five). The lower score loses one man; an even volley is fired again. Roll until one side is gone — or the attacker calls it off (next page). In your own battles you press ROLL.\n\nOne decisive roll (a setup option): armies plus one die, higher total wins, and the winner loses half the loser's size. It is quicker, and kinder to the bigger army.\n\nTwo lands attacking each other meet in the field first — a border clash. On the map their two arrows meet on the border, and when the dice land the winner's drives the loser's back and carries on to the land it marched on, with the men still standing.\n\nA melee: when two or more commanders storm the same land, they all fight at once. Every salvo each front fires its own volley, and the defenders' whole firing line answers every front, so a defender can lose a man on every front at once, or win them all. (Without the firing line, a setup option, the defenders split their strength across the fronts.)\n\nYour own columns from different lands are separate fronts too: storm a land from two sides and it's a melee, the defenders holding both. Your fronts never fight each other: whichever stand when the walls fall take the land together. A border clash is fought only by the column crossing that border."],
 	["The dice", "howto_dice",
-	"Every volley, each side throws a die. Its pips count five men apiece, and the men in its firing line are added on top: at most five fire at once. 4 pips and a full line make 20 + 5 = 25. The higher total wins the volley and the loser loses one man; an even volley is fired again. The sums are on a brass plate on the table's rail under every pair of dice, and the bar at the top shows your chance of winning from here.\n\nSo a big army doesn't win every volley: its extra men are its staying power, the men it can lose while the other side runs out. Two to one still wins almost always; seven against six is only a slight favourite.\n\nYou can see it in the dice, too. A lone holdout throws whittled wood, a company throws old bone, a regiment ivory with its colours in the pips, a brigade lacquer with brass edges, and a grand army of thirty or more throws gold, with gem pips and the imperial star."],
+	"Every volley, each side throws a die. Its pips count five men apiece, and the men in its firing line are added on top: at most five fire at once (six behind a fortress's or a capital's walls). 4 pips and a full line make 20 + 5 = 25. The higher total wins the volley and the loser loses one man; an even volley is fired again. The sums are on a brass plate on the table's rail under every pair of dice, and the bar at the top shows your chance of winning from here.\n\nSo a big army doesn't win every volley: its extra men are its staying power, the men it can lose while the other side runs out. Ten against five still wins nineteen times in twenty, but two against one only four times in five, and seven against six is a slight favourite.\n\nYou can see it in the dice, too. A lone holdout throws whittled wood, a company throws old bone, a regiment ivory with its colours in the pips, a brigade lacquer with brass edges, and a grand army of thirty or more throws gold, with gem pips and the imperial star."],
 	["Every man for himself", "howto_scramble",
 	"When the defenders of a land fall and two or more invaders are still standing, or two armies march into the same empty land, the victors fight it out all at once: a scramble.\n\nEvery army duels every other each salvo, splitting its men among its foes in proportion to their size, so three armies throw three duels at a time. There is no retreat. The last army standing takes the land (and may surge on, if it was ordered to)."],
 	["Press, reserves, or fall back", "howto_march",
@@ -48,12 +51,12 @@ const PAGES := [
 	["Fortresses, passes and ports", "howto_fort",
 	"Some maps give certain lands a standing character, marked with a small brass emblem on the land itself and spelled out on its card.\n\n•  FORTRESS — its defenders fire a line of six instead of five, and one more man than usual may dig in there. It only tells once the fort holds more than five: five men fire five wherever they stand. Garrison it properly and it is the hardest ground on the map.\n•  PASS — no more than six may storm it from any one land, however many you have there: a surge into it is six at most, and the reserves only top the column back up to six. A huge stack cannot simply roll through; come at it from two lands at once and you bring twelve.\n•  PORT — two of your own ports are joined by sea. Troops may march between them in the regroup phase, and supply runs along them. You cannot attack down a sea link: ships carry the baggage train, not the assault.\n\nOn the land in 3D (L) they stand as buildings: a star fort on a fortress, a blockhouse on a pass, a quay on a port's shore, and a palace flying its commander's colours where a capital stands."],
 	["Supply", "howto_supply",
-	"On some maps an army needs a road home.\n\nYour empire's main body — the largest run of your own lands, joined by land borders or by your own ports — is IN SUPPLY. Any land of yours cut off from it is not: it pays no income and takes no recruits. The map says CUT OFF across it.\n\nIt still fights. It still holds its ground, and its garrison still digs in. It simply feeds nobody until you join it up again.\n\nSo a conquest that reaches too far is worth nothing until the road behind it is yours, and cutting a neighbour's chain in the middle can strand half their empire without fighting for a single one of those lands."],
+	"On some maps an army needs a road home.\n\nYour empire's main body — the lands joined to your capital (with no capital, the largest run of your own lands), by land borders or by your own ports — is IN SUPPLY. Any land of yours cut off from it is not: it pays no income and takes no recruits. The map says CUT OFF across it.\n\nIt still fights. It still holds its ground, and its garrison still digs in. It simply feeds nobody until you join it up again.\n\nSo a conquest that reaches too far is worth nothing until the road behind it is yours, and cutting a neighbour's chain in the middle can strand half their empire without fighting for a single one of those lands."],
 	["Reading the map", "howto_march",
 	"While you plan, the map says what it knows. Hover any land to read it in words.\n\n•  LAST ROUND'S COLUMNS stay on the map, faint. One that failed ends in a mark where it was stopped: a red cross, thrown back; a pale chevron, fell back (it points the way they went); a broken banner, beaten in a scramble. One beaten in a border clash stops halfway, where the columns met.\n•  A SWORD PLATE on a land of yours: the most one enemy could bring against it next round, shown when that could clearly outnumber you. Your capital rings crimson as soon as it could be outnumbered at all. Place recruits or keep men home, and it updates.\n•  ≤N on an enemy land that borders yours: the most it could hold once its commander places recruits. Hover any other enemy land to see its ceiling too.
 •  AN AMBER RING (maps with supply): this land holds the road home for others. Lose it and they're cut off.\n•  THE PIPS beside a region's bonus: one per land, in its holder's colour. A pulsing ring marks the last land someone needs.\n•  THE LAND IN 3D (L, or the 3D chip): the map can stand on its own ground: hills, woods and rivers, a village in every land, every land's garrison beside its token, and in the battle report the columns marching their arrows. Everything above still reads the same; L puts the chart back.\n\nThe roster shows what each commander raises next round (+N)."],
 	["Claiming the lands", "howto_draft",
-	"A new game can deal the lands at random, or have the commanders claim them in turn (choose it on the setup screen, or in Settings).\n\nClaimed in turn: every commander's die drops onto the map, and the highest throw chooses first (ties throw again). Then everyone claims one free land at a time, round the table, until each holds as many as the deal would give. Build a region, crowd a rival, or grab the choke points. Then everyone deploys as usual."],
+	"A new game can deal the lands at random, or have the commanders claim them in turn (choose it on the setup screen, under Rules).\n\nClaimed in turn: every commander's die drops onto the map, and the highest throw chooses first (ties throw again). Then everyone claims one free land at a time, round the table, until each holds as many as the deal would give. Build a region, crowd a rival, or grab the choke points. Then everyone deploys as usual."],
 ]
 
 
@@ -100,11 +103,13 @@ func _ready() -> void:
 	row.add_child(tv)
 	_title = Style.label("", 38, Style.GOLD, "display")
 	tv.add_child(_title)
-	_body = Style.label("", 23, Style.CREAM)
+	_body = Style.label("", BODY_SIZE, Style.CREAM)
 	_body.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
 	_body.custom_minimum_size = Vector2(460, 0)
 	tv.add_child(_body)
+	_head = head
 	var nav := HBoxContainer.new()
+	_nav = nav
 	nav.alignment = BoxContainer.ALIGNMENT_CENTER
 	nav.add_theme_constant_override("separation", 20)
 	v.add_child(nav)
@@ -116,6 +121,7 @@ func _ready() -> void:
 	nav.add_child(_next)
 	page = clampi(start_page, 0, PAGES.size() - 1)
 	_show()
+	resized.connect(_fit)
 
 
 func _go(d: int) -> void:
@@ -135,6 +141,33 @@ func _show() -> void:
 	_count.text = "%d / %d" % [page + 1, PAGES.size()]
 	_prev.disabled = page == 0
 	_next.text = "Done" if page == PAGES.size() - 1 else "Next  ▶"
+	_fit()
+
+
+func _fit() -> void:
+	## v2.3: a page too long for the screen shrinks its words (23 down to 16) rather than run off the
+	## foot of it. "Reading the map" lost its last lines under the edge at 1440×900 (Windows' fonts set
+	## a little taller than the Mac's). Measured once the column has its width, so hidden until then.
+	if _body == null or not is_inside_tree():
+		return
+	_body.modulate.a = 0.0
+	_body.add_theme_font_size_override("font_size", BODY_SIZE)
+	await get_tree().process_frame
+	if not is_instance_valid(_body):
+		return
+	var room: float = get_viewport_rect().size.y - 96.0 - _head.get_combined_minimum_size().y - _nav.get_combined_minimum_size().y \
+		- 32.0 - _title.get_combined_minimum_size().y - 14.0
+	var fs: int = BODY_SIZE
+	while fs > 16 and body_height() > room:
+		fs -= 1
+		_body.add_theme_font_size_override("font_size", fs)
+	_body.modulate.a = 1.0
+
+
+func body_height() -> float:
+	## the page's words as wrapped in the column now
+	var n: int = _body.get_line_count()
+	return n * _body.get_line_height() + maxi(0, n - 1) * _body.get_theme_constant("line_spacing")
 
 
 func _close() -> void:

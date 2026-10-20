@@ -33,7 +33,7 @@ PICKS = {
 
 def load():
     try:
-        return json.load(open(CAST_JSON))
+        return json.load(open(CAST_JSON, encoding="utf-8"))
     except (OSError, ValueError):
         return {}
 
@@ -71,7 +71,7 @@ def ensure():
             cast[who] = {"voice_id": vid, "kind": "design", "card": card, "name": name,
                          "description": samples.DESIGNS[who], "card_file": "review/el_samples/" + cards[card - 1]["file"]}
             print("  %-8s design card %d: %s" % (who, card, vid))
-        json.dump(cast, open(CAST_JSON, "w"), indent=1, ensure_ascii=False)
+        json.dump(cast, open(CAST_JSON, "w", encoding="utf-8"), indent=1, ensure_ascii=False)
     return cast
 
 

@@ -36,8 +36,10 @@ def key():
             if line.startswith("export "):
                 line = line[7:]
             for n in NAMES:
-                if line.startswith(n + "="):
-                    return line.split("=", 1)[1].strip().strip('"').strip("'")
+                ## v2.3: KEY=value, or KEY: value (how the Windows PC's file is written)
+                for sep in ("=", ":"):
+                    if line.startswith(n + sep):
+                        return line.split(sep, 1)[1].strip().strip('"').strip("'")
     return ""
 
 

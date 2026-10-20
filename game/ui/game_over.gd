@@ -43,9 +43,9 @@ func show_result() -> void:
 	if s.winner == "":
 		head = "The war ends"
 	elif humans_won:
-		head = "Victory for %s!" % s.name_of(s.winner)
+		head = "Victory for %s!" % Style.who(s.name_of(s.winner))
 	else:
-		head = "%s wins the war" % s.name_of(s.winner)
+		head = "%s the war" % Style.says(s.name_of(s.winner), "wins")
 	var t := Style.label(head, 58, Style.CREAM, "display")
 	t.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
 	t.add_theme_constant_override("outline_size", 10)
@@ -92,7 +92,9 @@ func show_result() -> void:
 		g.add_child(Style.label("%d" % int(st.get("sets", 0)), 19, Style.CREAM))
 		## v1.8: the luck ledger — did the dice owe you, or you them?
 		var lk: Dictionary = s.luck_of(str(r["id"]))
-		var sw: float = float(lk["swing"])
+		var sw: float = snappedf(float(lk["swing"]), 0.1)
+		if is_zero_approx(sw):
+			sw = 0.0 ## v2.3: a swing that rounds to nothing read "-0.0"
 		var lcol: Color = Style.GOOD if sw >= 0.75 else (Style.CRIMSON.lightened(0.35) if sw <= -0.75 else Style.CREAM)
 		var lword: String = " blessed" if sw >= 2.5 else (" cursed" if sw <= -2.5 else "")
 		var ll := Style.label(("%+.1f" % sw) + lword if int(lk["n"]) > 0 else "—", 19, lcol, "bold")

@@ -406,6 +406,167 @@ static func capture_rate(att: int, def: int, mode: String = MODE_DECISIVE, d_bon
 	return invasion_capture_rate(att, def)
 
 
+## ---- v2.3: what a storm from several lands is worth (rules 21: one commander's columns from
+## different lands are separate fronts, and the defenders' whole firing line answers each). For the
+## planners and the odds shown (the AI, the order card, the advisor); no battle is fought by it.
+## Each salvo every front fires one volley at the defenders' line: a win costs the defenders a man,
+## a loss costs that front one, an even volley costs nobody (resolve.gd's melee under the firing
+## line). Exact for up to three fronts (RV-006 F1: folding small fronts into one priced [1,1,1]
+## against 2 at 66%, the battles' 59%). A fourth or more fold the two smallest together (a little
+## kind to the attacker: the folded front fires a longer line than its parts); a fight too big to
+## count (FRONTS_STATES) is priced scaled down. Without the firing line, or in one decisive roll,
+## the old sum.
+
+const FRONTS_EXACT := 3 ## fronts priced exactly; more are folded
+const FRONTS_STATES := 20000 ## states counted exactly at most (a first pricing ~200 ms); bigger fights are scaled
+
+static var _fronts_memo := {}
+static var _odds_memo := {}
+
+
+static func fronts_capture_rate(sizes: Array, def: int, mode: String = MODE_VOLLEYS, d_bonus: int = 0) -> float:
+	var live: Array = []
+	var tot := 0
+	for x in sizes:
+		if int(x) > 0:
+			live.append(int(x))
+			tot += int(x)
+	if def <= 0:
+		return 1.0 if tot > 0 else 0.0
+	if tot <= 0:
+		return 0.0
+	if live.size() == 1 or line <= 0 or mode != MODE_VOLLEYS:
+		return capture_rate(tot, def, mode, d_bonus)
+	live.sort()
+	live.reverse()
+	while live.size() > 2 and (live.size() > FRONTS_EXACT or _states(live, def) > FRONTS_STATES):
+		var a: int = int(live.pop_back())
+		live[-1] = int(live[-1]) + a
+		live.sort()
+		live.reverse()
+	var d: int = def
+	var n: int = _states(live, d)
+	if n > FRONTS_STATES:
+		## a huge fight: priced at a scale it can be counted at (the line fires five a side either way,
+		## so a volley's odds are the same; only the staying power is rounded)
+		var k: float = ceilf(pow(float(n) / float(FRONTS_STATES), 1.0 / float(live.size() + 1)))
+		for i in live.size():
+			live[i] = maxi(1, int(round(float(live[i]) / k)))
+		d = maxi(1, int(round(float(d) / k)))
+		live.sort()
+		live.reverse()
+	return _fronts(live, d, d_bonus)
+
+
+static func _states(fronts: Array, d: int) -> int:
+	var n: int = d + 1
+	for f in fronts:
+		n *= int(f) + 1
+	return n
+
+
+static func _volley_odds(a: int, d: int, d_bonus: int) -> Array:
+	## [win, lose, even] for one front's volley at the defenders' line (by the men who fire)
+	var fa: int = fire(a)
+	var fd: int = fire(d, d_bonus)
+	var key: int = fa * 1024 + fd
+	if _odds_memo.has(key):
+		return _odds_memo[key]
+	var wins := 0
+	var ties := 0
+	for x in range(1, 7):
+		for y in range(1, 7):
+			var sa: int = VOLLEY_DIE * x + fa
+			var sb: int = VOLLEY_DIE * y + fd
+			if sa > sb:
+				wins += 1
+			elif sa == sb:
+				ties += 1
+	var o: Array = [float(wins) / 36.0, float(36 - wins - ties) / 36.0, float(ties) / 36.0]
+	_odds_memo[key] = o
+	return o
+
+
+static func _fronts(fronts: Array, d: int, d_bonus: int) -> float:
+	## fronts: sizes > 0, biggest first, at most FRONTS_EXACT of them
+	if d <= 0:
+		return 1.0
+	if fronts.is_empty():
+		return 0.0
+	if fronts.size() == 1:
+		return volley_capture_rate(int(fronts[0]), d, true, d_bonus)
+	if fronts.size() == 2:
+		return _two_fronts(int(fronts[0]), int(fronts[1]), d, d_bonus)
+	var key: int = 0
+	for f in fronts:
+		key = key * 1024 + mini(int(f), 1023)
+	key = (((key * 1024 + mini(d, 1023)) * 16 + mini(maxi(0, d_bonus), 15)) * 8 + fronts.size()) * 64 + mini(line, 63)
+	if _fronts_memo.has(key):
+		return _fronts_memo[key]
+	var odds: Array = []
+	var stay := 1.0
+	for f in fronts:
+		var o: Array = _volley_odds(int(f), d, d_bonus)
+		odds.append(o)
+		stay *= float(o[2])
+	var k: int = fronts.size()
+	var v := 0.0
+	for c in int(pow(3, k)):
+		## each front's volley: 0 won (the defenders lose a man), 1 lost (the front does), 2 even
+		var code: int = c
+		var pr := 1.0
+		var wins := 0
+		var moved := false
+		var nxt: Array = []
+		for i in k:
+			var r: int = code % 3
+			code /= 3
+			pr *= float(odds[i][r])
+			if r == 0:
+				wins += 1
+			if r != 2:
+				moved = true
+			var s: int = int(fronts[i]) - (1 if r == 1 else 0)
+			if s > 0:
+				nxt.append(s)
+		if not moved or pr <= 0.0:
+			continue ## every volley even: the salvo changed nothing (normalised out below)
+		nxt.sort()
+		nxt.reverse()
+		v += pr * _fronts(nxt, maxi(0, d - wins), d_bonus)
+	v /= 1.0 - stay
+	_fronts_memo[key] = v
+	return v
+
+
+static func _two_fronts(a: int, b: int, d: int, d_bonus: int) -> float:
+	## _fronts for two (the common case), without building arrays: a >= b > 0
+	if d <= 0:
+		return 1.0
+	if b <= 0:
+		return volley_capture_rate(a, d, true, d_bonus) if a > 0 else 0.0
+	var key: int = ((((a * 1024 + b) * 1024 + mini(d, 1023)) * 16 + mini(maxi(0, d_bonus), 15)) * 8 + 2) * 64 + mini(line, 63)
+	if _fronts_memo.has(key):
+		return _fronts_memo[key]
+	var oa: Array = _volley_odds(a, d, d_bonus)
+	var ob: Array = _volley_odds(b, d, d_bonus)
+	var v := 0.0
+	for ra in 3:
+		for rb in 3:
+			if ra == 2 and rb == 2:
+				continue ## both even: the salvo changed nothing (normalised out below)
+			var pr: float = float(oa[ra]) * float(ob[rb])
+			if pr <= 0.0:
+				continue
+			var na: int = a - (1 if ra == 1 else 0)
+			var nb: int = b - (1 if rb == 1 else 0)
+			var nd: int = maxi(0, d - (1 if ra == 0 else 0) - (1 if rb == 0 else 0))
+			v += pr * (_two_fronts(na, nb, nd, d_bonus) if na >= nb else _two_fronts(nb, na, nd, d_bonus))
+	v /= 1.0 - float(oa[2]) * float(ob[2])
+	_fronts_memo[key] = v
+	return v
+
+
 static func invasion_wins_out_of_36(att_armies: int, def_armies: int) -> int:
 	var wins := 0
 	for da in range(1, 7):
@@ -420,7 +581,11 @@ static func invasion_capture_rate(att_armies: int, def_armies: int) -> float:
 
 
 static func odds_word(att_armies: int, def_armies: int, mode: String = MODE_DECISIVE, d_bonus: int = 0) -> String:
-	var p := capture_rate(att_armies, def_armies, mode, d_bonus)
+	return word_for(capture_rate(att_armies, def_armies, mode, d_bonus))
+
+
+static func word_for(p: float) -> String:
+	## v2.3: the word for a chance (odds_word's, for odds priced some other way: fronts_capture_rate)
 	if p >= 0.95:
 		return ODDS_LOCK
 	if p >= 0.75:

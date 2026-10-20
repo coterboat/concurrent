@@ -16,6 +16,7 @@ compared with, so the louder one doesn't win by being louder. Needs VoiceStudio 
 """
 import json
 import os
+import shutil
 import re
 import subprocess
 import sys
@@ -33,7 +34,7 @@ import voice_measure  # noqa: E402
 BATCH = "vs_voices"
 BATCH_DIR = os.path.join(ROOT, "review", BATCH)
 LINES_JSON = os.path.join(ROOT, "game", "data", "lines.json")
-FFMPEG = "/opt/homebrew/bin/ffmpeg"
+FFMPEG = "/opt/homebrew/bin/ffmpeg" if os.path.exists("/opt/homebrew/bin/ffmpeg") else (shutil.which("ffmpeg") or "ffmpeg") ## v2.3: the PC's
 TAKES = 3
 
 ## who -> the accepted takes (file names) their clone is made from: 5-10 s of their own voice

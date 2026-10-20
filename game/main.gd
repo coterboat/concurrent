@@ -27,6 +27,31 @@ func _ready() -> void:
 	session.name = "Session"
 	add_child(session)
 	show_title()
+	_fit_window.call_deferred()
+
+
+func _fit_window() -> void:
+	## v2.3: open at a size that fits the screen it's on. The project asks for 1440×900: more than a
+	## 1366×768 laptop has (the window ran off it), and a postage stamp on a 4K monitor. On Windows and
+	## Linux the window takes 85% of the usable screen at the tables' 16:10, centred (the UI scales
+	## with it). The Mac sizes its windows in points and already fits; a probe (not the main scene)
+	## and fullscreen are left alone.
+	var win := get_window()
+	if OS.get_name() == "macOS" or get_tree().current_scene != self or DisplayServer.get_name().begins_with("headless"):
+		return
+	if win.mode != Window.MODE_WINDOWED:
+		return
+	var scr: int = win.current_screen
+	var area: Rect2i = DisplayServer.screen_get_usable_rect(scr)
+	if area.size.x <= 0 or area.size.y <= 0:
+		return
+	var h: float = minf(area.size.y * 0.85, area.size.x * 0.85 / 1.6)
+	var want := Vector2i(int(h * 1.6), int(h))
+	want = want.max(win.min_size).min(area.size)
+	if absf(float(want.x) / float(win.size.x) - 1.0) < 0.1:
+		return ## near enough to what it opened at
+	win.size = want
+	win.position = area.position + (area.size - want) / 2
 
 
 func _swap(next: Control) -> void:

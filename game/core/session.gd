@@ -935,7 +935,13 @@ func projected_world() -> Types.World:
 
 func income_total() -> int:
 	if phase == Phase.OPENING:
-		return Setup.pool_for(map, MapLib.living_player_ids(world).size()) - _dealt_armies(planner)
+		## v2.3: never more than the lands can take. The Isthmus deals 15 to a shore whose three lands
+		## hold 4, 6 and 4: the last man could only ever be lost, and the tutorial's very first SEAL asked
+		## about him ("1 troop still unplaced"). The world after deployment is the same either way.
+		var room := 0
+		for t in MapLib.player_territory_ids(world, planner):
+			room += Setup.opening_cap(world, map, t)
+		return mini(Setup.pool_for(map, MapLib.living_player_ids(world).size()) - _dealt_armies(planner), room)
 	return Income.income_of(_post_regroup(), map, planner) + Validate.cash_value_of(world, map, sheet())
 
 
@@ -979,6 +985,23 @@ func income_left() -> int:
 	return maxi(0, income_total() - placed_total())
 
 
+func placeable_left() -> int:
+	## v2.3: the recruits still to place that have somewhere to go: income_left(), but never more than
+	## the room left on the planner's lands. Lands that border none of yours take one each, so a deal
+	## of three lone lands on the Isthmus can place 3 of 5, and the other 2 only ever went home; the
+	## game used to ask about them every round ("2 recruits still unplaced"), and "Place them for me"
+	## could do nothing.
+	var room := 0
+	for t in MapLib.player_territory_ids(world, planner):
+		room += maxi(0, place_cap(t) - placed_on(t))
+	return mini(income_left(), room)
+
+
+func no_room() -> int:
+	## recruits this round with nowhere they may go (they go home at the seal, as ever)
+	return income_left() - placeable_left()
+
+
 func placed_on(t: String) -> int:
 	if phase == Phase.OPENING:
 		return int(opening.get(planner, {}).get(t, 0))
@@ -1004,8 +1027,9 @@ func add_place(t: String, delta: int) -> String:
 		if cap == 0 and phase != Phase.OPENING and map.supply and not MapLib.in_supply(world, map, t):
 			return "%s is cut off: no recruits can reach it until the road home is open again." % hex_name(t) ## v1.13
 		if cur >= cap:
-			return "%s can take at most %d (1 + your %d neighboring lands%s)." % [
-				hex_name(t), cap, cap / (2 if phase == Phase.OPENING else 1) - 1,
+			var nb: int = cap / (2 if phase == Phase.OPENING else 1) - 1
+			return "%s can take at most %d (1 + your %d neighboring %s%s)." % [
+				hex_name(t), cap, nb, "land" if nb == 1 else "lands",
 				", doubled for deployment" if phase == Phase.OPENING else ""]
 	var nxt: int = clampi(cur + delta, 0, cap)
 	nxt = mini(nxt, cur + income_left()) if delta > 0 else nxt
@@ -1397,6 +1421,27 @@ func odds(att: int, def: int, to_id: String = "") -> Dictionary:
 	return {"p": p, "word": word, "fort": bonus > 0}
 
 
+func odds_into(to_id: String, def: int) -> Dictionary:
+	## v2.3: the planner's whole attack on one land, priced as it will be fought. Under rules 21 each
+	## land it comes from is a front of its own, facing the defenders' whole line
+	## (Combat.fronts_capture_rate); before that, one force of their sum. Adds "total" and "fronts".
+	var by_from := {}
+	var tot := 0
+	for raw in sheet().packets:
+		var pk: Types.Packet = raw
+		if pk.to_id == to_id:
+			by_from[pk.from_id] = int(by_from.get(pk.from_id, 0)) + pk.strength
+			tot += pk.strength
+	var o: Dictionary = odds(tot, def, to_id)
+	o["total"] = tot
+	o["fronts"] = by_from.size()
+	if map.rules >= 21 and by_from.size() > 1 and def > 0:
+		var p: float = Combat.fronts_capture_rate(by_from.values(), def, map.battle, MapLib.defender_bonus(world, map, to_id))
+		o["p"] = p
+		o["word"] = Combat.word_for(p)
+	return o
+
+
 func expected_defense(to_id: String) -> Dictionary:
 	## What the target holds now, and the most it could hold after its owner's hidden reinforcement.
 	var ts: Types.TerritoryState = world.get_territory(to_id)
@@ -1417,11 +1462,12 @@ func warnings() -> PackedStringArray:
 	var out := PackedStringArray()
 	if phase != Phase.PLANNING and phase != Phase.OPENING:
 		return out
-	if income_left() > 0:
+	var unplaced: int = placeable_left() ## v2.3: recruits with no room anywhere aren't a warning (RV-006)
+	if unplaced > 0:
 		if phase == Phase.OPENING:
-			out.append("%d starting arm%s not placed yet — anything unplaced is lost." % [income_left(), "y" if income_left() == 1 else "ies"])
+			out.append("%d starting arm%s not placed yet — anything unplaced is lost." % [unplaced, "y" if unplaced == 1 else "ies"])
 		else:
-			out.append("%d reinforcement%s not placed yet — unplaced armies are lost." % [income_left(), "" if income_left() == 1 else "s"])
+			out.append("%d reinforcement%s not placed yet — unplaced armies are lost." % [unplaced, "" if unplaced == 1 else "s"])
 	if phase == Phase.PLANNING:
 		var w: Types.World = projected_world()
 		var hinges: Dictionary = BoardFacts.hinges(w, map, planner) ## v1.13: lands that hold the road home

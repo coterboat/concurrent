@@ -224,19 +224,26 @@ static func who(name: String, cap: bool = false) -> String:
 
 static func says(name: String, verb: String) -> String:
 	## "Varek holds", but "You hold": the default human seat is called You
+	return "%s %s" % [name, verb_for(name, verb)]
+
+
+static func verb_for(name: String, verb: String) -> String:
+	## the verb alone, as says() puts it after name: for a second verb in one sentence ("You raise
+	## 3 fresh troops in the city and carry off…")
 	if name.strip_edges().to_lower() != "you":
-		return "%s %s" % [name, verb]
-	var irregular := {"is": "are", "has": "have", "does": "do", "was": "were"}
+		return verb
+	var irregular := {"is": "are", "has": "have", "does": "do", "was": "were", "goes": "go"}
 	var v: String = verb
 	if irregular.has(v):
 		v = irregular[v]
-	elif v.ends_with("ches") or v.ends_with("shes") or v.ends_with("sses") or v.ends_with("xes") or v.ends_with("zes"):
+	## v2.3: "seizes" is "seize" (a bare "zes" rule made it "You seiz"); only a doubled z drops "es"
+	elif v.ends_with("ches") or v.ends_with("shes") or v.ends_with("sses") or v.ends_with("xes") or v.ends_with("zzes"):
 		v = v.substr(0, v.length() - 2)
 	elif v.ends_with("ies"):
 		v = v.substr(0, v.length() - 3) + "y"
 	elif v.ends_with("s"):
 		v = v.substr(0, v.length() - 1)
-	return "%s %s" % [name, v]
+	return v
 
 
 static func plural(n: int, one: String, many: String = "") -> String:

@@ -25,7 +25,10 @@ var px := 1.0 ## physical pixels per screen pixel
 var driver := "" ## who moves the camera: "board" or "battle"
 var quiet := false
 var _vp: SubViewport
-var _task := -1
+var _task := -1 ## the build this land will stand on
+var _out := {} ## ...which hands its terrain over here, never into this node (v2.3)
+var _replaced: Array[int] = [] ## v2.3: builds a newer one replaced, still running: each is waited for too
+static var builds_open := 0 ## v2.3: builds started and not yet waited for, in every land (probe v23b)
 var _terrain: RefCounted
 var _art: RefCounted
 var _map: RefCounted
@@ -86,29 +89,57 @@ func prepare(p_board: Control) -> void:
 	var art = _art
 	var map = _map
 	_terrain = null
+	## v2.3: another map asked for while a build still runs: that build is kept to be waited for,
+	## never dropped. A task nobody waits for lives until Godot shuts down and is freed after
+	## GDScript has gone, with the map it holds: signal 11 at exit (a war left in its first second
+	## for a war on another map, then the game closed)
+	if _task >= 0:
+		_replaced.append(_task)
+	var out := {}
+	_out = out
 	_task = WorkerThreadPool.add_task(func():
 		var t: RefCounted = Terrain.build(art, map, 3)
 		t.scenery = Scenery.plan(art, map, t)
 		t.scenery_scenes = Scenery.load_all(t.scenery)
-		_terrain = t, false, "the land of " + str(art.id))
+		out["terrain"] = t, false, "the land of " + str(art.id))
+	builds_open += 1
 
 
 func busy() -> bool:
 	return _task >= 0
 
 
+func building() -> String:
+	## the map this land is built (or being built) for
+	return str(_art.id) if _art != null else ""
+
+
+func _wait(id: int) -> void:
+	WorkerThreadPool.wait_for_task_completion(id)
+	builds_open -= 1
+
+
 func _notification(what: int) -> void:
-	## v2.0.2: freed while its land is still being built (a game closed in its first second or
-	## two): the build writes into this land, so it finishes first (it crashed at exit, signal 11)
-	if what == NOTIFICATION_PREDELETE and _task >= 0:
-		WorkerThreadPool.wait_for_task_completion(_task)
-		_task = -1
+	## v2.0.2: freed while its land is still being built (a game closed in its first second or two):
+	## the build finishes first. v2.3: and any build it replaced (see prepare())
+	if what == NOTIFICATION_PREDELETE:
+		for id in _replaced:
+			_wait(id)
+		_replaced.clear()
+		if _task >= 0:
+			_wait(_task)
+			_task = -1
 
 
 func _process(delta: float) -> void:
+	for id in _replaced.duplicate():
+		if WorkerThreadPool.is_task_completed(id):
+			_wait(id)
+			_replaced.erase(id)
 	if _task >= 0 and WorkerThreadPool.is_task_completed(_task):
-		WorkerThreadPool.wait_for_task_completion(_task)
+		_wait(_task)
 		_task = -1
+		_terrain = _out.get("terrain")
 		_build_world()
 	if prepared and shown():
 		_watch_speed(delta)
@@ -189,7 +220,9 @@ func _build_world() -> void:
 
 func project(p: Vector2, lift: float = 0.0) -> Vector2:
 	## a map point on the land, to screen pixels (of whoever draws the land full screen)
-	var v := Vector3(p.x, _terrain.height_at(p) * wv.relief + lift, p.y)
+	## v2.3: height_at(), which is flat while a new map's land is still being built (a board drawn in
+	## that moment asked a null terrain: "Nonexistent function 'height_at' in base 'Nil'")
+	var v := Vector3(p.x, height_at(p) * wv.relief + lift, p.y)
 	if wv.cam.is_position_behind(v):
 		return Vector2(-99999, -99999)
 	return wv.cam.unproject_position(v) / px
@@ -205,7 +238,7 @@ func unproject(s: Vector2) -> Vector2:
 	var q := Vector3.ZERO
 	for i in 6:
 		q = o + d * ((hgt - o.y) / d.y)
-		hgt = _terrain.height_at(Vector2(q.x, q.z)) * wv.relief
+		hgt = height_at(Vector2(q.x, q.z)) * wv.relief
 	return Vector2(q.x, q.z)
 
 
