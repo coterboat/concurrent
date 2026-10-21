@@ -6,8 +6,8 @@ running ledger kept by bug clerk from playtester's reports. one file per red run
 
 | id | severity | title | first seen | latest report |
 |---|---|---|---|---|
-| B-014 | broken | v22 never sees the musket shots fly, and the fall-timing fact gets no samples | bacccac | [2026-10-15-0544-bacccac](reports/2026-10-15-0544-bacccac.md) |
-| B-013 | broken | v202 border-clash probe never sees the winner, then hangs on a script error | bacccac | [2026-10-15-0544-bacccac](reports/2026-10-15-0544-bacccac.md) |
+| B-014 | broken | v22 never sees the musket shots fly, and the fall-timing fact gets no samples | bacccac | [2026-10-20-2218-d7a840b](reports/2026-10-20-2218-d7a840b.md) |
+| B-013 | broken | v202 border-clash probe never sees the winner, then hangs on a script error | bacccac | [2026-10-20-2218-d7a840b](reports/2026-10-20-2218-d7a840b.md) |
 
 ### B-014: v22 never sees the musket shots fly, and the fall-timing fact gets no samples
 - repro:
