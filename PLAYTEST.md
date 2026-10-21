@@ -56,7 +56,17 @@ shown: fine" is as useful as a bug.
   take every recruit. Since v2.3 the game says so once in the log and the tally ("· 2 no room") rather
   than asking about them.
 
-## v2.3: the handoff pass (this push)
+## v2.3.1: your report on d7a840b (this push)
+
+- **B-013 and B-014 fixed** (probes, not the game): on your box a frame takes about a second, so the
+  clash's half-second shove and a musket ball's third of a second could start and end between frames.
+  Both probes now hold the game to a 60th of a second a frame while they watch those moments
+  (`p.steady()` in `tools/probe.gd`). That costs frames: about 3,900 for v202 and 2,200 for v22, so
+  give them `PROBE_SECS=5400`. **Poke:** `./scripts/probes.sh v202 v22` on your box. They should pass,
+  and v202 should never hang. Say how long each took (each probe's `done` line now counts its frames).
+  `PROBE_ARGS=--box=40` makes a fast machine draw frames the way yours does, if you want to try one.
+
+## v2.3: the handoff pass
 
 No rule changes (rules 22): nothing in `resolve.gd`, every save replays, and the world's hash is as it
 was. The owner is handing the game to their dad, so this pass is about a first-time player's war. It was

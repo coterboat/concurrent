@@ -240,7 +240,8 @@ def done(sha):
 
 
 def sync():
-    r = subprocess.run([os.path.join(ROOT, "scripts", "sync_main.sh")], capture_output=True, text=True)
+    ## through sh: Windows can't run a .sh itself (WinError 193)
+    r = subprocess.run(["sh", os.path.join(ROOT, "scripts", "sync_main.sh")], capture_output=True, text=True)
     return (r.stdout + r.stderr).strip()
 
 

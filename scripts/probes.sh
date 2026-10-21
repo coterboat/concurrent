@@ -5,6 +5,8 @@
 # A probe fails on a `FAIL` line (its p.ok() facts), a SCRIPT ERROR, a non-zero exit, or a hang
 # (each is time-boxed). PNGs land in $SHOT_DIR (default: a fresh folder under /tmp), for looking at.
 # Windowed: it needs a display (the bot uses Xvfb). Run it alone when the owner's Godot is open.
+# PROBE_ARGS go to every probe: `PROBE_ARGS=--box=40` plays each frame as 40/60 of a second, as the
+# bot's software-GL box does (tools/probe.gd).
 ROOT="$(CDPATH= cd -- "$(dirname "$0")/.." && pwd)"
 cd "$ROOT" || exit 1
 GODOT="${GODOT:-$HOME/Downloads/Godot.app/Contents/MacOS/Godot}"
@@ -21,7 +23,7 @@ for n in $names; do
 	log="$SHOT_DIR/$n/probe.log"
 	start=$(date +%s)
 	SHOT_DIR="$SHOT_DIR/$n" perl -e 'alarm shift; exec @ARGV' "$SECS" \
-		"$GODOT" --path . res://tools/probe.tscn -- "--script=res://tools/shots/$n.gd" >"$log" 2>&1
+		"$GODOT" --path . res://tools/probe.tscn -- "--script=res://tools/shots/$n.gd" $PROBE_ARGS >"$log" 2>&1
 	rc=$?
 	facts=$(grep -c "^PROBE ok" "$log")
 	if [ $rc = 0 ] && ! grep -qE "^PROBE FAIL|SCRIPT ERROR" "$log"; then

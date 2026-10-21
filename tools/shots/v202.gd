@@ -25,9 +25,13 @@ func run(probe) -> void:
 	Settings.data["speed"] = "normal"
 	Settings.data["battle_land"] = true
 	Settings.data["map_land"] = true
+	## (B-013) the break, the shove and the swoop each last half a second or so: a frame a second (the
+	## bot's box) can miss one whole, so while they're watched a frame is a 60th of a second
+	p.steady(true)
 	await _clash()
 	await _pictures()
 	await _theater()
+	p.steady(false)
 	await _skip_mid_swoop()
 	await _stills()
 	await _surge_clash()
@@ -162,7 +166,8 @@ func _clash() -> void:
 	var pb: Vector2 = b.anchor(bl)
 	var mid: Vector2 = (pa + pb) * 0.5
 	p.ok(bool(met.get("met", false)) and (met["a_tip"] as Vector2).distance_to(met["b_tip"]) < 1.0, "the two arrows meet head-on (%d frames after the charge)" % guard)
-	p.ok((met["meet"] as Vector2).distance_to(mid) < pa.distance_to(pb) * 0.25, "they meet on the border, between the two lands (%.0f px off the middle of %.0f)" % [(met["meet"] as Vector2).distance_to(mid), pa.distance_to(pb)])
+	var off_mid: float = (met["meet"] as Vector2).distance_to(mid) if met.has("meet") else INF
+	p.ok(off_mid < pa.distance_to(pb) * 0.25, "they meet on the border, between the two lands (%.0f px off the middle of %.0f)" % [off_mid, pa.distance_to(pb)])
 	## the camera leaned in, both lands clear of the card
 	await p.frames(30)
 	pa = b.anchor(ra)
@@ -177,11 +182,13 @@ func _clash() -> void:
 		guard += 1
 		await p.frames(1)
 	p.ok(str(b.drawn_clash.get("winner", "")) == winner, "the dice land and the clash knows its winner (%s)" % winner)
-	var d0: float = (b.drawn_clash["meet"] as Vector2).distance_to(b.anchor(loser_land))
+	## (B-013: a break never drawn is a FAIL above, not a script error here that hangs the probe)
+	var broke: bool = b.drawn_clash.has("meet")
+	var d0: float = (b.drawn_clash["meet"] as Vector2).distance_to(b.anchor(loser_land)) if broke else 0.0
 	await p.frames(12)
 	var mid_push: Dictionary = b.drawn_clash
-	var d1: float = (mid_push["meet"] as Vector2).distance_to(b.anchor(loser_land)) if not mid_push.is_empty() else 0.0
-	p.ok(d1 < d0 - 4.0, "the winner's arrow drives the loser's back toward its own land (%.0f px from it, then %.0f)" % [d0, d1])
+	var d1: float = (mid_push["meet"] as Vector2).distance_to(b.anchor(loser_land)) if mid_push.has("meet") else 0.0
+	p.ok(broke and d1 < d0 - 4.0, "the winner's arrow drives the loser's back toward its own land (%.0f px from it, then %.0f)" % [d0, d1])
 	## (watched over the fall, not sampled once: it takes about a third of a second, and a quick
 	## frame rate can sample it half over)
 	var fallen := 0

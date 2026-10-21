@@ -127,6 +127,9 @@ func _dice_find_their_fronts() -> void:
 		await _fight_out(th)
 		await _into_battle(gs, th)
 	var dio: Node3D = lf.dio
+	## (B-014) a ball is in the air a third of a second: a frame a second (the bot's box) can fire
+	## and land it unseen, so while the shots are watched a frame is a 60th of a second
+	p.steady(true)
 	await p.frames(int(dio.arrival() * 60.0) + 30)
 	p.ok(th._melee and th._one_commander() and th._fronts.size() == 2, "Dad storms The Gate from two of his own lands: one battle, two fronts, one colour")
 	var t0: String = _plate_tag(lf, 0)
@@ -220,6 +223,7 @@ func _dice_find_their_fronts() -> void:
 			if mid.size() >= 3:
 				flight_taken = true
 				await snap("v22_03_shots_in_flight")
+	p.steady(false)
 	p.ok(tag_count >= 3 and tags_ok, "on the table every pair carries a tag naming the front its dice are for (%d tags)" % tag_count)
 	p.ok(placed_ok, "each tag hangs over its own pair of dice")
 	p.ok(ordered, "a throw's pairs lie on the table as their fronts stand on the field, left to right")
@@ -274,6 +278,7 @@ func _fortune_owed() -> void:
 	## (RV-005 F5) before the dice: Dad's line fires on Varek's eight times; each time the first of
 	## Varek's men to fall goes down no sooner than the first ball reaches him
 	var dio: Node3D = th._land_field.dio
+	p.steady(true) ## (B-014) a ball's landing and a man's fall a 60th of a second apart, at any frame rate
 	await p.frames(int(dio.arrival() * 60.0) + 30)
 	var early := 0
 	var timed := 0
@@ -311,6 +316,7 @@ func _fortune_owed() -> void:
 			if fell < landed - 1.5 / 60.0:
 				early += 1
 		await p.frames(30)
+	p.steady(false)
 	p.ok(timed >= 6 and early == 0, "the first man falls as the first ball reaches him, never before it (%d volleys timed, %d early)" % [timed, early])
 	var spent := false
 	var said := ""

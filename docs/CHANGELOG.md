@@ -2,6 +2,35 @@
 
 The bible says amendments come with a dated entry and the test or band that justified them. Everything below has both.
 
+## v2.3.1 — 20 Oct 2026: the bot's two probes on a slow box (no rule change: rules 22)
+
+The owner merged the v2.3 pass (`d7a840b`). The playtest bot's report on it had two open bugs, both in
+probes, neither in the game. Its box draws about a frame a second (llvmpipe, software GL), so a moment
+that lasts half a second can begin and end between two frames.
+
+- **B-013** (`v202`, the border clash): the shove after the dice lasts 0.65 s (`CLASH_PUSH`), and the
+  board stops drawing the clash when it's over, so a one-second frame never showed a winner. The probe's
+  next line then read `drawn_clash["meet"]` from the empty picture: a SCRIPT ERROR, and headless Godot
+  hung until it was killed. Now the probe holds the game to a 60th of a second a frame through the clash,
+  the pictures and the swoop ("Show my battles", the next moment a slow box missed once the clash got
+  through), and an empty picture is a FAIL line, never a script error (two reads guarded).
+- **B-014** (`v22`, shots between the fronts): a musket ball is in the air about a third of a second, so
+  it could be fired and land between two frames ("0 seen"). And the timer that drops the first man runs
+  before the frame moves the ball, so a long frame showed him down before his ball arrived ("1 early").
+  Both stretches are held to a 60th of a second a frame now.
+- **The probe harness:** `p.steady(true)` holds the game to `step` of a second a frame however slow the
+  box (it sets `Engine.time_scale` from the slowest recent frame). `--box=K` plays every frame as K/60 of
+  a second, as a box at 60/K frames a second does, to see the bot's box here
+  (`PROBE_ARGS=--box=40 ./scripts/probes.sh v202 v22`; `probes.sh` passes `PROBE_ARGS` on). With
+  `--box=40` both bugs reproduced on the PC before the change (`v22`: "0 seen"; `v202` died on a script
+  error). After it, both probes pass at `--box=40` (34 and 19 facts) and at full speed. The price on a
+  slow box is frames: at `--box=40` `v202` took 3,859 of them and `v22` 2,234 (a probe's `done` line
+  says how many now), so at a frame a second `v202` is about an hour.
+- **`check.sh` on the PC:** it took the Microsoft Store's `python3` stub for Python (so the tool tests
+  "failed") and didn't know where the PC's Godot is (so it skipped every Godot check). It now finds a
+  Python that runs, and the PC's Godot. And `await_bots.sh --claim` died on the PC (WinError 193:
+  Windows can't run `sync_main.sh` itself); it runs it through `sh` now.
+
 ## v2.3 — 14 Oct 2026: the handoff pass (no rule change: rules 22)
 
 The owner: "we're getting to a point where i want to hand this off to my dad to start letting him

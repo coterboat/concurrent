@@ -21,7 +21,7 @@ if [ "$1" = "--install" ]; then
 fi
 
 GODOT="${GODOT:-}"
-for g in "$HOME/Downloads/Godot.app/Contents/MacOS/Godot" "/Applications/Godot.app/Contents/MacOS/Godot" "$(command -v godot)"; do
+for g in "$HOME/Downloads/Godot.app/Contents/MacOS/Godot" "/Applications/Godot.app/Contents/MacOS/Godot" "$HOME/Documents/godot/Godot_v4.7.1-stable_win64_console.exe" "$(command -v godot)"; do
 	[ -z "$GODOT" ] && [ -x "$g" ] && GODOT="$g"
 done
 LOG="$(mktemp "${TMPDIR:-/tmp}/concurrent_check.XXXXXX")"
@@ -56,8 +56,14 @@ step() {
 changed="$(git diff --cached --name-only 2>/dev/null)"
 [ -z "$changed" ] && changed="$(git diff --name-only HEAD 2>/dev/null; git ls-files --others --exclude-standard)"
 
-if command -v python3 >/dev/null 2>&1; then
-	step "tool tests" 120 sh -c "python3 tools/review/test_review.py && python3 tools/ludo/test_notes.py"
+## (on Windows `python3` is the Microsoft Store's stub, which only says to install Python: a Python
+## that runs, then)
+PY=""
+for p in python3 python; do
+	[ -z "$PY" ] && "$p" -c "" >/dev/null 2>&1 && PY="$p"
+done
+if [ -n "$PY" ]; then
+	step "tool tests" 120 sh -c "$PY tools/review/test_review.py && $PY tools/ludo/test_notes.py"
 else
 	echo "check: skip  tool tests (no python3)"
 fi
