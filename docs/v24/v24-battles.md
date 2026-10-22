@@ -126,16 +126,17 @@ too: its takes open 6-10 dB under the bugle and fade in, so nothing in it stacks
 
 ## Tests and probes
 
-- `tests/test_v24.gd` (28 facts, registered in `tests/runner.gd`): the split measure on hand-written fights;
+- `tests/test_v24.gd` (30 facts, registered in `tests/runner.gd`): the split measure on hand-written fights;
   rules 23 columns fall back together (judgment and careful) and rules 22 untouched; mixed orders; reserves
   together; even volleys fired again (rules 23) and costing nobody as one of the three (rules 22); the fronts
-  price against the battles; the call plate's `mine`/`officer` against the unwatched call; rules-22 golden
+  price against the battles; the call plate's `mine`/`officer` against the unwatched call (a melee's, and an
+  assault's at a capital's walls); rules-22 golden
   world hashes; two rules-23 wars on known24 and isles24 (five commanders) legal, conserved, the report
   agreeing and replaying to the same world, with no split retreat; a new game plays rules 23.
-- `tools/shots/v24b.gd` (26 facts, 10 shots): the old save's split retreat on the land (line, count, odds,
+- `tools/shots/v24b.gd` (28 facts, 12 shots): the old save's split retreat on the land (line, count, odds,
   the field, the verdict, the line's width, the battle report's line), rules 23's retreat together and a melee's even volleys fired
   again, your two columns asked one by one, the battle that ends by itself, one bugle on each field and its
-  level, the two How to Play pages saying it and fitting 1440×900. It dry-runs the round on the session's own
+  level, the How to Play pages saying it and fitting 1440×900 (with the garrison shield's two). It dry-runs the round on the session's own
   world to pick a seed where each moment happens, then plays it in the client.
 - `./scripts/check.sh` green; the full suite `CONCURRENT ok passed=769 failed=0`; every probe (`./scripts/probes.sh`,
   windowed, on this PC): 33 of 33 ok, v24b's shots looked at (the retreat lines clear the commanders' bubbles,
@@ -157,10 +158,8 @@ too: its takes open 6-10 dB under the bugle and fade in, so nothing in it stacks
   inside the block that opens `_land_field` (v24-3d's part). I made the later, common-path bugle play off the
   land only, and didn't touch that block. If the land's opening moves, keep exactly one charge per battle
   opening; v24b checks it on both fields.
-- `session.gd` `officer_call()` (nobody's) still judges one front alone and ignores a fortress's longer line;
-  the battlefield no longer uses it for melee fronts (the engine's `officer` instead). For plain assaults it is
-  as before. A one-line follow-up for whoever owns session.gd next: `return str(pending["officer"])` when
-  present, and pass the fortress bonus.
+- `session.gd` `officer_call()` (nobody's) is now only a fallback: every pause for a call carries `officer`
+  (below), and the battlefield's auto-roll uses it.
 
 ## What Alex should poke at
 
@@ -182,6 +181,21 @@ too: its takes open 6-10 dB under the bugle and fade in, so nothing in it stacks
   verdict (the probe's took 7.7 s, Varek's line and then the advisor's). If Alex wants longer to look at a battle
   he rolled himself, it's one number.
 - **Hask** won a few more in all three arena tables (above). Watch it in play before touching anything.
-- Not mine, noticed: `session.gd` `officer_call()` (the auto-roll call for a plain assault) ignores a fortress's
-  longer line, where the engine's officers count it; and the AI's Fortune doctrine in a melee (rules 19) weighs
-  the attackers as one force. Both predate v2.4 and change nothing here.
+- Not mine, noticed: the AI's Fortune doctrine in a melee (rules 19) weighs the attackers as one force; it
+  predates v2.4 and changes nothing here. And the advisor's counsel (`game/core/counsel.gd`, `t-r2`) still says
+  "the gold shield beside its number" (see below).
+
+## After the merge (the coordinator's follow-ups, 10-21)
+
+- **Every pause for a call carries the officers' call.** A plain assault's `pending` now carries `officer`
+  (`Combat.doctrine` with the fortress's or capital's longer line, the very call made unwatched), and so does
+  every melee front's, under any rules (`_officers` is rules-aware). So a battle watched on auto-roll calls
+  exactly as one skipped; before, the session's `officer_call()` left the walls out. A field on the pause only:
+  calls are recorded, so outcomes and old saves are untouched (the rules-22 golden hashes still hold). Test:
+  120 assaults by a careful officer on a capital of 12, under rules 23 and 22: at 33 pauses the walls change
+  the call, and the pause's `officer` is the unwatched call at all 120.
+- **The garrison shield isn't always gold now** (v24-map's ranked shields, Alex's C4 still open): How to Play
+  ("Attack — and leave home", "Digging in") and README's Garrisons line say "the shield beside its number" and
+  what its look means: plain wood for the one man held back, then brass, steel and gold, gold on crimson for a
+  fortress's or a capital's four. It's its own commit, so if Alex keeps the old shield it reverts in one. The
+  advisor's counsel line (`counsel.gd`, nobody's file) still says "gold shield": the same one-word change.
