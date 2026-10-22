@@ -1481,10 +1481,18 @@ func warnings() -> PackedStringArray:
 				continue
 			var ts: Types.TerritoryState = w.get_territory(p.from_id)
 			var left: int = ts.held()
+			## v2.4 (the owner: only "another adjacent region that you could be attacked by outside of
+			## the one you're invading"): a land this one marches on must beat its column on the border
+			## before it could walk in, so only the enemy neighbours it leaves alone count. A land that
+			## sends columns at two neighbours fears neither of them.
+			var struck := {}
+			for raw2 in sheet().packets:
+				if (raw2 as Types.Packet).from_id == p.from_id:
+					struck[(raw2 as Types.Packet).to_id] = true
 			var danger := false
 			for n in map.get_territory(p.from_id).adjacent:
 				var o: String = world.get_territory(n).owner
-				if o != planner and o != Types.UNOCCUPIED and o != Income.NEUTRAL_ID:
+				if o != planner and o != Types.UNOCCUPIED and o != Income.NEUTRAL_ID and not struck.has(n):
 					danger = true
 			if left <= 1 and danger:
 				var road := ""

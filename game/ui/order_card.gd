@@ -321,13 +321,15 @@ func rebuild() -> void:
 
 
 func _ok_button() -> Button:
-	## done with this order: close the card (the ✕ does the same; this one is where the eye ends)
+	## done with this order: close the card (the ✕ only closes it; this one is where the eye ends)
+	## v2.4: and let go of the land it came from (the owner: after a click-click order, OK left the source
+	## picked, so the next click beside it ordered another march from there)
 	var ok := Style.chip("✓  OK", func():
 		Audio.sfx("click", -6.0)
-		gs.edit_order("", ""), Style.GOOD, 17)
+		gs.order_done(), Style.GOOD, 17)
 	ok.custom_minimum_size = Vector2(0, 38)
 	ok.size_flags_horizontal = Control.SIZE_EXPAND_FILL
-	ok.tooltip_text = "Keep this order and close the card (Enter)"
+	ok.tooltip_text = "Keep this order, close the card and let go of %s (Enter)" % session.hex_name(gs.selected if gs.selected != "" else from_id)
 	return ok
 
 

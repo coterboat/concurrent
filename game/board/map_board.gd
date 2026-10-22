@@ -48,6 +48,29 @@ var ghosts: Array = [] ## last round's packets (v1.13: each with its fate, LastR
 var threats := {} ## v1.13: the viewer's lands -> BoardFacts.threats (planning only): what could land on them
 var hinges := {} ## v1.13: the viewer's lands -> the lands they hold the road home for (supply maps)
 var placements := {} ## id -> queued reinforcements (viewer)
+## v2.4: id -> the viewer's soldiers marching in (the regroup phase). They're counted in the world the
+## board is given, but they aren't there yet and can't march on, so the token's number leaves them out
+## and they ride on a tab of their own (the owner: "1 or 2 units in a region you're moving troops into,
+## thinking you can execute a move order with troops that haven't yet arrived")
+var arriving := {}
+## v2.4: how a garrison's shield shows how deep its men are dug in (the owner: "experiment with garrison
+## strength changing the shield icon beyond the number - it could be a cool indicator of garrison
+## strength or it could add too much noise. try with/without the number inside"). Settings "shields",
+## and G in a war, step through them:
+##   ranked    the shield dressed by its depth: plain wood for the one man held back on a land nobody
+##             has dug in yet, then brass, steel, gold, and gold on crimson for a fortress's four; the
+##             number inside, as ever
+##   number    the shield as it was: one look, the number inside
+##   chevrons  dressed by its depth, with the men dug in counted in chevrons instead of the number
+const SHIELD_STYLES := ["ranked", "number", "chevrons"]
+var shield_style := "ranked"
+const SHIELD_TIERS := [
+	{"size": 0.86, "fill": Color(0.25, 0.18, 0.11), "edge": Color(0.8, 0.7, 0.52, 0.9), "w": 1.4, "ink": Color(0.96, 0.9, 0.76)},
+	{"size": 0.96, "fill": Color(0.36, 0.24, 0.08), "edge": Color(0.9, 0.68, 0.32), "w": 2.0, "ink": Color(1.0, 0.94, 0.72)},
+	{"size": 1.04, "fill": Color(0.22, 0.25, 0.3), "edge": Color(0.86, 0.9, 0.96), "w": 2.3, "ink": Color(0.96, 0.98, 1.0)},
+	{"size": 1.1, "fill": Color(0.5, 0.33, 0.04), "edge": Color(1.0, 0.86, 0.4), "w": 2.6, "ink": Color(1.0, 0.97, 0.82), "glow": 0.16},
+	{"size": 1.16, "fill": Color(0.55, 0.11, 0.08), "edge": Color(1.0, 0.88, 0.48), "w": 3.0, "ink": Color(1.0, 0.95, 0.8), "glow": 0.28},
+]
 var bonus := {} ## id -> free soldiers from the cards being turned in (v1.6), drawn as a gold star
 var bonus_seen := {} ## v1.9: id -> when its star first showed; the star pops in, then fades after BONUS_SHOW
 const BONUS_SHOW := 4.5
@@ -795,6 +818,8 @@ func _draw_overlay() -> void:
 	_fate_spots.clear()
 	_fates_q.clear()
 	drawn_crowns.clear()
+	drawn_arriving.clear()
+	drawn_shields.clear()
 	names_over.clear()
 	_names_now = []
 	_draw_ornaments(ci)
@@ -1731,6 +1756,118 @@ func _arrow_shadow(ci: CanvasItem, pts: PackedVector2Array, w: float, alpha: flo
 		ci.draw_polyline(sh, c, w + 4.0, true)
 
 
+var drawn_shields: Dictionary = {} ## v2.4: land -> [style, tier, what's inside: the number or "chevrons" or "boss"] this frame (the probe reads it)
+
+
+func _draw_shield(ci: CanvasItem, id: String, at: Vector2, gr: float, home: int, dug: int, f: Font) -> void:
+	## the garrison's shield: who stays home (shield_style says how it shows their depth)
+	if shield_style == "number":
+		ci.draw_circle(at + Vector2(1.5, 2.5), gr, Color(0, 0, 0, 0.35))
+		Style.draw_shape(ci, "shield", at, gr, Color(0.36, 0.24, 0.08), Color(1.0, 0.84, 0.45), 2.0)
+		_shield_number(ci, at, gr, home, Color(1, 0.94, 0.72), f)
+		drawn_shields[id] = ["number", -1, home]
+		return
+	var tier: int = clampi(dug, 0, SHIELD_TIERS.size() - 1)
+	var look: Dictionary = SHIELD_TIERS[tier]
+	var chev: bool = shield_style == "chevrons" and dug <= 4
+	var sr: float = gr * float(look["size"]) * (1.1 if chev else 1.0)
+	var glow: float = float(look.get("glow", 0.0))
+	if glow > 0.0:
+		## (one soft disc: every shape drawn costs, and the board draws thirty tokens a frame on the land)
+		ci.draw_circle(at + Vector2(0, sr * 0.12), sr * 1.45, Color(1.0, 0.8, 0.35, glow * 0.8))
+	ci.draw_circle(at + Vector2(1.5, 2.5), sr, Color(0, 0, 0, 0.35))
+	Style.draw_shape(ci, "shield", at, sr, look["fill"], look["edge"], float(look["w"]))
+	var ink: Color = look["ink"]
+	if not chev:
+		_shield_number(ci, at, sr, home, ink, f)
+		drawn_shields[id] = [shield_style, tier, home]
+		return
+	if dug <= 0:
+		## nobody dug in: the one man held back, a boss on plain wood
+		ci.draw_circle(at + Vector2(0, sr * 0.12), sr * 0.26, Color(0.08, 0.05, 0.03, 0.9))
+		ci.draw_circle(at + Vector2(0, sr * 0.12), sr * 0.18, ink)
+		drawn_shields[id] = [shield_style, tier, "boss"]
+		return
+	## a chevron a man dug in, stacked up the shield
+	var gap: float = sr * (0.42 if dug > 2 else 0.5)
+	var half: float = sr * 0.56
+	var w: float = maxf(1.6, sr * 0.16)
+	for k in dug:
+		var cy: float = at.y + sr * 0.16 + (float(k) - float(dug - 1) * 0.5) * gap
+		var pts := PackedVector2Array([Vector2(at.x - half, cy + sr * 0.2), Vector2(at.x, cy - sr * 0.12), Vector2(at.x + half, cy + sr * 0.2)])
+		ci.draw_polyline(pts, Color(0.06, 0.04, 0.02, 0.85), w + 2.0, true)
+		ci.draw_polyline(pts, ink, w, true)
+	drawn_shields[id] = [shield_style, tier, "chevrons"]
+
+
+func _shield_number(ci: CanvasItem, at: Vector2, sr: float, n: int, ink: Color, f: Font) -> void:
+	var gt := str(n)
+	var gs: int = int(sr * 1.15)
+	var gw: float = f.get_string_size(gt, HORIZONTAL_ALIGNMENT_LEFT, -1, gs).x
+	ci.draw_string_outline(f, at + Vector2(-gw * 0.5, gs * 0.36), gt, HORIZONTAL_ALIGNMENT_LEFT, -1, gs, 3, Color(0.1, 0.06, 0.02, 0.9))
+	ci.draw_string(f, at + Vector2(-gw * 0.5, gs * 0.36), gt, HORIZONTAL_ALIGNMENT_LEFT, -1, gs, ink)
+
+
+static func shown_split(ts: Types.TerritoryState, inbound: int = 0) -> Array:
+	## v2.4: [who can march, who stays home] of the men a land holds now, leaving out the `inbound`
+	## marching in (Income.home_split of the land as it stood before they set out)
+	if inbound <= 0 or ts == null:
+		return Income.home_split(ts)
+	var was := Types.TerritoryState.new()
+	was.owner = ts.owner
+	was.armies = maxi(0, ts.armies - inbound)
+	was.garrison = ts.garrison
+	return Income.home_split(was)
+
+
+var drawn_arriving: Dictionary = {} ## v2.4: land -> [its arrivals tab's rect, the count] this frame (the probe reads it)
+
+
+func _clear_spot(id: String, p: Vector2, offsets: Array) -> Vector2:
+	## the spot beside a token, of these, farthest round from every order's arrow that comes in or goes
+	## out through its edge (the arrivals tab sat on the head of the very march it counts)
+	var dirs: Array = []
+	for o in orders:
+		var other: String = str(o["from"]) if str(o["to"]) == id else (str(o["to"]) if str(o["from"]) == id else "")
+		if other != "" and art.anchors.has(other):
+			dirs.append((anchor(other) - p).normalized())
+	var best: Vector2 = offsets[0]
+	var best_gap := -1.0
+	for off in offsets:
+		var gap := 2.0
+		for d in dirs:
+			gap = minf(gap, 1.0 - (off as Vector2).normalized().dot(d))
+		if gap > best_gap + 0.05:
+			best_gap = gap
+			best = off
+	return p + best
+
+
+func _draw_arriving(ci: CanvasItem, id: String, at: Vector2, token: Vector2, n: int, owner: String, f: Font) -> void:
+	## v2.4: men marching in, on a tab of their own beside the token: "+n" on a dashed edge in their
+	## commander's colour (a march is dashed on the map), an arrowhead on it pointing into the land.
+	## They'll hold it once the marches are done, but they can't march on from it: they aren't in the
+	## token's number.
+	var txt := "+%d" % n
+	var fs := 15
+	var tw: float = f.get_string_size(txt, HORIZONTAL_ALIGNMENT_LEFT, -1, fs).x
+	var box := Rect2(at - Vector2((tw + 26.0) * 0.5, 11.0), Vector2(tw + 26.0, 21.0))
+	var col: Color = Style.seat_color(owner).lightened(0.4)
+	ci.draw_rect(Rect2(box.position + Vector2(1.5, 2.0), box.size), Color(0, 0, 0, 0.4))
+	ci.draw_rect(box, Color(0.07, 0.06, 0.05, 0.95))
+	for side in [[box.position, Vector2(box.end.x, box.position.y)], [Vector2(box.end.x, box.position.y), box.end],
+			[box.end, Vector2(box.position.x, box.end.y)], [Vector2(box.position.x, box.end.y), box.position]]:
+		ci.draw_dashed_line(side[0], side[1], col, 1.6, 3.5)
+	## a little arrow, shaft and head, pointing into the land
+	var d: Vector2 = (token - at).normalized()
+	var sd: Vector2 = d.orthogonal()
+	var c: Vector2 = box.position + Vector2(9.0, 10.5)
+	ci.draw_line(c - d * 6.0, c + d * 1.5, col, 2.0, true)
+	ci.draw_colored_polygon(PackedVector2Array([c + d * 6.0, c + d * 0.5 + sd * 3.4, c + d * 0.5 - sd * 3.4]), col)
+	ci.draw_string(f, box.position + Vector2(18.0, 16.0), txt, HORIZONTAL_ALIGNMENT_LEFT, -1, fs, Color(1.0, 0.96, 0.86))
+	drawn_arriving[id] = [box, n]
+
+
 func _draw_token(ci: CanvasItem, id: String) -> void:
 	var ts: Types.TerritoryState = world.get_territory(id)
 	if ts == null:
@@ -1784,7 +1921,9 @@ func _draw_token(ci: CanvasItem, id: String) -> void:
 	## v1.3: the token's number is the army that can march; the dug-in defenders who never
 	## march sit on their own shield. Two separate numbers, never one inside the other.
 	## v1.5: the big number is exactly who can march; the shield, who stays home
-	var split: Array = Income.home_split(ts)
+	## v2.4: of the men there now: those marching in have a tab of their own (_draw_arriving)
+	var inbound: int = int(arriving.get(id, 0)) if owner == viewer else 0
+	var split: Array = shown_split(ts, inbound)
 	var marching: int = int(split[0])
 	var home: int = int(split[1])
 	var txt := str(marching)
@@ -1802,13 +1941,7 @@ func _draw_token(ci: CanvasItem, id: String) -> void:
 	var gp: Vector2 = p + Vector2(-r * 1.05, -r * 0.55)
 	var gr: float = clampf(r * 0.52, 9.0, 14.0)
 	if home > 0:
-		ci.draw_circle(gp + Vector2(1.5, 2.5), gr, Color(0, 0, 0, 0.35))
-		Style.draw_shape(ci, "shield", gp, gr, Color(0.36, 0.24, 0.08), Color(1.0, 0.84, 0.45), 2.0)
-		var gt := str(home)
-		var gs: int = int(gr * 1.15)
-		var gw: float = f.get_string_size(gt, HORIZONTAL_ALIGNMENT_LEFT, -1, gs).x
-		ci.draw_string_outline(f, gp + Vector2(-gw * 0.5, gs * 0.36), gt, HORIZONTAL_ALIGNMENT_LEFT, -1, gs, 3, Color(0.1, 0.06, 0.02, 0.9))
-		ci.draw_string(f, gp + Vector2(-gw * 0.5, gs * 0.36), gt, HORIZONTAL_ALIGNMENT_LEFT, -1, gs, Color(1, 0.94, 0.72))
+		_draw_shield(ci, id, gp, gr, home, ts.garrison, f)
 	elif owner != "neutral":
 		## nobody dug in yet: a faint empty shield, so the absence reads too
 		Style.draw_shape(ci, "shield", gp, gr * 0.8, Color(0, 0, 0, 0.0), Color(0.95, 0.9, 0.78, 0.28), 1.2)
@@ -1821,6 +1954,8 @@ func _draw_token(ci: CanvasItem, id: String) -> void:
 		ci.draw_rect(Rect2(qp - Vector2(qw * 0.5 + 5, 11), Vector2(qw + 10, 20)), Color(0.12, 0.09, 0.03, 0.95))
 		ci.draw_rect(Rect2(qp - Vector2(qw * 0.5 + 5, 11), Vector2(qw + 10, 20)), Style.GOLD, false, 1.5)
 		ci.draw_string(f, qp + Vector2(-qw * 0.5, 5), qt, HORIZONTAL_ALIGNMENT_LEFT, -1, 15, Style.GOLD)
+	if inbound > 0:
+		_draw_arriving(ci, id, _clear_spot(id, p, [Vector2(r * 0.95, -r * 0.8), Vector2(r * 0.95, r * 0.62)]), p, inbound, owner, f)
 	_draw_threat(ci, id, p, r, f)
 	## a free soldier from a card naming this land: a gold star under the token
 	## v1.9: it only says where the troops came from, so it pops in and fades after a few seconds
