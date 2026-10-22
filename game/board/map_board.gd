@@ -1149,7 +1149,14 @@ func _draw_region_labels(ci: CanvasItem) -> void:
 	## against each other with no zoom: the Greyfell's bonus sat on Stonehold's name): the spots are
 	## found again once it settles
 	var lay: PackedVector2Array = _layout()
-	if (absf(zoom - _bonus_zoom) > zoom * 0.002 or _layout_moved(lay)) and _time - _bonus_t > 0.15:
+	## v2.4: found again once the view has held still a moment. It was every 0.15 s while the view
+	## moved, and on the land a search can take a third of a second (each spot it tries asks the land
+	## which region is under three points): the swoop down to a battle chugged
+	if absf(zoom - _view_zoom) > zoom * 0.0005 or not _near_layout(lay, _view_layout):
+		_view_still = _time
+	_view_zoom = zoom
+	_view_layout = lay
+	if (absf(zoom - _bonus_zoom) > zoom * 0.002 or _layout_moved(lay)) and _time - _view_still > 0.15:
 		_bonus_at.clear()
 	for r in art.regions.keys():
 		if not map.region_bonus.has(r):
@@ -1200,6 +1207,18 @@ var _bonus_at := {} ## v1.14: region -> [where its bonus sits from its label at 
 var _bonus_zoom := 0.0
 var _bonus_t := -1.0
 var _bonus_layout := PackedVector2Array()
+var _view_zoom := 0.0 ## v2.4: the view last frame, and when it last moved (the bonuses are placed again once it rests)
+var _view_layout := PackedVector2Array()
+var _view_still := -1.0
+
+
+static func _near_layout(a: PackedVector2Array, b: PackedVector2Array) -> bool:
+	if a.size() != b.size():
+		return false
+	for i in a.size():
+		if a[i].distance_to(b[i]) > 0.5:
+			return false
+	return true
 
 
 func _layout() -> PackedVector2Array:
@@ -1226,8 +1245,8 @@ func _bonus_spot(r: String, p: Vector2, home: Vector2, box: Vector2, name_w: flo
 	## the nearest spot to `home` (from the label at p) where a box this big covers no token, no
 	## land's name and no other region's bonus; failing that, the one that covers least. Found once
 	## per zoom (and scaled meanwhile while a zoom is under way): panning only slides it.
-	if _bonus_at.has(r) and (_bonus_at[r][1] as Vector2).is_equal_approx(box):
-		return (_bonus_at[r][0] as Vector2) * (zoom / maxf(_bonus_zoom, 0.0001))
+	if _bonus_at.has(r) and ((_bonus_at[r][1] as Vector2).is_equal_approx(box) or _time - _view_still <= 0.15):
+		return (_bonus_at[r][0] as Vector2) * (zoom / maxf(_bonus_zoom, 0.0001)) ## (v2.4: and while the view moves, whatever its size)
 	if _bonus_offsets.is_empty():
 		for dy in range(-16, 17):
 			for dx in range(-40, 41):
@@ -1264,6 +1283,13 @@ func _bonus_spot(r: String, p: Vector2, home: Vector2, box: Vector2, name_w: flo
 			continue
 		var hit: float = _overlap(rect, near)
 		var cost: float = hit + (2.0 * _overlap(rect, names) if hit > 0.0 else 0.0) + 0.05 * c.distance_squared_to(home)
+		if hit > 0.0 and cost >= own_cost:
+			## v2.4: whose ground it is can't change a thing here (only a clear spot, or one cheaper
+			## than the best on its own lands, is weighed by it): the land isn't asked
+			if cost < best_cost:
+				best_cost = cost
+				best = c
+			continue
 		var mid: String = _region_at(rect.get_center())
 		var ends: Array = [_region_at(rect.position + Vector2(4, box.y * 0.5)), _region_at(rect.end - Vector2(4, box.y * 0.5))]
 		var own: bool = mid == r and (ends[0] == r or ends[1] == r)
