@@ -1,12 +1,13 @@
-## v2.4, the map and its table (v24-map), as facts on the real client (no rule changes: rules 22):
+## v2.4, the map and its table (v24-map), as facts on the real client (no rule changes of its own):
 ##   1. a new war's music, and the tent's sounds, wait for the intro film to end or be skipped
 ##   6. the commanders take their seats on the war table, each as their die falls for the order of claims
-##      (not on a screen of their own); Esc throws the rest together; on a dealt war they step up before
-##      the deployment, and the board waits for them
+##      (not on a screen of their own), the first rival straight away (no advisor's line first: Alex, 10-21);
+##      Esc throws the rest together; on a dealt war they step up before the deployment, and the board waits
 ##   2. OK on an order's card (and Enter) lets go of the land it came from; the card's ✕ only closes it
 ##   3. a land marching on its only enemy neighbour isn't warned that a neighbour could walk in
 ##   5. in the regroup phase a land's number is who is there: the men marching in ride a tab of their own
-##   7. the garrison shields: ranked, number, chevrons (and G steps through them), side by side
+##   7. the garrison shields: ranked (Alex's pick), number, chevrons, side by side; no key steps through them,
+##      the "shields" setting still picks one
 ##   4. a war picked up comes back on the view it was left on (the land: a veil, then on it at once), and
 ##      the 2D/3D chip shows that view lit
 ##   SHOT_DIR=/dir ./scripts/shot.sh v24m
@@ -84,7 +85,9 @@ func _film_and_seats(main: Control) -> void:
 	p.ok(Audio._amb.playing, "1: and the tent's sounds")
 	## 6: the commanders take their seats on the table, as their dice fall
 	p.ok(gs._draft_ui.visible and gs._draft_title.text == "THE COMMANDERS TAKE THEIR SEATS", "6: the roll opens with the commanders taking their seats (\"%s\")" % gs._draft_title.text)
-	await _wait(func(): return gs.intro.visible and gs.intro.seat_id != "", 600)
+	var g0: int = await _wait(func(): return gs.intro.visible and gs.intro.seat_id != "", 600)
+	p.ok(g0 < 60 and not gs._spoken.has("draft_roll"),
+		"6: straight to the first rival, %d frames after the film (the advisor's 'Every commander throws a die' cut; the bar says it: \"%s\")" % [g0, gs.bar._counsel.text])
 	var first: String = gs.intro.seat_id
 	p.ok(first == "blue", "6: the rivals step up first, in their seats' order: %s" % s.name_of(first))
 	var card := Rect2(gs.intro.position, gs.intro.size)
@@ -376,20 +379,22 @@ func _shields(main: Control) -> void:
 		shots.append(path)
 		tag.queue_free()
 	_side_by_side(shots, crop, "22_shields_side_by_side")
-	## G steps through them
+	## Alex chose ranked (10-21): the G key that stepped through the looks is gone, toast and all
 	b.shield_style = "ranked"
+	var toast0: Variant = gs._toast_panel
 	_key(gs, KEY_G)
-	p.ok(b.shield_style == "number" and str(Settings.get_value("shields")) == "number", "7: G: the next look (%s)" % b.shield_style)
-	_key(gs, KEY_G)
-	_key(gs, KEY_G)
-	p.ok(b.shield_style == "ranked", "7: and round again (%s)" % b.shield_style)
-	## a whole war's worth, on the big map, for the noise
+	p.ok(b.shield_style == "ranked" and str(Settings.get_value("shields")) == "ranked" and gs._toast_panel == toast0,
+		"7: G does nothing now: the shields stay ranked, and no toast (%s)" % b.shield_style)
+	## a whole war's worth, on the big map, for the noise; the "shields" setting (settings.cfg) still picks the look
 	main.show_title()
 	await p.frames(4)
+	Settings.data["shields"] = "chevrons"
 	main.start_game({"map": "res://maps/known24.json", "seed": 15, "length": "short", "timer": 0, "deal": "random", "seats": _seats(4)})
 	await p.frames(6)
 	gs = main.current
 	s = main.session
+	p.ok(gs.board.shield_style == "chevrons", "7: the \"shields\" setting still picks the look a war opens with (%s)" % gs.board.shield_style)
+	Settings.data["shields"] = "ranked"
 	gs.intro._done()
 	await _wait(func(): return not gs._seating_now(), 300)
 	gs._clear_banner()

@@ -56,8 +56,8 @@ var placements := {} ## id -> queued reinforcements (viewer)
 var arriving := {}
 ## v2.4: how a garrison's shield shows how deep its men are dug in (the owner: "experiment with garrison
 ## strength changing the shield icon beyond the number - it could be a cool indicator of garrison
-## strength or it could add too much noise. try with/without the number inside"). Settings "shields",
-## and G in a war, step through them:
+## strength or it could add too much noise. try with/without the number inside"). Alex chose ranked
+## (10-21); Settings "shields" (settings.cfg) can still pick the others:
 ##   ranked    the shield dressed by its depth: plain wood for the one man held back on a land nobody
 ##             has dug in yet, then brass, steel, gold, and gold on crimson for a fortress's four; the
 ##             number inside, as ever

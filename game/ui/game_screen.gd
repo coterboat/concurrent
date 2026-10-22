@@ -115,7 +115,7 @@ func _ready() -> void:
 	board.territory_hovered.connect(_on_hover)
 	board.arrow_clicked.connect(func(a, b): edit_order(a, b))
 	board.set_view_mode(int(Settings.get_value("map_view", 0)))
-	board.shield_style = str(Settings.get_value("shields", "ranked")) ## v2.4
+	board.shield_style = str(Settings.get_value("shields", "ranked")) ## v2.4 (Alex chose ranked; the others: settings.cfg)
 	land = Land.new()
 	add_child(land)
 	land_board = LandBoard.new()
@@ -1238,17 +1238,6 @@ func _seal() -> void:
 	selected = ""
 
 
-func cycle_shields() -> void:
-	## v2.4 (G): the garrison shields' looks, side by side on the owner's own war (map_board.SHIELD_STYLES)
-	var all: Array = Board.SHIELD_STYLES
-	var nxt: String = str(all[(all.find(board.shield_style) + 1) % all.size()])
-	board.shield_style = nxt
-	Settings.set_value("shields", nxt)
-	board.refresh()
-	_toast("Garrison shields: %s" % {"ranked": "dressed by how deep they're dug in, with the number",
-		"number": "one look, the number inside (as before v2.4)", "chevrons": "dressed by depth, a chevron a man dug in"}.get(nxt, nxt))
-
-
 func toggle_view() -> void:
 	var m: int = 1 - board.view_mode
 	board.set_view_mode(m)
@@ -1543,14 +1532,16 @@ func _draft_begin() -> void:
 	_draft_state = "rolling"
 	_draft_title.text = "ROLLING FOR THE ORDER OF CLAIMS"
 	bar.set_message("Every commander throws a die: the highest claims first, and so on round the table.")
-	if not session.living_humans().is_empty():
-		_say_once("draft_roll")
 	if _seats_due:
-		## v2.4: a new war's first roll: each commander takes their seat and throws, one by one
+		## v2.4: a new war's first roll: each commander takes their seat and throws, one by one. The roll
+		## opens on the first rival: the bar says what the advisor's line did (Alex, 10-21: "cut the
+		## advisor's line ... go straight to the first rival")
 		_seats_due = false
 		_draft_title.text = "THE COMMANDERS TAKE THEIR SEATS"
 		_seat_begin(true)
 		return
+	if not session.living_humans().is_empty():
+		_say_once("draft_roll")
 	get_tree().create_timer(1.4).timeout.connect(func(): _draft_throw(0))
 
 
@@ -2587,9 +2578,6 @@ func _unhandled_input(event: InputEvent) -> void:
 		get_viewport().set_input_as_handled()
 	elif event.keycode == KEY_V and session.phase != Session.Phase.CINEMA:
 		toggle_view()
-		get_viewport().set_input_as_handled()
-	elif event.keycode == KEY_G and not event.meta_pressed and not event.ctrl_pressed:
-		cycle_shields() ## v2.4: the garrison shields' looks, to compare
 		get_viewport().set_input_as_handled()
 	elif event.keycode == KEY_L and not event.meta_pressed and not event.ctrl_pressed:
 		toggle_land() ## v2.0: the land or the chart

@@ -1,7 +1,7 @@
 # v2.4: the map and its table (v24-map)
 
-Seven of Alex's notes on v2.3.1 (`017a215`), all on the client: no rule changes and no rules bump (new games
-still play rules 22). Branch `claude/v24-map-49317c`. The facts: `tests/test_v24m.gd` (15) and the probe
+Seven of Alex's notes on v2.3.1 (`017a215`), all on the client: no rule changes of its own (the rules bump to
+23 is v24-battles'). Branch `claude/v24-map-49317c`. The facts: `tests/test_v24m.gd` (15) and the probe
 `tools/shots/v24m.gd` (58). No Ludo credits spent.
 
 ## What changed
@@ -65,8 +65,8 @@ The planning phase is unchanged: recruits placed there *can* attack the same rou
 **6. The introductions are part of the roll for the order.** ("move the introductions of the characters from
 its own screen to just before and while the initial dice are being rolled to see who goes first.") The separate
 "The commanders take their seats" screen is gone. On a new war with lands claimed in turn (Standard):
-- After the film, the claims panel reads THE COMMANDERS TAKE THEIR SEATS, and the advisor says his line about
-  the roll.
+- After the film, the claims panel reads THE COMMANDERS TAKE THEIR SEATS, and the first rival steps up at once.
+  The bar says "Every commander throws a die…". Alex cut the advisor's spoken line (10-21, C6).
 - Each rival in turn gets a card on the war table: face, name, manner and level, and their greeting in their own
   voice. Their die drops in their colour while they speak.
 - The card hangs near where that die comes to rest (the fall is worked out at the throw), on whichever side
@@ -88,8 +88,9 @@ DEPLOYMENT banner shows (that war's first deployment never had one). (`intro.gd`
 `game_screen.gd` `_seat_*`, `_draft_*`)
 
 **7. The garrison shield shows how deep it's dug in.** ("try with/without the number inside and see what you
-think.") Three looks, switchable in a war with **G** (Settings key `shields`):
-- **ranked** (my pick, the default): the shield is dressed by its depth. Plain dark wood for the one man held
+think.") Three looks. Alex chose **ranked** (10-21, C4) and had the G key that stepped through them taken out
+(C5). The Settings key `shields` (in settings.cfg) can still pick another:
+- **ranked** (the default, my pick and Alex's): the shield is dressed by its depth. Plain dark wood for the one man held
   back on a land nobody has dug in yet, then a brass rim for one dug in, steel for two, gold for three, and gold
   on crimson with a glow for a fortress's or capital's four. The number stays inside.
 - **number**: the shield as it was, the same look whatever the depth, with the number inside.
@@ -109,11 +110,10 @@ glance: the gold and crimson strongholds stand out across the whole map, and so 
 held by one man nobody dug in. And it adds no new mark to the token, only the shield's own colours (a tier is a
 little bigger, a few px at most). Chevrons look the part close up, but over the whole map two stripes and three
 blur together, the number is gone, and the boss is one more symbol to learn. If ranked reads as noise in play,
-G goes back to the old shield, and so does `"shields": "number"` in the defaults.
+`"shields": "number"` in settings.cfg goes back to the old shield.
 
-**To compare:** press **G** in a war (a toast names each look), or run `SHOT_DIR=/some/dir ./scripts/shot.sh
-v24m`, which writes both side-by-sides (`22_shields_side_by_side.png`, `23_whole_map_side_by_side.png`) and a
-shot of each look.
+**To compare:** run `SHOT_DIR=/some/dir ./scripts/shot.sh v24m`. It writes both side-by-sides
+(`22_shields_side_by_side.png`, `23_whole_map_side_by_side.png`) and a shot of each look.
 
 The roll, as it looks now (every die down, your own throw last):
 
@@ -128,12 +128,13 @@ The roll, as it looks now (every die down, your own throw last):
   - The regroup tooltip.
 - `tools/shots/v24m.gd`, 58 facts:
   - 1: the music during and after the film.
-  - 6: the seats, one at a time; the dice; the strip; your throw last; the card on the table inside 1440×900;
-    the card keeping clear of the dice; Esc; the dealt war.
+  - 6: the first rival straight after the film, with no advisor's line; the seats, one at a time; the dice; the
+    strip; your throw last; the card on the table inside 1440×900; the card keeping clear of the dice; Esc; the
+    dealt war.
   - 2: OK, Enter and ✕.
   - 3: the warning and the advisor's dispatch.
   - 5: the tab, the number, the tooltips and the land card.
-  - 7: each look's facts, G, and the side-by-sides.
+  - 7: each look's facts, G doing nothing now, the setting still picking the look, and the side-by-sides.
   - 4: the veil, the land at once, the chip, the chart, and L afterwards (no veil).
 - The probe uses a save of its own (`user://probe_v24m_savegame.json`). Every worktree on this PC shares
   `user://`, and on one run its Continue picked up another session's war from `probe_savegame.json`. Worth
@@ -160,7 +161,9 @@ inside `_draw_token` and its helpers (`_draw_shield`, `_shield_number`, `_draw_a
 | chevrons: the boss / 1 / 2 / 3 / 4 dug in (2 lines a chevron, the glow at 3 and 4) | 17 / 24 | 17 / 17 / 19 / 22 / 24 on the chart, +7 on the land |
 | the regroup's "+N marching in" tab, only on the lands receiving a march | (none) | **+9** (2 rects, 4 dashed lines, the arrow's line and head, the text) |
 
-So the default (ranked) adds one call on the deeper garrisons and nothing else. The glow was three discs until
+So the default (ranked) adds one call on the deeper garrisons and nothing else. These are the canvas calls
+before v24-3d's cache: since the merge, the token's body and shield are drawn from meshes made once a look
+(`game/board/token_mesh.gd`). The glow was three discs until
 I trimmed it to one for this. Unchanged and worth v24-3d's look while they're there: a land that holds the road
 home wears a dashed amber ring drawn as 16 separate arcs.
 
@@ -176,15 +179,14 @@ home wears a dashed amber ring drawn as 16 separate arcs.
 5. In the regroup phase, march into a land and read its token: the number, then "+N" on its tab.
 6. Play a few rounds in 3D, quit, Continue: a moment of "Laying out the land…", then the land, and the chip on
    3D. Then the same on the chart.
-7. Press G a few times in a war and pick a shield.
 
-## Open questions for Alex
+## Alex's answers (10-21, through the coordinator)
 
-1. **Shields:** keep ranked as the default, or would you rather have the number shield or chevrons?
-2. **The G key:** keep it for good, or take it out once the shield is chosen?
-3. **The advisor's roll line** ("Every commander throws a die…") still plays before the first rival sits, about
-   5 s. Keep it, or let the bar's text say it and get to the rivals sooner?
-4. **Dealt wars:** keep the rivals' cards before the deployment, or go straight to it?
+1. **C4, shields:** ranked stays the default.
+2. **C5, the G key:** taken out now that the shield is chosen: no key and no toast. The `shields` setting stays,
+   so number and chevrons can still be picked in settings.cfg.
+3. **C6, the advisor's roll line:** cut. The bar's text says it, and the first rival steps up at once.
+4. **C7, dealt wars:** the rivals' cards before the deployment stay.
 
 ## For the coordinator
 
@@ -198,9 +200,8 @@ home wears a dashed amber ring drawn as 16 separate arcs.
 - **For v24-battles' text, if ranked ships:** How to Play ("Every land keeps a garrison: the men on the gold
   shield beside its number…") and `README.md` line 41 ("The gold shield on a land is its garrison…") call the
   shield gold. A suggested line: "the shield beside its number (plain wood for the one man held back, brass,
-  steel, then gold the deeper they dig in)". If G stays, the README's controls table could add a row:
-  "Garrison shields | G steps through how the shields show their depth". README line 83 already calls the chip
-  "the 3D / 2D chip", which is now what it shows. How to Play doesn't describe the bare-land warning (item 3),
+  steel, then gold the deeper they dig in)". The G key is gone (C5), so README and How to Play get no row for
+  it. README line 83 already calls the chip "the 3D / 2D chip", which is now what it shows. How to Play doesn't describe the bare-land warning (item 3),
   so nothing to change there.
 - **CHANGELOG material:** the seven items above. No B-numbers: none of the open bugs were in this list.
 - **PLAYTEST material:** "What Alex should poke at" above.
