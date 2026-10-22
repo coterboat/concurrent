@@ -40,6 +40,8 @@ reviews taught us), and `PLAYTEST.md` is the testers' brief.
 | What the reviews taught us | `python3 tools/review/review.py lessons` (`W` in the table) |
 | Tool tests | `python3 tools/review/test_review.py && python3 tools/ludo/test_notes.py` |
 | Repo size | `./scripts/repo_size.sh` (plain git, no LFS: see `docs/ASSETS.md`, "Storage") |
+| Bring this machine's wars into the repo | `python3 tools/wars/collect.py` (or `… <folder or zip>` for wars someone sent), then commit `wars/`: every war played is kept (v2.4, `wars/README.md`) |
+| Replay a kept war | `$G --headless --path . --script res://tools/wars/replay.gd -- wars/<id>.json`: every round checked against its hash, then the war round by round |
 | Pull what the bot pushed | `./scripts/sync_main.sh` (automatic: a hook runs it every prompt) |
 | Wait for the bots on a push | `./scripts/await_bots.sh` in the background: returns when the playtester and the play critic have both answered, with a digest (`--claim` / `--done <sha>` / `--release` for the loop; `--digest <sha>` rereads one) |
 | Generate assets | `python3 tools/ludo/ludo.py <ids>` or a `tools/ludo/vNN_content.py` script |
@@ -160,7 +162,9 @@ points as noise.
   words.
 - **Anything that runs a Session must fence the save slot first** (`Session.SAVE_PATH` to a test
   path, `Settings.persist = false`). `runner.gd`, `probe.gd` and `test_one.gd` do; a new entry point
-  that plays rounds would otherwise overwrite, then clear, the owner's `user://savegame.json`.
+  that plays rounds would otherwise overwrite, then clear, the owner's `user://savegame.json`, and (v2.4) keep
+  its wars among the owner's in `user://wars` (a war is kept only when the save slot is the player's, or a test
+  has pointed `WarRecords.DIR` at a folder of its own).
 - Screens must fit **1440×900**: the setup screen (the Rules row replaced five rows for this)
   and the settings panel are near the limit. Screenshot-check after adding rows.
 

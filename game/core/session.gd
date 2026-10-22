@@ -20,6 +20,7 @@ const Maneuver := preload("res://engine/maneuver.gd")
 const Capitals := preload("res://engine/capitals.gd")
 const LastRound := preload("res://game/core/last_round.gd")
 const BoardFacts := preload("res://game/core/board_facts.gd")
+const WarRecords := preload("res://game/core/war_records.gd")
 
 enum Phase { NONE, OPENING, PASS, PLANNING, RESOLVING, CINEMA, RECAP, GAME_OVER, MANEUVER, DRAFT }
 
@@ -35,6 +36,7 @@ var config: Dictionary = {}
 var map: Types.MapDef
 var world: Types.World
 var match_seed: int = 0
+var war_id := "" ## v2.4: this war's name in the war records (game/core/war_records.gd)
 var phase: int = Phase.NONE
 var seats: Array = [] ## [{id, name, kind: human|ai, ai, portrait}]
 var planner: String = ""
@@ -79,6 +81,7 @@ func new_game(p_config: Dictionary) -> void:
 	if match_seed == 0:
 		match_seed = int(Time.get_unix_time_from_system()) % 2000000000 + randi() % 1000
 		config["seed"] = match_seed
+	war_id = WarRecords.new_id(match_seed)
 	map = Types.MapDef.from_file(str(config["map"]))
 	_apply_length()
 	seats = config["seats"]
@@ -1511,10 +1514,16 @@ func save() -> void:
 		"maneuvers": maneuvers_log,
 		"hashes": hashes,
 		"saved": Time.get_datetime_string_from_system(false, true),
+		"war": war_id, ## v2.4: and the war records keep it under this name, ended or not
+		"host": OS.get_name(),
 	}
+	if winner != "":
+		rec["winner"] = winner
 	var f := FileAccess.open(SAVE_PATH, FileAccess.WRITE)
 	if f:
 		f.store_string(JSON.stringify(rec))
+	if WarRecords.on(SAVE_PATH):
+		WarRecords.keep(rec)
 
 
 static func has_save() -> bool:
@@ -1548,6 +1557,9 @@ func load_save() -> bool:
 	config = d["config"]
 	match_seed = int(d["matchSeed"])
 	config["seed"] = match_seed
+	war_id = str(d.get("war", "")) ## v2.4: a war picked up again keeps its name in the records
+	if war_id == "":
+		war_id = WarRecords.new_id(match_seed, str(d.get("saved", "")))
 	map = Types.MapDef.from_file(str(config["map"]))
 	map.rounds = int(d.get("rounds", map.rounds))
 	map.battle = str(config.get("battle", "decisive"))

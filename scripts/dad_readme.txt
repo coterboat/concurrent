@@ -28,4 +28,7 @@ HANDY KEYS
 
 
 Your war saves itself after every round: "Continue" on the title screen picks it up.
+Every war you play is also kept, finished or not, in a folder called "wars"
+(paste %APPDATA%\Godot\app_userdata\CONCURRENT\wars into the File Explorer bar).
+Alex may ask you to zip it and send it: it helps balance the game.
 Sound too loud or too quiet? Settings, on the title screen or under the Menu coin.

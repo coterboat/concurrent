@@ -63,7 +63,7 @@ Every round has four phases, each announced as it begins: **Reinforcement** (pla
 | **Options** | Game length (short / standard / long / conquest), lands dealt or claimed in turn, planning clock, battle speed, the map and the battles on the map's own land in 3D (or the chart and the painted field), text size, advisor tips. Tokens always carry a shape as well as a colour, for colourblind players |
 | **Presentation** | The map's own land in 3D, generated for any map (hills, ranges and passes, rivers and their bridges, woods, a village in every land, landmarks from the lands' names, a star fort on a fortress, a palace at a capital, ships under sail, every land's garrison in tin), with the board's own tokens and arrows over it; battles fought on that land, where each army came from. Or, L away: an imperial war room: a painted chart dressed with a compass rose, a title cartouche and ships of the line; heavy region borders and a regions view; a Risk II–style command bar in brass and gilt; a battlefield scene where tin soldiers march in, breathe, fire, topple and retreat; round reports, end-of-war chart; martial music (drums, brass, fifes) |
 | **Characters** | Voiced commanders in gilded rings who breathe and talk (seamless animated loops) and whose faces react: greetings, battle cries, curses, walk-in taunts, retreats, farewells. A chief of staff who reads the board, warns you, counsels you mid-battle, and drafts a whole plan on request |
-| **Saves** | The campaign autosaves after every round; *Continue* picks it up |
+| **Saves** | The campaign autosaves after every round; *Continue* picks it up. Every war is also kept, finished or not, and replays exactly (`wars/`, v2.4) |
 
 ## Controls
 
