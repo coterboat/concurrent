@@ -70,6 +70,44 @@ func height_at(p: Vector2) -> float:
 	return lerpf(a, b, ty)
 
 
+func level(art: RefCounted, land_id: String, at: Vector2, r: float) -> float:
+	## v2.4: the ground a fort stands on made level, as its builders made it: cut into the hill to
+	## the height of its lower third, the fall round it eased out over a third of its width, on its
+	## own land (and under its walls, whoever's that ground is) and clear of the shore. Seated on a
+	## slope (at the lowest of its ground) a fort stood half buried: on the Marches' Redgate 36 of fall
+	## under ramparts 10 high, and a battle there is fought at its walls now (land_field.gd). Returns
+	## the height it stands at.
+	var r1: float = r * 1.3
+	var cx: int = int(at.x / cell.x)
+	var cy: int = int(at.y / cell.y)
+	var rc: int = int(r1 / minf(cell.x, cell.y)) + 1
+	var vals := PackedFloat32Array()
+	for y in range(maxi(0, cy - rc), mini(h, cy + rc + 1)):
+		for x in range(maxi(0, cx - rc), mini(w, cx + rc + 1)):
+			if Vector2((x + 0.5) * cell.x, (y + 0.5) * cell.y).distance_to(at) <= r:
+				vals.append(heights[y * w + x])
+	if vals.is_empty():
+		return height_at(at)
+	vals.sort()
+	var floor_h: float = maxf(vals[int(float(vals.size() - 1) * 0.35)], 2.0)
+	for y in range(maxi(0, cy - rc), mini(h, cy + rc + 1)):
+		for x in range(maxi(0, cx - rc), mini(w, cx + rc + 1)):
+			var k: int = y * w + x
+			var p := Vector2((x + 0.5) * cell.x, (y + 0.5) * cell.y)
+			var d: float = p.distance_to(at)
+			if d > r1 or coast_px[k] < 4.0 or (d > r and art.territory_at(p) != land_id):
+				continue
+			var f: float = (1.0 - smoothstep(r * 0.9, r1, d)) * smoothstep(4.0, 16.0, coast_px[k])
+			heights[k] = lerpf(heights[k], floor_h, f)
+	height_image = Image.create_from_data(w, h, false, Image.FORMAT_RF, heights.to_byte_array())
+	lo = 1.0e9
+	hi = -1.0e9
+	for v in heights:
+		lo = minf(lo, v)
+		hi = maxf(hi, v)
+	return floor_h
+
+
 func normal_at(p: Vector2) -> Vector3:
 	var e: float = cell.x
 	var dx: float = height_at(p + Vector2(e, 0)) - height_at(p - Vector2(e, 0))

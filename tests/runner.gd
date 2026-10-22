@@ -35,6 +35,7 @@ const V22Test = preload("res://tests/test_v22.gd")
 const V23Test = preload("res://tests/test_v23.gd")
 const V24Test = preload("res://tests/test_v24.gd")
 const V24WTest = preload("res://tests/test_v24w.gd")
+const V24dTest = preload("res://tests/test_v24d.gd")
 
 const KNIFE7 := "res://maps/knife7.json"
 
@@ -109,6 +110,8 @@ func _initialize() -> void:
 	V24Test.new().run(Callable(self, "_ok"), self)
 	_section("v2.4 every war is kept")
 	V24WTest.new().run(Callable(self, "_ok"), self)
+	_section("v2.4 the land: a fort on level ground")
+	V24dTest.new().run(Callable(self, "_ok"), self)
 	_section("ai commanders")
 	AiTest.new().run(Callable(self, "_ok"))
 	_section("v2.4 the map: a bare land's warning, and who is marching in")

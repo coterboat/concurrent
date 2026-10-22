@@ -142,7 +142,7 @@ func front_group(to: String, from: String, n: int) -> Dictionary:
 
 func clear() -> void:
 	for f in figs:
-		(f["node"] as Node3D).queue_free()
+		_spare_fig(f)
 	for p in puffs:
 		(p["node"] as Node3D).queue_free()
 	for b in boats:
@@ -199,7 +199,7 @@ func regarrison(list: Array) -> void:
 			continue
 		for i in range(figs.size() - 1, -1, -1):
 			if int(figs[i]["army"]) == ai:
-				(figs[i]["node"] as Node3D).queue_free()
+				_spare_fig(figs[i])
 				figs.remove_at(i)
 		a["pid"] = w["pid"]
 		a["color"] = w["color"]
@@ -216,7 +216,7 @@ func _muster(ai: int) -> void:
 	for i in range(figs.size() - 1, -1, -1):
 		var f0: Dictionary = figs[i]
 		if int(f0["army"]) == ai and not f0["alive"] and f0["state"] == "lift" and float(f0["t"]) > 0.6:
-			(f0["node"] as Node3D).queue_free()
+			_spare_fig(f0)
 			figs.remove_at(i)
 	var g: Dictionary = armies[ai]["groups"][0]
 	var want: Dictionary = _want(g)
@@ -289,6 +289,13 @@ static func battle_train(n: int) -> Dictionary:
 	return {"horse": (2 if n >= 14 else 0) + (1 if n >= 26 else 0), "guns": (1 if n >= 18 else 0) + (1 if n >= 30 else 0)}
 
 
+static func files_for(men: int, line: bool = false) -> int:
+	## how many men abreast a group's ranks stand: a block, or (v2.4, a fort's walls) a line two deep
+	if line:
+		return clampi(int(ceil(float(men) / 2.0)), 1, 7)
+	return clampi(int(ceil(sqrt(float(men) * 1.6))), 1, 6)
+
+
 static func pieces(n: int) -> Dictionary:
 	## a cannon for ten and a horse for five once the ranks are full: eight to twelve men always stand
 	var guns := 0
@@ -327,7 +334,8 @@ func _form(ai: int, gi: int, fresh: bool) -> void:
 				nf["counts"] = false ## the train: horse and guns as well as the men, not in their place
 			(have[k] as Array).append(nf)
 	var men: Array = have["inf"]
-	var files: int = clampi(int(ceil(sqrt(float(men.size()) * 1.6))), 1, 6)
+	var walls: bool = g.has("fort") ## v2.4: a fort's defenders line its walls, two deep, the train beside them
+	var files: int = files_for(men.size(), walls)
 	for i in men.size():
 		var rank: int = i / files
 		var file: int = i % files
@@ -338,7 +346,7 @@ func _form(ai: int, gi: int, fresh: bool) -> void:
 	var ranks: int = int(ceil(float(men.size()) / float(files)))
 	var back: float = (float(ranks) * FIG * 1.05 + FIG * 0.6) * size_mult
 	var heavy: Array = (have["cav"] as Array) + (have["gun"] as Array)
-	if bool(g.get("beside", false)):
+	if bool(g.get("beside", false)) or walls:
 		## the board's train, beside the men on the side away from the token: the guns (low) in
 		## front, the horse (tall) behind them and half a place over, so the camera sees both
 		var x0: float = float(files - 1) * 0.5 * GAP["inf"] * FIG * size_mult + FIG * size_mult * 0.85
@@ -351,7 +359,7 @@ func _form(ai: int, gi: int, fresh: bool) -> void:
 			heavy[j]["home"] = at - side * dx - dir * FIG * size_mult * (0.55 if hk == "cav" else -0.45)
 			heavy[j]["rank"] = 9
 	for j in heavy.size():
-		if bool(g.get("beside", false)):
+		if bool(g.get("beside", false)) or walls:
 			break
 		var k: String = heavy[j]["kind"]
 		var off: float = (float(j) - float(heavy.size() - 1) * 0.5) * GAP[k] * FIG * size_mult
@@ -370,15 +378,24 @@ func _form(ai: int, gi: int, fresh: bool) -> void:
 	if fresh and extras and int(g["share"]) > 0:
 		## the officer, the drummer and the colours: they lead and they beat, and they don't count
 		var deep: float = back + (FIG * 1.7 if not heavy.is_empty() else FIG * 0.3)
-		var extras := [["officer", at + dir * FIG * 1.1 + side * FIG * 0.35], ["drummer", at - dir * deep - side * FIG * 0.5],
-			["flag", at - dir * deep + side * FIG * 0.5]]
+		var rear: Vector2 = at - dir * deep
+		if walls:
+			## v2.4: at a fort, the drummer and the colours are inside its walls, on the side their
+			## men hold, and the commander stands in the middle of it
+			rear = (g["fort"] as Vector2) + dir * float(g.get("fort_r", 40.0)) * 0.3
+		var extras := [["officer", at + dir * FIG * 1.1 + side * FIG * 0.35], ["drummer", rear - side * FIG * 0.5],
+			["flag", rear + side * FIG * 0.5]]
 		if gi == 0 and has_model("general"):
 			## the commander himself, mounted, behind his army: the man who throws its dice
-			extras.append(["general", at - dir * (deep + FIG * 2.6) + side * FIG * 1.4])
+			var gp: Vector2 = at - dir * (deep + FIG * 2.6) + side * FIG * 1.4
+			if walls:
+				gp = (g["fort"] as Vector2) - side * FIG * 0.4
+			extras.append(["general", gp])
 		for e in extras:
 			var f := _new_fig(ai, gi, e[0], true)
 			f["home"] = e[1]
 			f["counts"] = false
+			f["inside"] = walls and e[0] != "officer"
 		for gun in have["gun"]:
 			var gf := _new_fig(ai, gi, "gunner", true)
 			gf["home"] = (gun["home"] as Vector2) + side * FIG * 0.9 - dir * FIG * 0.4
@@ -388,8 +405,8 @@ func _form(ai: int, gi: int, fresh: bool) -> void:
 		if int(f["army"]) != ai or int(f["group"]) != gi or f["state"] != "new":
 			continue
 		var home: Vector2 = _dry(f["home"], dir)
-		if wv.scenery != null:
-			home = wv.scenery.clear_of(home, FIG * size_mult * 0.4) ## nobody forms up inside a wall
+		if wv.scenery != null and not bool(f.get("inside", false)):
+			home = wv.scenery.clear_of(home, FIG * size_mult * 0.4) ## nobody forms up inside a wall (but a fort's own)
 		f["home"] = home
 		if fresh and bool(g.get("by_sea", false)):
 			f["state"] = "boat"
@@ -425,19 +442,39 @@ func _new_fig(ai: int, gi: int, kind: String, fresh: bool) -> Dictionary:
 	var f := {"army": ai, "group": gi, "kind": kind, "home": g["at"], "from": g["at"], "at": g["at"], "face": g["dir"],
 		"state": "new", "t": 0.0, "delay": randf() * 0.4 if fresh else 0.0, "alive": true, "counts": true, "pose": "",
 		"rank": 0, "boat": -1, "seat": Vector2.ZERO}
-	var root := Node3D.new()
-	var mi := MeshInstance3D.new()
-	var mat := ShaderMaterial.new()
-	mat.shader = load("res://game/world3d/tin.gdshader")
-	mat.set_shader_parameter("team", a["color"])
-	mi.material_override = mat
-	root.add_child(mi)
-	add_child(root)
+	var root: Node3D
+	var mi: MeshInstance3D
+	if not _spare.is_empty():
+		## v2.4: a figure taken off the table before stands again (dressed afresh by _pose)
+		var sp: Array = _spare.pop_back()
+		root = sp[0]
+		mi = sp[1]
+		root.visible = true
+	else:
+		root = Node3D.new()
+		mi = MeshInstance3D.new()
+		var mat0 := ShaderMaterial.new()
+		mat0.shader = load("res://game/world3d/tin.gdshader")
+		mi.material_override = mat0
+		root.add_child(mi)
+		add_child(root)
+	(mi.material_override as ShaderMaterial).set_shader_parameter("team", a["color"])
 	f["node"] = root
 	f["mi"] = mi
 	_pose(f, _rest(kind))
 	figs.append(f)
 	return f
+
+
+var _spare: Array = [] ## v2.4: figures taken off the table, [node, mesh], kept to stand again: a battle's thirty-odd men were made afresh every battle
+
+
+func _spare_fig(f: Dictionary) -> void:
+	var node: Node3D = f["node"]
+	if not is_instance_valid(node):
+		return
+	node.visible = false
+	_spare.append([node, f["mi"]])
 
 
 static func _length(aabb: AABB, axis: String) -> float:
@@ -1033,47 +1070,93 @@ static func _flight(dist: float) -> float:
 	return clampf(dist / (FIG * 40.0), 0.12, 0.26)
 
 
+const STREAK := FIG * 1.1 ## v2.4: a musket ball's streak, at its longest
+const STREAK_W := FIG * 0.05 ## ...and how wide it is at the ball (it was a cone FIG * 0.15 across)
+static var _streak_mesh: QuadMesh
+static var _ball_mesh: SphereMesh
+var _shot_mats := {} ## v2.4: a material for each army's streaks (and one for the guns' balls), not one a shot
+
+
 func _tracer(from: Vector3, aim: Vector2, gun: bool, ai: int, foe: int) -> void:
 	## v2.2: the shot is seen to go where it's going: a streak in the firer's colours from the
 	## muzzle to the man it's meant for (a dark round shot, arcing, from a gun)
 	var to: Vector3 = wv.ground_at(aim) + Vector3(0.0, FIG * (0.15 if gun else 0.6), 0.0)
 	var mi := MeshInstance3D.new()
-	var m := StandardMaterial3D.new()
-	m.disable_receive_shadows = true
 	if gun:
-		var ball := SphereMesh.new()
-		ball.radius = FIG * 0.14
-		ball.height = FIG * 0.28
-		ball.radial_segments = 10
-		ball.rings = 6
-		mi.mesh = ball
-		m.albedo_color = Color(0.12, 0.11, 0.1)
-		m.emission_enabled = true
-		m.emission = Color(1.0, 0.55, 0.2)
-		m.emission_energy_multiplier = 0.6
+		if _ball_mesh == null:
+			_ball_mesh = SphereMesh.new()
+			_ball_mesh.radius = FIG * 0.14
+			_ball_mesh.height = FIG * 0.28
+			_ball_mesh.radial_segments = 24 ## v2.4: round (it was 10 by 6, and looked it)
+			_ball_mesh.rings = 12
+		mi.mesh = _ball_mesh
+		if not _shot_mats.has("ball"):
+			var m := StandardMaterial3D.new()
+			m.disable_receive_shadows = true
+			m.albedo_color = Color(0.12, 0.11, 0.1)
+			m.emission_enabled = true
+			m.emission = Color(1.0, 0.55, 0.2)
+			m.emission_energy_multiplier = 0.6
+			_shot_mats["ball"] = m
+		mi.material_override = _shot_mats["ball"]
 	else:
-		## a short hot streak, bright at the ball and thinning to nothing behind it, in the
-		## firer's colour (his shots are told from the other side's by it)
-		var streak := CylinderMesh.new()
-		streak.top_radius = FIG * 0.075
-		streak.bottom_radius = FIG * 0.008
-		streak.height = FIG * 1.1
-		streak.radial_segments = 6
-		streak.rings = 1
-		mi.mesh = streak
-		m.shading_mode = BaseMaterial3D.SHADING_MODE_UNSHADED
-		var col: Color = armies[ai]["color"]
-		var hot: Color = col.lightened(0.12).lerp(Color(1.0, 0.86, 0.5), 0.3)
-		m.albedo_color = Color(hot.r * 1.6, hot.g * 1.6, hot.b * 1.6, 1.0) ## over 1: the glow takes it
-	mi.material_override = m
+		## a short hot streak, bright at the ball and fading to nothing behind it, in the firer's
+		## colour (his shots are told from the other side's by it). v2.4: a thin ribbon that faces
+		## the camera, soft at its edges (tracer.gdshader): it was a six-sided cone, and wide
+		if _streak_mesh == null:
+			_streak_mesh = QuadMesh.new()
+			_streak_mesh.size = Vector2.ONE
+		mi.mesh = _streak_mesh
+		mi.material_override = _streak_mat(armies[ai]["color"])
+		mi.extra_cull_margin = FIG * 0.2 ## (it turns to the camera in its shader: off its flat box)
 	mi.cast_shadow = GeometryInstance3D.SHADOW_CASTING_SETTING_OFF
 	mi.position = from
 	var d: Vector3 = to - from
-	if not gun and d.length() > 0.01:
-		mi.basis = Basis(Quaternion(Vector3.UP, d.normalized()))
 	add_child(mi)
-	tracers.append({"node": mi, "from": from, "to": to, "t": 0.0, "dur": BALL_FLIGHT if gun else _flight(d.length()),
-		"arc": FIG * 1.6 if gun else 0.0, "gun": gun, "aim": aim, "army": ai, "foe": foe})
+	var tr := {"node": mi, "from": from, "to": to, "t": 0.0, "dur": BALL_FLIGHT if gun else _flight(d.length()),
+		"arc": FIG * 1.6 if gun else 0.0, "gun": gun, "aim": aim, "army": ai, "foe": foe}
+	tracers.append(tr)
+	_lay(tr, 0.0)
+
+
+func _streak_mat(col: Color) -> ShaderMaterial:
+	var key: String = col.to_html()
+	if not _shot_mats.has(key):
+		var hot: Color = col.lightened(0.12).lerp(Color(1.0, 0.86, 0.5), 0.3)
+		var m := ShaderMaterial.new()
+		m.shader = load("res://game/world3d/tracer.gdshader")
+		m.set_shader_parameter("colour", Color(hot.r, hot.g, hot.b, 1.0))
+		m.set_shader_parameter("width", STREAK_W)
+		_shot_mats[key] = m
+	return _shot_mats[key]
+
+
+func _lay(tr: Dictionary, k: float) -> void:
+	## where a shot is, k of the way: a ball on its arc; a streak along its flight with the ball at
+	## its head, its tail never further back than the muzzle (v2.4)
+	var node: MeshInstance3D = tr["node"]
+	var from: Vector3 = tr["from"]
+	var to: Vector3 = tr["to"]
+	var at: Vector3 = from.lerp(to, k) + Vector3(0.0, float(tr["arc"]) * 4.0 * k * (1.0 - k), 0.0)
+	if bool(tr["gun"]):
+		node.position = at
+		return
+	var d: Vector3 = to - from
+	if d.length() < 0.01:
+		node.visible = false
+		return
+	var dir: Vector3 = d.normalized()
+	var length: float = maxf(minf(STREAK, d.length() * k), 0.01)
+	node.basis = Basis(Quaternion(Vector3.UP, dir)) * Basis.from_scale(Vector3(1.0, length, 1.0))
+	node.position = at - dir * length * 0.5
+	node.visible = length > 0.5
+
+
+func streak_of(tr: Dictionary) -> Array:
+	## [tail, head, width] of a musket ball's streak as it is drawn now (probes)
+	var node: MeshInstance3D = tr["node"]
+	var axis: Vector3 = node.basis.y
+	return [node.position - axis * 0.5, node.position + axis * 0.5, float((node.material_override as ShaderMaterial).get_shader_parameter("width"))]
 
 
 func _fly(tr: Dictionary, delta: float) -> bool:
@@ -1081,7 +1164,7 @@ func _fly(tr: Dictionary, delta: float) -> bool:
 	tr["t"] = float(tr["t"]) + delta
 	var k: float = clampf(float(tr["t"]) / float(tr["dur"]), 0.0, 1.0)
 	var node: MeshInstance3D = tr["node"]
-	node.position = (tr["from"] as Vector3).lerp(tr["to"], k) + Vector3(0.0, float(tr["arc"]) * 4.0 * k * (1.0 - k), 0.0)
+	_lay(tr, k)
 	if k < 1.0:
 		return false
 	node.queue_free()
@@ -1108,6 +1191,19 @@ func _puff(at: Vector2, big: float, col: Color, pos: Variant = null) -> void:
 	## powder smoke hangs: the field grows hazier as the fight goes on
 	puffs.append({"node": mi, "t": 0.0, "life": 5.5 if big > 0.8 else 1.4, "grow": 2.6 if big > 0.8 else 1.6,
 		"drift": Vector3(randf_range(1.0, 3.0), randf_range(0.8, 1.8), randf_range(-1.0, 1.0)), "a": 0.7 if big > 0.8 else 0.8})
+
+
+func gun_smoke(at: Vector2, toward: Vector2) -> void:
+	## v2.4: a fort's gun on its bastion: the flash, the smoke rolling out toward the foe, the thump
+	var top: Vector3 = wv.ground_at(at) + Vector3(0.0, FIG * 0.6, 0.0)
+	var l := OmniLight3D.new()
+	l.light_color = Color(1.0, 0.75, 0.4)
+	l.omni_range = FIG * 7.0
+	l.position = top
+	add_child(l)
+	flashes.append({"light": l, "t": 0.0, "e": 9.0})
+	_puff(at + toward * FIG * 0.8, 2.6, Color(0.88, 0.87, 0.84), top + Vector3(toward.x, 0.0, toward.y) * FIG * 0.8)
+	shake = maxf(shake, 0.6)
 
 
 func fire_burst(at: Vector2, n: int = 8) -> void:

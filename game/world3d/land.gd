@@ -10,6 +10,7 @@ const WorldView := preload("res://game/world3d/world_view.gd")
 const Diorama := preload("res://game/world3d/diorama.gd")
 const Scenery := preload("res://game/world3d/scenery.gd")
 const Marches := preload("res://game/world3d/marches.gd")
+const DiceStage := preload("res://game/ui/dice_stage.gd")
 
 signal built
 
@@ -27,6 +28,7 @@ var quiet := false
 var _vp: SubViewport
 var _task := -1 ## the build this land will stand on
 var _out := {} ## ...which hands its terrain over here, never into this node (v2.3)
+var _warm: Array = [] ## v2.4: what its battles will want, loaded with it (warm_list), held so it stays at hand
 var _replaced: Array[int] = [] ## v2.3: builds a newer one replaced, still running: each is waited for too
 static var builds_open := 0 ## v2.3: builds started and not yet waited for, in every land (probe v23b)
 var _terrain: RefCounted
@@ -46,6 +48,7 @@ func _ready() -> void:
 		_vp.screen_space_aa = Viewport.SCREEN_SPACE_AA_FXAA ## (Compatibility has none: Linux without Vulkan)
 	_vp.render_target_update_mode = SubViewport.UPDATE_DISABLED
 	add_child(_vp)
+	RenderingServer.viewport_set_measure_render_time(_vp.get_viewport_rid(), true) ## v2.4: _land_heavy
 
 
 func texture() -> Texture2D:
@@ -100,9 +103,33 @@ func prepare(p_board: Control) -> void:
 	_task = WorkerThreadPool.add_task(func():
 		var t: RefCounted = Terrain.build(art, map, 3)
 		t.scenery = Scenery.plan(art, map, t)
+		for spec in t.scenery:
+			if str(spec["kind"]) == "starfort":
+				t.level(art, str(spec["land"]), spec["at"], float(spec["foot"]) * 0.5) ## v2.4: a fort on level ground
 		t.scenery_scenes = Scenery.load_all(t.scenery)
+		out["warm"] = warm_list()
 		out["terrain"] = t, false, "the land of " + str(art.id))
 	builds_open += 1
+
+
+static func warm_list() -> Array:
+	## v2.4: what a battle on the land loads the first time it wants it, loaded with the land instead,
+	## off the main thread, and held: the figures' models (the dice tray's pieces among them), the
+	## figures', streaks' and dice's shaders, the sounds of the field and the charge. Each was a hitch
+	## on the main thread, mid-battle or as the battlefield opened (the dice pieces: 100 ms of its first frame)
+	var out: Array = []
+	for k in Diorama.MODELS.keys():
+		var path: String = Diorama.MODELS[k][0]
+		if ResourceLoader.exists(path):
+			out.append(load(path))
+	for path in ["res://game/ui/dice.gdshader", "res://game/world3d/tin.gdshader", "res://game/world3d/tracer.gdshader"]:
+		if ResourceLoader.exists(path):
+			out.append(load(path))
+	for dir in ["res://assets/audio/sfx/", "res://assets/audio/music/"]:
+		for f in ResourceLoader.list_directory(dir):
+			if f.get_extension() in ["mp3", "wav", "ogg"] and (dir.ends_with("sfx/") or f.begins_with("charge")):
+				out.append(load(dir + f))
+	return out
 
 
 func busy() -> bool:
@@ -140,6 +167,8 @@ func _process(delta: float) -> void:
 		_wait(_task)
 		_task = -1
 		_terrain = _out.get("terrain")
+		_warm = _out.get("warm", [])
+		DiceStage.warm_pieces() ## (loaded already: the dice tray takes them from here)
 		_build_world()
 	if prepared and shown():
 		_watch_speed(delta)
@@ -150,13 +179,25 @@ func _watch_speed(delta: float) -> void:
 	## smoothly: under 40 frames a second for a few seconds together, and down a step it goes.
 	if quality >= 4:
 		return
-	if delta > 1.0 / 40.0:
+	if delta > 1.0 / 40.0 and _land_heavy(delta):
 		_slow += delta
 	else:
 		_slow = maxf(0.0, _slow - delta * 0.5)
 	if _slow > 3.0:
 		_slow = 0.0
 		set_quality(quality + 1)
+
+
+func _land_heavy(delta: float) -> bool:
+	## v2.4: a slow frame counts against the land only when drawing the land is a good share of it.
+	## The board on the land was slow for its 2D drawing (the board's tokens and labels), and the land
+	## gave up its shadows and its sharpness for nothing: down to its last step by the second battle,
+	## on an RTX 3070 drawing it in 2 to 5 ms. (The Compatibility renderer has no timings: as before.)
+	if RenderingServer.get_current_rendering_method() == "gl_compatibility":
+		return true
+	var rid: RID = _vp.get_viewport_rid()
+	var ms: float = maxf(RenderingServer.viewport_get_measured_render_time_gpu(rid), RenderingServer.viewport_get_measured_render_time_cpu(rid))
+	return ms > delta * 1000.0 * 0.35
 
 
 func set_quality(q: int) -> void:

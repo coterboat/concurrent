@@ -365,12 +365,13 @@ func _smoke(node: Node3D, h: float, kind: String) -> void:
 var _cleared: Array = [] ## the pieces lifted off the table for a battle
 
 
-func clear_for(spots: Array, pad: float) -> int:
+func clear_for(spots: Array, pad: float, keep: Array = []) -> int:
 	## A battle here: the buildings standing where it will be fought are lifted off the table (they
-	## shrink away as the camera comes down), as a player moves the scenery aside to fight.
+	## shrink away as the camera comes down), as a player moves the scenery aside to fight. (v2.4:
+	## all but `keep`: a fort the fight is at)
 	restore()
 	for p in pieces:
-		if p["role"] in ["ship", "lane", "bridge"] or not (p["node"] as Node3D).visible:
+		if p["role"] in ["ship", "lane", "bridge"] or not (p["node"] as Node3D).visible or keep.has(p):
 			continue
 		var at: Vector2 = p["at"]
 		for s in spots:
@@ -440,6 +441,7 @@ static func load_all(list: Array) -> Dictionary:
 		if not out.has(k):
 			out[k] = variants_of(k)
 	out["palace"] = variants_of("palace")
+	out["redoubt"] = variants_of("redoubt") ## v2.4: a land dug in two deep (it was loaded then, mid-report: 100 ms)
 	return out
 
 
