@@ -56,7 +56,43 @@ shown: fine" is as useful as a bug.
   take every recruit. Since v2.3 the game says so once in the log and the tally ("· 2 no room") rather
   than asking about them.
 
-## v2.3.1: your report on d7a840b (this push)
+## v2.4: Alex's playtest of v2.3.1 (this push)
+
+**Rules 23** for new games: a commander's fronts make one call together, and a melee's even volley is
+fired again. Every older save replays as it was played. The full story is in `docs/CHANGELOG.md` (v2.4),
+and each part's notes in `docs/v24/`.
+
+- **The 3D swoop down to a battle and back** (the board's overlay was the cost, not the 3D). On your box this
+  is the best test there is of what changed. **Poke:**
+  - `./scripts/probes.sh v24p` (29 facts, none of them timings).
+  - Run `tools/study/swoop.gd` and say what it measures there: frame times, and how many over 50 ms.
+  - The board should look exactly as before: the tokens are drawn from meshes now.
+- **Split storms (rules 23):** an AI commander's two columns fall back together, and an old save's split
+  retreat is shown for what it is (the column leaves the field and the count). **Poke:** `./scripts/probes.sh
+  v24b`, and the arena: `$G --headless --path . --script res://tools/arena.gd -- map=known24 n=40
+  seats=general,veteran,recruit,hask deal=draft levee=3`. It now prints split retreats a game (should be 0.00).
+  Say what Hask wins: he won more in every table here.
+- **Melee ties fired again:** "EVEN VOLLEYS ARE FIRED AGAIN" on the table in a two-front battle.
+- **A battle closes by itself** after its last line, and **the charge bugle plays once.**
+- **The map** (`./scripts/probes.sh v24m`, 58 facts):
+  - the music waits for the intro film;
+  - OK lets go of the land;
+  - the bare-land warning leaves out the land you invade;
+  - a loaded war comes back on its view;
+  - the "+N marching in" tab;
+  - the introductions on the roll for the order;
+  - the ranked garrison shields (wood, brass, steel, gold, the number kept; G no longer cycles them).
+- **Faces:** the reactions wait in a review batch, so in a clean clone the game shows the old stills.
+  `./scripts/probes.sh v24f` stands in reactions cut from the talk loops. `python3 tools/ludo/test_ludo.py`
+  should pass on Linux too.
+- **Every war is kept** in `user://wars/` (`game/core/war_records.gd`). **Poke:** play a war from the
+  client, then `python3 tools/wars/collect.py` and `tools/wars/replay.gd -- wars/<id>.json`: it should replay
+  to every round's hash on Linux too. Never commit the wars your runs make: only Alex's and his dad's belong
+  in `wars/`.
+- **New tests and probes:** `test_v24`, `test_v24m`, `test_v24w`, `test_v24d`; `v24b`, `v24m`, `v24f`, `v24p`.
+- v202 and v22 still hold the game steady (v2.3.1), so give the probes `PROBE_SECS=5400` on your box.
+
+## v2.3.1: your report on d7a840b
 
 - **B-013 and B-014 fixed** (probes, not the game): on your box a frame takes about a second, so the
   clash's half-second shove and a musket ball's third of a second could start and end between frames.

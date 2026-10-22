@@ -152,6 +152,8 @@ func reactions() -> void:
 	p.ok(rested, "...then he is at rest")
 
 	## the taunt: its own reaction when there is one, else the win's
+	LeaderFace._loops["varek_taunt"] = {} ## whatever is installed: first, a face with no taunt
+	_stood_in.append("varek_taunt")
 	Audio.skip_voice()
 	v.react("win", "taunt", 3.0)
 	await p.frames(3)

@@ -151,6 +151,10 @@ func run(probe) -> void:
 	s.set_attack("gate", "ridge", 5)
 	s.lock()
 	s.lock()
+	## (v2.4) this loop moves the report on itself whenever it isn't waiting: a slow frame (a busy
+	## machine, the bot's box) could pass the clash's beat before the board marked it, so while it
+	## watches a frame is a 60th of a second (tools/probe.gd)
+	p.steady(true)
 	guard = 0
 	while not gs.cinema.visible and guard < 300:
 		guard += 1
@@ -180,6 +184,7 @@ func run(probe) -> void:
 		elif not gs.cinema._waiting and gs.cinema._wait <= 0.0:
 			gs.cinema.advance()
 		await p.frames(1)
+	p.steady(false)
 	p.ok(clash_shot, "a border clash is marked on the map")
 	Settings.data["battles"] = "mine"
 	## cards on the Wide World

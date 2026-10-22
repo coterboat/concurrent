@@ -2,6 +2,165 @@
 
 The bible says amendments come with a dated entry and the test or band that justified them. Everything below has both.
 
+## v2.4 — 21 Oct 2026: Alex's playtest of v2.3.1 (rules 23)
+
+Alex played v2.3.1 on the PC and left notes (`concurrent_playtest_notes.txt`, 10-21): "the polish worked
+great for the most part. main thing is performance, not sure why but the zoom in between the main map and
+battle map on 3d absolutely chugs … if this is chugging on this pc we're doing something wrong in the code."
+Four sessions built it at once, each on its own files (v24-3d, v24-battles, v24-map, v24-faces), and the
+coordinator added the war records and merged them. Each session's full notes, with every number, are in
+`docs/v24/`. **Rules 23** for new games: a commander's fronts call together, and a melee's even volley is
+fired again. Every older game replays as it was played: test_v24's rules-22 golden hashes, and a rules-22
+war kept by the game replayed on the rules-23 code to every round's hash.
+
+### The chug was the board, not the 3D (v24-3d)
+
+Measured before anything changed (`tools/study/swoop.gd`, the real client on the land as Alex plays it, every
+frame's real length and what ran in the slow ones). On this PC (RTX 3070) render and GPU took 1-6 ms a frame.
+The cost was the board's 2D overlay drawn over the land:
+- **The region bonus labels** re-searched their spots every 0.15 s while the view moved: up to 2,673 spots a
+  region, each un-projected through the 3D camera three times. That cost 20-415 ms a draw.
+- **The tokens** were ~15 canvas shapes each, at 17-33 µs apiece: 20-25 ms a draw.
+- **It drew twice a frame** while a tween moved the view.
+- **It went on drawing under the battlefield**, unseen, through the battle's camera.
+- **The land's quality watchdog** blamed the land for those frames and stepped it down to no shadows by the
+  second battle.
+
+Now:
+- The battlefield rests the board while it covers the screen.
+- The bonus labels are placed again only once the view rests.
+- The swoop draws the board once a frame.
+- Tokens, shields and the road-home ring are drawn from meshes made once a look (`game/board/token_mesh.gd`,
+  peeled out of `map_board.gd`): 9,375 tokens through two battles from 18 meshes, 4.0/255 from the old
+  drawing on average.
+- A battle's models, shaders and sounds load with the land.
+- Figures are reused between battles.
+- The battle camera's sight test takes 3.5-6 ms (was 35-50).
+- The watchdog steps the land down only when the land is what's slow.
+
+The first battle, worst frame and frames a second:
+
+| | board swoops down | battlefield tips down | the fight | battlefield rises | board swoops back |
+|---|---|---|---|---|---|
+| v2.3.1 | 252 ms, 9 fps | 320 ms, 17 fps | 289 ms, 64 fps | 281 ms, 39 fps | 130 ms, 17 fps |
+| v2.4 | **20 ms, 116 fps** | **17 ms, 175 fps** | 96 ms, 182 fps | **16 ms, 178 fps** | **17 ms, 128 fps** |
+
+The fight's few slow frames left are its first (the battle's setup loads the flat field's hidden backdrop:
+`battle_theater.gd` `_setup_engagement`) and the first throw.
+
+- **Bullet paths** ("a little too polygon-y and wide"): the musket ball's streak was a six-sided cone 2.7
+  wide. It's now a camera-facing ribbon (`game/world3d/tracer.gdshader`), 0.9 wide at the ball, tapering and
+  soft, in the firer's colour, its tail never behind the muzzle. The cannon ball is round.
+- **A fight at a fort:** the fort stays on the table and is the fight's heart. Each defending group lines the
+  wall facing its foe, two deep, its commander inside, and the attacking columns halt facing that wall. When
+  the defenders win a volley, the fort's guns fire too. The ground under every fort is levelled: Redgate stood
+  half buried in 36 of slope (`terrain.gd` `level`, `tests/test_v24d.gd`). Staging only.
+
+### Battles (v24-battles, rules 23)
+
+- **"Imre was dual invading … decided to fall back, but then nothing changed."** Since rules 21 a
+  commander's columns from two lands are two fronts, and calls come front by front. Officers judged each
+  front alone against the defenders' whole firing line, where each column of a two-sided storm looks lost. So
+  one column fell back, the other fought on, and a later call took the rest. The battle screen never took the
+  column that left off the count ("7 + 5" stayed). Reproduced: Imre's 7 + 5 at a Gate of 10, 200 seeds, a
+  column fell back alone 104 times.
+  - **The picture (all rules):** the column that falls back leaves the field. Its men come off the count as
+    gone home ("6  ↩4"), and the odds count only the men still fighting. The line says which column went and
+    which fights on. A commander whose whole attack fell back gets his retreat as the verdict, and the report's
+    melee line names who fell back.
+  - **The AI (rules 23):** a commander's fronts under one standing order make one call together, on all his
+    fronts' odds (`Combat.fronts_doctrine`). Over the same 200 storms, columns falling back alone went
+    104 → 0, and The Gate was taken 49 → 98 times.
+  - **The arena:** 240 wars on known24 with no violations, and split retreats per game went from 0.6-1.0 to
+    0. Hask (never falls back) won more in all three tables, 26 → 37 of 120: each table within noise, but
+    worth watching in play.
+  - **Your own two columns** are still asked one at a time. The plate prices both together: "both columns
+    together: long shot — 36%".
+- **"Rerolls in dual invasions don't re-roll if they tie":** a melee's even volley cost nobody but counted
+  as one of the exchange's three, never fired again. Rules 23 fires it again within its salvo, under "EVEN
+  VOLLEYS ARE FIRED AGAIN", as an assault's has been since Amendment 18. The fronts' price follows (`Combat.refire`).
+- **A battle closes by itself** once the lines are over (the winner's, the loser's, the advisor's verdict).
+  It had waited for Space whenever you rolled yourself and had men left on the field. That's every win, hold
+  and retreat, hence "only when the advisor has something to say". Space still moves on at once.
+- **The charge bugle once, 3 dB lower:** on the land it sounded as the land rose and again once it had
+  opened. The level is in `levels.json` through the new `EAR` trim in `tools/audio/levels.py`.
+- A plain assault's pause now carries the officers' own call (the fortress's longer line counted), so a
+  battle watched on auto-roll calls exactly as one skipped. The shield's words follow the ranked shields.
+
+### The map and its table (v24-map)
+
+1. **The music waits for the intro film**, then starts when it ends or is skipped. The advisor's counsel waits too.
+2. **OK lets go of the land:** OK and Enter on an order deselect the land it came from. ✕ and Esc keep it.
+3. **The "left bare" warning** leaves out every neighbour the land is marching on. An enemy it attacks has
+   to beat its column first.
+4. **A loaded war comes back on the view it was left on.** The land takes ~2.5 s to rebuild, so the board
+   showed the chart meanwhile, and a click on "2D" then turned the land off for good. Now a "Laying out the
+   land…" veil shows, then the land comes. The chip shows the current view lit.
+5. **Who's there, who's leaving, who's coming in:** in the regroup phase a token's number is the men who can
+   still march. Men marching in ride a dashed "+5" tab of their own, and the tooltip and land card spell it out.
+6. **The introductions are the roll for the order:** each rival's card on the war table, their greeting in
+   their own voice, their die falling as they speak, your throw last. The roll opens on the first rival: the
+   bar says what the roll is for, and the advisor's 5 s line before it is cut. A dealt war gets the cards
+   before the deployment. Esc skips them.
+7. **The garrison shield shows its depth** ("ranked", the default): plain wood for the man held back, then
+   brass, steel and gold, gold on crimson at a fortress's four, the number kept. The old number shield and
+   chevrons were made to compare (`docs/v24/v24-map.md` has them side by side). Alex chose ranked, so the G key
+   that cycled them is gone, and the `shields` setting keeps the others in settings.cfg only.
+
+### Faces that move (v24-faces)
+
+- **"Do away with the 'eyes blazing' animations"**: a face's reactions now play as animated loops (win,
+  lose, taunt, a fall that stays down), made like the talk loops from each portrait and returning to it. That
+  covers the six commanders, the advisor and the six faces a player wears.
+- **46 reactions, two takes each**, wait in the review batch `v24_faces`, plus a new idle for the Lioness,
+  who breathed in her old khaki coat. **The game is unchanged until Alex accepts takes**: no reaction
+  installed means today's still and bump.
+- **834 Ludo credits** (3,682 → 2,848), a 54-credit pilot first.
+- **`tools/ludo/ludo.py`** no longer abandons a paid job when Ludo says `cancelled`/`error` or the connection
+  drops while polling (`tools/ludo/test_ludo.py`).
+- **`scripts/review.sh`** finds a Python that runs, so the review table opens on the PC.
+
+### Every war is kept (v24-wars)
+
+- Every save is also written to `user://wars/<when it began>-<seed>.json`, a file of the war's own that is
+  never cleared, so finished and abandoned wars replay exactly, battles and all (`game/core/war_records.gd`).
+  Alex: "savegame.json going away is dumb … this we way can track and simulate games over time".
+- **Bring them in:** `python tools/wars/collect.py` brings a machine's wars, or a folder or zip someone
+  sent, into the repo's `wars/`.
+- **Replay one:** `tools/wars/replay.gd` replays a war and checks every round's hash.
+- Only a player's wars are kept: anything that moves the save slot aside keeps none.
+- A 6-round, 3-commander war is 8 KB. `test_v24w` (14 facts).
+
+### Evidence (the merged branch)
+
+On the PC, branch `v24` (all five merged, with Alex's 46 accepted reactions installed):
+
+- **Tests:** `check.sh` green, and the full suite `CONCURRENT ok passed=815 failed=0`.
+- **Old saves:** a rules-22 war kept by the game replays on the rules-23 code to every round's hash.
+- **Every probe, windowed: 36 of 36.** Two failed in the first sweep and were fixed in the probes:
+  - **v13** drives the report itself, moving on whenever it isn't waiting, so under load (another Godot on the
+    GPU) it could skip the clash's beat before the board marked it. It now holds steady while it watches, and
+    passes at full speed and as the bot's box (`--box=40`).
+  - **v24f** tested "a face with no taunt" on Varek, who has a real taunt now that the takes are installed.
+    It now sets his aside the way it already did for its other no-reaction cases.
+- **The export:** the Windows pack loads every map's art and data and starts a war on all six, and the
+  exported game kept its own war record (rules 23). The pack is 477 MB, up from 371 MB, mostly the 46 reactions.
+
+### Alex's calls (10-21: "we'll go with your picks for now i will review later")
+
+- **C3:** a "fall back with every column" button for your own split storm: **parked**. The officers now
+  retreat together, and your own columns take F twice.
+- **C4:** the shield: **ranked** stays the default.
+- **C5:** the G key that compared the shields: **taken out** now that one is chosen. The `shields` setting
+  keeps the others reachable from settings.cfg only.
+- **C6:** the advisor's 5 s "every commander throws a die" line before the rivals: **cut**. The bar's text
+  says it.
+- **C7:** the rivals' cards before a dealt war's deployment: **kept**.
+- **C9:** greetings, Fortune and reserves keep the **win** reaction (no "pleased" reactions yet).
+- **C10:** the Lioness's old-coat stills: her accepted lose and fall reactions retire them; remade only if
+  her takes are rejected.
+- **Still Alex's:** C8, review the `v24_faces` batch (from the v24 checkout until v2.4 is on main).
+
 ## v2.3.1 — 20 Oct 2026: the bot's two probes on a slow box (no rule change: rules 22)
 
 The owner merged the v2.3 pass (`d7a840b`). The playtest bot's report on it had two open bugs, both in
