@@ -142,6 +142,14 @@ What the notes on art, sheets and films have asked for, as rules:
    the fife instead of sung lyrics.
 8. **The imperial theme is unflinching.** Flags, uniforms and war imagery are drawn as they were. Don't
    sanitize them.
+9. **A face reacts in character, and comes home.** (v2.4, the reactions in `tools/ludo/v24_content.py`.)
+   Animate the portrait itself, not a separate mood picture: one can stop matching its portrait (the
+   Lioness's angry face still wears the coat of a portrait since re-rolled), and v1.2's "eyes blazing
+   with victory" made eyes glow.
+   Write the expression as an arc in the character's own manner (Varek's grim nod, Hask's belly laugh,
+   Quill peering over his spectacles), say they speak a few words when the moment has a line, and end
+   it with "then settles back exactly into the starting pose, looking at the viewer" (with
+   `final_same`). A fall says where it ends and that it stays there. Keep the head and hat in the frame.
 
 ## What things cost
 

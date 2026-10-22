@@ -19976,6 +19976,2694 @@
   "url": "https://storage.googleapis.com/ludo-assets/api/d0b97e2c2e7a0fc41f3bf18e4e1199d2.webp",
   "v": 1
  },
+ "v24_loop_you_lioness_idle": {
+  "credits": 3,
+  "endpoint": "/assets/sprite/animate",
+  "file": "assets/raw/v24/faces/you_lioness_idle.webp",
+  "id": "v24_loop_you_lioness_idle",
+  "job": "296802df-3cd2-4029-afb7-71bfb1e451c3",
+  "params": {
+   "crop": false,
+   "duration": 2,
+   "final_image": "data:image/png;base64,iVBORw0KGgoAAAANSU...(base64)",
+   "frame_size": -9,
+   "frames": 16,
+   "image_type": "portrait",
+   "initial_image": "data:image/png;base64,iVBORw0KGgoAAAANSU...(base64)",
+   "loop": false,
+   "model": "forge",
+   "motion_prompt": "breathes slowly and blinks, subtle idle motion, head nearly still"
+  },
+  "url": "https://storage.googleapis.com/ludo-assets/api/2652c24c9f1e3a11811881a935c03fde.webp",
+  "v": 1,
+  "video_url": "https://storage.googleapis.com/ludo-assets/api/3cc3a02f88d1d30807fc4c2f37b253eb.mp4"
+ },
+ "v24_loop_you_lioness_idle_hydra": {
+  "audio_url": "https://storage.googleapis.com/ludo-assets/api/51482d56c255b9b7b1349002cbb5d6e9.mp3",
+  "credits": 9,
+  "endpoint": "/assets/sprite/animate",
+  "file": "assets/raw/v24/faces/you_lioness_idle_hydra.webp",
+  "id": "v24_loop_you_lioness_idle_hydra",
+  "job": "4dff76cb-e333-4252-8544-3f5727a1d07b",
+  "params": {
+   "crop": false,
+   "duration": 3,
+   "final_image": "data:image/png;base64,iVBORw0KGgoAAAANSU...(base64)",
+   "frame_size": -9,
+   "frames": 36,
+   "image_type": "portrait",
+   "initial_image": "data:image/png;base64,iVBORw0KGgoAAAANSU...(base64)",
+   "loop": false,
+   "margin_ratio_horizontal": 0.02,
+   "margin_ratio_mode": "manual",
+   "margin_ratio_vertical": 0.02,
+   "model": "hydra",
+   "motion_prompt": "The red-haired woman officer breathes slowly and blinks once, her lips gently closed and her head nearly still, then settles back exactly into the starting pose, looking at the viewer. The whole head and the slouch hat stay inside the frame."
+  },
+  "side_files": [
+   "assets/raw/v24/faces/you_lioness_idle_hydra_audio.mp3"
+  ],
+  "url": "https://storage.googleapis.com/ludo-assets/api/9199e0467e2cae028430c6219b62ceed.webp",
+  "v": 1,
+  "video_url": "https://storage.googleapis.com/ludo-assets/api/cfc12b9f2c2c1ccf1c6aeba731b7c627.mp4"
+ },
+ "v24_loop_you_lioness_idle_hydra~t2": {
+  "audio_url": "https://storage.googleapis.com/ludo-assets/api/d15cc28c8a64c3b9283c41099e7ba6a8.mp3",
+  "credits": 9,
+  "endpoint": "/assets/sprite/animate",
+  "file": "assets/raw/v24/faces/.takes/you_lioness_idle_hydra.t2.webp",
+  "id": "v24_loop_you_lioness_idle_hydra~t2",
+  "job": "9aaaafac-dcfb-42e2-beee-29e1edbde9d7",
+  "params": {
+   "crop": false,
+   "duration": 3,
+   "final_image": "data:image/png;base64,iVBORw0KGgoAAAANSU...(base64)",
+   "frame_size": -9,
+   "frames": 36,
+   "image_type": "portrait",
+   "initial_image": "data:image/png;base64,iVBORw0KGgoAAAANSU...(base64)",
+   "loop": false,
+   "margin_ratio_horizontal": 0.02,
+   "margin_ratio_mode": "manual",
+   "margin_ratio_vertical": 0.02,
+   "model": "hydra",
+   "motion_prompt": "The red-haired woman officer breathes slowly and blinks once, her lips gently closed and her head nearly still, then settles back exactly into the starting pose, looking at the viewer. The whole head and the slouch hat stay inside the frame."
+  },
+  "side_files": [
+   "assets/raw/v24/faces/.takes/you_lioness_idle_hydra.t2_audio.mp3"
+  ],
+  "url": "https://storage.googleapis.com/ludo-assets/api/3f4fdfd97a1f1cd2f86f07f1fff55617.webp",
+  "v": 1,
+  "video_url": "https://storage.googleapis.com/ludo-assets/api/d0403517772efcf0ac4f14358529cfa0.mp4"
+ },
+ "v24_loop_you_lioness_idle~t2": {
+  "credits": 3,
+  "endpoint": "/assets/sprite/animate",
+  "file": "assets/raw/v24/faces/.takes/you_lioness_idle.t2.webp",
+  "id": "v24_loop_you_lioness_idle~t2",
+  "job": "58d09633-3978-4e1b-bffe-fcaf019d59fe",
+  "params": {
+   "crop": false,
+   "duration": 2,
+   "final_image": "data:image/png;base64,iVBORw0KGgoAAAANSU...(base64)",
+   "frame_size": -9,
+   "frames": 16,
+   "image_type": "portrait",
+   "initial_image": "data:image/png;base64,iVBORw0KGgoAAAANSU...(base64)",
+   "loop": false,
+   "model": "forge",
+   "motion_prompt": "breathes slowly and blinks, subtle idle motion, head nearly still"
+  },
+  "url": "https://storage.googleapis.com/ludo-assets/api/c44667a2157f340ec71a06111288e6d6.webp",
+  "v": 1,
+  "video_url": "https://storage.googleapis.com/ludo-assets/api/e2045e60c4b1398e23c706fc465769aa.mp4"
+ },
+ "v24_react_advisor_dead": {
+  "audio_url": "https://storage.googleapis.com/ludo-assets/api/333f52ae0919fd9a8084471d26f06ffe.mp3",
+  "credits": 9,
+  "endpoint": "/assets/sprite/animate",
+  "file": "assets/raw/v24/faces/advisor_dead.webp",
+  "id": "v24_react_advisor_dead",
+  "job": "425758d4-3d0d-4a06-96cf-c8cae746dd05",
+  "params": {
+   "crop": false,
+   "duration": 3,
+   "final_image": "data:image/png;base64,iVBORw0KGgoAAAANSU...(base64)",
+   "frame_size": -9,
+   "frames": 36,
+   "image_type": "portrait",
+   "initial_image": "data:image/png;base64,iVBORw0KGgoAAAANSU...(base64)",
+   "loop": false,
+   "margin_ratio_horizontal": 0.02,
+   "margin_ratio_mode": "manual",
+   "margin_ratio_vertical": 0.02,
+   "model": "hydra",
+   "motion_prompt": "The old field marshal with white mutton-chop whiskers and round spectacles lets his smile fade into a grave, sorrowful look and slowly bows his head with his eyes closed, lifts it again with quiet dignity, then settles back exactly into the starting pose, looking at the viewer. The whole head stays inside the frame."
+  },
+  "side_files": [
+   "assets/raw/v24/faces/advisor_dead_audio.mp3"
+  ],
+  "url": "https://storage.googleapis.com/ludo-assets/api/bd88cf844d71bf1eea7bddeb1597851e.webp",
+  "v": 1,
+  "video_url": "https://storage.googleapis.com/ludo-assets/api/12ebd6b9bfb5812718b49cf8988c1ead.mp4"
+ },
+ "v24_react_advisor_dead~t2": {
+  "audio_url": "https://storage.googleapis.com/ludo-assets/api/c79bd8d8de7164cac80914ffd1c6ed84.mp3",
+  "credits": 9,
+  "endpoint": "/assets/sprite/animate",
+  "file": "assets/raw/v24/faces/.takes/advisor_dead.t2.webp",
+  "id": "v24_react_advisor_dead~t2",
+  "job": "371d8a04-0d27-495d-97b5-313008449e0d",
+  "params": {
+   "crop": false,
+   "duration": 3,
+   "final_image": "data:image/png;base64,iVBORw0KGgoAAAANSU...(base64)",
+   "frame_size": -9,
+   "frames": 36,
+   "image_type": "portrait",
+   "initial_image": "data:image/png;base64,iVBORw0KGgoAAAANSU...(base64)",
+   "loop": false,
+   "margin_ratio_horizontal": 0.02,
+   "margin_ratio_mode": "manual",
+   "margin_ratio_vertical": 0.02,
+   "model": "hydra",
+   "motion_prompt": "The old field marshal with white mutton-chop whiskers and round spectacles lets his smile fade into a grave, sorrowful look and slowly bows his head with his eyes closed, lifts it again with quiet dignity, then settles back exactly into the starting pose, looking at the viewer. The whole head stays inside the frame."
+  },
+  "side_files": [
+   "assets/raw/v24/faces/.takes/advisor_dead.t2_audio.mp3"
+  ],
+  "url": "https://storage.googleapis.com/ludo-assets/api/531fba707fe50c7a7f281eeacf269d80.webp",
+  "v": 1,
+  "video_url": "https://storage.googleapis.com/ludo-assets/api/5976b0f79a15d73dfacc366549bca9fb.mp4"
+ },
+ "v24_react_advisor_lose": {
+  "audio_url": "https://storage.googleapis.com/ludo-assets/api/ffe9ba3ec4110e56e6ae5fd02f119c64.mp3",
+  "credits": 9,
+  "endpoint": "/assets/sprite/animate",
+  "file": "assets/raw/v24/faces/advisor_lose.webp",
+  "id": "v24_react_advisor_lose",
+  "job": "8e684d0d-5ddb-4723-a897-6afd7a44527e",
+  "params": {
+   "crop": false,
+   "duration": 3,
+   "final_image": "data:image/png;base64,iVBORw0KGgoAAAANSU...(base64)",
+   "frame_size": -9,
+   "frames": 36,
+   "image_type": "portrait",
+   "initial_image": "data:image/png;base64,iVBORw0KGgoAAAANSU...(base64)",
+   "loop": false,
+   "margin_ratio_horizontal": 0.02,
+   "margin_ratio_mode": "manual",
+   "margin_ratio_vertical": 0.02,
+   "model": "hydra",
+   "motion_prompt": "The old field marshal with white mutton-chop whiskers and round spectacles raises his eyebrows high above his spectacles, his eyes wide with alarm, and leans forward as he calls out an urgent warning, then settles back exactly into the starting pose, looking at the viewer. The whole head stays inside the frame."
+  },
+  "side_files": [
+   "assets/raw/v24/faces/advisor_lose_audio.mp3"
+  ],
+  "url": "https://storage.googleapis.com/ludo-assets/api/e4ee58cea4da076209eaa63d92a5297b.webp",
+  "v": 1,
+  "video_url": "https://storage.googleapis.com/ludo-assets/api/f690a6af4cb3a9b2bdc869e5edec25c8.mp4"
+ },
+ "v24_react_advisor_lose~t2": {
+  "audio_url": "https://storage.googleapis.com/ludo-assets/api/96042835f8a2415f78897408a0941a91.mp3",
+  "credits": 9,
+  "endpoint": "/assets/sprite/animate",
+  "file": "assets/raw/v24/faces/.takes/advisor_lose.t2.webp",
+  "id": "v24_react_advisor_lose~t2",
+  "job": "527844c2-fa23-4c53-8221-ba17b26c86a5",
+  "params": {
+   "crop": false,
+   "duration": 3,
+   "final_image": "data:image/png;base64,iVBORw0KGgoAAAANSU...(base64)",
+   "frame_size": -9,
+   "frames": 36,
+   "image_type": "portrait",
+   "initial_image": "data:image/png;base64,iVBORw0KGgoAAAANSU...(base64)",
+   "loop": false,
+   "margin_ratio_horizontal": 0.02,
+   "margin_ratio_mode": "manual",
+   "margin_ratio_vertical": 0.02,
+   "model": "hydra",
+   "motion_prompt": "The old field marshal with white mutton-chop whiskers and round spectacles raises his eyebrows high above his spectacles, his eyes wide with alarm, and leans forward as he calls out an urgent warning, then settles back exactly into the starting pose, looking at the viewer. The whole head stays inside the frame."
+  },
+  "side_files": [
+   "assets/raw/v24/faces/.takes/advisor_lose.t2_audio.mp3"
+  ],
+  "url": "https://storage.googleapis.com/ludo-assets/api/ddce332bfb0c98095b9ce156c007f303.webp",
+  "v": 1,
+  "video_url": "https://storage.googleapis.com/ludo-assets/api/67256c42212606ac5be5cc1f63def620.mp4"
+ },
+ "v24_react_advisor_win": {
+  "audio_url": "https://storage.googleapis.com/ludo-assets/api/5e4932599aefa2989dacba2894496972.mp3",
+  "credits": 9,
+  "endpoint": "/assets/sprite/animate",
+  "file": "assets/raw/v24/faces/advisor_win.webp",
+  "id": "v24_react_advisor_win",
+  "job": "a5eafdae-3de6-491d-86bb-94385633bde7",
+  "params": {
+   "crop": false,
+   "duration": 3,
+   "final_image": "data:image/png;base64,iVBORw0KGgoAAAANSU...(base64)",
+   "frame_size": -9,
+   "frames": 36,
+   "image_type": "portrait",
+   "initial_image": "data:image/png;base64,iVBORw0KGgoAAAANSU...(base64)",
+   "loop": false,
+   "margin_ratio_horizontal": 0.02,
+   "margin_ratio_mode": "manual",
+   "margin_ratio_vertical": 0.02,
+   "model": "hydra",
+   "motion_prompt": "The old field marshal with white mutton-chop whiskers and round spectacles beams with pride as a warm, satisfied smile spreads under his white whiskers, giving a slow approving nod as he says a few words, then settles back exactly into the starting pose, looking at the viewer. The whole head stays inside the frame."
+  },
+  "side_files": [
+   "assets/raw/v24/faces/advisor_win_audio.mp3"
+  ],
+  "url": "https://storage.googleapis.com/ludo-assets/api/71ccb9396e4f6d3c3c263936fce12375.webp",
+  "v": 1,
+  "video_url": "https://storage.googleapis.com/ludo-assets/api/6d30c2be352af2680ae2ce1a72472b03.mp4"
+ },
+ "v24_react_advisor_win~t2": {
+  "audio_url": "https://storage.googleapis.com/ludo-assets/api/afef80b657334e8b50c9f20717d5baae.mp3",
+  "credits": 9,
+  "endpoint": "/assets/sprite/animate",
+  "file": "assets/raw/v24/faces/.takes/advisor_win.t2.webp",
+  "id": "v24_react_advisor_win~t2",
+  "job": "1f0c62d8-cbfa-4d4b-b5d5-cbd9b6858105",
+  "params": {
+   "crop": false,
+   "duration": 3,
+   "final_image": "data:image/png;base64,iVBORw0KGgoAAAANSU...(base64)",
+   "frame_size": -9,
+   "frames": 36,
+   "image_type": "portrait",
+   "initial_image": "data:image/png;base64,iVBORw0KGgoAAAANSU...(base64)",
+   "loop": false,
+   "margin_ratio_horizontal": 0.02,
+   "margin_ratio_mode": "manual",
+   "margin_ratio_vertical": 0.02,
+   "model": "hydra",
+   "motion_prompt": "The old field marshal with white mutton-chop whiskers and round spectacles beams with pride as a warm, satisfied smile spreads under his white whiskers, giving a slow approving nod as he says a few words, then settles back exactly into the starting pose, looking at the viewer. The whole head stays inside the frame."
+  },
+  "side_files": [
+   "assets/raw/v24/faces/.takes/advisor_win.t2_audio.mp3"
+  ],
+  "url": "https://storage.googleapis.com/ludo-assets/api/017e98e9e8064a588af428119afbf9e2.webp",
+  "v": 1,
+  "video_url": "https://storage.googleapis.com/ludo-assets/api/9f5e8d77915f3e6e4022aef42e0546c2.mp4"
+ },
+ "v24_react_hask_dead": {
+  "audio_url": "https://storage.googleapis.com/ludo-assets/api/276170c77e5a56e04504969b9d390285.mp3",
+  "credits": 9,
+  "endpoint": "/assets/sprite/animate",
+  "file": "assets/raw/v24/faces/hask_dead.webp",
+  "id": "v24_react_hask_dead",
+  "job": "073fae49-fbf7-4c31-8ce7-5bd2f083d411",
+  "params": {
+   "crop": false,
+   "duration": 3,
+   "frame_size": -9,
+   "frames": 36,
+   "image_type": "portrait",
+   "initial_image": "data:image/png;base64,iVBORw0KGgoAAAANSU...(base64)",
+   "loop": false,
+   "margin_ratio_horizontal": 0.02,
+   "margin_ratio_mode": "manual",
+   "margin_ratio_vertical": 0.02,
+   "model": "hydra",
+   "motion_prompt": "The huge black-bearded privateer commodore lets out a heavy sigh, his big shoulders sagging, and his head drops forward with his eyes closed, and he stays still with his head down to the end. The whole head and the tricorne hat stay inside the frame."
+  },
+  "side_files": [
+   "assets/raw/v24/faces/hask_dead_audio.mp3"
+  ],
+  "url": "https://storage.googleapis.com/ludo-assets/api/e0cf6236a25603bb723479aed4f15e42.webp",
+  "v": 1,
+  "video_url": "https://storage.googleapis.com/ludo-assets/api/096b8d1208ab77ce6cf112fe59c9f6a3.mp4"
+ },
+ "v24_react_hask_dead~t2": {
+  "audio_url": "https://storage.googleapis.com/ludo-assets/api/22355ae140a8aa03b9fec97d31b0c7fe.mp3",
+  "credits": 9,
+  "endpoint": "/assets/sprite/animate",
+  "file": "assets/raw/v24/faces/.takes/hask_dead.t2.webp",
+  "id": "v24_react_hask_dead~t2",
+  "job": "8d5f80c1-2def-4ce6-9e4a-b35b62f9850d",
+  "params": {
+   "crop": false,
+   "duration": 3,
+   "frame_size": -9,
+   "frames": 36,
+   "image_type": "portrait",
+   "initial_image": "data:image/png;base64,iVBORw0KGgoAAAANSU...(base64)",
+   "loop": false,
+   "margin_ratio_horizontal": 0.02,
+   "margin_ratio_mode": "manual",
+   "margin_ratio_vertical": 0.02,
+   "model": "hydra",
+   "motion_prompt": "The huge black-bearded privateer commodore lets out a heavy sigh, his big shoulders sagging, and his head drops forward with his eyes closed, and he stays still with his head down to the end. The whole head and the tricorne hat stay inside the frame."
+  },
+  "side_files": [
+   "assets/raw/v24/faces/.takes/hask_dead.t2_audio.mp3"
+  ],
+  "url": "https://storage.googleapis.com/ludo-assets/api/7a5e2f28e963a7cd8ad9c56fa6d7113f.webp",
+  "v": 1,
+  "video_url": "https://storage.googleapis.com/ludo-assets/api/207569698aabdd7454fedda6873073ff.mp4"
+ },
+ "v24_react_hask_lose": {
+  "audio_url": "https://storage.googleapis.com/ludo-assets/api/f16e99d1e0cb785b8fa8cce520f55c04.mp3",
+  "credits": 9,
+  "endpoint": "/assets/sprite/animate",
+  "file": "assets/raw/v24/faces/hask_lose.webp",
+  "id": "v24_react_hask_lose",
+  "job": "f4bc7983-710a-41d5-a352-34b92a71bd55",
+  "params": {
+   "crop": false,
+   "duration": 3,
+   "final_image": "data:image/png;base64,iVBORw0KGgoAAAANSU...(base64)",
+   "frame_size": -9,
+   "frames": 36,
+   "image_type": "portrait",
+   "initial_image": "data:image/png;base64,iVBORw0KGgoAAAANSU...(base64)",
+   "loop": false,
+   "margin_ratio_horizontal": 0.02,
+   "margin_ratio_mode": "manual",
+   "margin_ratio_vertical": 0.02,
+   "model": "hydra",
+   "motion_prompt": "The huge black-bearded privateer commodore snarls with fury, teeth bared in his black beard and brows crashing down, growling a few words and shaking his head, then settles back exactly into the starting pose, looking at the viewer. The whole head and the tricorne hat stay inside the frame."
+  },
+  "side_files": [
+   "assets/raw/v24/faces/hask_lose_audio.mp3"
+  ],
+  "url": "https://storage.googleapis.com/ludo-assets/api/359954d2aa8eb74886ef83d91f31361d.webp",
+  "v": 1,
+  "video_url": "https://storage.googleapis.com/ludo-assets/api/8ac41579fce53693a066d0ee72ac79ee.mp4"
+ },
+ "v24_react_hask_lose~t2": {
+  "audio_url": "https://storage.googleapis.com/ludo-assets/api/09762a71201a9e06804abd68a14a1327.mp3",
+  "credits": 9,
+  "endpoint": "/assets/sprite/animate",
+  "file": "assets/raw/v24/faces/.takes/hask_lose.t2.webp",
+  "id": "v24_react_hask_lose~t2",
+  "job": "c1ea6e8f-5417-4935-bde6-e71e81f60e87",
+  "params": {
+   "crop": false,
+   "duration": 3,
+   "final_image": "data:image/png;base64,iVBORw0KGgoAAAANSU...(base64)",
+   "frame_size": -9,
+   "frames": 36,
+   "image_type": "portrait",
+   "initial_image": "data:image/png;base64,iVBORw0KGgoAAAANSU...(base64)",
+   "loop": false,
+   "margin_ratio_horizontal": 0.02,
+   "margin_ratio_mode": "manual",
+   "margin_ratio_vertical": 0.02,
+   "model": "hydra",
+   "motion_prompt": "The huge black-bearded privateer commodore snarls with fury, teeth bared in his black beard and brows crashing down, growling a few words and shaking his head, then settles back exactly into the starting pose, looking at the viewer. The whole head and the tricorne hat stay inside the frame."
+  },
+  "side_files": [
+   "assets/raw/v24/faces/.takes/hask_lose.t2_audio.mp3"
+  ],
+  "url": "https://storage.googleapis.com/ludo-assets/api/49644d6db5a8542ef5dc82dd3d3381a6.webp",
+  "v": 1,
+  "video_url": "https://storage.googleapis.com/ludo-assets/api/9ce3de33b9570538509cb0db61043eda.mp4"
+ },
+ "v24_react_hask_taunt": {
+  "audio_url": "https://storage.googleapis.com/ludo-assets/api/9244356677691481509e0303274d8d35.mp3",
+  "credits": 9,
+  "endpoint": "/assets/sprite/animate",
+  "file": "assets/raw/v24/faces/hask_taunt.webp",
+  "id": "v24_react_hask_taunt",
+  "job": "65872bee-f3f4-475b-adfd-dda1468f7fb9",
+  "params": {
+   "crop": false,
+   "duration": 3,
+   "final_image": "data:image/png;base64,iVBORw0KGgoAAAANSU...(base64)",
+   "frame_size": -9,
+   "frames": 36,
+   "image_type": "portrait",
+   "initial_image": "data:image/png;base64,iVBORw0KGgoAAAANSU...(base64)",
+   "loop": false,
+   "margin_ratio_horizontal": 0.02,
+   "margin_ratio_mode": "manual",
+   "margin_ratio_vertical": 0.02,
+   "model": "hydra",
+   "motion_prompt": "The huge black-bearded privateer commodore leans toward the viewer with a wolfish grin and booms a short sentence, laughing so his black beard shakes, then settles back exactly into the starting pose, looking at the viewer. The whole head and the tricorne hat stay inside the frame."
+  },
+  "side_files": [
+   "assets/raw/v24/faces/hask_taunt_audio.mp3"
+  ],
+  "url": "https://storage.googleapis.com/ludo-assets/api/9ad0fe92fbd6fbc8afda969cb61cc10e.webp",
+  "v": 1,
+  "video_url": "https://storage.googleapis.com/ludo-assets/api/801bebc9f66c61f5a580071c1909af9e.mp4"
+ },
+ "v24_react_hask_taunt~t2": {
+  "audio_url": "https://storage.googleapis.com/ludo-assets/api/89cd5539fc2cd343986f61c0da167e1e.mp3",
+  "credits": 9,
+  "endpoint": "/assets/sprite/animate",
+  "file": "assets/raw/v24/faces/.takes/hask_taunt.t2.webp",
+  "id": "v24_react_hask_taunt~t2",
+  "job": "0fcf17f3-08cf-464e-a878-277591250cf5",
+  "params": {
+   "crop": false,
+   "duration": 3,
+   "final_image": "data:image/png;base64,iVBORw0KGgoAAAANSU...(base64)",
+   "frame_size": -9,
+   "frames": 36,
+   "image_type": "portrait",
+   "initial_image": "data:image/png;base64,iVBORw0KGgoAAAANSU...(base64)",
+   "loop": false,
+   "margin_ratio_horizontal": 0.02,
+   "margin_ratio_mode": "manual",
+   "margin_ratio_vertical": 0.02,
+   "model": "hydra",
+   "motion_prompt": "The huge black-bearded privateer commodore leans toward the viewer with a wolfish grin and booms a short sentence, laughing so his black beard shakes, then settles back exactly into the starting pose, looking at the viewer. The whole head and the tricorne hat stay inside the frame."
+  },
+  "side_files": [
+   "assets/raw/v24/faces/.takes/hask_taunt.t2_audio.mp3"
+  ],
+  "url": "https://storage.googleapis.com/ludo-assets/api/bc7fcebeb3f2659e244cd808264a292e.webp",
+  "v": 1,
+  "video_url": "https://storage.googleapis.com/ludo-assets/api/c83b8e3fcfdb74d2386d79f0a3aabdea.mp4"
+ },
+ "v24_react_hask_win": {
+  "audio_url": "https://storage.googleapis.com/ludo-assets/api/15f59c1d6f37937a018e9346503c7c85.mp3",
+  "credits": 9,
+  "endpoint": "/assets/sprite/animate",
+  "file": "assets/raw/v24/faces/hask_win.webp",
+  "id": "v24_react_hask_win",
+  "job": "53d05c45-09b2-4a40-8e43-ce6032e41696",
+  "params": {
+   "crop": false,
+   "duration": 3,
+   "final_image": "data:image/png;base64,iVBORw0KGgoAAAANSU...(base64)",
+   "frame_size": -9,
+   "frames": 36,
+   "image_type": "portrait",
+   "initial_image": "data:image/png;base64,iVBORw0KGgoAAAANSU...(base64)",
+   "loop": false,
+   "margin_ratio_horizontal": 0.02,
+   "margin_ratio_mode": "manual",
+   "margin_ratio_vertical": 0.02,
+   "model": "hydra",
+   "motion_prompt": "The huge black-bearded privateer commodore throws his head back in a huge, booming belly laugh, his black beard shaking and his eyes squeezed shut with glee, and grins at the viewer, then settles back exactly into the starting pose, looking at the viewer. The whole head and the tricorne hat stay inside the frame."
+  },
+  "side_files": [
+   "assets/raw/v24/faces/hask_win_audio.mp3"
+  ],
+  "url": "https://storage.googleapis.com/ludo-assets/api/e4e9317e61172167caf16991912647f4.webp",
+  "v": 1,
+  "video_url": "https://storage.googleapis.com/ludo-assets/api/bfb085a51c71efd59491e00eec1976aa.mp4"
+ },
+ "v24_react_hask_win~t2": {
+  "audio_url": "https://storage.googleapis.com/ludo-assets/api/9ce14834fc65cc29c06a950529699e03.mp3",
+  "credits": 9,
+  "endpoint": "/assets/sprite/animate",
+  "file": "assets/raw/v24/faces/.takes/hask_win.t2.webp",
+  "id": "v24_react_hask_win~t2",
+  "job": "ffb02097-28fd-48a1-9e82-e9f163968ce2",
+  "params": {
+   "crop": false,
+   "duration": 3,
+   "final_image": "data:image/png;base64,iVBORw0KGgoAAAANSU...(base64)",
+   "frame_size": -9,
+   "frames": 36,
+   "image_type": "portrait",
+   "initial_image": "data:image/png;base64,iVBORw0KGgoAAAANSU...(base64)",
+   "loop": false,
+   "margin_ratio_horizontal": 0.02,
+   "margin_ratio_mode": "manual",
+   "margin_ratio_vertical": 0.02,
+   "model": "hydra",
+   "motion_prompt": "The huge black-bearded privateer commodore throws his head back in a huge, booming belly laugh, his black beard shaking and his eyes squeezed shut with glee, and grins at the viewer, then settles back exactly into the starting pose, looking at the viewer. The whole head and the tricorne hat stay inside the frame."
+  },
+  "side_files": [
+   "assets/raw/v24/faces/.takes/hask_win.t2_audio.mp3"
+  ],
+  "url": "https://storage.googleapis.com/ludo-assets/api/a1deed41920c939d6f3d9f07e76cbc2b.webp",
+  "v": 1,
+  "video_url": "https://storage.googleapis.com/ludo-assets/api/a4b1e69eff39e70d8b7ef83948b61298.mp4"
+ },
+ "v24_react_imre_dead": {
+  "audio_url": "https://storage.googleapis.com/ludo-assets/api/455892f79b2b3754ab6ef51475bd5eaf.mp3",
+  "credits": 9,
+  "endpoint": "/assets/sprite/animate",
+  "file": "assets/raw/v24/faces/imre_dead.webp",
+  "id": "v24_react_imre_dead",
+  "job": "4827f1cc-8251-4461-9569-dfdcfe42d605",
+  "params": {
+   "crop": false,
+   "duration": 3,
+   "frame_size": -9,
+   "frames": 36,
+   "image_type": "portrait",
+   "initial_image": "data:image/png;base64,iVBORw0KGgoAAAANSU...(base64)",
+   "loop": false,
+   "margin_ratio_horizontal": 0.02,
+   "margin_ratio_mode": "manual",
+   "margin_ratio_vertical": 0.02,
+   "model": "hydra",
+   "motion_prompt": "The calm woman admiral with short dark hair gives a small rueful smile, closes her eyes and bows her head slightly, and stays still with her head bowed and her eyes closed to the end. The whole head stays inside the frame. The brass spyglass stays tucked under her arm."
+  },
+  "side_files": [
+   "assets/raw/v24/faces/imre_dead_audio.mp3"
+  ],
+  "url": "https://storage.googleapis.com/ludo-assets/api/55018cdf728c278ab4eea936564b92b6.webp",
+  "v": 1,
+  "video_url": "https://storage.googleapis.com/ludo-assets/api/89a250a4068258abe315d1be3756c22f.mp4"
+ },
+ "v24_react_imre_dead~t2": {
+  "audio_url": "https://storage.googleapis.com/ludo-assets/api/8e19bad20a5a6ddc25b130f8f8fafdfb.mp3",
+  "credits": 9,
+  "endpoint": "/assets/sprite/animate",
+  "file": "assets/raw/v24/faces/.takes/imre_dead.t2.webp",
+  "id": "v24_react_imre_dead~t2",
+  "job": "c3b5b966-f1b6-4362-b5df-9db28212986a",
+  "params": {
+   "crop": false,
+   "duration": 3,
+   "frame_size": -9,
+   "frames": 36,
+   "image_type": "portrait",
+   "initial_image": "data:image/png;base64,iVBORw0KGgoAAAANSU...(base64)",
+   "loop": false,
+   "margin_ratio_horizontal": 0.02,
+   "margin_ratio_mode": "manual",
+   "margin_ratio_vertical": 0.02,
+   "model": "hydra",
+   "motion_prompt": "The calm woman admiral with short dark hair gives a small rueful smile, closes her eyes and bows her head slightly, and stays still with her head bowed and her eyes closed to the end. The whole head stays inside the frame. The brass spyglass stays tucked under her arm."
+  },
+  "side_files": [
+   "assets/raw/v24/faces/.takes/imre_dead.t2_audio.mp3"
+  ],
+  "url": "https://storage.googleapis.com/ludo-assets/api/f3d43ec604bf1109f4726ef5f642ed76.webp",
+  "v": 1,
+  "video_url": "https://storage.googleapis.com/ludo-assets/api/9d17635aaf8700ba7d18929d21c16cb4.mp4"
+ },
+ "v24_react_imre_lose": {
+  "audio_url": "https://storage.googleapis.com/ludo-assets/api/c9b40fc71eeb1eb6f4ffc98a1283ecd6.mp3",
+  "credits": 9,
+  "endpoint": "/assets/sprite/animate",
+  "file": "assets/raw/v24/faces/imre_lose.webp",
+  "id": "v24_react_imre_lose",
+  "job": "96d78b3b-2fbe-436f-a1f9-fb6c251f5221",
+  "params": {
+   "crop": false,
+   "duration": 3,
+   "final_image": "data:image/png;base64,iVBORw0KGgoAAAANSU...(base64)",
+   "frame_size": -9,
+   "frames": 36,
+   "image_type": "portrait",
+   "initial_image": "data:image/png;base64,iVBORw0KGgoAAAANSU...(base64)",
+   "loop": false,
+   "margin_ratio_horizontal": 0.02,
+   "margin_ratio_mode": "manual",
+   "margin_ratio_vertical": 0.02,
+   "model": "hydra",
+   "motion_prompt": "The calm woman admiral with short dark hair narrows her eyes thoughtfully and presses her lips thin, tilting her head slightly as she says a few cool words, then settles back exactly into the starting pose, looking at the viewer. The whole head stays inside the frame. The brass spyglass stays tucked under her arm."
+  },
+  "side_files": [
+   "assets/raw/v24/faces/imre_lose_audio.mp3"
+  ],
+  "url": "https://storage.googleapis.com/ludo-assets/api/3c594d881c5f32d8911f83562c000112.webp",
+  "v": 1,
+  "video_url": "https://storage.googleapis.com/ludo-assets/api/b56c92ea5b507386d66f49a333e8ee1a.mp4"
+ },
+ "v24_react_imre_lose~t2": {
+  "audio_url": "https://storage.googleapis.com/ludo-assets/api/05eb128f5d1e07d07bea234d425eb6b5.mp3",
+  "credits": 9,
+  "endpoint": "/assets/sprite/animate",
+  "file": "assets/raw/v24/faces/.takes/imre_lose.t2.webp",
+  "id": "v24_react_imre_lose~t2",
+  "job": "2b03afc3-e6ad-4fae-80ec-9a2a88563c13",
+  "params": {
+   "crop": false,
+   "duration": 3,
+   "final_image": "data:image/png;base64,iVBORw0KGgoAAAANSU...(base64)",
+   "frame_size": -9,
+   "frames": 36,
+   "image_type": "portrait",
+   "initial_image": "data:image/png;base64,iVBORw0KGgoAAAANSU...(base64)",
+   "loop": false,
+   "margin_ratio_horizontal": 0.02,
+   "margin_ratio_mode": "manual",
+   "margin_ratio_vertical": 0.02,
+   "model": "hydra",
+   "motion_prompt": "The calm woman admiral with short dark hair narrows her eyes thoughtfully and presses her lips thin, tilting her head slightly as she says a few cool words, then settles back exactly into the starting pose, looking at the viewer. The whole head stays inside the frame. The brass spyglass stays tucked under her arm."
+  },
+  "side_files": [
+   "assets/raw/v24/faces/.takes/imre_lose.t2_audio.mp3"
+  ],
+  "url": "https://storage.googleapis.com/ludo-assets/api/50de04887832f3b77bec3b4a5285e990.webp",
+  "v": 1,
+  "video_url": "https://storage.googleapis.com/ludo-assets/api/013529cbe8638e6a889dad3ba77b7b41.mp4"
+ },
+ "v24_react_imre_taunt": {
+  "audio_url": "https://storage.googleapis.com/ludo-assets/api/5820902cbc619e139c449befc46826b3.mp3",
+  "credits": 9,
+  "endpoint": "/assets/sprite/animate",
+  "file": "assets/raw/v24/faces/imre_taunt.webp",
+  "id": "v24_react_imre_taunt",
+  "job": "11539854-f622-4436-8f02-f11204943b50",
+  "params": {
+   "crop": false,
+   "duration": 3,
+   "final_image": "data:image/png;base64,iVBORw0KGgoAAAANSU...(base64)",
+   "frame_size": -9,
+   "frames": 36,
+   "image_type": "portrait",
+   "initial_image": "data:image/png;base64,iVBORw0KGgoAAAANSU...(base64)",
+   "loop": false,
+   "margin_ratio_horizontal": 0.02,
+   "margin_ratio_mode": "manual",
+   "margin_ratio_vertical": 0.02,
+   "model": "hydra",
+   "motion_prompt": "The calm woman admiral with short dark hair gives the viewer a slow, knowing smile, one eyebrow raised and her eyes fixed on the viewer as she says a short, calm sentence, then settles back exactly into the starting pose, looking at the viewer. The whole head stays inside the frame. The brass spyglass stays tucked under her arm."
+  },
+  "side_files": [
+   "assets/raw/v24/faces/imre_taunt_audio.mp3"
+  ],
+  "url": "https://storage.googleapis.com/ludo-assets/api/0d57743401be1e0525772d6c1541f900.webp",
+  "v": 1,
+  "video_url": "https://storage.googleapis.com/ludo-assets/api/fe6cfca957ce0d22154cb3491fdc3f6d.mp4"
+ },
+ "v24_react_imre_taunt~t2": {
+  "audio_url": "https://storage.googleapis.com/ludo-assets/api/16411e8d00c7ce565f9686f76c1a7e0e.mp3",
+  "credits": 9,
+  "endpoint": "/assets/sprite/animate",
+  "file": "assets/raw/v24/faces/.takes/imre_taunt.t2.webp",
+  "id": "v24_react_imre_taunt~t2",
+  "job": "d7410ee0-7e25-4754-b77b-3b6b918b8bcf",
+  "params": {
+   "crop": false,
+   "duration": 3,
+   "final_image": "data:image/png;base64,iVBORw0KGgoAAAANSU...(base64)",
+   "frame_size": -9,
+   "frames": 36,
+   "image_type": "portrait",
+   "initial_image": "data:image/png;base64,iVBORw0KGgoAAAANSU...(base64)",
+   "loop": false,
+   "margin_ratio_horizontal": 0.02,
+   "margin_ratio_mode": "manual",
+   "margin_ratio_vertical": 0.02,
+   "model": "hydra",
+   "motion_prompt": "The calm woman admiral with short dark hair gives the viewer a slow, knowing smile, one eyebrow raised and her eyes fixed on the viewer as she says a short, calm sentence, then settles back exactly into the starting pose, looking at the viewer. The whole head stays inside the frame. The brass spyglass stays tucked under her arm."
+  },
+  "side_files": [
+   "assets/raw/v24/faces/.takes/imre_taunt.t2_audio.mp3"
+  ],
+  "url": "https://storage.googleapis.com/ludo-assets/api/c7f817f14b826e74cc3e93a6f8572885.webp",
+  "v": 1,
+  "video_url": "https://storage.googleapis.com/ludo-assets/api/d953303f3c4545aa51e453af35ca9094.mp4"
+ },
+ "v24_react_imre_win": {
+  "audio_url": "https://storage.googleapis.com/ludo-assets/api/a3cb43693294abdd803abf00ecf193e5.mp3",
+  "credits": 9,
+  "endpoint": "/assets/sprite/animate",
+  "file": "assets/raw/v24/faces/imre_win.webp",
+  "id": "v24_react_imre_win",
+  "job": "ce84c193-9c8d-4ecd-8916-dc2e2457b53d",
+  "params": {
+   "crop": false,
+   "duration": 3,
+   "final_image": "data:image/png;base64,iVBORw0KGgoAAAANSU...(base64)",
+   "frame_size": -9,
+   "frames": 36,
+   "image_type": "portrait",
+   "initial_image": "data:image/png;base64,iVBORw0KGgoAAAANSU...(base64)",
+   "loop": false,
+   "margin_ratio_horizontal": 0.02,
+   "margin_ratio_mode": "manual",
+   "margin_ratio_vertical": 0.02,
+   "model": "hydra",
+   "motion_prompt": "The calm woman admiral with short dark hair gives a small, knowing smile and raises one eyebrow, with a short satisfied nod as she says one quiet word, then settles back exactly into the starting pose, looking at the viewer. The whole head stays inside the frame. The brass spyglass stays tucked under her arm."
+  },
+  "side_files": [
+   "assets/raw/v24/faces/imre_win_audio.mp3"
+  ],
+  "url": "https://storage.googleapis.com/ludo-assets/api/89d3ed4f6f21eb8cb101b877c2511987.webp",
+  "v": 1,
+  "video_url": "https://storage.googleapis.com/ludo-assets/api/375d2b2575b46a61afde40e199d7ad69.mp4"
+ },
+ "v24_react_imre_win~t2": {
+  "audio_url": "https://storage.googleapis.com/ludo-assets/api/ffe49fd65b6f7470066f01a137593372.mp3",
+  "credits": 9,
+  "endpoint": "/assets/sprite/animate",
+  "file": "assets/raw/v24/faces/.takes/imre_win.t2.webp",
+  "id": "v24_react_imre_win~t2",
+  "job": "48c0de5f-bf88-4fc4-90fb-e9dca65990ec",
+  "params": {
+   "crop": false,
+   "duration": 3,
+   "final_image": "data:image/png;base64,iVBORw0KGgoAAAANSU...(base64)",
+   "frame_size": -9,
+   "frames": 36,
+   "image_type": "portrait",
+   "initial_image": "data:image/png;base64,iVBORw0KGgoAAAANSU...(base64)",
+   "loop": false,
+   "margin_ratio_horizontal": 0.02,
+   "margin_ratio_mode": "manual",
+   "margin_ratio_vertical": 0.02,
+   "model": "hydra",
+   "motion_prompt": "The calm woman admiral with short dark hair gives a small, knowing smile and raises one eyebrow, with a short satisfied nod as she says one quiet word, then settles back exactly into the starting pose, looking at the viewer. The whole head stays inside the frame. The brass spyglass stays tucked under her arm."
+  },
+  "side_files": [
+   "assets/raw/v24/faces/.takes/imre_win.t2_audio.mp3"
+  ],
+  "url": "https://storage.googleapis.com/ludo-assets/api/d1a55b07f635f37016a0829b210735d5.webp",
+  "v": 1,
+  "video_url": "https://storage.googleapis.com/ludo-assets/api/26088db093d32c7c88bc381eadb5b51f.mp4"
+ },
+ "v24_react_oren_dead": {
+  "audio_url": "https://storage.googleapis.com/ludo-assets/api/33a1a57ac89174065c207e393715f9ce.mp3",
+  "credits": 9,
+  "endpoint": "/assets/sprite/animate",
+  "file": "assets/raw/v24/faces/oren_dead.webp",
+  "id": "v24_react_oren_dead",
+  "job": "81cc5b9e-4474-4041-8a78-4574e4dca9c8",
+  "params": {
+   "crop": false,
+   "duration": 3,
+   "frame_size": -9,
+   "frames": 36,
+   "image_type": "portrait",
+   "initial_image": "data:image/png;base64,iVBORw0KGgoAAAANSU...(base64)",
+   "loop": false,
+   "margin_ratio_horizontal": 0.02,
+   "margin_ratio_mode": "manual",
+   "margin_ratio_vertical": 0.02,
+   "model": "hydra",
+   "motion_prompt": "The young blond hussar captain lets his grin fade and sighs, slowly bowing his head so his blond hair falls over his eyes, and stays still with his head bowed to the end. The whole head stays inside the frame."
+  },
+  "side_files": [
+   "assets/raw/v24/faces/oren_dead_audio.mp3"
+  ],
+  "url": "https://storage.googleapis.com/ludo-assets/api/310021dd407546f02c719ed79f13a1a0.webp",
+  "v": 1,
+  "video_url": "https://storage.googleapis.com/ludo-assets/api/a9ec433850c3b6c3cf563bb84b0fa593.mp4"
+ },
+ "v24_react_oren_dead~t2": {
+  "audio_url": "https://storage.googleapis.com/ludo-assets/api/81fd103116e8352b765d6198db82e182.mp3",
+  "credits": 9,
+  "endpoint": "/assets/sprite/animate",
+  "file": "assets/raw/v24/faces/.takes/oren_dead.t2.webp",
+  "id": "v24_react_oren_dead~t2",
+  "job": "d560cd2b-7ec7-4bcf-98db-013ec97ac1c3",
+  "params": {
+   "crop": false,
+   "duration": 3,
+   "frame_size": -9,
+   "frames": 36,
+   "image_type": "portrait",
+   "initial_image": "data:image/png;base64,iVBORw0KGgoAAAANSU...(base64)",
+   "loop": false,
+   "margin_ratio_horizontal": 0.02,
+   "margin_ratio_mode": "manual",
+   "margin_ratio_vertical": 0.02,
+   "model": "hydra",
+   "motion_prompt": "The young blond hussar captain lets his grin fade and sighs, slowly bowing his head so his blond hair falls over his eyes, and stays still with his head bowed to the end. The whole head stays inside the frame."
+  },
+  "side_files": [
+   "assets/raw/v24/faces/.takes/oren_dead.t2_audio.mp3"
+  ],
+  "url": "https://storage.googleapis.com/ludo-assets/api/78ece56056e86f5fea2f71f7b459e498.webp",
+  "v": 1,
+  "video_url": "https://storage.googleapis.com/ludo-assets/api/62ddf0ce6f243f9fe6682993559c693d.mp4"
+ },
+ "v24_react_oren_lose": {
+  "audio_url": "https://storage.googleapis.com/ludo-assets/api/85427a88c95e60147f91f5987c26bfd8.mp3",
+  "credits": 9,
+  "endpoint": "/assets/sprite/animate",
+  "file": "assets/raw/v24/faces/oren_lose.webp",
+  "id": "v24_react_oren_lose",
+  "job": "39c3663b-75f5-4890-bb1c-f34007600a3d",
+  "params": {
+   "crop": false,
+   "duration": 3,
+   "final_image": "data:image/png;base64,iVBORw0KGgoAAAANSU...(base64)",
+   "frame_size": -9,
+   "frames": 36,
+   "image_type": "portrait",
+   "initial_image": "data:image/png;base64,iVBORw0KGgoAAAANSU...(base64)",
+   "loop": false,
+   "margin_ratio_horizontal": 0.02,
+   "margin_ratio_mode": "manual",
+   "margin_ratio_vertical": 0.02,
+   "model": "hydra",
+   "motion_prompt": "The young blond hussar captain drops his jaw in disbelief with his eyebrows shooting up and scowls in an indignant pout as he protests a few words, then settles back exactly into the starting pose, looking at the viewer. The whole head stays inside the frame."
+  },
+  "side_files": [
+   "assets/raw/v24/faces/oren_lose_audio.mp3"
+  ],
+  "url": "https://storage.googleapis.com/ludo-assets/api/b24f60f0da9d2e9ae3d0d171822ec5d4.webp",
+  "v": 1,
+  "video_url": "https://storage.googleapis.com/ludo-assets/api/ce3b1a67b57048d0dba7a4c3bfd697e1.mp4"
+ },
+ "v24_react_oren_lose~t2": {
+  "audio_url": "https://storage.googleapis.com/ludo-assets/api/74e5dddaa22018be23ad387526f5cc48.mp3",
+  "credits": 9,
+  "endpoint": "/assets/sprite/animate",
+  "file": "assets/raw/v24/faces/.takes/oren_lose.t2.webp",
+  "id": "v24_react_oren_lose~t2",
+  "job": "87562f98-d5d7-4634-a7b6-9d365c9b4a32",
+  "params": {
+   "crop": false,
+   "duration": 3,
+   "final_image": "data:image/png;base64,iVBORw0KGgoAAAANSU...(base64)",
+   "frame_size": -9,
+   "frames": 36,
+   "image_type": "portrait",
+   "initial_image": "data:image/png;base64,iVBORw0KGgoAAAANSU...(base64)",
+   "loop": false,
+   "margin_ratio_horizontal": 0.02,
+   "margin_ratio_mode": "manual",
+   "margin_ratio_vertical": 0.02,
+   "model": "hydra",
+   "motion_prompt": "The young blond hussar captain drops his jaw in disbelief with his eyebrows shooting up and scowls in an indignant pout as he protests a few words, then settles back exactly into the starting pose, looking at the viewer. The whole head stays inside the frame."
+  },
+  "side_files": [
+   "assets/raw/v24/faces/.takes/oren_lose.t2_audio.mp3"
+  ],
+  "url": "https://storage.googleapis.com/ludo-assets/api/b4bb8674dead5dd635678c8967fe3896.webp",
+  "v": 1,
+  "video_url": "https://storage.googleapis.com/ludo-assets/api/289e4bdf5560c52f6265c6e29576973f.mp4"
+ },
+ "v24_react_oren_taunt": {
+  "audio_url": "https://storage.googleapis.com/ludo-assets/api/226918eef5c4521ad70182b1be28cfa2.mp3",
+  "credits": 9,
+  "endpoint": "/assets/sprite/animate",
+  "file": "assets/raw/v24/faces/oren_taunt.webp",
+  "id": "v24_react_oren_taunt",
+  "job": "65c0b84a-c94c-4630-ade6-8093f05fcdf9",
+  "params": {
+   "crop": false,
+   "duration": 3,
+   "final_image": "data:image/png;base64,iVBORw0KGgoAAAANSU...(base64)",
+   "frame_size": -9,
+   "frames": 36,
+   "image_type": "portrait",
+   "initial_image": "data:image/png;base64,iVBORw0KGgoAAAANSU...(base64)",
+   "loop": false,
+   "margin_ratio_horizontal": 0.02,
+   "margin_ratio_mode": "manual",
+   "margin_ratio_vertical": 0.02,
+   "model": "hydra",
+   "motion_prompt": "The young blond hussar captain gives the viewer a cheeky wink and a cocky grin and says a short sentence with a laugh, then settles back exactly into the starting pose, looking at the viewer. The whole head stays inside the frame."
+  },
+  "side_files": [
+   "assets/raw/v24/faces/oren_taunt_audio.mp3"
+  ],
+  "url": "https://storage.googleapis.com/ludo-assets/api/8c914c18f33fee6de999b06d49f4fa4e.webp",
+  "v": 1,
+  "video_url": "https://storage.googleapis.com/ludo-assets/api/9289416f6d70ef7b883ee256d7f381ad.mp4"
+ },
+ "v24_react_oren_taunt~t2": {
+  "audio_url": "https://storage.googleapis.com/ludo-assets/api/0b455731e80e87a924b0d35a1ed65274.mp3",
+  "credits": 9,
+  "endpoint": "/assets/sprite/animate",
+  "file": "assets/raw/v24/faces/.takes/oren_taunt.t2.webp",
+  "id": "v24_react_oren_taunt~t2",
+  "job": "671056ac-4b49-4b36-86ba-d5a502e376ce",
+  "params": {
+   "crop": false,
+   "duration": 3,
+   "final_image": "data:image/png;base64,iVBORw0KGgoAAAANSU...(base64)",
+   "frame_size": -9,
+   "frames": 36,
+   "image_type": "portrait",
+   "initial_image": "data:image/png;base64,iVBORw0KGgoAAAANSU...(base64)",
+   "loop": false,
+   "margin_ratio_horizontal": 0.02,
+   "margin_ratio_mode": "manual",
+   "margin_ratio_vertical": 0.02,
+   "model": "hydra",
+   "motion_prompt": "The young blond hussar captain gives the viewer a cheeky wink and a cocky grin and says a short sentence with a laugh, then settles back exactly into the starting pose, looking at the viewer. The whole head stays inside the frame."
+  },
+  "side_files": [
+   "assets/raw/v24/faces/.takes/oren_taunt.t2_audio.mp3"
+  ],
+  "url": "https://storage.googleapis.com/ludo-assets/api/0a35b16861a9ff4338266a2337c4f209.webp",
+  "v": 1,
+  "video_url": "https://storage.googleapis.com/ludo-assets/api/3d2e9aca1c21e209c196a292d6987f42.mp4"
+ },
+ "v24_react_oren_win": {
+  "audio_url": "https://storage.googleapis.com/ludo-assets/api/06d7181493ec0a6deec9ccaa2ba0e6e8.mp3",
+  "credits": 9,
+  "endpoint": "/assets/sprite/animate",
+  "file": "assets/raw/v24/faces/oren_win.webp",
+  "id": "v24_react_oren_win",
+  "job": "02f883cd-0d16-4c3e-a63b-c6a26f0b93d4",
+  "params": {
+   "crop": false,
+   "duration": 3,
+   "final_image": "data:image/png;base64,iVBORw0KGgoAAAANSU...(base64)",
+   "frame_size": -9,
+   "frames": 36,
+   "image_type": "portrait",
+   "initial_image": "data:image/png;base64,iVBORw0KGgoAAAANSU...(base64)",
+   "loop": false,
+   "margin_ratio_horizontal": 0.02,
+   "margin_ratio_mode": "manual",
+   "margin_ratio_vertical": 0.02,
+   "model": "hydra",
+   "motion_prompt": "The young blond hussar captain whoops with a big boyish laugh, tossing his head back so his blond hair bounces, and flashes a dazzling grin at the viewer, then settles back exactly into the starting pose, looking at the viewer. The whole head stays inside the frame."
+  },
+  "side_files": [
+   "assets/raw/v24/faces/oren_win_audio.mp3"
+  ],
+  "url": "https://storage.googleapis.com/ludo-assets/api/e47e5b769d0c30e26894302a48bdf143.webp",
+  "v": 1,
+  "video_url": "https://storage.googleapis.com/ludo-assets/api/c9a6949d432f2f4bf3c43696545763af.mp4"
+ },
+ "v24_react_oren_win~t2": {
+  "audio_url": "https://storage.googleapis.com/ludo-assets/api/335eee51b3f0fd443641b3d014fddcca.mp3",
+  "credits": 9,
+  "endpoint": "/assets/sprite/animate",
+  "file": "assets/raw/v24/faces/.takes/oren_win.t2.webp",
+  "id": "v24_react_oren_win~t2",
+  "job": "396e459b-08e7-432a-bdc9-3a39112e218e",
+  "params": {
+   "crop": false,
+   "duration": 3,
+   "final_image": "data:image/png;base64,iVBORw0KGgoAAAANSU...(base64)",
+   "frame_size": -9,
+   "frames": 36,
+   "image_type": "portrait",
+   "initial_image": "data:image/png;base64,iVBORw0KGgoAAAANSU...(base64)",
+   "loop": false,
+   "margin_ratio_horizontal": 0.02,
+   "margin_ratio_mode": "manual",
+   "margin_ratio_vertical": 0.02,
+   "model": "hydra",
+   "motion_prompt": "The young blond hussar captain whoops with a big boyish laugh, tossing his head back so his blond hair bounces, and flashes a dazzling grin at the viewer, then settles back exactly into the starting pose, looking at the viewer. The whole head stays inside the frame."
+  },
+  "side_files": [
+   "assets/raw/v24/faces/.takes/oren_win.t2_audio.mp3"
+  ],
+  "url": "https://storage.googleapis.com/ludo-assets/api/b6317406d6bfedf9bbde824a9d323041.webp",
+  "v": 1,
+  "video_url": "https://storage.googleapis.com/ludo-assets/api/edaee1f483f8e8b449bd553a65ea9b25.mp4"
+ },
+ "v24_react_quill_dead": {
+  "audio_url": "https://storage.googleapis.com/ludo-assets/api/e1cd5619ceebfa06cc25fb6eef64a021.mp3",
+  "credits": 9,
+  "endpoint": "/assets/sprite/animate",
+  "file": "assets/raw/v24/faces/quill_dead.webp",
+  "id": "v24_react_quill_dead",
+  "job": "a33eb7dc-1996-446d-bc3a-a81085bdc5e7",
+  "params": {
+   "crop": false,
+   "duration": 3,
+   "frame_size": -9,
+   "frames": 36,
+   "image_type": "portrait",
+   "initial_image": "data:image/png;base64,iVBORw0KGgoAAAANSU...(base64)",
+   "loop": false,
+   "margin_ratio_horizontal": 0.02,
+   "margin_ratio_mode": "manual",
+   "margin_ratio_vertical": 0.02,
+   "model": "hydra",
+   "motion_prompt": "The portly trading-company governor in a powdered wig and round spectacles lets out a long sigh as his face falls, his cheeks sagging and his eyes closing, and his head droops forward and stays drooping to the end. The whole head stays inside the frame."
+  },
+  "side_files": [
+   "assets/raw/v24/faces/quill_dead_audio.mp3"
+  ],
+  "url": "https://storage.googleapis.com/ludo-assets/api/b2e057471fc743341f9115374f8a5e3c.webp",
+  "v": 1,
+  "video_url": "https://storage.googleapis.com/ludo-assets/api/acac74294639fe7b7132b764d3089b8b.mp4"
+ },
+ "v24_react_quill_dead~t2": {
+  "audio_url": "https://storage.googleapis.com/ludo-assets/api/5ac77e4a0209e89aa82576b6efcf3a41.mp3",
+  "credits": 9,
+  "endpoint": "/assets/sprite/animate",
+  "file": "assets/raw/v24/faces/.takes/quill_dead.t2.webp",
+  "id": "v24_react_quill_dead~t2",
+  "job": "81d1d35b-60c5-413e-9e51-c517612b38ab",
+  "params": {
+   "crop": false,
+   "duration": 3,
+   "frame_size": -9,
+   "frames": 36,
+   "image_type": "portrait",
+   "initial_image": "data:image/png;base64,iVBORw0KGgoAAAANSU...(base64)",
+   "loop": false,
+   "margin_ratio_horizontal": 0.02,
+   "margin_ratio_mode": "manual",
+   "margin_ratio_vertical": 0.02,
+   "model": "hydra",
+   "motion_prompt": "The portly trading-company governor in a powdered wig and round spectacles lets out a long sigh as his face falls, his cheeks sagging and his eyes closing, and his head droops forward and stays drooping to the end. The whole head stays inside the frame."
+  },
+  "side_files": [
+   "assets/raw/v24/faces/.takes/quill_dead.t2_audio.mp3"
+  ],
+  "url": "https://storage.googleapis.com/ludo-assets/api/63d9ba5be5ae645e8a64d5aaf5d5a64b.webp",
+  "v": 1,
+  "video_url": "https://storage.googleapis.com/ludo-assets/api/feff24e94a8993bd543d677ffb260c68.mp4"
+ },
+ "v24_react_quill_lose": {
+  "audio_url": "https://storage.googleapis.com/ludo-assets/api/0e156aba576f8f4928292dfa825c0392.mp3",
+  "credits": 9,
+  "endpoint": "/assets/sprite/animate",
+  "file": "assets/raw/v24/faces/quill_lose.webp",
+  "id": "v24_react_quill_lose",
+  "job": "0155c351-77b1-4198-a162-a60442115274",
+  "params": {
+   "crop": false,
+   "duration": 3,
+   "final_image": "data:image/png;base64,iVBORw0KGgoAAAANSU...(base64)",
+   "frame_size": -9,
+   "frames": 36,
+   "image_type": "portrait",
+   "initial_image": "data:image/png;base64,iVBORw0KGgoAAAANSU...(base64)",
+   "loop": false,
+   "margin_ratio_horizontal": 0.02,
+   "margin_ratio_mode": "manual",
+   "margin_ratio_vertical": 0.02,
+   "model": "hydra",
+   "motion_prompt": "The portly trading-company governor in a powdered wig and round spectacles winces as if he has just lost a fortune, pursing his lips and peering sourly over his spectacles, shaking his head slowly as he mutters a few words, then settles back exactly into the starting pose, looking at the viewer. The whole head stays inside the frame."
+  },
+  "side_files": [
+   "assets/raw/v24/faces/quill_lose_audio.mp3"
+  ],
+  "url": "https://storage.googleapis.com/ludo-assets/api/0e84753ed91d7465c4bb55908079e1c0.webp",
+  "v": 1,
+  "video_url": "https://storage.googleapis.com/ludo-assets/api/6f8db5a0e916da5269e9f26e42784c7d.mp4"
+ },
+ "v24_react_quill_lose~t2": {
+  "audio_url": "https://storage.googleapis.com/ludo-assets/api/ec5683cde4c507644acfce0d8ab708c3.mp3",
+  "credits": 9,
+  "endpoint": "/assets/sprite/animate",
+  "file": "assets/raw/v24/faces/.takes/quill_lose.t2.webp",
+  "id": "v24_react_quill_lose~t2",
+  "job": "0ae8367e-da61-4f5d-a5a2-e544e73283ee",
+  "params": {
+   "crop": false,
+   "duration": 3,
+   "final_image": "data:image/png;base64,iVBORw0KGgoAAAANSU...(base64)",
+   "frame_size": -9,
+   "frames": 36,
+   "image_type": "portrait",
+   "initial_image": "data:image/png;base64,iVBORw0KGgoAAAANSU...(base64)",
+   "loop": false,
+   "margin_ratio_horizontal": 0.02,
+   "margin_ratio_mode": "manual",
+   "margin_ratio_vertical": 0.02,
+   "model": "hydra",
+   "motion_prompt": "The portly trading-company governor in a powdered wig and round spectacles winces as if he has just lost a fortune, pursing his lips and peering sourly over his spectacles, shaking his head slowly as he mutters a few words, then settles back exactly into the starting pose, looking at the viewer. The whole head stays inside the frame."
+  },
+  "side_files": [
+   "assets/raw/v24/faces/.takes/quill_lose.t2_audio.mp3"
+  ],
+  "url": "https://storage.googleapis.com/ludo-assets/api/8efd7c558430d1ba979ac9a97b460d18.webp",
+  "v": 1,
+  "video_url": "https://storage.googleapis.com/ludo-assets/api/73f5b2b070813b68f11559a5cf9081b1.mp4"
+ },
+ "v24_react_quill_taunt": {
+  "audio_url": "https://storage.googleapis.com/ludo-assets/api/52ca8908939859236aff8e780bba6cb5.mp3",
+  "credits": 9,
+  "endpoint": "/assets/sprite/animate",
+  "file": "assets/raw/v24/faces/quill_taunt.webp",
+  "id": "v24_react_quill_taunt",
+  "job": "ddf6b495-a3a0-4ae0-9577-7eb5738e10d2",
+  "params": {
+   "crop": false,
+   "duration": 3,
+   "final_image": "data:image/png;base64,iVBORw0KGgoAAAANSU...(base64)",
+   "frame_size": -9,
+   "frames": 36,
+   "image_type": "portrait",
+   "initial_image": "data:image/png;base64,iVBORw0KGgoAAAANSU...(base64)",
+   "loop": false,
+   "margin_ratio_horizontal": 0.02,
+   "margin_ratio_mode": "manual",
+   "margin_ratio_vertical": 0.02,
+   "model": "hydra",
+   "motion_prompt": "The portly trading-company governor in a powdered wig and round spectacles lowers his chin and peers over the top of his round spectacles at the viewer with a sly, smug smile, saying a short sentence and giving a slow, knowing nod, then settles back exactly into the starting pose, looking at the viewer. The whole head stays inside the frame."
+  },
+  "side_files": [
+   "assets/raw/v24/faces/quill_taunt_audio.mp3"
+  ],
+  "url": "https://storage.googleapis.com/ludo-assets/api/bcd5b223d6f0b43422269f3038c8773c.webp",
+  "v": 1,
+  "video_url": "https://storage.googleapis.com/ludo-assets/api/e7bc23822b15413fee0bd536b3d3ebb2.mp4"
+ },
+ "v24_react_quill_taunt~t2": {
+  "audio_url": "https://storage.googleapis.com/ludo-assets/api/04221ad7ab3d457e50056a350ebaa302.mp3",
+  "credits": 9,
+  "endpoint": "/assets/sprite/animate",
+  "file": "assets/raw/v24/faces/.takes/quill_taunt.t2.webp",
+  "id": "v24_react_quill_taunt~t2",
+  "job": "c38fbb9d-cb5d-4a1a-be17-3868cd2f08f2",
+  "params": {
+   "crop": false,
+   "duration": 3,
+   "final_image": "data:image/png;base64,iVBORw0KGgoAAAANSU...(base64)",
+   "frame_size": -9,
+   "frames": 36,
+   "image_type": "portrait",
+   "initial_image": "data:image/png;base64,iVBORw0KGgoAAAANSU...(base64)",
+   "loop": false,
+   "margin_ratio_horizontal": 0.02,
+   "margin_ratio_mode": "manual",
+   "margin_ratio_vertical": 0.02,
+   "model": "hydra",
+   "motion_prompt": "The portly trading-company governor in a powdered wig and round spectacles lowers his chin and peers over the top of his round spectacles at the viewer with a sly, smug smile, saying a short sentence and giving a slow, knowing nod, then settles back exactly into the starting pose, looking at the viewer. The whole head stays inside the frame."
+  },
+  "side_files": [
+   "assets/raw/v24/faces/.takes/quill_taunt.t2_audio.mp3"
+  ],
+  "url": "https://storage.googleapis.com/ludo-assets/api/d4125737d4bf670e619e0171cdcc5c09.webp",
+  "v": 1,
+  "video_url": "https://storage.googleapis.com/ludo-assets/api/935d3a406c0509dd27b52d96d205cb42.mp4"
+ },
+ "v24_react_quill_win": {
+  "audio_url": "https://storage.googleapis.com/ludo-assets/api/ca9ac434cb90f25b1a0130fd39c77bce.mp3",
+  "credits": 9,
+  "endpoint": "/assets/sprite/animate",
+  "file": "assets/raw/v24/faces/quill_win.webp",
+  "id": "v24_react_quill_win",
+  "job": "2d6c519b-7cd2-43b4-ba05-5399bf04c804",
+  "params": {
+   "crop": false,
+   "duration": 3,
+   "final_image": "data:image/png;base64,iVBORw0KGgoAAAANSU...(base64)",
+   "frame_size": -9,
+   "frames": 36,
+   "image_type": "portrait",
+   "initial_image": "data:image/png;base64,iVBORw0KGgoAAAANSU...(base64)",
+   "loop": false,
+   "margin_ratio_horizontal": 0.02,
+   "margin_ratio_mode": "manual",
+   "margin_ratio_vertical": 0.02,
+   "model": "hydra",
+   "motion_prompt": "The portly trading-company governor in a powdered wig and round spectacles breaks into a delighted, greedy grin and chuckles, his round cheeks bunching up and his eyes crinkling behind his spectacles as his head bobs with laughter, then settles back exactly into the starting pose, looking at the viewer. The whole head stays inside the frame."
+  },
+  "side_files": [
+   "assets/raw/v24/faces/quill_win_audio.mp3"
+  ],
+  "url": "https://storage.googleapis.com/ludo-assets/api/110268f8cb28b9ed490768180cd8e4c1.webp",
+  "v": 1,
+  "video_url": "https://storage.googleapis.com/ludo-assets/api/e467f192e5562260f2db37bfe46a6494.mp4"
+ },
+ "v24_react_quill_win~t2": {
+  "audio_url": "https://storage.googleapis.com/ludo-assets/api/484272a763c95bda11cca4ace94eb6fc.mp3",
+  "credits": 9,
+  "endpoint": "/assets/sprite/animate",
+  "file": "assets/raw/v24/faces/.takes/quill_win.t2.webp",
+  "id": "v24_react_quill_win~t2",
+  "job": "02c4e4d5-b939-4c81-9f03-cb82093dd871",
+  "params": {
+   "crop": false,
+   "duration": 3,
+   "final_image": "data:image/png;base64,iVBORw0KGgoAAAANSU...(base64)",
+   "frame_size": -9,
+   "frames": 36,
+   "image_type": "portrait",
+   "initial_image": "data:image/png;base64,iVBORw0KGgoAAAANSU...(base64)",
+   "loop": false,
+   "margin_ratio_horizontal": 0.02,
+   "margin_ratio_mode": "manual",
+   "margin_ratio_vertical": 0.02,
+   "model": "hydra",
+   "motion_prompt": "The portly trading-company governor in a powdered wig and round spectacles breaks into a delighted, greedy grin and chuckles, his round cheeks bunching up and his eyes crinkling behind his spectacles as his head bobs with laughter, then settles back exactly into the starting pose, looking at the viewer. The whole head stays inside the frame."
+  },
+  "side_files": [
+   "assets/raw/v24/faces/.takes/quill_win.t2_audio.mp3"
+  ],
+  "url": "https://storage.googleapis.com/ludo-assets/api/e74b4ecbfcf704afe9f1d4d938c99f0b.webp",
+  "v": 1,
+  "video_url": "https://storage.googleapis.com/ludo-assets/api/8f7ef785f0b9bdbc9a1fc315b3ae7124.mp4"
+ },
+ "v24_react_varek_dead": {
+  "audio_url": "https://storage.googleapis.com/ludo-assets/api/94aea4a30c625126495577bc5b05d178.mp3",
+  "credits": 9,
+  "endpoint": "/assets/sprite/animate",
+  "file": "assets/raw/v24/faces/varek_dead.webp",
+  "id": "v24_react_varek_dead",
+  "job": "7e52dffa-06d5-4893-83e9-41f0375a034c",
+  "params": {
+   "crop": false,
+   "duration": 3,
+   "frame_size": -9,
+   "frames": 36,
+   "image_type": "portrait",
+   "initial_image": "data:image/png;base64,iVBORw0KGgoAAAANSU...(base64)",
+   "loop": false,
+   "margin_ratio_horizontal": 0.02,
+   "margin_ratio_mode": "manual",
+   "margin_ratio_vertical": 0.02,
+   "model": "hydra",
+   "motion_prompt": "The grizzled old field marshal with an eyepatch and a grey moustache closes his one eye and slowly bows his head, his shoulders sinking with exhaustion, and stays still with his head bowed to the end. The whole head and the bicorne hat stay inside the frame."
+  },
+  "side_files": [
+   "assets/raw/v24/faces/varek_dead_audio.mp3"
+  ],
+  "url": "https://storage.googleapis.com/ludo-assets/api/859f4b62487a038a5b15dd18fa12fd89.webp",
+  "v": 1,
+  "video_url": "https://storage.googleapis.com/ludo-assets/api/32ddcf639b1245ed11d553d0b840892b.mp4"
+ },
+ "v24_react_varek_dead~t2": {
+  "audio_url": "https://storage.googleapis.com/ludo-assets/api/bb79b2e1e90d5629e6e4fa7000e419e7.mp3",
+  "credits": 9,
+  "endpoint": "/assets/sprite/animate",
+  "file": "assets/raw/v24/faces/.takes/varek_dead.t2.webp",
+  "id": "v24_react_varek_dead~t2",
+  "job": "e78522f5-fbc5-407f-a17d-73917f01cfd2",
+  "params": {
+   "crop": false,
+   "duration": 3,
+   "frame_size": -9,
+   "frames": 36,
+   "image_type": "portrait",
+   "initial_image": "data:image/png;base64,iVBORw0KGgoAAAANSU...(base64)",
+   "loop": false,
+   "margin_ratio_horizontal": 0.02,
+   "margin_ratio_mode": "manual",
+   "margin_ratio_vertical": 0.02,
+   "model": "hydra",
+   "motion_prompt": "The grizzled old field marshal with an eyepatch and a grey moustache closes his one eye and slowly bows his head, his shoulders sinking with exhaustion, and stays still with his head bowed to the end. The whole head and the bicorne hat stay inside the frame."
+  },
+  "side_files": [
+   "assets/raw/v24/faces/.takes/varek_dead.t2_audio.mp3"
+  ],
+  "url": "https://storage.googleapis.com/ludo-assets/api/afa6f7856536c0a8c2f6ea33e1e1ba2f.webp",
+  "v": 1,
+  "video_url": "https://storage.googleapis.com/ludo-assets/api/9118d11b9fab61d2bd2a14b076836a77.mp4"
+ },
+ "v24_react_varek_lose": {
+  "audio_url": "https://storage.googleapis.com/ludo-assets/api/93313162a592450ff5a4a229c001ca6d.mp3",
+  "credits": 9,
+  "endpoint": "/assets/sprite/animate",
+  "file": "assets/raw/v24/faces/varek_lose.webp",
+  "id": "v24_react_varek_lose",
+  "job": "28d63d28-36f7-468e-a5b7-afaeb0ed4d78",
+  "params": {
+   "crop": false,
+   "duration": 3,
+   "final_image": "data:image/png;base64,iVBORw0KGgoAAAANSU...(base64)",
+   "frame_size": -9,
+   "frames": 36,
+   "image_type": "portrait",
+   "initial_image": "data:image/png;base64,iVBORw0KGgoAAAANSU...(base64)",
+   "loop": false,
+   "margin_ratio_horizontal": 0.02,
+   "margin_ratio_mode": "manual",
+   "margin_ratio_vertical": 0.02,
+   "model": "hydra",
+   "motion_prompt": "The grizzled old field marshal with an eyepatch and a grey moustache sets his jaw hard, nostrils flaring and brow knitting, his one eye glaring coldly at the viewer as he mutters a few grim words through his moustache, then settles back exactly into the starting pose, looking at the viewer. The whole head and the bicorne hat stay inside the frame."
+  },
+  "side_files": [
+   "assets/raw/v24/faces/varek_lose_audio.mp3"
+  ],
+  "url": "https://storage.googleapis.com/ludo-assets/api/5ab11429f6489ee5317c150f6417764f.webp",
+  "v": 1,
+  "video_url": "https://storage.googleapis.com/ludo-assets/api/6b3c906f7cc7747e3b883f50ea8490c2.mp4"
+ },
+ "v24_react_varek_lose~t2": {
+  "audio_url": "https://storage.googleapis.com/ludo-assets/api/123c8a3fa69f61ea1fac4ad261a897d3.mp3",
+  "credits": 9,
+  "endpoint": "/assets/sprite/animate",
+  "file": "assets/raw/v24/faces/.takes/varek_lose.t2.webp",
+  "id": "v24_react_varek_lose~t2",
+  "job": "a6357898-19d1-43b5-821d-6bb97cde7e08",
+  "params": {
+   "crop": false,
+   "duration": 3,
+   "final_image": "data:image/png;base64,iVBORw0KGgoAAAANSU...(base64)",
+   "frame_size": -9,
+   "frames": 36,
+   "image_type": "portrait",
+   "initial_image": "data:image/png;base64,iVBORw0KGgoAAAANSU...(base64)",
+   "loop": false,
+   "margin_ratio_horizontal": 0.02,
+   "margin_ratio_mode": "manual",
+   "margin_ratio_vertical": 0.02,
+   "model": "hydra",
+   "motion_prompt": "The grizzled old field marshal with an eyepatch and a grey moustache sets his jaw hard, nostrils flaring and brow knitting, his one eye glaring coldly at the viewer as he mutters a few grim words through his moustache, then settles back exactly into the starting pose, looking at the viewer. The whole head and the bicorne hat stay inside the frame."
+  },
+  "side_files": [
+   "assets/raw/v24/faces/.takes/varek_lose.t2_audio.mp3"
+  ],
+  "url": "https://storage.googleapis.com/ludo-assets/api/e6af71b835320a0bbf7379d05873bfdc.webp",
+  "v": 1,
+  "video_url": "https://storage.googleapis.com/ludo-assets/api/d81b9d4b10324a241341c84eff215a6f.mp4"
+ },
+ "v24_react_varek_taunt": {
+  "audio_url": "https://storage.googleapis.com/ludo-assets/api/5ce951c7e8230608bda28841f72f56cd.mp3",
+  "credits": 9,
+  "endpoint": "/assets/sprite/animate",
+  "file": "assets/raw/v24/faces/varek_taunt.webp",
+  "id": "v24_react_varek_taunt",
+  "job": "e41e30f0-46e6-431d-9886-51330e7e58fe",
+  "params": {
+   "crop": false,
+   "duration": 3,
+   "final_image": "data:image/png;base64,iVBORw0KGgoAAAANSU...(base64)",
+   "frame_size": -9,
+   "frames": 36,
+   "image_type": "portrait",
+   "initial_image": "data:image/png;base64,iVBORw0KGgoAAAANSU...(base64)",
+   "loop": false,
+   "margin_ratio_horizontal": 0.02,
+   "margin_ratio_mode": "manual",
+   "margin_ratio_vertical": 0.02,
+   "model": "hydra",
+   "motion_prompt": "The grizzled old field marshal with an eyepatch and a grey moustache leans in a little toward the viewer with a cold, thin smile under his grey moustache, his one eye fixed on the viewer as he says a short sentence slowly and menacingly, then settles back exactly into the starting pose, looking at the viewer. The whole head and the bicorne hat stay inside the frame."
+  },
+  "side_files": [
+   "assets/raw/v24/faces/varek_taunt_audio.mp3"
+  ],
+  "url": "https://storage.googleapis.com/ludo-assets/api/4b84938cc448656f718f1a2e8548092b.webp",
+  "v": 1,
+  "video_url": "https://storage.googleapis.com/ludo-assets/api/4f62ec20404042da91a990aedd2a199d.mp4"
+ },
+ "v24_react_varek_taunt~t2": {
+  "audio_url": "https://storage.googleapis.com/ludo-assets/api/a746d250d0ac4a46b756a39532995179.mp3",
+  "credits": 9,
+  "endpoint": "/assets/sprite/animate",
+  "file": "assets/raw/v24/faces/.takes/varek_taunt.t2.webp",
+  "id": "v24_react_varek_taunt~t2",
+  "job": "933e3654-a46c-4402-8273-f0a78568f9f5",
+  "params": {
+   "crop": false,
+   "duration": 3,
+   "final_image": "data:image/png;base64,iVBORw0KGgoAAAANSU...(base64)",
+   "frame_size": -9,
+   "frames": 36,
+   "image_type": "portrait",
+   "initial_image": "data:image/png;base64,iVBORw0KGgoAAAANSU...(base64)",
+   "loop": false,
+   "margin_ratio_horizontal": 0.02,
+   "margin_ratio_mode": "manual",
+   "margin_ratio_vertical": 0.02,
+   "model": "hydra",
+   "motion_prompt": "The grizzled old field marshal with an eyepatch and a grey moustache leans in a little toward the viewer with a cold, thin smile under his grey moustache, his one eye fixed on the viewer as he says a short sentence slowly and menacingly, then settles back exactly into the starting pose, looking at the viewer. The whole head and the bicorne hat stay inside the frame."
+  },
+  "side_files": [
+   "assets/raw/v24/faces/.takes/varek_taunt.t2_audio.mp3"
+  ],
+  "url": "https://storage.googleapis.com/ludo-assets/api/0453c40f19390b1384e6209247c2400e.webp",
+  "v": 1,
+  "video_url": "https://storage.googleapis.com/ludo-assets/api/8482fdbb7848adc053b874c8814916e4.mp4"
+ },
+ "v24_react_varek_win": {
+  "audio_url": "https://storage.googleapis.com/ludo-assets/api/4b12f6396b893d1ab21bcbe58c4555e9.mp3",
+  "credits": 9,
+  "endpoint": "/assets/sprite/animate",
+  "file": "assets/raw/v24/faces/varek_win.webp",
+  "id": "v24_react_varek_win",
+  "job": "adde62ed-cb4f-44c5-a22d-82a4aecd6219",
+  "params": {
+   "crop": false,
+   "duration": 3,
+   "final_image": "data:image/png;base64,iVBORw0KGgoAAAANSU...(base64)",
+   "frame_size": -9,
+   "frames": 36,
+   "image_type": "portrait",
+   "initial_image": "data:image/png;base64,iVBORw0KGgoAAAANSU...(base64)",
+   "loop": false,
+   "margin_ratio_horizontal": 0.02,
+   "margin_ratio_mode": "manual",
+   "margin_ratio_vertical": 0.02,
+   "model": "hydra",
+   "motion_prompt": "The grizzled old field marshal with an eyepatch and a grey moustache gives a slow, grim nod of satisfaction, his one eye narrowing and the corner of his grey moustache lifting in a thin, hard smile as he says two curt words, then settles back exactly into the starting pose, looking at the viewer. The whole head and the bicorne hat stay inside the frame."
+  },
+  "side_files": [
+   "assets/raw/v24/faces/varek_win_audio.mp3"
+  ],
+  "url": "https://storage.googleapis.com/ludo-assets/api/10d0b0375b358306826a67fa6f24f90a.webp",
+  "v": 1,
+  "video_url": "https://storage.googleapis.com/ludo-assets/api/8d3daeea931fdf3707c3c91074dc1b84.mp4"
+ },
+ "v24_react_varek_win~t2": {
+  "audio_url": "https://storage.googleapis.com/ludo-assets/api/233539799bbfffecf354fdf293c0627a.mp3",
+  "credits": 9,
+  "endpoint": "/assets/sprite/animate",
+  "file": "assets/raw/v24/faces/.takes/varek_win.t2.webp",
+  "id": "v24_react_varek_win~t2",
+  "job": "acaa0446-cf8b-49b4-9953-2dcc3b27467f",
+  "params": {
+   "crop": false,
+   "duration": 3,
+   "final_image": "data:image/png;base64,iVBORw0KGgoAAAANSU...(base64)",
+   "frame_size": -9,
+   "frames": 36,
+   "image_type": "portrait",
+   "initial_image": "data:image/png;base64,iVBORw0KGgoAAAANSU...(base64)",
+   "loop": false,
+   "margin_ratio_horizontal": 0.02,
+   "margin_ratio_mode": "manual",
+   "margin_ratio_vertical": 0.02,
+   "model": "hydra",
+   "motion_prompt": "The grizzled old field marshal with an eyepatch and a grey moustache gives a slow, grim nod of satisfaction, his one eye narrowing and the corner of his grey moustache lifting in a thin, hard smile as he says two curt words, then settles back exactly into the starting pose, looking at the viewer. The whole head and the bicorne hat stay inside the frame."
+  },
+  "side_files": [
+   "assets/raw/v24/faces/.takes/varek_win.t2_audio.mp3"
+  ],
+  "url": "https://storage.googleapis.com/ludo-assets/api/542e95dce1afd0dd32bb45fcc3238b28.webp",
+  "v": 1,
+  "video_url": "https://storage.googleapis.com/ludo-assets/api/2c56263e6b71d16bc7052858c7a797eb.mp4"
+ },
+ "v24_react_you_corsair_dead": {
+  "audio_url": "https://storage.googleapis.com/ludo-assets/api/84ead30f4784bd1a12f64a3545c6cace.mp3",
+  "credits": 9,
+  "endpoint": "/assets/sprite/animate",
+  "file": "assets/raw/v24/faces/you_corsair_dead.webp",
+  "id": "v24_react_you_corsair_dead",
+  "job": "49bcc10b-de0c-4d53-82b2-6a772a1d1f5f",
+  "params": {
+   "crop": false,
+   "duration": 3,
+   "frame_size": -9,
+   "frames": 36,
+   "image_type": "portrait",
+   "initial_image": "data:image/png;base64,iVBORw0KGgoAAAANSU...(base64)",
+   "loop": false,
+   "margin_ratio_horizontal": 0.02,
+   "margin_ratio_mode": "manual",
+   "margin_ratio_vertical": 0.02,
+   "model": "hydra",
+   "motion_prompt": "The weathered corsair captain with a short grey beard closes his eyes and slowly bows his head in exhaustion, shoulders sinking, and stays still with his head bowed to the end. The whole head stays inside the frame."
+  },
+  "side_files": [
+   "assets/raw/v24/faces/you_corsair_dead_audio.mp3"
+  ],
+  "url": "https://storage.googleapis.com/ludo-assets/api/bf34f200cf0de203a84e83c5ee8b702c.webp",
+  "v": 1,
+  "video_url": "https://storage.googleapis.com/ludo-assets/api/473faa7da6cae431887089a047b8dc44.mp4"
+ },
+ "v24_react_you_corsair_dead~t2": {
+  "audio_url": "https://storage.googleapis.com/ludo-assets/api/2fca212f4e0e90a61743a7622f83ef6c.mp3",
+  "credits": 9,
+  "endpoint": "/assets/sprite/animate",
+  "file": "assets/raw/v24/faces/.takes/you_corsair_dead.t2.webp",
+  "id": "v24_react_you_corsair_dead~t2",
+  "job": "5367abaa-84ce-4e11-a54d-e2bae786bfbe",
+  "params": {
+   "crop": false,
+   "duration": 3,
+   "frame_size": -9,
+   "frames": 36,
+   "image_type": "portrait",
+   "initial_image": "data:image/png;base64,iVBORw0KGgoAAAANSU...(base64)",
+   "loop": false,
+   "margin_ratio_horizontal": 0.02,
+   "margin_ratio_mode": "manual",
+   "margin_ratio_vertical": 0.02,
+   "model": "hydra",
+   "motion_prompt": "The weathered corsair captain with a short grey beard closes his eyes and slowly bows his head in exhaustion, shoulders sinking, and stays still with his head bowed to the end. The whole head stays inside the frame."
+  },
+  "side_files": [
+   "assets/raw/v24/faces/.takes/you_corsair_dead.t2_audio.mp3"
+  ],
+  "url": "https://storage.googleapis.com/ludo-assets/api/da36c34665cd3a86ecec48c319971925.webp",
+  "v": 1,
+  "video_url": "https://storage.googleapis.com/ludo-assets/api/9939539ec4558870a233df29f2598de5.mp4"
+ },
+ "v24_react_you_corsair_lose": {
+  "audio_url": "https://storage.googleapis.com/ludo-assets/api/f93c0bbd1edf31b261f152c63fc5d702.mp3",
+  "credits": 9,
+  "endpoint": "/assets/sprite/animate",
+  "file": "assets/raw/v24/faces/you_corsair_lose.webp",
+  "id": "v24_react_you_corsair_lose",
+  "job": "ec45537f-a634-4a02-9d99-b87d0775a142",
+  "params": {
+   "crop": false,
+   "duration": 3,
+   "final_image": "data:image/png;base64,iVBORw0KGgoAAAANSU...(base64)",
+   "frame_size": -9,
+   "frames": 36,
+   "image_type": "portrait",
+   "initial_image": "data:image/png;base64,iVBORw0KGgoAAAANSU...(base64)",
+   "loop": false,
+   "margin_ratio_horizontal": 0.02,
+   "margin_ratio_mode": "manual",
+   "margin_ratio_vertical": 0.02,
+   "model": "hydra",
+   "motion_prompt": "The weathered corsair captain with a short grey beard scowls grimly with lips pressed tight, jaw clenched and brows lowered, and lets out a sharp breath through the nose, then settles back exactly into the starting pose, looking at the viewer. The whole head stays inside the frame."
+  },
+  "side_files": [
+   "assets/raw/v24/faces/you_corsair_lose_audio.mp3"
+  ],
+  "url": "https://storage.googleapis.com/ludo-assets/api/e13059983387e1e8b80825669fe29606.webp",
+  "v": 1,
+  "video_url": "https://storage.googleapis.com/ludo-assets/api/1bd45e195bd815f01aafd8605852561d.mp4"
+ },
+ "v24_react_you_corsair_lose~t2": {
+  "audio_url": "https://storage.googleapis.com/ludo-assets/api/f75bb63cab2edf53f0ad82e4ecda8e8a.mp3",
+  "credits": 9,
+  "endpoint": "/assets/sprite/animate",
+  "file": "assets/raw/v24/faces/.takes/you_corsair_lose.t2.webp",
+  "id": "v24_react_you_corsair_lose~t2",
+  "job": "59f74c97-0c36-4153-9ea6-7d897b74f400",
+  "params": {
+   "crop": false,
+   "duration": 3,
+   "final_image": "data:image/png;base64,iVBORw0KGgoAAAANSU...(base64)",
+   "frame_size": -9,
+   "frames": 36,
+   "image_type": "portrait",
+   "initial_image": "data:image/png;base64,iVBORw0KGgoAAAANSU...(base64)",
+   "loop": false,
+   "margin_ratio_horizontal": 0.02,
+   "margin_ratio_mode": "manual",
+   "margin_ratio_vertical": 0.02,
+   "model": "hydra",
+   "motion_prompt": "The weathered corsair captain with a short grey beard scowls grimly with lips pressed tight, jaw clenched and brows lowered, and lets out a sharp breath through the nose, then settles back exactly into the starting pose, looking at the viewer. The whole head stays inside the frame."
+  },
+  "side_files": [
+   "assets/raw/v24/faces/.takes/you_corsair_lose.t2_audio.mp3"
+  ],
+  "url": "https://storage.googleapis.com/ludo-assets/api/fd6c57d0f02fc6c8af10f04ff9a07d9b.webp",
+  "v": 1,
+  "video_url": "https://storage.googleapis.com/ludo-assets/api/5c484c9bed1ebb4d5d9d9a55745adfba.mp4"
+ },
+ "v24_react_you_corsair_win": {
+  "audio_url": "https://storage.googleapis.com/ludo-assets/api/8f6630d0df4bd8c8c2c263b9413adb4a.mp3",
+  "credits": 9,
+  "endpoint": "/assets/sprite/animate",
+  "file": "assets/raw/v24/faces/you_corsair_win.webp",
+  "id": "v24_react_you_corsair_win",
+  "job": "c5e8689e-d689-45e1-9088-954d1a2d86bb",
+  "params": {
+   "crop": false,
+   "duration": 3,
+   "final_image": "data:image/png;base64,iVBORw0KGgoAAAANSU...(base64)",
+   "frame_size": -9,
+   "frames": 36,
+   "image_type": "portrait",
+   "initial_image": "data:image/png;base64,iVBORw0KGgoAAAANSU...(base64)",
+   "loop": false,
+   "margin_ratio_horizontal": 0.02,
+   "margin_ratio_mode": "manual",
+   "margin_ratio_vertical": 0.02,
+   "model": "hydra",
+   "motion_prompt": "The weathered corsair captain with a short grey beard smiles with proud confidence and gives one firm nod, chin lifted and eyes bright, then settles back exactly into the starting pose, looking at the viewer. The whole head stays inside the frame."
+  },
+  "side_files": [
+   "assets/raw/v24/faces/you_corsair_win_audio.mp3"
+  ],
+  "url": "https://storage.googleapis.com/ludo-assets/api/f34b87098c1a1797b44f0d17316c8eff.webp",
+  "v": 1,
+  "video_url": "https://storage.googleapis.com/ludo-assets/api/db9ac3e1041db4095106fbd00813982a.mp4"
+ },
+ "v24_react_you_corsair_win~t2": {
+  "audio_url": "https://storage.googleapis.com/ludo-assets/api/25105c8a0d51441aad65501dbf06834f.mp3",
+  "credits": 9,
+  "endpoint": "/assets/sprite/animate",
+  "file": "assets/raw/v24/faces/.takes/you_corsair_win.t2.webp",
+  "id": "v24_react_you_corsair_win~t2",
+  "job": "60325eae-324c-42ea-a9e0-5bec557e6cb4",
+  "params": {
+   "crop": false,
+   "duration": 3,
+   "final_image": "data:image/png;base64,iVBORw0KGgoAAAANSU...(base64)",
+   "frame_size": -9,
+   "frames": 36,
+   "image_type": "portrait",
+   "initial_image": "data:image/png;base64,iVBORw0KGgoAAAANSU...(base64)",
+   "loop": false,
+   "margin_ratio_horizontal": 0.02,
+   "margin_ratio_mode": "manual",
+   "margin_ratio_vertical": 0.02,
+   "model": "hydra",
+   "motion_prompt": "The weathered corsair captain with a short grey beard smiles with proud confidence and gives one firm nod, chin lifted and eyes bright, then settles back exactly into the starting pose, looking at the viewer. The whole head stays inside the frame."
+  },
+  "side_files": [
+   "assets/raw/v24/faces/.takes/you_corsair_win.t2_audio.mp3"
+  ],
+  "url": "https://storage.googleapis.com/ludo-assets/api/3eefdd77ac0cf2390cb4c96b7c1db7bf.webp",
+  "v": 1,
+  "video_url": "https://storage.googleapis.com/ludo-assets/api/e22d9fbe8839542ea39441108b071afb.mp4"
+ },
+ "v24_react_you_grenadier_dead": {
+  "audio_url": "https://storage.googleapis.com/ludo-assets/api/bcef5666b56efef52ddd45c5683b30d1.mp3",
+  "credits": 9,
+  "endpoint": "/assets/sprite/animate",
+  "file": "assets/raw/v24/faces/you_grenadier_dead.webp",
+  "id": "v24_react_you_grenadier_dead",
+  "job": "594e4db7-0e06-4a9c-978d-1ef233b131f4",
+  "params": {
+   "crop": false,
+   "duration": 3,
+   "frame_size": -9,
+   "frames": 36,
+   "image_type": "portrait",
+   "initial_image": "data:image/png;base64,iVBORw0KGgoAAAANSU...(base64)",
+   "loop": false,
+   "margin_ratio_horizontal": 0.02,
+   "margin_ratio_mode": "manual",
+   "margin_ratio_vertical": 0.02,
+   "model": "hydra",
+   "motion_prompt": "The grey-bearded grenadier closes his eyes and slowly bows his head in exhaustion, shoulders sinking, and stays still with his head bowed to the end. The whole head and the tall bearskin cap stay inside the frame."
+  },
+  "side_files": [
+   "assets/raw/v24/faces/you_grenadier_dead_audio.mp3"
+  ],
+  "url": "https://storage.googleapis.com/ludo-assets/api/25de69eea1c58a955a70fe08b5564079.webp",
+  "v": 1,
+  "video_url": "https://storage.googleapis.com/ludo-assets/api/11f3631ccf0ea51a608bff93bf0c6696.mp4"
+ },
+ "v24_react_you_grenadier_dead~t2": {
+  "audio_url": "https://storage.googleapis.com/ludo-assets/api/d4b08204a68709950b88c53ad264b0e3.mp3",
+  "credits": 9,
+  "endpoint": "/assets/sprite/animate",
+  "file": "assets/raw/v24/faces/.takes/you_grenadier_dead.t2.webp",
+  "id": "v24_react_you_grenadier_dead~t2",
+  "job": "2ffecf9c-21db-41a0-9a71-9f85941b58c7",
+  "params": {
+   "crop": false,
+   "duration": 3,
+   "frame_size": -9,
+   "frames": 36,
+   "image_type": "portrait",
+   "initial_image": "data:image/png;base64,iVBORw0KGgoAAAANSU...(base64)",
+   "loop": false,
+   "margin_ratio_horizontal": 0.02,
+   "margin_ratio_mode": "manual",
+   "margin_ratio_vertical": 0.02,
+   "model": "hydra",
+   "motion_prompt": "The grey-bearded grenadier closes his eyes and slowly bows his head in exhaustion, shoulders sinking, and stays still with his head bowed to the end. The whole head and the tall bearskin cap stay inside the frame."
+  },
+  "side_files": [
+   "assets/raw/v24/faces/.takes/you_grenadier_dead.t2_audio.mp3"
+  ],
+  "url": "https://storage.googleapis.com/ludo-assets/api/81bebf6818046cf904c9ab71bd67a4e4.webp",
+  "v": 1,
+  "video_url": "https://storage.googleapis.com/ludo-assets/api/06ff1ccff94c26ba1ed4961c73173be1.mp4"
+ },
+ "v24_react_you_grenadier_lose": {
+  "audio_url": "https://storage.googleapis.com/ludo-assets/api/94be50bbe63a47ccfeee8395dd9e7106.mp3",
+  "credits": 9,
+  "endpoint": "/assets/sprite/animate",
+  "file": "assets/raw/v24/faces/you_grenadier_lose.webp",
+  "id": "v24_react_you_grenadier_lose",
+  "job": "661f92fe-1f14-4613-9e74-2d1483908a82",
+  "params": {
+   "crop": false,
+   "duration": 3,
+   "final_image": "data:image/png;base64,iVBORw0KGgoAAAANSU...(base64)",
+   "frame_size": -9,
+   "frames": 36,
+   "image_type": "portrait",
+   "initial_image": "data:image/png;base64,iVBORw0KGgoAAAANSU...(base64)",
+   "loop": false,
+   "margin_ratio_horizontal": 0.02,
+   "margin_ratio_mode": "manual",
+   "margin_ratio_vertical": 0.02,
+   "model": "hydra",
+   "motion_prompt": "The grey-bearded grenadier scowls grimly with lips pressed tight, jaw clenched and brows lowered, and lets out a sharp breath through the nose, then settles back exactly into the starting pose, looking at the viewer. The whole head and the tall bearskin cap stay inside the frame."
+  },
+  "side_files": [
+   "assets/raw/v24/faces/you_grenadier_lose_audio.mp3"
+  ],
+  "url": "https://storage.googleapis.com/ludo-assets/api/70f2560eb627e3313db1f95f30fa1745.webp",
+  "v": 1,
+  "video_url": "https://storage.googleapis.com/ludo-assets/api/b8296d4fd02a9b9919fd40aa49c8eaf0.mp4"
+ },
+ "v24_react_you_grenadier_lose~t2": {
+  "audio_url": "https://storage.googleapis.com/ludo-assets/api/6b549445b01b2e0ba0c2ffc0a518e24f.mp3",
+  "credits": 9,
+  "endpoint": "/assets/sprite/animate",
+  "file": "assets/raw/v24/faces/.takes/you_grenadier_lose.t2.webp",
+  "id": "v24_react_you_grenadier_lose~t2",
+  "job": "a5781c10-dccc-49ee-9970-7d7f09b038e0",
+  "params": {
+   "crop": false,
+   "duration": 3,
+   "final_image": "data:image/png;base64,iVBORw0KGgoAAAANSU...(base64)",
+   "frame_size": -9,
+   "frames": 36,
+   "image_type": "portrait",
+   "initial_image": "data:image/png;base64,iVBORw0KGgoAAAANSU...(base64)",
+   "loop": false,
+   "margin_ratio_horizontal": 0.02,
+   "margin_ratio_mode": "manual",
+   "margin_ratio_vertical": 0.02,
+   "model": "hydra",
+   "motion_prompt": "The grey-bearded grenadier scowls grimly with lips pressed tight, jaw clenched and brows lowered, and lets out a sharp breath through the nose, then settles back exactly into the starting pose, looking at the viewer. The whole head and the tall bearskin cap stay inside the frame."
+  },
+  "side_files": [
+   "assets/raw/v24/faces/.takes/you_grenadier_lose.t2_audio.mp3"
+  ],
+  "url": "https://storage.googleapis.com/ludo-assets/api/a075ad678eb0de043a0b9cd22fa33872.webp",
+  "v": 1,
+  "video_url": "https://storage.googleapis.com/ludo-assets/api/e7dceb39b190573bb80315e0e640b392.mp4"
+ },
+ "v24_react_you_grenadier_win": {
+  "audio_url": "https://storage.googleapis.com/ludo-assets/api/437c44a3ad272a9a2c844feecb8a3b27.mp3",
+  "credits": 9,
+  "endpoint": "/assets/sprite/animate",
+  "file": "assets/raw/v24/faces/you_grenadier_win.webp",
+  "id": "v24_react_you_grenadier_win",
+  "job": "c130890f-4b15-4dce-9f41-4ac7f500048d",
+  "params": {
+   "crop": false,
+   "duration": 3,
+   "final_image": "data:image/png;base64,iVBORw0KGgoAAAANSU...(base64)",
+   "frame_size": -9,
+   "frames": 36,
+   "image_type": "portrait",
+   "initial_image": "data:image/png;base64,iVBORw0KGgoAAAANSU...(base64)",
+   "loop": false,
+   "margin_ratio_horizontal": 0.02,
+   "margin_ratio_mode": "manual",
+   "margin_ratio_vertical": 0.02,
+   "model": "hydra",
+   "motion_prompt": "The grey-bearded grenadier smiles with proud confidence and gives one firm nod, chin lifted and eyes bright, then settles back exactly into the starting pose, looking at the viewer. The whole head and the tall bearskin cap stay inside the frame."
+  },
+  "side_files": [
+   "assets/raw/v24/faces/you_grenadier_win_audio.mp3"
+  ],
+  "url": "https://storage.googleapis.com/ludo-assets/api/3576178f09046eba1da77f3adaa3c2da.webp",
+  "v": 1,
+  "video_url": "https://storage.googleapis.com/ludo-assets/api/67a9fe1e3a008fcb60a7f5066a514bab.mp4"
+ },
+ "v24_react_you_grenadier_win~t2": {
+  "audio_url": "https://storage.googleapis.com/ludo-assets/api/b097e4a25e1c60498ac1ea83246748f3.mp3",
+  "credits": 9,
+  "endpoint": "/assets/sprite/animate",
+  "file": "assets/raw/v24/faces/.takes/you_grenadier_win.t2.webp",
+  "id": "v24_react_you_grenadier_win~t2",
+  "job": "2aaa0ec8-f73b-4a52-b62a-6f2aba30a51d",
+  "params": {
+   "crop": false,
+   "duration": 3,
+   "final_image": "data:image/png;base64,iVBORw0KGgoAAAANSU...(base64)",
+   "frame_size": -9,
+   "frames": 36,
+   "image_type": "portrait",
+   "initial_image": "data:image/png;base64,iVBORw0KGgoAAAANSU...(base64)",
+   "loop": false,
+   "margin_ratio_horizontal": 0.02,
+   "margin_ratio_mode": "manual",
+   "margin_ratio_vertical": 0.02,
+   "model": "hydra",
+   "motion_prompt": "The grey-bearded grenadier smiles with proud confidence and gives one firm nod, chin lifted and eyes bright, then settles back exactly into the starting pose, looking at the viewer. The whole head and the tall bearskin cap stay inside the frame."
+  },
+  "side_files": [
+   "assets/raw/v24/faces/.takes/you_grenadier_win.t2_audio.mp3"
+  ],
+  "url": "https://storage.googleapis.com/ludo-assets/api/ef23bce973f8bf217c3e786bdf8c8541.webp",
+  "v": 1,
+  "video_url": "https://storage.googleapis.com/ludo-assets/api/b8fff09c2d26dad480c0fcf9a9dad15f.mp4"
+ },
+ "v24_react_you_ironduke_dead": {
+  "audio_url": "https://storage.googleapis.com/ludo-assets/api/fc142ab787e7cd6ba53de6f2d67e6bf8.mp3",
+  "credits": 9,
+  "endpoint": "/assets/sprite/animate",
+  "file": "assets/raw/v24/faces/you_ironduke_dead.webp",
+  "id": "v24_react_you_ironduke_dead",
+  "job": "563c8bf9-11c4-4aa6-af85-5a97abd402ff",
+  "params": {
+   "crop": false,
+   "duration": 3,
+   "frame_size": -9,
+   "frames": 36,
+   "image_type": "portrait",
+   "initial_image": "data:image/png;base64,iVBORw0KGgoAAAANSU...(base64)",
+   "loop": false,
+   "margin_ratio_horizontal": 0.02,
+   "margin_ratio_mode": "manual",
+   "margin_ratio_vertical": 0.02,
+   "model": "hydra",
+   "motion_prompt": "The silver-haired commander in a scarlet coat with a blue sash closes his eyes and slowly bows his head in exhaustion, shoulders sinking, and stays still with his head bowed to the end. The whole head stays inside the frame."
+  },
+  "side_files": [
+   "assets/raw/v24/faces/you_ironduke_dead_audio.mp3"
+  ],
+  "url": "https://storage.googleapis.com/ludo-assets/api/bf4b1c946b68f594cd34291f2bdc26fe.webp",
+  "v": 1,
+  "video_url": "https://storage.googleapis.com/ludo-assets/api/38ed56b92299ce95493a42f4e6b385b2.mp4"
+ },
+ "v24_react_you_ironduke_dead~t2": {
+  "audio_url": "https://storage.googleapis.com/ludo-assets/api/f51b88d073dceccd84da43eac262a8ad.mp3",
+  "credits": 9,
+  "endpoint": "/assets/sprite/animate",
+  "file": "assets/raw/v24/faces/.takes/you_ironduke_dead.t2.webp",
+  "id": "v24_react_you_ironduke_dead~t2",
+  "job": "4dd9fc10-f70e-4429-94b3-c01344e803f8",
+  "params": {
+   "crop": false,
+   "duration": 3,
+   "frame_size": -9,
+   "frames": 36,
+   "image_type": "portrait",
+   "initial_image": "data:image/png;base64,iVBORw0KGgoAAAANSU...(base64)",
+   "loop": false,
+   "margin_ratio_horizontal": 0.02,
+   "margin_ratio_mode": "manual",
+   "margin_ratio_vertical": 0.02,
+   "model": "hydra",
+   "motion_prompt": "The silver-haired commander in a scarlet coat with a blue sash closes his eyes and slowly bows his head in exhaustion, shoulders sinking, and stays still with his head bowed to the end. The whole head stays inside the frame."
+  },
+  "side_files": [
+   "assets/raw/v24/faces/.takes/you_ironduke_dead.t2_audio.mp3"
+  ],
+  "url": "https://storage.googleapis.com/ludo-assets/api/f7c6cd443e517fb95d6ba1b7d750ae05.webp",
+  "v": 1,
+  "video_url": "https://storage.googleapis.com/ludo-assets/api/4b3e4c75dfe5200059e9e97d2e2d0926.mp4"
+ },
+ "v24_react_you_ironduke_lose": {
+  "audio_url": "https://storage.googleapis.com/ludo-assets/api/fc8c35c0175d93034048c38e3e5a9591.mp3",
+  "credits": 9,
+  "endpoint": "/assets/sprite/animate",
+  "file": "assets/raw/v24/faces/you_ironduke_lose.webp",
+  "id": "v24_react_you_ironduke_lose",
+  "job": "b7352c0a-6f14-404e-899e-3789052c8f7b",
+  "params": {
+   "crop": false,
+   "duration": 3,
+   "final_image": "data:image/png;base64,iVBORw0KGgoAAAANSU...(base64)",
+   "frame_size": -9,
+   "frames": 36,
+   "image_type": "portrait",
+   "initial_image": "data:image/png;base64,iVBORw0KGgoAAAANSU...(base64)",
+   "loop": false,
+   "margin_ratio_horizontal": 0.02,
+   "margin_ratio_mode": "manual",
+   "margin_ratio_vertical": 0.02,
+   "model": "hydra",
+   "motion_prompt": "The silver-haired commander in a scarlet coat with a blue sash scowls grimly with lips pressed tight, jaw clenched and brows lowered, and lets out a sharp breath through the nose, then settles back exactly into the starting pose, looking at the viewer. The whole head stays inside the frame."
+  },
+  "side_files": [
+   "assets/raw/v24/faces/you_ironduke_lose_audio.mp3"
+  ],
+  "url": "https://storage.googleapis.com/ludo-assets/api/177062970eecf1a6b2e252401d7d7b7b.webp",
+  "v": 1,
+  "video_url": "https://storage.googleapis.com/ludo-assets/api/4cbaaaf30cd9912cfc3eb05e231d4006.mp4"
+ },
+ "v24_react_you_ironduke_lose~t2": {
+  "audio_url": "https://storage.googleapis.com/ludo-assets/api/babf9dba09d4b6da2549a12190950b7b.mp3",
+  "credits": 9,
+  "endpoint": "/assets/sprite/animate",
+  "file": "assets/raw/v24/faces/.takes/you_ironduke_lose.t2.webp",
+  "id": "v24_react_you_ironduke_lose~t2",
+  "job": "2d4bc770-dd8c-4324-94a2-2a13857c29d3",
+  "params": {
+   "crop": false,
+   "duration": 3,
+   "final_image": "data:image/png;base64,iVBORw0KGgoAAAANSU...(base64)",
+   "frame_size": -9,
+   "frames": 36,
+   "image_type": "portrait",
+   "initial_image": "data:image/png;base64,iVBORw0KGgoAAAANSU...(base64)",
+   "loop": false,
+   "margin_ratio_horizontal": 0.02,
+   "margin_ratio_mode": "manual",
+   "margin_ratio_vertical": 0.02,
+   "model": "hydra",
+   "motion_prompt": "The silver-haired commander in a scarlet coat with a blue sash scowls grimly with lips pressed tight, jaw clenched and brows lowered, and lets out a sharp breath through the nose, then settles back exactly into the starting pose, looking at the viewer. The whole head stays inside the frame."
+  },
+  "side_files": [
+   "assets/raw/v24/faces/.takes/you_ironduke_lose.t2_audio.mp3"
+  ],
+  "url": "https://storage.googleapis.com/ludo-assets/api/d99ccad1aa871ee717b1110a62a6ece4.webp",
+  "v": 1,
+  "video_url": "https://storage.googleapis.com/ludo-assets/api/43701e5ee98186785900a378dc271e70.mp4"
+ },
+ "v24_react_you_ironduke_win": {
+  "audio_url": "https://storage.googleapis.com/ludo-assets/api/bd568093879cf7f6785c1932664075c3.mp3",
+  "credits": 9,
+  "endpoint": "/assets/sprite/animate",
+  "file": "assets/raw/v24/faces/you_ironduke_win.webp",
+  "id": "v24_react_you_ironduke_win",
+  "job": "aa8f2e89-ce3b-4337-ab4f-62d65f2089d4",
+  "params": {
+   "crop": false,
+   "duration": 3,
+   "final_image": "data:image/png;base64,iVBORw0KGgoAAAANSU...(base64)",
+   "frame_size": -9,
+   "frames": 36,
+   "image_type": "portrait",
+   "initial_image": "data:image/png;base64,iVBORw0KGgoAAAANSU...(base64)",
+   "loop": false,
+   "margin_ratio_horizontal": 0.02,
+   "margin_ratio_mode": "manual",
+   "margin_ratio_vertical": 0.02,
+   "model": "hydra",
+   "motion_prompt": "The silver-haired commander in a scarlet coat with a blue sash smiles with proud confidence and gives one firm nod, chin lifted and eyes bright, then settles back exactly into the starting pose, looking at the viewer. The whole head stays inside the frame."
+  },
+  "side_files": [
+   "assets/raw/v24/faces/you_ironduke_win_audio.mp3"
+  ],
+  "url": "https://storage.googleapis.com/ludo-assets/api/59e4611fe292c26c5ca21dd86492d072.webp",
+  "v": 1,
+  "video_url": "https://storage.googleapis.com/ludo-assets/api/a178a45ef57159667dc054c556b23d9d.mp4"
+ },
+ "v24_react_you_ironduke_win~t2": {
+  "audio_url": "https://storage.googleapis.com/ludo-assets/api/aa6614f8a5312dae65b33658bc6db645.mp3",
+  "credits": 9,
+  "endpoint": "/assets/sprite/animate",
+  "file": "assets/raw/v24/faces/.takes/you_ironduke_win.t2.webp",
+  "id": "v24_react_you_ironduke_win~t2",
+  "job": "b730105c-2650-4cf2-b32c-dedee0360b4b",
+  "params": {
+   "crop": false,
+   "duration": 3,
+   "final_image": "data:image/png;base64,iVBORw0KGgoAAAANSU...(base64)",
+   "frame_size": -9,
+   "frames": 36,
+   "image_type": "portrait",
+   "initial_image": "data:image/png;base64,iVBORw0KGgoAAAANSU...(base64)",
+   "loop": false,
+   "margin_ratio_horizontal": 0.02,
+   "margin_ratio_mode": "manual",
+   "margin_ratio_vertical": 0.02,
+   "model": "hydra",
+   "motion_prompt": "The silver-haired commander in a scarlet coat with a blue sash smiles with proud confidence and gives one firm nod, chin lifted and eyes bright, then settles back exactly into the starting pose, looking at the viewer. The whole head stays inside the frame."
+  },
+  "side_files": [
+   "assets/raw/v24/faces/.takes/you_ironduke_win.t2_audio.mp3"
+  ],
+  "url": "https://storage.googleapis.com/ludo-assets/api/4cac102ad2938429ca8d9e273515a71f.webp",
+  "v": 1,
+  "video_url": "https://storage.googleapis.com/ludo-assets/api/825f4ffa79cd0471dd5987814f1b4784.mp4"
+ },
+ "v24_react_you_lioness_dead": {
+  "audio_url": "https://storage.googleapis.com/ludo-assets/api/b99e32e02752aa5f9781b43badcaacaa.mp3",
+  "credits": 9,
+  "endpoint": "/assets/sprite/animate",
+  "file": "assets/raw/v24/faces/you_lioness_dead.webp",
+  "id": "v24_react_you_lioness_dead",
+  "job": "6d8041b2-05db-4fd5-aa68-f18fc141fda5",
+  "params": {
+   "crop": false,
+   "duration": 3,
+   "frame_size": -9,
+   "frames": 36,
+   "image_type": "portrait",
+   "initial_image": "data:image/png;base64,iVBORw0KGgoAAAANSU...(base64)",
+   "loop": false,
+   "margin_ratio_horizontal": 0.02,
+   "margin_ratio_mode": "manual",
+   "margin_ratio_vertical": 0.02,
+   "model": "hydra",
+   "motion_prompt": "The red-haired woman officer closes her eyes and slowly bows her head in exhaustion, shoulders sinking, and stays still with her head bowed to the end. The whole head and the slouch hat stay inside the frame."
+  },
+  "side_files": [
+   "assets/raw/v24/faces/you_lioness_dead_audio.mp3"
+  ],
+  "url": "https://storage.googleapis.com/ludo-assets/api/51bf3c1b1684e5593e8d2dfdc298745f.webp",
+  "v": 1,
+  "video_url": "https://storage.googleapis.com/ludo-assets/api/61a72a495cb614b79e0e970bdd7ba1ae.mp4"
+ },
+ "v24_react_you_lioness_dead~t2": {
+  "audio_url": "https://storage.googleapis.com/ludo-assets/api/9ea65db962ab870cae9a3f3f7bc415e4.mp3",
+  "credits": 9,
+  "endpoint": "/assets/sprite/animate",
+  "file": "assets/raw/v24/faces/.takes/you_lioness_dead.t2.webp",
+  "id": "v24_react_you_lioness_dead~t2",
+  "job": "8eb984b1-8d33-4957-bf93-bc071ae3539e",
+  "params": {
+   "crop": false,
+   "duration": 3,
+   "frame_size": -9,
+   "frames": 36,
+   "image_type": "portrait",
+   "initial_image": "data:image/png;base64,iVBORw0KGgoAAAANSU...(base64)",
+   "loop": false,
+   "margin_ratio_horizontal": 0.02,
+   "margin_ratio_mode": "manual",
+   "margin_ratio_vertical": 0.02,
+   "model": "hydra",
+   "motion_prompt": "The red-haired woman officer closes her eyes and slowly bows her head in exhaustion, shoulders sinking, and stays still with her head bowed to the end. The whole head and the slouch hat stay inside the frame."
+  },
+  "side_files": [
+   "assets/raw/v24/faces/.takes/you_lioness_dead.t2_audio.mp3"
+  ],
+  "url": "https://storage.googleapis.com/ludo-assets/api/b7b7de6a36f74e56a948b144a99cd5b6.webp",
+  "v": 1,
+  "video_url": "https://storage.googleapis.com/ludo-assets/api/76ea563445a4d524ee621ccdadf8a2af.mp4"
+ },
+ "v24_react_you_lioness_lose": {
+  "audio_url": "https://storage.googleapis.com/ludo-assets/api/4b22825d98aebe7a9208d16e812099c8.mp3",
+  "credits": 9,
+  "endpoint": "/assets/sprite/animate",
+  "file": "assets/raw/v24/faces/you_lioness_lose.webp",
+  "id": "v24_react_you_lioness_lose",
+  "job": "c27e8616-ddb0-490a-8c4d-dafe3ade0468",
+  "params": {
+   "crop": false,
+   "duration": 3,
+   "final_image": "data:image/png;base64,iVBORw0KGgoAAAANSU...(base64)",
+   "frame_size": -9,
+   "frames": 36,
+   "image_type": "portrait",
+   "initial_image": "data:image/png;base64,iVBORw0KGgoAAAANSU...(base64)",
+   "loop": false,
+   "margin_ratio_horizontal": 0.02,
+   "margin_ratio_mode": "manual",
+   "margin_ratio_vertical": 0.02,
+   "model": "hydra",
+   "motion_prompt": "The red-haired woman officer scowls grimly with lips pressed tight, jaw clenched and brows lowered, and lets out a sharp breath through the nose, then settles back exactly into the starting pose, looking at the viewer. The whole head and the slouch hat stay inside the frame."
+  },
+  "side_files": [
+   "assets/raw/v24/faces/you_lioness_lose_audio.mp3"
+  ],
+  "url": "https://storage.googleapis.com/ludo-assets/api/c25587028d74b6c15216f724a12170cd.webp",
+  "v": 1,
+  "video_url": "https://storage.googleapis.com/ludo-assets/api/ed5b120079e5d53285dd5d06bba4d2f0.mp4"
+ },
+ "v24_react_you_lioness_lose~t2": {
+  "audio_url": "https://storage.googleapis.com/ludo-assets/api/8c7bc7b022084cccaacab8b79928f8ec.mp3",
+  "credits": 9,
+  "endpoint": "/assets/sprite/animate",
+  "file": "assets/raw/v24/faces/.takes/you_lioness_lose.t2.webp",
+  "id": "v24_react_you_lioness_lose~t2",
+  "job": "c5f4c1da-a21c-40dc-94b0-e3c497c02bf1",
+  "params": {
+   "crop": false,
+   "duration": 3,
+   "final_image": "data:image/png;base64,iVBORw0KGgoAAAANSU...(base64)",
+   "frame_size": -9,
+   "frames": 36,
+   "image_type": "portrait",
+   "initial_image": "data:image/png;base64,iVBORw0KGgoAAAANSU...(base64)",
+   "loop": false,
+   "margin_ratio_horizontal": 0.02,
+   "margin_ratio_mode": "manual",
+   "margin_ratio_vertical": 0.02,
+   "model": "hydra",
+   "motion_prompt": "The red-haired woman officer scowls grimly with lips pressed tight, jaw clenched and brows lowered, and lets out a sharp breath through the nose, then settles back exactly into the starting pose, looking at the viewer. The whole head and the slouch hat stay inside the frame."
+  },
+  "side_files": [
+   "assets/raw/v24/faces/.takes/you_lioness_lose.t2_audio.mp3"
+  ],
+  "url": "https://storage.googleapis.com/ludo-assets/api/aa270aa28c19d6c1a1a4ec2122a9f09b.webp",
+  "v": 1,
+  "video_url": "https://storage.googleapis.com/ludo-assets/api/44041643548f73df747905f9fdc8a8e7.mp4"
+ },
+ "v24_react_you_lioness_win": {
+  "audio_url": "https://storage.googleapis.com/ludo-assets/api/8c795730a4a47d4ba6f187fbc3650a74.mp3",
+  "credits": 9,
+  "endpoint": "/assets/sprite/animate",
+  "file": "assets/raw/v24/faces/you_lioness_win.webp",
+  "id": "v24_react_you_lioness_win",
+  "job": "436cff4a-3636-4e98-b8db-b85d88906090",
+  "params": {
+   "crop": false,
+   "duration": 3,
+   "final_image": "data:image/png;base64,iVBORw0KGgoAAAANSU...(base64)",
+   "frame_size": -9,
+   "frames": 36,
+   "image_type": "portrait",
+   "initial_image": "data:image/png;base64,iVBORw0KGgoAAAANSU...(base64)",
+   "loop": false,
+   "margin_ratio_horizontal": 0.02,
+   "margin_ratio_mode": "manual",
+   "margin_ratio_vertical": 0.02,
+   "model": "hydra",
+   "motion_prompt": "The red-haired woman officer smiles with proud confidence and gives one firm nod, chin lifted and eyes bright, then settles back exactly into the starting pose, looking at the viewer. The whole head and the slouch hat stay inside the frame."
+  },
+  "side_files": [
+   "assets/raw/v24/faces/you_lioness_win_audio.mp3"
+  ],
+  "url": "https://storage.googleapis.com/ludo-assets/api/0aa7405b85ccf13f391849b650574bca.webp",
+  "v": 1,
+  "video_url": "https://storage.googleapis.com/ludo-assets/api/5a35ff2b93f3b060fd0ed7a1052575e6.mp4"
+ },
+ "v24_react_you_lioness_win~t2": {
+  "audio_url": "https://storage.googleapis.com/ludo-assets/api/7f0702ea34d9590fe37485d6a454bc33.mp3",
+  "credits": 9,
+  "endpoint": "/assets/sprite/animate",
+  "file": "assets/raw/v24/faces/.takes/you_lioness_win.t2.webp",
+  "id": "v24_react_you_lioness_win~t2",
+  "job": "7c106e91-9bf9-445f-9627-f01c1674ba3a",
+  "params": {
+   "crop": false,
+   "duration": 3,
+   "final_image": "data:image/png;base64,iVBORw0KGgoAAAANSU...(base64)",
+   "frame_size": -9,
+   "frames": 36,
+   "image_type": "portrait",
+   "initial_image": "data:image/png;base64,iVBORw0KGgoAAAANSU...(base64)",
+   "loop": false,
+   "margin_ratio_horizontal": 0.02,
+   "margin_ratio_mode": "manual",
+   "margin_ratio_vertical": 0.02,
+   "model": "hydra",
+   "motion_prompt": "The red-haired woman officer smiles with proud confidence and gives one firm nod, chin lifted and eyes bright, then settles back exactly into the starting pose, looking at the viewer. The whole head and the slouch hat stay inside the frame."
+  },
+  "side_files": [
+   "assets/raw/v24/faces/.takes/you_lioness_win.t2_audio.mp3"
+  ],
+  "url": "https://storage.googleapis.com/ludo-assets/api/c86560fd0db54ac50af67b6c9eaa9f4d.webp",
+  "v": 1,
+  "video_url": "https://storage.googleapis.com/ludo-assets/api/dff4a146dee602eae0ad4022688b2c86.mp4"
+ },
+ "v24_react_you_rajah_dead": {
+  "audio_url": "https://storage.googleapis.com/ludo-assets/api/9c189e7a8e700c42289a11e5963b8c1a.mp3",
+  "credits": 9,
+  "endpoint": "/assets/sprite/animate",
+  "file": "assets/raw/v24/faces/you_rajah_dead.webp",
+  "id": "v24_react_you_rajah_dead",
+  "job": "298844c6-01e7-41d5-aceb-679817748bea",
+  "params": {
+   "crop": false,
+   "duration": 3,
+   "frame_size": -9,
+   "frames": 36,
+   "image_type": "portrait",
+   "initial_image": "data:image/png;base64,iVBORw0KGgoAAAANSU...(base64)",
+   "loop": false,
+   "margin_ratio_horizontal": 0.02,
+   "margin_ratio_mode": "manual",
+   "margin_ratio_vertical": 0.02,
+   "model": "hydra",
+   "motion_prompt": "The rajah with a grey moustache closes his eyes and slowly bows his head in exhaustion, shoulders sinking, and stays still with his head bowed to the end. The whole head and the jewelled turban stay inside the frame."
+  },
+  "side_files": [
+   "assets/raw/v24/faces/you_rajah_dead_audio.mp3"
+  ],
+  "url": "https://storage.googleapis.com/ludo-assets/api/f1c26dc717d2218983acef76c5dd69b5.webp",
+  "v": 1,
+  "video_url": "https://storage.googleapis.com/ludo-assets/api/e47505eaac4ed7ffe50731dcaa80e32d.mp4"
+ },
+ "v24_react_you_rajah_dead~t2": {
+  "audio_url": "https://storage.googleapis.com/ludo-assets/api/f554a5acd4dee17796d28532eb97fbd1.mp3",
+  "credits": 9,
+  "endpoint": "/assets/sprite/animate",
+  "file": "assets/raw/v24/faces/.takes/you_rajah_dead.t2.webp",
+  "id": "v24_react_you_rajah_dead~t2",
+  "job": "2132068b-a094-42b1-8efb-8e5d113885a4",
+  "params": {
+   "crop": false,
+   "duration": 3,
+   "frame_size": -9,
+   "frames": 36,
+   "image_type": "portrait",
+   "initial_image": "data:image/png;base64,iVBORw0KGgoAAAANSU...(base64)",
+   "loop": false,
+   "margin_ratio_horizontal": 0.02,
+   "margin_ratio_mode": "manual",
+   "margin_ratio_vertical": 0.02,
+   "model": "hydra",
+   "motion_prompt": "The rajah with a grey moustache closes his eyes and slowly bows his head in exhaustion, shoulders sinking, and stays still with his head bowed to the end. The whole head and the jewelled turban stay inside the frame."
+  },
+  "side_files": [
+   "assets/raw/v24/faces/.takes/you_rajah_dead.t2_audio.mp3"
+  ],
+  "url": "https://storage.googleapis.com/ludo-assets/api/be04deb6e4fe1e859098d4cabc83d27b.webp",
+  "v": 1,
+  "video_url": "https://storage.googleapis.com/ludo-assets/api/721fd04e9073b7f1b281c48e517b3c0c.mp4"
+ },
+ "v24_react_you_rajah_lose": {
+  "audio_url": "https://storage.googleapis.com/ludo-assets/api/af0ab0fa73c3c18b9ac4e873d21a45be.mp3",
+  "credits": 9,
+  "endpoint": "/assets/sprite/animate",
+  "file": "assets/raw/v24/faces/you_rajah_lose.webp",
+  "id": "v24_react_you_rajah_lose",
+  "job": "68329f71-ca75-4525-a317-ce0a02999e1d",
+  "params": {
+   "crop": false,
+   "duration": 3,
+   "final_image": "data:image/png;base64,iVBORw0KGgoAAAANSU...(base64)",
+   "frame_size": -9,
+   "frames": 36,
+   "image_type": "portrait",
+   "initial_image": "data:image/png;base64,iVBORw0KGgoAAAANSU...(base64)",
+   "loop": false,
+   "margin_ratio_horizontal": 0.02,
+   "margin_ratio_mode": "manual",
+   "margin_ratio_vertical": 0.02,
+   "model": "hydra",
+   "motion_prompt": "The rajah with a grey moustache scowls grimly with lips pressed tight, jaw clenched and brows lowered, and lets out a sharp breath through the nose, then settles back exactly into the starting pose, looking at the viewer. The whole head and the jewelled turban stay inside the frame."
+  },
+  "side_files": [
+   "assets/raw/v24/faces/you_rajah_lose_audio.mp3"
+  ],
+  "url": "https://storage.googleapis.com/ludo-assets/api/f8691eee2110a98f900b0744fd8ae0bd.webp",
+  "v": 1,
+  "video_url": "https://storage.googleapis.com/ludo-assets/api/b7ac9460d2750e85560446a5582331fc.mp4"
+ },
+ "v24_react_you_rajah_lose~t2": {
+  "audio_url": "https://storage.googleapis.com/ludo-assets/api/68ae608b7c117bbcf8c351cd47cbb470.mp3",
+  "credits": 9,
+  "endpoint": "/assets/sprite/animate",
+  "file": "assets/raw/v24/faces/.takes/you_rajah_lose.t2.webp",
+  "id": "v24_react_you_rajah_lose~t2",
+  "job": "cf7e20e8-a26a-4944-b804-b859444b14c8",
+  "params": {
+   "crop": false,
+   "duration": 3,
+   "final_image": "data:image/png;base64,iVBORw0KGgoAAAANSU...(base64)",
+   "frame_size": -9,
+   "frames": 36,
+   "image_type": "portrait",
+   "initial_image": "data:image/png;base64,iVBORw0KGgoAAAANSU...(base64)",
+   "loop": false,
+   "margin_ratio_horizontal": 0.02,
+   "margin_ratio_mode": "manual",
+   "margin_ratio_vertical": 0.02,
+   "model": "hydra",
+   "motion_prompt": "The rajah with a grey moustache scowls grimly with lips pressed tight, jaw clenched and brows lowered, and lets out a sharp breath through the nose, then settles back exactly into the starting pose, looking at the viewer. The whole head and the jewelled turban stay inside the frame."
+  },
+  "side_files": [
+   "assets/raw/v24/faces/.takes/you_rajah_lose.t2_audio.mp3"
+  ],
+  "url": "https://storage.googleapis.com/ludo-assets/api/52e769a590392894bc7268eb38178f29.webp",
+  "v": 1,
+  "video_url": "https://storage.googleapis.com/ludo-assets/api/21e6e1032638b8cb30561b2f23cdf408.mp4"
+ },
+ "v24_react_you_rajah_win": {
+  "audio_url": "https://storage.googleapis.com/ludo-assets/api/0c0a2a6fa1d62dc9fdbf997def7a18cb.mp3",
+  "credits": 9,
+  "endpoint": "/assets/sprite/animate",
+  "file": "assets/raw/v24/faces/you_rajah_win.webp",
+  "id": "v24_react_you_rajah_win",
+  "job": "52b53638-5486-4616-a266-2d30f5c0558b",
+  "params": {
+   "crop": false,
+   "duration": 3,
+   "final_image": "data:image/png;base64,iVBORw0KGgoAAAANSU...(base64)",
+   "frame_size": -9,
+   "frames": 36,
+   "image_type": "portrait",
+   "initial_image": "data:image/png;base64,iVBORw0KGgoAAAANSU...(base64)",
+   "loop": false,
+   "margin_ratio_horizontal": 0.02,
+   "margin_ratio_mode": "manual",
+   "margin_ratio_vertical": 0.02,
+   "model": "hydra",
+   "motion_prompt": "The rajah with a grey moustache smiles with proud confidence and gives one firm nod, chin lifted and eyes bright, then settles back exactly into the starting pose, looking at the viewer. The whole head and the jewelled turban stay inside the frame."
+  },
+  "side_files": [
+   "assets/raw/v24/faces/you_rajah_win_audio.mp3"
+  ],
+  "url": "https://storage.googleapis.com/ludo-assets/api/97ccf4c72bf03ec54010f9e975cb048d.webp",
+  "v": 1,
+  "video_url": "https://storage.googleapis.com/ludo-assets/api/9cd43e4ca37c2e23be975accae869ca7.mp4"
+ },
+ "v24_react_you_rajah_win~t2": {
+  "audio_url": "https://storage.googleapis.com/ludo-assets/api/9e78f332cf3910dd94f2d303e7c6d313.mp3",
+  "credits": 9,
+  "endpoint": "/assets/sprite/animate",
+  "file": "assets/raw/v24/faces/.takes/you_rajah_win.t2.webp",
+  "id": "v24_react_you_rajah_win~t2",
+  "job": "5a2ab6ee-fea2-4a7a-ac47-1bb651cd86da",
+  "params": {
+   "crop": false,
+   "duration": 3,
+   "final_image": "data:image/png;base64,iVBORw0KGgoAAAANSU...(base64)",
+   "frame_size": -9,
+   "frames": 36,
+   "image_type": "portrait",
+   "initial_image": "data:image/png;base64,iVBORw0KGgoAAAANSU...(base64)",
+   "loop": false,
+   "margin_ratio_horizontal": 0.02,
+   "margin_ratio_mode": "manual",
+   "margin_ratio_vertical": 0.02,
+   "model": "hydra",
+   "motion_prompt": "The rajah with a grey moustache smiles with proud confidence and gives one firm nod, chin lifted and eyes bright, then settles back exactly into the starting pose, looking at the viewer. The whole head and the jewelled turban stay inside the frame."
+  },
+  "side_files": [
+   "assets/raw/v24/faces/.takes/you_rajah_win.t2_audio.mp3"
+  ],
+  "url": "https://storage.googleapis.com/ludo-assets/api/59a6292931a3c103f422893a26a7af12.webp",
+  "v": 1,
+  "video_url": "https://storage.googleapis.com/ludo-assets/api/c8f35201a3208ba6fdd463cd6c8a93b6.mp4"
+ },
+ "v24_react_you_scholar_dead": {
+  "audio_url": "https://storage.googleapis.com/ludo-assets/api/c023ee6639d838d60ed084f83f61d9ae.mp3",
+  "credits": 9,
+  "endpoint": "/assets/sprite/animate",
+  "file": "assets/raw/v24/faces/you_scholar_dead.webp",
+  "id": "v24_react_you_scholar_dead",
+  "job": "4084c7aa-b13a-44e8-954f-eb5510d3a1c0",
+  "params": {
+   "crop": false,
+   "duration": 3,
+   "frame_size": -9,
+   "frames": 36,
+   "image_type": "portrait",
+   "initial_image": "data:image/png;base64,iVBORw0KGgoAAAANSU...(base64)",
+   "loop": false,
+   "margin_ratio_horizontal": 0.02,
+   "margin_ratio_mode": "manual",
+   "margin_ratio_vertical": 0.02,
+   "model": "hydra",
+   "motion_prompt": "The dark-haired officer in round spectacles closes his eyes and slowly bows his head in exhaustion, shoulders sinking, and stays still with his head bowed to the end. The whole head stays inside the frame. The rolled map stays in his hand."
+  },
+  "side_files": [
+   "assets/raw/v24/faces/you_scholar_dead_audio.mp3"
+  ],
+  "url": "https://storage.googleapis.com/ludo-assets/api/f546366940dad68470e4a6c9df7990f7.webp",
+  "v": 1,
+  "video_url": "https://storage.googleapis.com/ludo-assets/api/6281cd5a7ed12eaeb81affeab05972e0.mp4"
+ },
+ "v24_react_you_scholar_dead~t2": {
+  "audio_url": "https://storage.googleapis.com/ludo-assets/api/199c576a4190669ad7a311ce0ba1d1a0.mp3",
+  "credits": 9,
+  "endpoint": "/assets/sprite/animate",
+  "file": "assets/raw/v24/faces/.takes/you_scholar_dead.t2.webp",
+  "id": "v24_react_you_scholar_dead~t2",
+  "job": "cd7caa46-3635-4faf-a800-dea490ea159f",
+  "params": {
+   "crop": false,
+   "duration": 3,
+   "frame_size": -9,
+   "frames": 36,
+   "image_type": "portrait",
+   "initial_image": "data:image/png;base64,iVBORw0KGgoAAAANSU...(base64)",
+   "loop": false,
+   "margin_ratio_horizontal": 0.02,
+   "margin_ratio_mode": "manual",
+   "margin_ratio_vertical": 0.02,
+   "model": "hydra",
+   "motion_prompt": "The dark-haired officer in round spectacles closes his eyes and slowly bows his head in exhaustion, shoulders sinking, and stays still with his head bowed to the end. The whole head stays inside the frame. The rolled map stays in his hand."
+  },
+  "side_files": [
+   "assets/raw/v24/faces/.takes/you_scholar_dead.t2_audio.mp3"
+  ],
+  "url": "https://storage.googleapis.com/ludo-assets/api/6d91b6e242e4cbfa0660ae16479d0f10.webp",
+  "v": 1,
+  "video_url": "https://storage.googleapis.com/ludo-assets/api/2112239197af70851f2a13d89dda2174.mp4"
+ },
+ "v24_react_you_scholar_lose": {
+  "audio_url": "https://storage.googleapis.com/ludo-assets/api/b586f449efbff83e6a019af5f6749ebd.mp3",
+  "credits": 9,
+  "endpoint": "/assets/sprite/animate",
+  "file": "assets/raw/v24/faces/you_scholar_lose.webp",
+  "id": "v24_react_you_scholar_lose",
+  "job": "2215d08c-7505-4a9b-9d6d-f0c5c388a088",
+  "params": {
+   "crop": false,
+   "duration": 3,
+   "final_image": "data:image/png;base64,iVBORw0KGgoAAAANSU...(base64)",
+   "frame_size": -9,
+   "frames": 36,
+   "image_type": "portrait",
+   "initial_image": "data:image/png;base64,iVBORw0KGgoAAAANSU...(base64)",
+   "loop": false,
+   "margin_ratio_horizontal": 0.02,
+   "margin_ratio_mode": "manual",
+   "margin_ratio_vertical": 0.02,
+   "model": "hydra",
+   "motion_prompt": "The dark-haired officer in round spectacles scowls grimly with lips pressed tight, jaw clenched and brows lowered, and lets out a sharp breath through the nose, then settles back exactly into the starting pose, looking at the viewer. The whole head stays inside the frame. The rolled map stays in his hand."
+  },
+  "side_files": [
+   "assets/raw/v24/faces/you_scholar_lose_audio.mp3"
+  ],
+  "url": "https://storage.googleapis.com/ludo-assets/api/08899c27553d2e539c9a756aa3619bf0.webp",
+  "v": 1,
+  "video_url": "https://storage.googleapis.com/ludo-assets/api/0e4e40f17c557de9929e08c953d931ed.mp4"
+ },
+ "v24_react_you_scholar_lose~t2": {
+  "audio_url": "https://storage.googleapis.com/ludo-assets/api/d90bc1926e470c16bc242ce4d07fd74f.mp3",
+  "credits": 9,
+  "endpoint": "/assets/sprite/animate",
+  "file": "assets/raw/v24/faces/.takes/you_scholar_lose.t2.webp",
+  "id": "v24_react_you_scholar_lose~t2",
+  "job": "c061f2dc-a254-4e19-a4e7-165e16d17790",
+  "params": {
+   "crop": false,
+   "duration": 3,
+   "final_image": "data:image/png;base64,iVBORw0KGgoAAAANSU...(base64)",
+   "frame_size": -9,
+   "frames": 36,
+   "image_type": "portrait",
+   "initial_image": "data:image/png;base64,iVBORw0KGgoAAAANSU...(base64)",
+   "loop": false,
+   "margin_ratio_horizontal": 0.02,
+   "margin_ratio_mode": "manual",
+   "margin_ratio_vertical": 0.02,
+   "model": "hydra",
+   "motion_prompt": "The dark-haired officer in round spectacles scowls grimly with lips pressed tight, jaw clenched and brows lowered, and lets out a sharp breath through the nose, then settles back exactly into the starting pose, looking at the viewer. The whole head stays inside the frame. The rolled map stays in his hand."
+  },
+  "side_files": [
+   "assets/raw/v24/faces/.takes/you_scholar_lose.t2_audio.mp3"
+  ],
+  "url": "https://storage.googleapis.com/ludo-assets/api/3faa8563ea61b810aa8e8f09a66311af.webp",
+  "v": 1,
+  "video_url": "https://storage.googleapis.com/ludo-assets/api/a18d21ff10a45f271d7b0bf395d3a819.mp4"
+ },
+ "v24_react_you_scholar_win": {
+  "audio_url": "https://storage.googleapis.com/ludo-assets/api/759692cd82e4fc5c0aadc58dadc5e2e8.mp3",
+  "credits": 9,
+  "endpoint": "/assets/sprite/animate",
+  "file": "assets/raw/v24/faces/you_scholar_win.webp",
+  "id": "v24_react_you_scholar_win",
+  "job": "762f10dc-d152-4957-be31-cac166b98e82",
+  "params": {
+   "crop": false,
+   "duration": 3,
+   "final_image": "data:image/png;base64,iVBORw0KGgoAAAANSU...(base64)",
+   "frame_size": -9,
+   "frames": 36,
+   "image_type": "portrait",
+   "initial_image": "data:image/png;base64,iVBORw0KGgoAAAANSU...(base64)",
+   "loop": false,
+   "margin_ratio_horizontal": 0.02,
+   "margin_ratio_mode": "manual",
+   "margin_ratio_vertical": 0.02,
+   "model": "hydra",
+   "motion_prompt": "The dark-haired officer in round spectacles smiles with proud confidence and gives one firm nod, chin lifted and eyes bright, then settles back exactly into the starting pose, looking at the viewer. The whole head stays inside the frame. The rolled map stays in his hand."
+  },
+  "side_files": [
+   "assets/raw/v24/faces/you_scholar_win_audio.mp3"
+  ],
+  "url": "https://storage.googleapis.com/ludo-assets/api/7dc535913da20944e5a045afd325080e.webp",
+  "v": 1,
+  "video_url": "https://storage.googleapis.com/ludo-assets/api/4a3f08f0248ca178ea511d3d4bc1486e.mp4"
+ },
+ "v24_react_you_scholar_win~t2": {
+  "audio_url": "https://storage.googleapis.com/ludo-assets/api/4f427f6d15b98933225dedb1076fa388.mp3",
+  "credits": 9,
+  "endpoint": "/assets/sprite/animate",
+  "file": "assets/raw/v24/faces/.takes/you_scholar_win.t2.webp",
+  "id": "v24_react_you_scholar_win~t2",
+  "job": "cd087927-aef3-4d1f-a662-fff41a8137a6",
+  "params": {
+   "crop": false,
+   "duration": 3,
+   "final_image": "data:image/png;base64,iVBORw0KGgoAAAANSU...(base64)",
+   "frame_size": -9,
+   "frames": 36,
+   "image_type": "portrait",
+   "initial_image": "data:image/png;base64,iVBORw0KGgoAAAANSU...(base64)",
+   "loop": false,
+   "margin_ratio_horizontal": 0.02,
+   "margin_ratio_mode": "manual",
+   "margin_ratio_vertical": 0.02,
+   "model": "hydra",
+   "motion_prompt": "The dark-haired officer in round spectacles smiles with proud confidence and gives one firm nod, chin lifted and eyes bright, then settles back exactly into the starting pose, looking at the viewer. The whole head stays inside the frame. The rolled map stays in his hand."
+  },
+  "side_files": [
+   "assets/raw/v24/faces/.takes/you_scholar_win.t2_audio.mp3"
+  ],
+  "url": "https://storage.googleapis.com/ludo-assets/api/38438bcf5f1f9810bdcecebb8ca89778.webp",
+  "v": 1,
+  "video_url": "https://storage.googleapis.com/ludo-assets/api/beef3a2d5c2130d82a20a6c7458ebf20.mp4"
+ },
+ "v24_react_ysolde_dead": {
+  "audio_url": "https://storage.googleapis.com/ludo-assets/api/82ca910cbf072cc8421c006395f0994d.mp3",
+  "credits": 9,
+  "endpoint": "/assets/sprite/animate",
+  "file": "assets/raw/v24/faces/ysolde_dead.webp",
+  "id": "v24_react_ysolde_dead",
+  "job": "fc3579e0-e2ef-4735-8c90-4e4e448b79b3",
+  "params": {
+   "crop": false,
+   "duration": 3,
+   "frame_size": -9,
+   "frames": 36,
+   "image_type": "portrait",
+   "initial_image": "data:image/png;base64,iVBORw0KGgoAAAANSU...(base64)",
+   "loop": false,
+   "margin_ratio_horizontal": 0.02,
+   "margin_ratio_mode": "manual",
+   "margin_ratio_vertical": 0.02,
+   "model": "hydra",
+   "motion_prompt": "The stern noblewoman general lowers her gaze, closes her eyes and slowly bows her head, her jaw still set with pride, and stays still with her head bowed to the end. The whole head and the plumed tricorne hat stay inside the frame."
+  },
+  "side_files": [
+   "assets/raw/v24/faces/ysolde_dead_audio.mp3"
+  ],
+  "url": "https://storage.googleapis.com/ludo-assets/api/02d87df8b27b36b9bd8b426c643d41b1.webp",
+  "v": 1,
+  "video_url": "https://storage.googleapis.com/ludo-assets/api/30390a1c6e7d8352aa5345bba484b73c.mp4"
+ },
+ "v24_react_ysolde_dead~t2": {
+  "audio_url": "https://storage.googleapis.com/ludo-assets/api/f82d8e12a300a324a43301f421bae878.mp3",
+  "credits": 9,
+  "endpoint": "/assets/sprite/animate",
+  "file": "assets/raw/v24/faces/.takes/ysolde_dead.t2.webp",
+  "id": "v24_react_ysolde_dead~t2",
+  "job": "a5b821db-64c8-4d7e-9e5a-3d2df6be148e",
+  "params": {
+   "crop": false,
+   "duration": 3,
+   "frame_size": -9,
+   "frames": 36,
+   "image_type": "portrait",
+   "initial_image": "data:image/png;base64,iVBORw0KGgoAAAANSU...(base64)",
+   "loop": false,
+   "margin_ratio_horizontal": 0.02,
+   "margin_ratio_mode": "manual",
+   "margin_ratio_vertical": 0.02,
+   "model": "hydra",
+   "motion_prompt": "The stern noblewoman general lowers her gaze, closes her eyes and slowly bows her head, her jaw still set with pride, and stays still with her head bowed to the end. The whole head and the plumed tricorne hat stay inside the frame."
+  },
+  "side_files": [
+   "assets/raw/v24/faces/.takes/ysolde_dead.t2_audio.mp3"
+  ],
+  "url": "https://storage.googleapis.com/ludo-assets/api/dc68a2a303e5ef67003c4b0f4e993a90.webp",
+  "v": 1,
+  "video_url": "https://storage.googleapis.com/ludo-assets/api/9c800ba8d96ccde570e83c0a52dccfa9.mp4"
+ },
+ "v24_react_ysolde_lose": {
+  "audio_url": "https://storage.googleapis.com/ludo-assets/api/c2be350dfd6920bf59193e54f25c1d36.mp3",
+  "credits": 9,
+  "endpoint": "/assets/sprite/animate",
+  "file": "assets/raw/v24/faces/ysolde_lose.webp",
+  "id": "v24_react_ysolde_lose",
+  "job": "67f9d28f-389e-42c3-8a11-430f6a0ef82e",
+  "params": {
+   "crop": false,
+   "duration": 3,
+   "final_image": "data:image/png;base64,iVBORw0KGgoAAAANSU...(base64)",
+   "frame_size": -9,
+   "frames": 36,
+   "image_type": "portrait",
+   "initial_image": "data:image/png;base64,iVBORw0KGgoAAAANSU...(base64)",
+   "loop": false,
+   "margin_ratio_horizontal": 0.02,
+   "margin_ratio_mode": "manual",
+   "margin_ratio_vertical": 0.02,
+   "model": "hydra",
+   "motion_prompt": "The stern noblewoman general narrows her eyes to slits and presses her lips into a hard line, nostrils flaring with icy fury, as she hisses a few words, then settles back exactly into the starting pose, looking at the viewer. The whole head and the plumed tricorne hat stay inside the frame."
+  },
+  "side_files": [
+   "assets/raw/v24/faces/ysolde_lose_audio.mp3"
+  ],
+  "url": "https://storage.googleapis.com/ludo-assets/api/dc8871bc9c0f1a1898edef82b3fe20c6.webp",
+  "v": 1,
+  "video_url": "https://storage.googleapis.com/ludo-assets/api/a3792858e7acbfbcf6774b48d789545b.mp4"
+ },
+ "v24_react_ysolde_lose~t2": {
+  "audio_url": "https://storage.googleapis.com/ludo-assets/api/96fceb60e7aca9a9e00ece12b7863af2.mp3",
+  "credits": 9,
+  "endpoint": "/assets/sprite/animate",
+  "file": "assets/raw/v24/faces/.takes/ysolde_lose.t2.webp",
+  "id": "v24_react_ysolde_lose~t2",
+  "job": "96459bd0-eaac-48e8-bffc-42495f21e80b",
+  "params": {
+   "crop": false,
+   "duration": 3,
+   "final_image": "data:image/png;base64,iVBORw0KGgoAAAANSU...(base64)",
+   "frame_size": -9,
+   "frames": 36,
+   "image_type": "portrait",
+   "initial_image": "data:image/png;base64,iVBORw0KGgoAAAANSU...(base64)",
+   "loop": false,
+   "margin_ratio_horizontal": 0.02,
+   "margin_ratio_mode": "manual",
+   "margin_ratio_vertical": 0.02,
+   "model": "hydra",
+   "motion_prompt": "The stern noblewoman general narrows her eyes to slits and presses her lips into a hard line, nostrils flaring with icy fury, as she hisses a few words, then settles back exactly into the starting pose, looking at the viewer. The whole head and the plumed tricorne hat stay inside the frame."
+  },
+  "side_files": [
+   "assets/raw/v24/faces/.takes/ysolde_lose.t2_audio.mp3"
+  ],
+  "url": "https://storage.googleapis.com/ludo-assets/api/dcd753fa3ec4fbd495d1cccb6b48f740.webp",
+  "v": 1,
+  "video_url": "https://storage.googleapis.com/ludo-assets/api/e18f8b5bd2301ae6f361d0e38211fc89.mp4"
+ },
+ "v24_react_ysolde_taunt": {
+  "audio_url": "https://storage.googleapis.com/ludo-assets/api/5bc36b6d7d3b75d28e2a50658ac5de75.mp3",
+  "credits": 9,
+  "endpoint": "/assets/sprite/animate",
+  "file": "assets/raw/v24/faces/ysolde_taunt.webp",
+  "id": "v24_react_ysolde_taunt",
+  "job": "d98a8d64-b816-4504-a63a-c68be8911db4",
+  "params": {
+   "crop": false,
+   "duration": 3,
+   "final_image": "data:image/png;base64,iVBORw0KGgoAAAANSU...(base64)",
+   "frame_size": -9,
+   "frames": 36,
+   "image_type": "portrait",
+   "initial_image": "data:image/png;base64,iVBORw0KGgoAAAANSU...(base64)",
+   "loop": false,
+   "margin_ratio_horizontal": 0.02,
+   "margin_ratio_mode": "manual",
+   "margin_ratio_vertical": 0.02,
+   "model": "hydra",
+   "motion_prompt": "The stern noblewoman general tilts her head slowly with a cruel half-smile and one eyebrow raised, her eyes fixed on the viewer as she says a short sentence softly and menacingly, then settles back exactly into the starting pose, looking at the viewer. The whole head and the plumed tricorne hat stay inside the frame."
+  },
+  "side_files": [
+   "assets/raw/v24/faces/ysolde_taunt_audio.mp3"
+  ],
+  "url": "https://storage.googleapis.com/ludo-assets/api/56bf90b1f19ef7774dd887c722995d79.webp",
+  "v": 1,
+  "video_url": "https://storage.googleapis.com/ludo-assets/api/c1a2044cf55808a28143ace43803273f.mp4"
+ },
+ "v24_react_ysolde_taunt~t2": {
+  "audio_url": "https://storage.googleapis.com/ludo-assets/api/70aa97cce2a8ab55abe258a472569507.mp3",
+  "credits": 9,
+  "endpoint": "/assets/sprite/animate",
+  "file": "assets/raw/v24/faces/.takes/ysolde_taunt.t2.webp",
+  "id": "v24_react_ysolde_taunt~t2",
+  "job": "bdc0e9c1-2860-487e-961d-cdc7209648ef",
+  "params": {
+   "crop": false,
+   "duration": 3,
+   "final_image": "data:image/png;base64,iVBORw0KGgoAAAANSU...(base64)",
+   "frame_size": -9,
+   "frames": 36,
+   "image_type": "portrait",
+   "initial_image": "data:image/png;base64,iVBORw0KGgoAAAANSU...(base64)",
+   "loop": false,
+   "margin_ratio_horizontal": 0.02,
+   "margin_ratio_mode": "manual",
+   "margin_ratio_vertical": 0.02,
+   "model": "hydra",
+   "motion_prompt": "The stern noblewoman general tilts her head slowly with a cruel half-smile and one eyebrow raised, her eyes fixed on the viewer as she says a short sentence softly and menacingly, then settles back exactly into the starting pose, looking at the viewer. The whole head and the plumed tricorne hat stay inside the frame."
+  },
+  "side_files": [
+   "assets/raw/v24/faces/.takes/ysolde_taunt.t2_audio.mp3"
+  ],
+  "url": "https://storage.googleapis.com/ludo-assets/api/330dca1bd6db4191658c619fa9d0a43d.webp",
+  "v": 1,
+  "video_url": "https://storage.googleapis.com/ludo-assets/api/c2ea90a8b26055439a5314ffd69b088d.mp4"
+ },
+ "v24_react_ysolde_win": {
+  "audio_url": "https://storage.googleapis.com/ludo-assets/api/8678c20b718e70d79f0ac14f614d589d.mp3",
+  "credits": 9,
+  "endpoint": "/assets/sprite/animate",
+  "file": "assets/raw/v24/faces/ysolde_win.webp",
+  "id": "v24_react_ysolde_win",
+  "job": "75b1c644-abcc-4be5-a27f-7351a59e492b",
+  "params": {
+   "crop": false,
+   "duration": 3,
+   "final_image": "data:image/png;base64,iVBORw0KGgoAAAANSU...(base64)",
+   "frame_size": -9,
+   "frames": 36,
+   "image_type": "portrait",
+   "initial_image": "data:image/png;base64,iVBORw0KGgoAAAANSU...(base64)",
+   "loop": false,
+   "margin_ratio_horizontal": 0.02,
+   "margin_ratio_mode": "manual",
+   "margin_ratio_vertical": 0.02,
+   "model": "hydra",
+   "motion_prompt": "The stern noblewoman general lifts her chin and lowers her eyelids as a cold, thin smile of satisfaction spreads across her lips, and she says a single word, then settles back exactly into the starting pose, looking at the viewer. The whole head and the plumed tricorne hat stay inside the frame."
+  },
+  "side_files": [
+   "assets/raw/v24/faces/ysolde_win_audio.mp3"
+  ],
+  "url": "https://storage.googleapis.com/ludo-assets/api/107de2555afed31e6524686756039ea1.webp",
+  "v": 1,
+  "video_url": "https://storage.googleapis.com/ludo-assets/api/3bd8d4306c1b4b57eb8f75ca9e4d378e.mp4"
+ },
+ "v24_react_ysolde_win~t2": {
+  "audio_url": "https://storage.googleapis.com/ludo-assets/api/d290c48d0bc3e308e31515de7135f872.mp3",
+  "credits": 9,
+  "endpoint": "/assets/sprite/animate",
+  "file": "assets/raw/v24/faces/.takes/ysolde_win.t2.webp",
+  "id": "v24_react_ysolde_win~t2",
+  "job": "459cdc37-4035-4d7d-95d2-b1613040b0de",
+  "params": {
+   "crop": false,
+   "duration": 3,
+   "final_image": "data:image/png;base64,iVBORw0KGgoAAAANSU...(base64)",
+   "frame_size": -9,
+   "frames": 36,
+   "image_type": "portrait",
+   "initial_image": "data:image/png;base64,iVBORw0KGgoAAAANSU...(base64)",
+   "loop": false,
+   "margin_ratio_horizontal": 0.02,
+   "margin_ratio_mode": "manual",
+   "margin_ratio_vertical": 0.02,
+   "model": "hydra",
+   "motion_prompt": "The stern noblewoman general lifts her chin and lowers her eyelids as a cold, thin smile of satisfaction spreads across her lips, and she says a single word, then settles back exactly into the starting pose, looking at the viewer. The whole head and the plumed tricorne hat stay inside the frame."
+  },
+  "side_files": [
+   "assets/raw/v24/faces/.takes/ysolde_win.t2_audio.mp3"
+  ],
+  "url": "https://storage.googleapis.com/ludo-assets/api/72bbfa82a451643097f480a249a5eff7.webp",
+  "v": 1,
+  "video_url": "https://storage.googleapis.com/ludo-assets/api/e007f1b75991c7c0983d4898eeca9625.mp4"
+ },
  "voice2_hask": {
   "credits": 1,
   "endpoint": "/audio/voice",

@@ -11,7 +11,14 @@ PORT="${1:-8765}"
 URL="http://127.0.0.1:$PORT/"
 if curl -s -o /dev/null --max-time 2 "$URL"; then
 	echo "review: already running at $URL (opening it)"
-	open "$URL" 2>/dev/null || xdg-open "$URL" 2>/dev/null
+	open "$URL" 2>/dev/null || xdg-open "$URL" 2>/dev/null || start "$URL" 2>/dev/null
 	exit 0
 fi
-exec python3 tools/review/review.py serve --port "$PORT" --open
+## (on Windows `python3` is the Microsoft Store's stub, which only says to install Python: a Python
+## that runs, then; the table runs a batch's actions with the same one)
+PY=""
+for p in python3 python; do
+	[ -z "$PY" ] && "$p" -c "" >/dev/null 2>&1 && PY="$p"
+done
+[ -n "$PY" ] || { echo "review: no Python that runs (python3 or python)"; exit 127; }
+exec "$PY" tools/review/review.py serve --port "$PORT" --open

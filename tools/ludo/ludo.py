@@ -6,7 +6,7 @@
     python3 tools/ludo/ludo.py --force id ...
     python3 tools/ludo/ludo.py --jobs 8 id ...   # a pool of 8 jobs in flight instead of one per lane
     python3 tools/ludo/ludo.py --account         # the credit balance (free)
-    python3 tools/ludo/ludo.py --takes 3 id ...  # speech/voice/sfx: 3 takes (extras in .takes/)
+    python3 tools/ludo/ludo.py --takes 3 id ...  # speech/voice/sfx/animate: 3 takes (extras in .takes/)
 
 Reads LUDO_API_KEY from the environment or .env.local. Idempotent: an asset whose
 output file exists is skipped, and every job carries a stable request_id so a
@@ -93,18 +93,46 @@ def call(method, path, body=None, timeout=90):
             raise
 
 
-def run_job(endpoint, params, request_id):
+JOB_WAIT = float(os.environ.get("LUDO_JOB_WAIT", "3600"))  ## seconds a submitted job is waited for
+JOB_DONE = ("succeeded",)
+JOB_DEAD = ("failed", "canceled", "cancelled", "error")
+
+
+def run_job(endpoint, params, request_id, poll=None):
+    """Submit a job and wait for its result. Ludo answers every generation call at once with a
+    queued job ({id, status}) and charges for it then, so the result has to be collected from
+    GET /assets/jobs/{id}. v2.4: a submitted job is never let go for a dropped connection, a status
+    we don't know or a slow queue: polling goes on until LUDO_JOB_WAIT seconds have passed, and a
+    rerun of the same asset is handed the same job back (its request_id), not charged again."""
+    poll = poll or (lambda jid: call("GET", "/assets/jobs/%s?wait=55" % jid, timeout=90))
     body = dict(params)
     body["request_id"] = request_id
     job = call("POST", endpoint, body)
-    jid = job["id"]
+    jid = job.get("id") if isinstance(job, dict) else None
+    if not jid:
+        raise RuntimeError("%s answered without a job: %s" % (endpoint, json.dumps(job)[:300]))
+    t0 = time.time()
+    misses = 0
     while True:
-        status = job.get("status")
-        if status == "succeeded":
+        status = str(job.get("status") or "")
+        if status in JOB_DONE:
             return job
-        if status in ("failed", "canceled"):
+        if status in JOB_DEAD:
             raise RuntimeError("job %s %s: %s" % (jid, status, job.get("error")))
-        job = call("GET", "/assets/jobs/%s?wait=55" % jid, timeout=90)
+        if time.time() - t0 > JOB_WAIT:
+            raise RuntimeError("job %s still %s after %d s: run this asset again to collect it (request %s)"
+                               % (jid, status or "unknown", JOB_WAIT, request_id))
+        try:
+            nxt = poll(jid)
+        except Exception as e:  ## the connection, not the job: it is still running, and paid for
+            misses += 1
+            if misses % 4 == 1:
+                log("  job %s: polling failed (%s); still waiting" % (jid, str(e)[:100]))
+            time.sleep(min(60, 5 * misses))
+            continue
+        misses = 0
+        if isinstance(nxt, dict) and nxt.get("status"):
+            job = nxt
 
 
 def result_urls(result):
@@ -261,7 +289,20 @@ MIME = {".png": "image/png", ".webp": "image/webp", ".jpg": "image/jpeg", ".jpeg
         ".mp3": "audio/mpeg", ".wav": "audio/wav", ".ogg": "audio/ogg", ".m4a": "audio/mp4"}
 
 
+def _pil():
+    ## v2.4: Pillow where it is installed (the Windows PC has no sips); sips on a bare Mac
+    try:
+        from PIL import Image
+        return Image
+    except ImportError:
+        return None
+
+
 def image_size(path):
+    pil = _pil()
+    if pil:
+        with pil.open(path) as im:
+            return im.size
     out = subprocess.run(["sips", "-g", "pixelWidth", "-g", "pixelHeight", path], capture_output=True, text=True).stdout
     w = int(out.split("pixelWidth:")[1].split()[0])
     h = int(out.split("pixelHeight:")[1].split()[0])
@@ -276,7 +317,12 @@ def fit_megapixel(path, limit=1000000):
     s = (limit * 0.98 / float(w * h)) ** 0.5
     nw, nh = int(w * s) // 2 * 2, int(h * s) // 2 * 2
     tmp = os.path.join(tempfile.gettempdir(), "ludo_fit_%d_%s.png" % (os.getpid(), os.path.basename(path).rsplit(".", 1)[0]))
-    subprocess.run(["sips", "-s", "format", "png", "-z", str(nh), str(nw), path, "--out", tmp], capture_output=True, check=True)
+    pil = _pil()
+    if pil:
+        with pil.open(path) as im:
+            im.convert("RGBA").resize((nw, nh), pil.LANCZOS).save(tmp, "PNG")
+    else:
+        subprocess.run(["sips", "-s", "format", "png", "-z", str(nh), str(nw), path, "--out", tmp], capture_output=True, check=True)
     log("  downscaled %s %dx%d -> %dx%d (1 MP limit)" % (os.path.relpath(path, ROOT), w, h, nw, nh))
     return tmp
 
@@ -336,7 +382,7 @@ def spoken(asset):
     return asset.get("speak") or asset["text"]
 
 
-TAKE_KINDS = ("speech", "voice", "sfx")
+TAKE_KINDS = ("speech", "voice", "sfx", "animate")  ## v2.4: the faces' reactions roll two takes
 
 
 def take_out(out, k):
@@ -346,7 +392,7 @@ def take_out(out, k):
 
 
 def with_takes(assets, n=None):
-    """Every speech, voice or sfx asset plus its extra takes (`takes` in the manifest, or
+    """Every speech, voice, sfx or animate asset plus its extra takes (`takes` in the manifest, or
     --takes N for this run): the same prompt rolled again under its own id `<id>~t<k>`, so each
     take has its own request id and ledger entry and a rerun skips the takes already made."""
     out = []
