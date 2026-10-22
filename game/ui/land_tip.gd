@@ -21,8 +21,22 @@ static func lines(s: Node, board: Control, id: String) -> Array:
 	if ts.owner == Types.UNOCCUPIED:
 		out.append("Empty")
 	else:
-		var sp: Array = Income.home_split(ts)
+		## v2.4: the men there now; in the regroup phase those marching in, and those marching out, apart
+		var inbound: int = int(board.arriving.get(id, 0)) if ts.owner == board.viewer else 0
+		var sp: Array = board.shown_split(ts, inbound)
 		out.append("%s · %s · %d in the garrison" % [s.name_of(ts.owner), Style.plural(int(sp[0]), "army", "armies"), int(sp[1])])
+		var outbound := 0
+		if ts.owner == s.planner:
+			for m in s.my_moves():
+				if str(m["from"]) == id:
+					outbound += int(m["n"])
+		var moving: Array = []
+		if inbound > 0:
+			moving.append("%d marching in: they stay put this phase" % inbound)
+		if outbound > 0:
+			moving.append("%d marching out" % outbound)
+		if not moving.is_empty():
+			out.append(" · ".join(moving))
 	if board.threats.has(id):
 		var th: Dictionary = board.threats[id]
 		if int(th["max"]) > 0:

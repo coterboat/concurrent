@@ -37,6 +37,7 @@ const TOP := 84.0
 
 var main: Control
 var session: Node
+var resuming := false ## v2.4: a saved war picked up (main.continue_game): it comes back on the view it was left on
 var selected := ""
 var surge_pick := -1
 var log_lines: Array = [] ## [text, color]
@@ -45,6 +46,8 @@ var board: Control
 var land: Node ## v2.0: the map's land in 3D, one world a game (land.gd)
 var land_board: Control ## v2.0: the board standing on it (land_board.gd)
 var _land_chip: Button
+var _land_lbl: Array = [] ## v2.4: the chip's "3D" and "2D", the view the board is on lit
+var _veil: Control ## v2.4: over the board while a war picked up on the land waits for it to be laid out
 var bar: Control
 var roster: Control
 var cinema: Control
@@ -83,6 +86,18 @@ var _draft_state := "" ## "" | rolling | picking | done
 var _draft_marks: Array = []
 var _draft_spoke := {}
 var draft_fast := false
+## v2.4: the commanders take their seats on the war table as their dice fall for the order of claims (on a
+## dealt war, before the deployment): who is still to sit, whose card is up, and whose die is falling
+var _seats_due := false ## the roll about to begin opens with the introductions
+var _seating: Array = [] ## pids still to take their seats
+var _seated := {} ## pid -> true once their card has come up
+var _seat_live := "" ## whose card is up
+var _seat_t0 := 0 ## when it came up (msec)
+var _seat_min := 0.0 ## seconds it stays up at least
+var _seat_rolling := "" ## whose die is still falling ("*": the rest, thrown together on Esc)
+var _seat_dice := false ## their dice fall as they sit (the draft); a dealt war has no roll
+var _seat_wait := 0 ## the next card waits till then (msec): a breath between commanders
+var _seat_snaps: Array = [] ## the dice already down, kept on the table as pictures while the next one falls
 var _fallen_until := 0.0 ## the fallen commander's panel is up until then (msec)
 var _fallen_at := Vector2.ZERO
 var _chest_taken := false
@@ -100,6 +115,7 @@ func _ready() -> void:
 	board.territory_hovered.connect(_on_hover)
 	board.arrow_clicked.connect(func(a, b): edit_order(a, b))
 	board.set_view_mode(int(Settings.get_value("map_view", 0)))
+	board.shield_style = str(Settings.get_value("shields", "ranked")) ## v2.4
 	land = Land.new()
 	add_child(land)
 	land_board = LandBoard.new()
@@ -186,10 +202,11 @@ func _ready() -> void:
 	_cover.visible = false
 	_cover.mouse_filter = Control.MOUSE_FILTER_STOP
 	add_child(_cover)
-	intro = Intro.new()
-	intro.finished.connect(func():
-		_intro_done = true
-		_refresh())
+	intro = Intro.new() ## v2.4: a card on the table: the commanders take their seats as their dice fall (_seat_*)
+	intro.pressed.connect(_seat_hurry)
+	intro.skipped.connect(func():
+		if _seating_now():
+			_seat_skip())
 	add_child(intro)
 	cutscene = Cutscene.new()
 	add_child(cutscene)
@@ -231,9 +248,22 @@ func _build_zoom() -> void:
 		b.custom_minimum_size = Vector2(48, 44)
 		b.tooltip_text = {"+": "Zoom in (wheel / pinch)", "−": "Zoom out", "⤢": "Whole map"}[spec[0]]
 		tools.add_child(b)
-	## v2.0: the board on the land, or the chart
+	## v2.0: the board on the land, or the chart. v2.4: the chip shows the view the board is on, both
+	## words on it and that one lit (it read "2D" on the land: the way out, which reads as where you are)
 	_land_chip = Style.chip("", toggle_land, Style.GOLD, 17)
-	_land_chip.custom_minimum_size = Vector2(48, 44)
+	_land_chip.custom_minimum_size = Vector2(48, 52)
+	var lv := VBoxContainer.new()
+	lv.set_anchors_and_offsets_preset(PRESET_FULL_RECT)
+	lv.alignment = BoxContainer.ALIGNMENT_CENTER
+	lv.add_theme_constant_override("separation", -4)
+	lv.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	_land_chip.add_child(lv)
+	for word in ["3D", "2D"]:
+		var l := Style.label(word, 15, Style.MUTED, "display")
+		l.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+		l.mouse_filter = Control.MOUSE_FILTER_IGNORE
+		lv.add_child(l)
+		_land_lbl.append(l)
 	tools.add_child(_land_chip)
 	tools.move_child(_land_chip, 0)
 	_land_chip_text()
@@ -243,8 +273,17 @@ func _land_chip_text() -> void:
 	if _land_chip == null:
 		return
 	var on3d: bool = land_board != null and land_board.on
-	_land_chip.text = "2D" if on3d else "3D"
-	_land_chip.tooltip_text = "Back to the chart (L)" if on3d else "The land in 3D (L)"
+	for k in _land_lbl.size():
+		var lit: bool = (k == 0) == on3d
+		var l: Label = _land_lbl[k]
+		l.add_theme_font_size_override("font_size", 18 if lit else 12)
+		l.add_theme_color_override("font_color", Style.GOLD if lit else Color(Style.MUTED, 0.8))
+	_land_chip.tooltip_text = "The land in 3D: click or press L for the chart" if on3d else "The chart: click or press L for the land in 3D"
+
+
+func land_view() -> String:
+	## v2.4: the view the chip shows lit ("3D" or "2D"; the probe reads it)
+	return "3D" if land_board != null and land_board.on else "2D"
 
 
 func toggle_land() -> void:
@@ -254,6 +293,8 @@ func toggle_land() -> void:
 	land_board.set_on(v)
 	_prepare_land()
 	_land_chip_text()
+	if not v:
+		_lift_veil() ## the chart is there at once
 	_toast("The map: %s" % ("the land" if v else "the chart"))
 
 
@@ -263,6 +304,8 @@ func _land_setting() -> void:
 		land_board.set_on(v)
 		_prepare_land()
 		_land_chip_text()
+		if not v:
+			_lift_veil()
 
 
 func _prepare_land() -> void:
@@ -271,8 +314,66 @@ func _prepare_land() -> void:
 		return
 	if theater != null:
 		theater.prepare_land()
+	var resume: bool = resuming ## (only as the war is picked up: turned on later, the land rises from the chart)
+	resuming = false
 	if land_board != null and land_board.on:
 		land.prepare(board)
+		if resume:
+			_veil_land()
+
+
+func _veil_land() -> void:
+	## v2.4: a war picked up on the land comes back on it (the owner: "loading a game brings it into 2d,
+	## it should resume on whichever view it was"). It showed the chart while the land was laid out again
+	## (two seconds here, longer on a slower machine), the chip already reading "2D", then rose into 3D.
+	## Now a veil covers the board until the land is ready, and the board is on it at once.
+	if land_board.ready_to_show() or _veil != null:
+		land_board.set_on(true, true)
+		return
+	_veil = Control.new()
+	_veil.set_anchors_and_offsets_preset(PRESET_FULL_RECT)
+	_veil.mouse_filter = Control.MOUSE_FILTER_STOP
+	var dark := ColorRect.new()
+	dark.color = Style.INK
+	dark.set_anchors_and_offsets_preset(PRESET_FULL_RECT)
+	dark.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	_veil.add_child(dark)
+	var l := Style.label("Laying out the land…", 22, Style.PARCH, "italic")
+	l.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+	l.set_anchors_and_offsets_preset(PRESET_CENTER)
+	l.offset_left = -300
+	l.offset_right = 300
+	l.offset_top = 40 ## under where a phase's banner hangs
+	l.offset_bottom = 72
+	l.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	_veil.add_child(l)
+	add_child(_veil)
+	move_child(_veil, board.get_index() + 1) ## over the board, under the table's own panels
+	land.built.connect(_land_up, CONNECT_ONE_SHOT)
+	get_tree().create_timer(20.0).timeout.connect(_lift_veil) ## a land that never comes: the chart, and it rises when it does
+
+
+func _land_up() -> void:
+	## the land is laid out: the board is on it at once (not risen from the chart), and the veil lifts once
+	## its first pictures are in
+	if land_board.on:
+		land_board.set_on(true, true)
+	_land_chip_text()
+	get_tree().create_timer(0.2).timeout.connect(_lift_veil)
+
+
+func _lift_veil() -> void:
+	if _veil == null or not is_instance_valid(_veil) or _veil.has_meta("lifting"):
+		return
+	var v: Control = _veil
+	v.set_meta("lifting", true)
+	v.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	var tw := v.create_tween()
+	tw.tween_property(v, "modulate:a", 0.0, 0.35)
+	tw.tween_callback(func():
+		v.queue_free()
+		if _veil == v:
+			_veil = null)
 
 
 # ================================================================ phases
@@ -295,12 +396,12 @@ func _on_phase(ph: int) -> void:
 	match ph:
 		Session.Phase.DRAFT:
 			select("")
-			Audio.music("plan")
-			if _intro_done:
-				phase_banner("CLAIMING THE LANDS", "Every commander throws a die for the order of choosing")
 			if not _intro_done and not bool(session.config.get("tutorial", false)):
-				_start_intro()
+				_start_intro() ## v2.4: the music waits for the film
 			else:
+				Audio.music("plan")
+				if _intro_done:
+					phase_banner("CLAIMING THE LANDS", "Every commander throws a die for the order of choosing")
 				_intro_done = true
 		Session.Phase.MANEUVER:
 			select("")
@@ -312,13 +413,14 @@ func _on_phase(ph: int) -> void:
 		Session.Phase.OPENING, Session.Phase.PLANNING:
 			select("")
 			Audio.heat = _plan_mood() if ph == Session.Phase.PLANNING else ""
-			Audio.music(_plan_mood() if ph == Session.Phase.PLANNING else "plan")
-			if ph == Session.Phase.OPENING and not _intro_done and not bool(session.config.get("tutorial", false)):
-				_start_intro()
+			var seats_first: bool = ph == Session.Phase.OPENING and not _intro_done and not bool(session.config.get("tutorial", false))
+			if seats_first:
+				_start_intro() ## v2.4: the music waits for the film; the deployment's banner follows the introductions
 			else:
+				Audio.music(_plan_mood() if ph == Session.Phase.PLANNING else "plan")
 				_intro_done = true
-			if ph == Session.Phase.OPENING and _intro_done:
-				phase_banner("DEPLOYMENT", "Name your capital, then place your starting armies" if session.capital_choosable() else "Place your starting armies")
+				if ph == Session.Phase.OPENING:
+					phase_banner("DEPLOYMENT", "Name your capital, then place your starting armies" if session.capital_choosable() else "Place your starting armies")
 			if ph == Session.Phase.PLANNING:
 				_war_alive()
 				phase_banner("REINFORCEMENT PHASE", "Round %d · place %d fresh recruits on your lands" % [session.world.round, session.income_total()])
@@ -386,6 +488,7 @@ func _refresh() -> void:
 	var ph: int = session.phase
 	board.threats = {}
 	board.hinges = {}
+	board.arriving = {}
 	board.capital_override = {}
 	if session.capital_choosable():
 		board.capital_override[session.planner] = session.capital_shown(session.planner) ## v1.8: yours, as you choose it
@@ -424,9 +527,12 @@ func _refresh() -> void:
 		board.placements = {}
 		board.ghosts = session.ghosts
 		var arrows: Array = []
+		var inbound := {} ## v2.4: the men marching in are drawn apart from those there (they stay put)
 		for m in session.my_moves():
 			arrows.append({"from": str(m["from"]), "to": str(m["to"]), "strength": int(m["n"]), "owner": session.planner, "kind": "move"})
+			inbound[str(m["to"])] = int(inbound.get(str(m["to"]), 0)) + int(m["n"])
 		board.orders = arrows
+		board.arriving = inbound
 		board.targets = _march_targets()
 		board.battle = {}
 		board.refresh()
@@ -579,7 +685,8 @@ func _update_counsel() -> void:
 	## speak the most important thing, once per round
 	var top: Dictionary = items[0]
 	var v: String = str(top.get("voice", ""))
-	if v != "" and (int(top["rank"]) >= 80 or v in ["welcome", "deploy", "cards", "dug_in", "surge", "attack_hint", "capital_choose"]): ## v1.13: naming the capital is spoken too
+	## (v2.4: not while the film plays or the commanders take their seats: they speak first)
+	if v != "" and _intro_done and (int(top["rank"]) >= 80 or v in ["welcome", "deploy", "cards", "dug_in", "surge", "attack_hint", "capital_choose"]): ## v1.13: naming the capital is spoken too
 		_say_once(v, {"alarmed": "alarm", "pleased": "happy"}.get(str(top["mood"]), "neutral"), str(top["key"]))
 
 
@@ -656,6 +763,9 @@ func _note_rival_marches() -> void:
 
 
 func _on_click(id: String, button: int) -> void:
+	if _seating_now():
+		_toast("The commanders are taking their seats. Space: the next one · Esc: skip them") ## v2.4
+		return
 	var ph: int = session.phase
 	if ph == Session.Phase.DRAFT:
 		if _draft_state == "picking" and not _claim_wait and session.is_human(session.draft_turn()):
@@ -833,6 +943,8 @@ var _no_room_said := ""
 
 
 func _on_drag(from_id: String, to_id: String) -> void:
+	if _seating_now():
+		return ## v2.4: the commanders are taking their seats
 	if session.phase == Session.Phase.MANEUVER:
 		if session.world.get_territory(from_id).owner == session.planner and session.world.get_territory(to_id).owner == session.planner:
 			order_march(from_id, to_id)
@@ -971,6 +1083,7 @@ func place_order_card(ctrl: Control, a: String, b: String) -> void:
 func _process(_d: float) -> void:
 	_far_off(_d)
 	_tip_watch()
+	_seat_tick()
 	## cards follow the map when it pans or zooms
 	if land_card.visible and land_card.land != "":
 		place_popover(land_card, land_card.land)
@@ -1040,6 +1153,14 @@ func edit_order(a: String, b: String) -> void:
 	else:
 		order_card.show_for(a, b)
 	_refresh()
+
+
+func order_done() -> void:
+	## v2.4: OK on an order's card (or Enter): the order stands, the card closes, and the land it came
+	## from is let go (the owner: "pressing 'ok' after moving troops through a left click -> left click
+	## action should deselect the source region"). The card's ✕ and Esc only close the card.
+	edit_order("", "")
+	select("")
 
 
 func _attack_into(dest: String) -> int:
@@ -1115,6 +1236,17 @@ func _seal() -> void:
 	Audio.sfx("seal")
 	log_line("Orders sealed.", Style.GOLD)
 	selected = ""
+
+
+func cycle_shields() -> void:
+	## v2.4 (G): the garrison shields' looks, side by side on the owner's own war (map_board.SHIELD_STYLES)
+	var all: Array = Board.SHIELD_STYLES
+	var nxt: String = str(all[(all.find(board.shield_style) + 1) % all.size()])
+	board.shield_style = nxt
+	Settings.set_value("shields", nxt)
+	board.refresh()
+	_toast("Garrison shields: %s" % {"ranked": "dressed by how deep they're dug in, with the number",
+		"number": "one look, the number inside (as before v2.4)", "chevrons": "dressed by depth, a chevron a man dug in"}.get(nxt, nxt))
 
 
 func toggle_view() -> void:
@@ -1390,6 +1522,8 @@ func _draft_strip() -> void:
 		lf.setup(str(session.seat(pid).get("portrait", "player")), pid, session.name_of(pid))
 		if turn != "" and pid != turn:
 			lf.modulate = Color(0.6, 0.6, 0.6)
+		elif _seating_now() and not _seated.has(pid):
+			lf.modulate = Color(0.42, 0.42, 0.45) ## v2.4: still to take their seat
 		var rank: String = ("%d. " % (k + 1)) if _draft_state == "picking" else ""
 		var nm := Style.label(rank + session.name_of(pid).get_slice(" ", session.name_of(pid).get_slice_count(" ") - 1), 15, Style.seat_color(pid).lightened(0.45) if pid == turn or turn == "" else Style.MUTED, "bold")
 		nm.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
@@ -1411,6 +1545,12 @@ func _draft_begin() -> void:
 	bar.set_message("Every commander throws a die: the highest claims first, and so on round the table.")
 	if not session.living_humans().is_empty():
 		_say_once("draft_roll")
+	if _seats_due:
+		## v2.4: a new war's first roll: each commander takes their seat and throws, one by one
+		_seats_due = false
+		_draft_title.text = "THE COMMANDERS TAKE THEIR SEATS"
+		_seat_begin(true)
+		return
 	get_tree().create_timer(1.4).timeout.connect(func(): _draft_throw(0))
 
 
@@ -1418,6 +1558,10 @@ func _draft_clear_marks() -> void:
 	for m in _draft_marks:
 		(m as Node).queue_free()
 	_draft_marks = []
+	for t in _seat_snaps:
+		if is_instance_valid(t):
+			(t as Node).queue_free()
+	_seat_snaps = []
 
 
 func _draft_throw(k: int) -> void:
@@ -1431,11 +1575,33 @@ func _draft_throw(k: int) -> void:
 	var t: Array = throws[k]
 	var specs: Array = []
 	for i in t.size():
-		var x: float = (float(i) - float(t.size() - 1) * 0.5) * 2.7
-		specs.append({"value": int(t[i]["die"]), "n": 9, "tint": Style.seat_color(str(t[i]["pid"])), "to": Vector2(x, 0.2), "drop": true, "delay": 0.09 * i})
+		var sp: Dictionary = _die_spec(t, i)
+		sp["delay"] = 0.09 * i
+		specs.append(sp)
 	Audio.sfx("dice_shake", -2.0)
 	var dur: float = _draft_dice.throw(specs)
 	get_tree().create_timer(dur + 0.15).timeout.connect(func(): _draft_landed(k))
+
+
+func _die_spec(t: Array, i: int) -> Dictionary:
+	## the die of the i-th commander in a throw, falling to its place in the row
+	var x: float = (float(i) - float(t.size() - 1) * 0.5) * 2.7
+	return {"value": int(t[i]["die"]), "n": 9, "tint": Style.seat_color(str(t[i]["pid"])), "to": Vector2(x, 0.2), "drop": true}
+
+
+func _draft_mark(pid: String, die: int, at: Vector2) -> void:
+	## "Varek  5" under a commander's die (v2.4: the last of their name, as on the strip: with every
+	## commander's die on the table at once, "Grand Marshal Varek" ran into his neighbour's)
+	var nm: String = session.name_of(pid)
+	var l := Style.label("%s  %d" % [nm.get_slice(" ", nm.get_slice_count(" ") - 1), die], 20, Style.seat_color(pid).lightened(0.5), "display")
+	l.add_theme_constant_override("outline_size", 8)
+	l.add_theme_color_override("font_outline_color", Color(0, 0, 0, 0.9))
+	l.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+	l.size = Vector2(220, 30)
+	l.position = _draft_dice.position + at + Vector2(-110, 52)
+	l.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	_draft_ui.add_child(l)
+	_draft_marks.append(l)
 
 
 func _draft_landed(k: int) -> void:
@@ -1444,16 +1610,13 @@ func _draft_landed(k: int) -> void:
 	var throws: Array = session.draft["throws"]
 	var t: Array = throws[k]
 	for i in t.size():
-		var pid: String = str(t[i]["pid"])
-		var l := Style.label("%s  %d" % [session.name_of(pid), int(t[i]["die"])], 20, Style.seat_color(pid).lightened(0.5), "display")
-		l.add_theme_constant_override("outline_size", 8)
-		l.add_theme_color_override("font_outline_color", Color(0, 0, 0, 0.9))
-		l.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
-		l.size = Vector2(220, 30)
-		l.position = _draft_dice.position + _draft_dice.die_screen(i) + Vector2(-110, 52)
-		l.mouse_filter = Control.MOUSE_FILTER_IGNORE
-		_draft_ui.add_child(l)
-		_draft_marks.append(l)
+		_draft_mark(str(t[i]["pid"]), int(t[i]["die"]), _draft_dice.die_screen(i))
+	_draft_after(k)
+
+
+func _draft_after(k: int) -> void:
+	## every die of throw k is down: the tied throw again among themselves, or the order stands
+	var throws: Array = session.draft["throws"]
 	if k + 1 < throws.size():
 		var tied: Array = []
 		for r in throws[k + 1]:
@@ -1533,6 +1696,235 @@ func _draft_claimed(pid: String, land: String) -> void:
 		_draft_state = "done"
 		draft_fast = false
 		log_line("Every land is claimed. Deploy your armies.", Style.GOOD)
+
+
+# ================================================================ the commanders take their seats (v2.4)
+
+func _seat_begin(dice: bool) -> void:
+	## the rivals first, in their seats' order, then whoever is at the table: on the roll the throws build
+	## to your own; on a dealt war (no roll) only the rivals step up, to say hello
+	_seat_dice = dice
+	_seating = []
+	_seated = {}
+	for st in session.seats:
+		if str(st["kind"]) != "human" and (dice or Lines.has(str(st["ai"]), "greet")):
+			_seating.append(str(st["id"]))
+	if dice:
+		for st in session.seats:
+			if str(st["kind"]) == "human":
+				_seating.append(str(st["id"]))
+	_seat_live = ""
+	_seat_rolling = ""
+	_seat_wait = Time.get_ticks_msec() + 500
+	if _seating.is_empty():
+		_seats_done()
+	elif dice:
+		_draft_strip()
+
+
+func _seating_now() -> bool:
+	return _seat_live != "" or _seat_rolling != "" or not _seating.is_empty()
+
+
+func _seat_tick() -> void:
+	if not _seating_now():
+		return
+	if session.phase != Session.Phase.DRAFT and session.phase != Session.Phase.OPENING:
+		_seat_stop()
+		return
+	var now := Time.get_ticks_msec()
+	if _seat_live != "":
+		var up: float = float(now - _seat_t0) / 1000.0
+		## the card stays for its commander's word and their die (a word that runs long is let go at 9 s)
+		if up < _seat_min or _seat_rolling != "" or (Audio.voice_playing() and up < 9.0):
+			return
+		_seat_live = ""
+		intro.leave()
+		if _seating.is_empty():
+			_seats_done()
+			return
+		_seat_wait = now + 260
+	if _seat_rolling != "" or now < _seat_wait or (Audio.voice_playing() and now - _seat_wait < 6000):
+		return ## (the advisor's word first)
+	_seat_show(str(_seating.pop_front()))
+
+
+func _seat_show(pid: String) -> void:
+	_seat_live = pid
+	_seated[pid] = true
+	_seat_t0 = Time.get_ticks_msec()
+	if _seat_dice:
+		_draft_strip()
+		_seat_throw(pid) ## (its fall is worked out at the throw: the card can hang where it will come to rest)
+	var secs: float = intro.show_seat(session, pid)
+	_place_seat_card()
+	_seat_min = 1.8 if session.is_human(pid) else maxf(2.4, secs + 0.5)
+
+
+func _place_seat_card() -> void:
+	## near where their die comes to rest (it rolls where it will: the card waits on the throw), under it
+	## and its name, or over it, or low on the map: wherever covers the fewest dice and names already on
+	## the table. A dealt war's card stands in the middle of the map.
+	intro.reset_size()
+	var sz: Vector2 = intro.size
+	var lo: float = size.y - BAR - sz.y - 10.0
+	var at := Vector2((size.x - sz.x) * 0.5, TOP + (size.y - BAR - TOP - sz.y) * 0.5)
+	if _seat_dice and _seat_rolling != "":
+		var g: Vector2 = _draft_dice.position + _draft_dice.die_screen(0)
+		var keep_clear: Array = [Rect2(g - Vector2(70, 70), Vector2(140, 160))] ## this die, and its name to come
+		for m in _draft_marks:
+			var lp: Vector2 = (m as Control).position
+			keep_clear.append(Rect2(lp + Vector2(30, -100), Vector2(160, 132))) ## a die down, and its name
+		var panel: Control = _draft_title.get_parent().get_parent()
+		keep_clear.append(Rect2(panel.global_position - global_position, panel.size))
+		var best := -1.0
+		for y in [g.y + 96.0, g.y - 66.0 - sz.y, lo, TOP + 150.0]:
+			for dx in [0.0, -0.35, 0.35]:
+				var c := Vector2(clampf(g.x - sz.x * (0.5 + dx), 12.0, size.x - sz.x - 12.0), clampf(y, TOP + 8.0, lo))
+				var r := Rect2(c, sz)
+				var cost: float = 0.0
+				for k in keep_clear:
+					cost += r.intersection(k).get_area()
+				cost += absf(c.y - (g.y + 96.0)) * 0.5 + absf(dx) * 400.0 ## near its die, and under it, for choice
+				if best < 0.0 or cost < best:
+					best = cost
+					at = c
+	intro.position = Vector2(clampf(at.x, 12.0, size.x - sz.x - 12.0), clampf(at.y, TOP + 8.0, lo))
+
+
+static func _throw_index(t: Array, pid: String) -> int:
+	for i in t.size():
+		if str(t[i]["pid"]) == pid:
+			return i
+	return -1
+
+
+func _seat_throw(pid: String) -> void:
+	## their die leaves the hand a moment after their card comes up
+	var t: Array = session.draft["throws"][0]
+	var i: int = _throw_index(t, pid)
+	if i < 0:
+		return
+	_seat_rolling = pid
+	var sp: Dictionary = _die_spec(t, i)
+	sp["delay"] = 0.35
+	var dur: float = _draft_dice.throw([sp])
+	get_tree().create_timer(0.3).timeout.connect(func():
+		if _seat_rolling == pid:
+			Audio.sfx("dice_shake", -2.0))
+	get_tree().create_timer(dur + 0.1).timeout.connect(func(): _seat_landed(pid, i))
+
+
+func _seat_landed(pid: String, i: int) -> void:
+	await RenderingServer.frame_post_draw ## the die at rest is in the stage's picture
+	if not is_inside_tree() or session.phase != Session.Phase.DRAFT or _seat_rolling != pid:
+		return
+	var t: Array = session.draft["throws"][0]
+	_draft_mark(pid, int(t[i]["die"]), _draft_dice.die_screen(0))
+	_seat_picture()
+	_seat_rolling = ""
+
+
+func _seat_picture() -> void:
+	## one stage throws every die, one at a time: the dice already down stay on the table as a picture of
+	## it, and the stage clears for the next (a stage for each would be a 3D world for each)
+	var vp: SubViewport = _draft_dice.get("_vp")
+	var img: Image = vp.get_texture().get_image() if vp != null else null
+	if img == null or img.is_empty():
+		return
+	var tr := TextureRect.new()
+	tr.texture = ImageTexture.create_from_image(img)
+	tr.expand_mode = TextureRect.EXPAND_IGNORE_SIZE
+	tr.stretch_mode = TextureRect.STRETCH_SCALE
+	tr.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	var cm := CanvasItemMaterial.new()
+	cm.blend_mode = CanvasItemMaterial.BLEND_MODE_PREMULT_ALPHA ## as the stage draws itself
+	tr.material = cm
+	tr.set_anchors_and_offsets_preset(PRESET_FULL_RECT)
+	tr.offset_bottom = -BAR
+	_draft_ui.add_child(tr)
+	_draft_ui.move_child(tr, _draft_dice.get_index() + 1)
+	_seat_snaps.append(tr)
+	_draft_dice.clear()
+
+
+func _seat_hurry() -> void:
+	## Space, Enter or a click on the card: on to the next commander, once this one's die is down
+	if _seat_live == "":
+		return
+	Audio.skip_voice()
+	_seat_min = 0.0
+
+
+func _seat_skip() -> void:
+	## Esc: no more introductions. Whoever hasn't thrown throws now, all together.
+	if _seat_rolling == "*":
+		return ## (they already are)
+	Audio.skip_voice()
+	intro.leave()
+	var left: Array = []
+	if _seat_rolling != "" and _seat_rolling != "*":
+		left.append(_seat_rolling) ## its die falls again with the rest (the same number)
+	left.append_array(_seating)
+	_seating = []
+	_seat_live = ""
+	_seat_rolling = ""
+	if not _seat_dice or session.phase != Session.Phase.DRAFT:
+		_seats_done()
+		return
+	var t: Array = session.draft["throws"][0]
+	var specs: Array = []
+	var who: Array = []
+	for pid in left:
+		var i: int = _throw_index(t, str(pid))
+		if i >= 0:
+			var sp: Dictionary = _die_spec(t, i)
+			sp["delay"] = 0.09 * specs.size()
+			specs.append(sp)
+			who.append(i)
+			_seated[str(pid)] = true
+	_draft_strip()
+	if specs.is_empty():
+		_seats_done()
+		return
+	_seat_rolling = "*"
+	Audio.sfx("dice_shake", -2.0)
+	var dur: float = _draft_dice.throw(specs)
+	get_tree().create_timer(dur + 0.15).timeout.connect(func():
+		if session.phase != Session.Phase.DRAFT or _seat_rolling != "*":
+			return
+		for j in who.size():
+			_draft_mark(str(t[int(who[j])]["pid"]), int(t[int(who[j])]["die"]), _draft_dice.die_screen(j))
+		_seat_rolling = ""
+		_seats_done())
+
+
+func _seats_done() -> void:
+	_seat_live = ""
+	_seating = []
+	intro.leave()
+	if _seat_dice:
+		## every commander has thrown: the tied throw again, or the order stands
+		_seat_dice = false
+		_draft_title.text = "ROLLING FOR THE ORDER OF CLAIMS"
+		_draft_strip()
+		_draft_after(0)
+		return
+	## a dealt war: on to the deployment
+	_intro_done = true
+	if session.phase == Session.Phase.OPENING:
+		phase_banner("DEPLOYMENT", "Name your capital, then place your starting armies" if session.capital_choosable() else "Place your starting armies")
+	_refresh()
+
+
+func _seat_stop() -> void:
+	## the phase moved on under them (a dealt war's deployment sealed early): the introductions are over
+	_seating = []
+	_seat_live = ""
+	_seat_rolling = ""
+	_seat_dice = false
+	_intro_done = true
+	intro.leave()
 
 
 func _show_cash(pid: String, cards: Array, value: int) -> void:
@@ -1787,13 +2179,26 @@ func _plan_mood() -> String:
 
 
 func _start_intro() -> void:
-	## v1.9: dawn in the war room on film, then the commanders take their seats
-	var seats := func():
-		if not intro.play(session):
+	## v1.9: dawn in the war room on film, then the commanders take their seats. v2.4: the war's music,
+	## and the tent's sounds, wait for the film to end or be skipped (the owner: "the in-game music begins
+	## playing as soon as a new game is started over the sounds of the intro cutscene"); and the seats are
+	## taken on the war table itself, each rival as their die falls for the order of claims (_seat_begin)
+	var after := func():
+		if is_queued_for_deletion():
+			return
+		Audio.ambience(true)
+		Audio.music("plan")
+		if session.phase == Session.Phase.DRAFT:
+			_seats_due = true
 			_intro_done = true
-			_refresh()
-	if not _film("intro", "", "", seats):
-		seats.call()
+			_refresh() ## the roll begins (_draft_begin), and with it the introductions
+		else:
+			_seat_begin(false) ## a dealt war: the rivals step up before the deployment
+	if _film("intro", "", "", after):
+		Audio.music("", 0.8) ## the setup screen's music gives way to the film's own
+		Audio.ambience(false)
+		return
+	after.call()
 
 
 func _film(kind: String, caption: String, voice_key: String, then: Callable = Callable()) -> bool:
@@ -2140,6 +2545,8 @@ func _unhandled_input(event: InputEvent) -> void:
 		if _modal != null:
 			_modal.queue_free()
 			_modal = null
+		elif _seating_now():
+			_seat_skip() ## v2.4: no more introductions
 		elif surge_pick >= 0:
 			surge_pick = -1
 			_refresh()
@@ -2154,6 +2561,9 @@ func _unhandled_input(event: InputEvent) -> void:
 		get_viewport().set_input_as_handled()
 	elif _overlay_open():
 		return ## v1.14: a dialog or page over the table takes the keys (the seal key sealed behind the pause menu)
+	elif (event.keycode == KEY_SPACE or event.keycode == KEY_ENTER or event.keycode == KEY_KP_ENTER) and _seat_live != "":
+		_seat_hurry() ## v2.4: on to the next commander
+		get_viewport().set_input_as_handled()
 	elif (event.keycode == KEY_SPACE or event.keycode == KEY_ENTER or event.keycode == KEY_KP_ENTER) and recap.visible and session.phase == Session.Phase.RECAP:
 		## (not in its first moment: a Space still being pressed through the battles mustn't skip it unread)
 		if Time.get_ticks_msec() - _recap_at > RECAP_KEY_MS:
@@ -2167,7 +2577,7 @@ func _unhandled_input(event: InputEvent) -> void:
 			primary_action()
 		get_viewport().set_input_as_handled()
 	elif (event.keycode == KEY_ENTER or event.keycode == KEY_KP_ENTER) and order_card.visible:
-		edit_order("", "") ## OK: keep the order, close the card
+		order_done() ## OK: keep the order, close the card, let go of the land (v2.4)
 		get_viewport().set_input_as_handled()
 	elif (event.keycode == KEY_ENTER or event.keycode == KEY_KP_ENTER) and session.phase == Session.Phase.PLANNING and session.plan_step == "reinforce":
 		begin_orders() ## v1.6: Enter moves on from the recruits to the orders
@@ -2177,6 +2587,9 @@ func _unhandled_input(event: InputEvent) -> void:
 		get_viewport().set_input_as_handled()
 	elif event.keycode == KEY_V and session.phase != Session.Phase.CINEMA:
 		toggle_view()
+		get_viewport().set_input_as_handled()
+	elif event.keycode == KEY_G and not event.meta_pressed and not event.ctrl_pressed:
+		cycle_shields() ## v2.4: the garrison shields' looks, to compare
 		get_viewport().set_input_as_handled()
 	elif event.keycode == KEY_L and not event.meta_pressed and not event.ctrl_pressed:
 		toggle_land() ## v2.0: the land or the chart
