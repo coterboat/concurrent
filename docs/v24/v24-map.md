@@ -2,8 +2,7 @@
 
 Seven of Alex's notes on v2.3.1 (`017a215`), all on the client: no rule changes and no rules bump (new games
 still play rules 22). Branch `claude/v24-map-49317c`. The facts: `tests/test_v24m.gd` (15) and the probe
-`tools/shots/v24m.gd` (58). It also carries v24-3d's fix for the chug in `map_board.gd`, my file (see "For the
-coordinator"). No Ludo credits spent.
+`tools/shots/v24m.gd` (58). No Ludo credits spent.
 
 ## What changed
 
@@ -141,9 +140,29 @@ The roll, as it looks now (every die down, your own throw last):
   knowing for any probe that saves and continues while other sessions run probes.
 - The old screen's `intro._done()`, which nearly every probe calls to skip the introductions, still works: it
   skips the seats (the rest throw together).
-- `./scripts/check.sh` is green. `./scripts/probes.sh`, every probe on this PC: all 33 green (v24m 58 facts, 21
-  shots). After v24-3d's patch went in, v114, v201 (both check where region bonuses sit), v20 (the board on the
-  land) and v24m were run again: green.
+- `./scripts/check.sh` is green, and so is the full suite (`./scripts/test.sh`: 756 passed, 0 failed).
+  `./scripts/probes.sh`, every probe on this PC: all 33 green (v24m 58 facts, 21 shots). After the last change
+  (one glow disc instead of three, the tab's border in 4 dashed lines), v24m and v114 were run again: green.
+
+## Draw calls a token makes
+
+Counted from the code (each `draw_*` call is one canvas command; `Style.draw_shape` is two: the polygon and its
+edge). v24-3d measured these at 17-33 µs each on the land, times every token on the map. My token changes stay
+inside `_draw_token` and its helpers (`_draw_shield`, `_shield_number`, `_draw_arriving`, `_clear_spot`,
+`shown_split`), with no cache of their own: v24-3d is caching the token's drawing on top of this.
+
+| a held land's token, nothing else on it | before | after |
+|---|---|---|
+| on the chart (name 2, drop shadow 1, border 2, body 2, sheen 2, highlight 1, number 2, shield 5) | 17 | 17 |
+| on the land (adds the ground shadow 3, the thickness 4) | 24 | 24 |
+| ranked, three or four dug in: one soft glow disc behind the shield | 17 / 24 | **18 / 25** |
+| number (the old shield) | 17 / 24 | 17 / 24 |
+| chevrons: the boss / 1 / 2 / 3 / 4 dug in (2 lines a chevron, the glow at 3 and 4) | 17 / 24 | 17 / 17 / 19 / 22 / 24 on the chart, +7 on the land |
+| the regroup's "+N marching in" tab, only on the lands receiving a march | (none) | **+9** (2 rects, 4 dashed lines, the arrow's line and head, the text) |
+
+So the default (ranked) adds one call on the deeper garrisons and nothing else. The glow was three discs until
+I trimmed it to one for this. Unchanged and worth v24-3d's look while they're there: a land that holds the road
+home wears a dashed amber ring drawn as 16 separate arcs.
 
 ## What Alex should poke at
 
@@ -171,15 +190,11 @@ The roll, as it looks now (every die down, your own throw last):
 
 - **Outside my list:** `game/ui/land_card.gd`, which isn't in anyone's list (the regroup line, item 5, three
   lines). `intro.gd` counts as the intro UI. Everything else is in my list.
-- **v24-3d's patch is in, here:** they measured the swoop's chug to the board's 2D overlay in `map_board.gd`
-  (`v24-3d-overlay-finding.md` in the shared notes folder) and left a patch for it. Its first part is applied on
-  this branch: the region bonus spots are found again only once the view has held still 0.15 s (not every
-  0.15 s while it moves), and a spot that can't win is skipped without asking the land. I checked the pruning:
-  a skipped spot has a hit and costs at least the best on the region's own lands, so it could never win; the
-  result is the same. So it shouldn't be applied again from their branch. The second part, fewer polygon calls
-  a token, is theirs if they want it, on top of this branch. My `_draw_token` changes leave the token body
-  alone: the shield is `_draw_shield`, one soft glow at most, and the arrivals tab is 4 dashed-line calls. I
-  told them both by message.
+- **The bonus labels are v24-3d's:** as you asked, `_draw_region_labels`, `_bonus_spot` and the bonus caches are
+  exactly as they were at `017a215` on this branch. I'd applied v24-3d's patch for them (their measured fix for
+  the swoop's chug) before your message; the second commit takes it back out, so it lands from their branch
+  only. I checked their pruning on the way: a skipped spot has a hit and costs at least the best on the
+  region's own lands, so it could never win, and the result is the same. I've told them it's theirs again.
 - **For v24-battles' text, if ranked ships:** How to Play ("Every land keeps a garrison: the men on the gold
   shield beside its number…") and `README.md` line 41 ("The gold shield on a land is its garrison…") call the
   shield gold. A suggested line: "the shield beside its number (plain wood for the one man held back, brass,
