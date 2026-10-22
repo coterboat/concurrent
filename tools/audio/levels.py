@@ -44,6 +44,9 @@ MIN_SECONDS = 0.4
 MAX_CUT = -8.0
 MAX_BOOST = 12.0
 PEAK_CEILING = -1.0
+## v2.4: the owner's ear, on top of the measure: dB added after the levelling (and past its clamp) for a
+## sound that measures fine and still plays too much. The charge bugle: "lower their volume a tad".
+EAR = {"assets/audio/sfx/charge": -3.0}
 
 
 def ffmpeg() -> str:
@@ -130,7 +133,7 @@ def main() -> None:
         g = clamp(g)
         if g > 0.0:
             g = max(0.0, min(g, PEAK_CEILING - m["tp"])) ## a boost never pushes the true peak past the ceiling
-        g = round(g, 1)
+        g = round(g + EAR.get(os.path.splitext(r)[0], 0.0), 1)
         if abs(g) >= 0.5:
             key = "res://" + os.path.splitext(r)[0]
             gains[key] = g

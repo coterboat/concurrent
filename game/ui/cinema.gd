@@ -445,13 +445,15 @@ func _build_beats() -> Array:
 				if not held and i + 1 < n and str(evs[i + 1]["kind"]) == Types.EVENT_OCCUPIED:
 					upto3 = i + 1
 				var outcome: String = ("%s with %d left." % [Style.says(_name(str(e["defenderId"])), "holds"), int(e["defenderLeft"])]) if held else "The defenders are overrun!"
-				## v2.1: one commander's columns from several lands are fronts of their own
-				var caption3: String = "Melee at %s" % _hex(to3)
-				var sub3: String = "%s storm %s %d at once. %s" % [" and ".join(_melee_names(e)), Style.owns(_name(str(e["defenderId"]))), int(e["defenderSize"]), outcome]
 				var pids3: Array = []
 				for ap3 in attackers:
 					if not pids3.has(ap3):
 						pids3.append(ap3)
+				## v2.4: who fell back, so a column's retreat is told even when nobody watched it
+				outcome = _fell_back_words(e, pids3.size() == 1) + outcome
+				## v2.1: one commander's columns from several lands are fronts of their own
+				var caption3: String = "Melee at %s" % _hex(to3)
+				var sub3: String = "%s storm %s %d at once. %s" % [" and ".join(_melee_names(e)), Style.owns(_name(str(e["defenderId"]))), int(e["defenderSize"]), outcome]
 				if pids3.size() == 1:
 					var sides3: Array = []
 					for f in e.get("fronts", []):
@@ -729,6 +731,25 @@ func _show(b: Dictionary) -> void:
 			if str(e["kind"]) == Types.EVENT_ENTRENCHED:
 				board.pulse_token(str(e["terrId"]), 0.7)
 	shown.emit()
+
+
+func _fell_back_words(e: Dictionary, one_commander: bool) -> String:
+	## v2.4: "The column from Harbor fell back. " (one commander's columns), "Quill fell back. " (several
+	## commanders'), or "" when nobody did
+	var lands: Array = []
+	var who: Array = []
+	for f in e.get("fronts", []):
+		if not bool(f.get("fellBack", false)):
+			continue
+		lands.append(_hex(str(f.get("from", ""))))
+		var nm: String = Style.who(_name(str(f.get("attackerId", ""))), who.is_empty())
+		if not who.has(nm):
+			who.append(nm)
+	if lands.is_empty():
+		return ""
+	if one_commander:
+		return "%s from %s fell back. " % ["The column" if lands.size() == 1 else "The columns", " and ".join(lands)]
+	return "%s fell back. " % " and ".join(who)
 
 
 func _melee_names(e: Dictionary) -> Array:

@@ -642,6 +642,7 @@ static func _melee(w: Types.World, map: Types.MapDef, dest: String, invaders: Ar
 	var pending := false
 	## v1.10 (rules 19): the dice's swing for everyone in the melee, and Fortune for all of them
 	var v110: bool = map.rules >= 19
+	var refire: bool = map.rules >= 23 ## v2.4: an even volley is fired again (below)
 	var luck := {}
 	var rebate := {} ## v2.2 (rules 22): pid -> what exchanges Fortune threw away were worth to them
 	var fortuned := {}
@@ -667,6 +668,7 @@ static func _melee(w: Types.World, map: Types.MapDef, dest: String, invaders: Ar
 					tot += int(f["a"])
 			var salvo: Array = []
 			var loss := 0
+			var again: Array = [] ## v2.4 (rules 23): the fronts whose volley was even, to fire again
 			for i in fronts.size():
 				var f: Dictionary = fronts[i]
 				if not _front_up(f):
@@ -677,17 +679,14 @@ static func _melee(w: Types.World, map: Types.MapDef, dest: String, invaders: Ar
 				if Combat.line > 0:
 					## v1.6: the defenders' whole firing line faces every front, and an even
 					## volley costs nobody (the same loss ratio as one combined attack)
-					var fa: int = Combat.fire(int(f["a"]))
-					var fd: int = Combat.fire(d, fortify)
-					var sa2: int = Combat.VOLLEY_DIE * da + fa
-					var sd2: int = Combat.VOLLEY_DIE * db + fd
-					var w2: String = "a" if sa2 > sd2 else ("b" if sd2 > sa2 else "")
-					salvo.append({"i": i, "a": da, "b": db, "sa": int(f["a"]), "sd": d, "fa": fa, "fd": fd, "w": w2})
+					var w2: String = _line_volley(f, i, da, db, d, fortify, salvo)
 					if w2 == "a":
 						loss += 1
 						wins[i] = int(wins[i]) + 1
 					elif w2 == "b":
 						f["a"] = int(f["a"]) - 1
+					elif refire:
+						again.append(i)
 					continue
 				var won: bool = float(Combat.VOLLEY_DIE * da + int(f["a"])) >= float(Combat.VOLLEY_DIE * db) + share
 				salvo.append({"i": i, "a": da, "b": db, "sa": int(f["a"]), "sd": snappedf(share, 0.1), "w": "a" if won else "b"})
@@ -696,6 +695,27 @@ static func _melee(w: Types.World, map: Types.MapDef, dest: String, invaders: Ar
 					wins[i] = int(wins[i]) + 1
 				else:
 					f["a"] = int(f["a"]) - 1
+			## v2.4 (rules 23): an even volley is fired again, as in an assault (Amendment 18): the
+			## fronts it fell to throw again, at the same line, until each has its volley decided. So
+			## no front's salvo is lost to a tie, and an exchange is three decided volleys a front (the
+			## owner, 10-21: "rerolls in dual invasions don't re-roll if they tie on subsequent rolls")
+			var reguard := 0
+			while not again.is_empty() and reguard < 64:
+				reguard += 1
+				var still: Array = []
+				for i in again:
+					var f: Dictionary = fronts[i]
+					var da3: int = rng.roll_d6()
+					var db3: int = rng.roll_d6()
+					var w3: String = _line_volley(f, i, da3, db3, d, fortify, salvo)
+					if w3 == "a":
+						loss += 1
+						wins[i] = int(wins[i]) + 1
+					elif w3 == "b":
+						f["a"] = int(f["a"]) - 1
+					else:
+						still.append(i)
+				again = still
 			d = maxi(0, d - loss)
 			salvos.append(salvo)
 			n += 1
@@ -814,16 +834,15 @@ static func _melee(w: Types.World, map: Types.MapDef, dest: String, invaders: Ar
 		for f in fronts:
 			if _front_up(f):
 				tot2 += int(f["a"])
+		var together := {} ## v2.4 (rules 23): commander|order -> the call his officers make for those fronts at once
 		for i in fronts.size():
 			var f: Dictionary = fronts[i]
 			if not _front_up(f):
 				continue
 			var t: Transit = f["t"]
 			var froms: PackedStringArray = _froms(t)
-			var reserves: int = 0 if bool(f["used"]) else reserves_available(w, t.owner, froms)
+			var reserves: int = _front_reserves(w, map, dest, f)
 			var room: int = _column_room(map, dest, froms, int(f["a"]))
-			if room >= 0:
-				reserves = mini(reserves, room)
 			var refuge: String = refuge_for(w, map, t.owner, froms, dest)
 			var share_now: int = d if Combat.line > 0 else maxi(1, int(round(float(d) * float(f["a"]) / float(maxi(1, tot2)))))
 			var recorded: Array = (ctx["calls"].get(t.owner, {}) as Dictionary).get(f["key"], [])
@@ -835,11 +854,14 @@ static func _melee(w: Types.World, map: Types.MapDef, dest: String, invaders: Ar
 				ctx["pending"] = {"key": f["key"], "attacker": t.owner, "defender": defender, "to": dest, "from": t.from_id,
 					"a": int(f["a"]), "d": share_now, "dTotal": d, "reserves": reserves, "reserveFrom": _reserve_sources(w, t.owner, froms),
 					"refuge": refuge, "stance": f["stance"], "call": (f["calls"] as Array).size(), "rolls": salvos.size(),
-					"melee": true, "front": i}
+					"melee": true, "front": i, "mine": _mine(fronts, i)}
+				if map.rules >= 23:
+					## what his officers would call here, for a commander who leaves it to them (auto-roll)
+					ctx["pending"]["officer"] = _officers(w, map, dest, fronts, i, d, share_now, reserves, refuge, fortify, together)
 				pending = true
 				break
 			else:
-				call = Combat.doctrine(str(f["stance"]), int(f["a"]), share_now, reserves, refuge != "", fortify)
+				call = _officers(w, map, dest, fronts, i, d, share_now, reserves, refuge, fortify, together)
 			if call == Combat.CALL_RESERVES and reserves <= 0:
 				call = Combat.CALL_PRESS
 			if call == Combat.CALL_FALL_BACK and refuge == "":
@@ -959,6 +981,72 @@ static func _melee(w: Types.World, map: Types.MapDef, dest: String, invaders: Ar
 	_take(w, events, dest, winner.owner, int(champ["a"]))
 	_remember_surge(surge_book, dest, winner)
 	return false
+
+
+static func _front_reserves(w: Types.World, map: Types.MapDef, dest: String, f: Dictionary) -> int:
+	## what a melee front could throw in now: its own lands' reserves, once a battle, and no more
+	## than a pass's road takes
+	if bool(f["used"]):
+		return 0
+	var t: Transit = f["t"]
+	var froms: PackedStringArray = _froms(t)
+	var n: int = reserves_available(w, t.owner, froms)
+	var room: int = _column_room(map, dest, froms, int(f["a"]))
+	return mini(n, room) if room >= 0 else n
+
+
+static func _mine(fronts: Array, i: int) -> Array:
+	## v2.4: front i's men first, then those of its commander's other fronts still fighting
+	var owner: String = (fronts[i]["t"] as Transit).owner
+	var out: Array = [int(fronts[i]["a"])]
+	for j in fronts.size():
+		if j != i and _front_up(fronts[j]) and (fronts[j]["t"] as Transit).owner == owner:
+			out.append(int(fronts[j]["a"]))
+	return out
+
+
+static func _officers(w: Types.World, map: Types.MapDef, dest: String, fronts: Array, i: int, d: int, share_now: int, reserves: int, refuge: String, fortify: int, together: Dictionary) -> String:
+	## The call a melee front's officers make with nobody watching. v2.4 (rules 23): a commander's
+	## fronts that carry the same standing order make one call together, at once, on the odds of all
+	## his fronts still fighting (Combat.fronts_doctrine): they fall back together, or throw in the
+	## reserves together. Before, each front was judged alone against the defenders' whole line.
+	var f: Dictionary = fronts[i]
+	var owner: String = (f["t"] as Transit).owner
+	var stance: String = str(f["stance"])
+	if map.rules < 23:
+		return Combat.doctrine(stance, int(f["a"]), share_now, reserves, refuge != "", fortify)
+	var gk: String = owner + "|" + stance
+	if together.has(gk):
+		return str(together[gk]) ## decided at this call already, for every front under that order
+	if _mine(fronts, i).size() < 2:
+		return Combat.doctrine(stance, int(f["a"]), share_now, reserves, refuge != "", fortify)
+	var sizes: Array = []
+	var res: Array = []
+	var can_go := false
+	for j in fronts.size():
+		var fj: Dictionary = fronts[j]
+		var tj: Transit = fj["t"]
+		if not _front_up(fj) or tj.owner != owner:
+			continue
+		sizes.append(int(fj["a"]))
+		var same: bool = str(fj["stance"]) == stance
+		res.append(_front_reserves(w, map, dest, fj) if same else 0)
+		if same and refuge_for(w, map, owner, _froms(tj), dest) != "":
+			can_go = true
+	together[gk] = Combat.fronts_doctrine(stance, sizes, d, res, can_go, fortify)
+	return str(together[gk])
+
+
+static func _line_volley(f: Dictionary, i: int, da: int, db: int, d: int, fortify: int, salvo: Array) -> String:
+	## one front's volley at the defenders' whole firing line, written into the salvo: who won it
+	## ("a" the front, "b" the defenders, "" even). The caller books the loss.
+	var fa: int = Combat.fire(int(f["a"]))
+	var fd: int = Combat.fire(d, fortify)
+	var sa: int = Combat.VOLLEY_DIE * da + fa
+	var sd: int = Combat.VOLLEY_DIE * db + fd
+	var w: String = "a" if sa > sd else ("b" if sd > sa else "")
+	salvo.append({"i": i, "a": da, "b": db, "sa": int(f["a"]), "sd": d, "fa": fa, "fd": fd, "w": w})
+	return w
 
 
 static func _swing(a0: int, d0: int, a: int, d: int, battle: String, fortify: int) -> float:

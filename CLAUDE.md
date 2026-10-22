@@ -185,6 +185,7 @@ points as noise.
   | 20 | v1.12 | a fallen capital's court flees deep into its own lands (not to the biggest stack) with its guard: one fresh troop and the garrison dug in to the full; map amendments (the Thousand Isles' Great Vane pays 3) |
   | 21 | v2.1 | one commander's columns from different lands are separate fronts (a melee, the defender holding every front; a border clash only for the column on that border; fronts that stand join up, never fight each other) |
   | 22 | v2.2 | an exchange Fortune throws away is owed to the side it had gone well for (`rebate` on the battle: half what it was worth, `Fortune.REBATE_22`, in hundredths of a battle, into that commander's ledger; the spender isn't charged) |
+| 23 | v2.4 | a melee's even volley is fired again within its salvo (`Combat.refire`, and the fronts' price with it); a commander's fronts under one standing order make their officers' call together, on all his fronts' odds (`Combat.fronts_doctrine`, `resolve.gd` `_officers`) |
 
 - **A map change that affects play is an amendment, not an edit.** Add it to the map json's
   `amendments` list (`{"since": N, "lanes": [[a, b]], "regionBonus": {id: n}, "why": …}`): setting

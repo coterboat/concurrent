@@ -30,6 +30,7 @@ static func summarize_events(events: Array) -> Dictionary:
 	var reserves := 0
 	var fallbacks := 0
 	var melees := 0
+	var split_falls := 0 ## v2.4: a melee front's fall-back that left another of its commander's fronts fighting on
 	var scrambles := 0
 	var capitals := 0 ## v1.8: capitals that fell
 	var fortune_spent := 0 ## v1.8: exchanges thrown again
@@ -106,6 +107,7 @@ static func summarize_events(events: Array) -> Dictionary:
 						reserves += 1
 					if bool(f.get("fellBack", false)):
 						fallbacks += 1
+				split_falls += split_retreats(event)
 			Types.EVENT_SCORE:
 				leader = str(event.get("leader", ""))
 				var sc: Variant = event.get("scores", {})
@@ -134,12 +136,61 @@ static func summarize_events(events: Array) -> Dictionary:
 		"reserves": reserves,
 		"fallbacks": fallbacks,
 		"melees": melees,
+		"splitFalls": split_falls,
 		"scrambles": scrambles,
 		"leader": leader,
 		"scores": scores,
 		"winner": winner,
 		"early": early,
 	}
+
+
+static func split_retreats(e: Dictionary) -> int:
+	## v2.4: the fall-backs in one melee that left another of the same commander's fronts fighting on
+	## (the owner, 10-21: "one side animated a retreat, their total strength didn't go down, and combat
+	## continued as before"). Each front's men are walked through the salvos and the calls: a call at
+	## `at` comes after that many salvos; a Fortune call puts every front back where it stood.
+	var fronts: Array = e.get("fronts", [])
+	var salvos: Array = e.get("salvos", [])
+	var n: Array = []
+	var gone: Array = []
+	var by_at := {}
+	for k in fronts.size():
+		n.append(int(fronts[k].get("size", 0)))
+		gone.append(false)
+		for c in fronts[k].get("calls", []):
+			by_at[int(c.get("at", -1))] = (by_at.get(int(c.get("at", -1)), []) as Array) + [{"k": k, "c": c}]
+	for c in e.get("defCalls", []):
+		by_at[int(c.get("at", -1))] = (by_at.get(int(c.get("at", -1)), []) as Array) + [{"k": -1, "c": c}]
+	var splits := 0
+	for t in salvos.size() + 1:
+		var here: Array = by_at.get(t, [])
+		for x in here:
+			var c: Dictionary = x["c"]
+			if str(c.get("call", "")) == Combat.CALL_FORTUNE and c.has("fronts"):
+				for j in mini(fronts.size(), (c["fronts"] as Array).size()):
+					n[j] = int(c["fronts"][j])
+		for x in here:
+			var c2: Dictionary = x["c"]
+			if str(c2.get("call", "")) == Combat.CALL_RESERVES:
+				n[int(x["k"])] = int(n[int(x["k"])]) + int(c2.get("n", 0))
+			elif str(c2.get("call", "")) == Combat.CALL_FALL_BACK:
+				gone[int(x["k"])] = true
+		for x in here:
+			if str((x["c"] as Dictionary).get("call", "")) != Combat.CALL_FALL_BACK:
+				continue
+			var k: int = int(x["k"])
+			var who: String = str(fronts[k].get("attackerId", ""))
+			for j in fronts.size():
+				if j != k and not bool(gone[j]) and int(n[j]) > 0 and str(fronts[j].get("attackerId", "")) == who:
+					splits += 1
+					break
+		if t < salvos.size():
+			for v in salvos[t]:
+				var i: int = int(v.get("i", -1))
+				if i >= 0 and i < n.size() and str(v.get("w", "")) == "b":
+					n[i] = int(n[i]) - 1
+	return splits
 
 
 static func from_play(play: Dictionary) -> Dictionary:
