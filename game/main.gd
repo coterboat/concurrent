@@ -99,6 +99,7 @@ func continue_game() -> void:
 	var g: Control = GameScreen.new()
 	g.main = self
 	g.session = session
+	g.resuming = true ## v2.4: back on the view it was left on (the land, or the chart)
 	_swap(g)
 	if not session.load_save():
 		show_title()

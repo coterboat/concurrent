@@ -168,8 +168,16 @@ func _rebuild_maneuver(ts: Types.TerritoryState, td: Types.TerritoryDef, mine: b
 	var now: Types.TerritoryState = w.get_territory(land)
 	var who: String = "Empty land" if ts.owner == Types.UNOCCUPIED else s.name_of(ts.owner)
 	_box.add_child(Style.label(who, 15, Style.PARCH, "italic"))
-	var sp3: Array = Income.home_split(now)
+	## v2.4: the men there now; those marching in are told apart (they stay put this phase)
+	var inbound := 0
+	if mine:
+		for m in s.my_moves():
+			if str(m["to"]) == land:
+				inbound += int(m["n"])
+	var sp3: Array = gs.board.shown_split(now, inbound)
 	var line := "%s  ·  %d in the garrison" % [Style.plural(int(sp3[0]), "army", "armies"), int(sp3[1])]
+	if inbound > 0:
+		line += "  ·  +%d marching in" % inbound
 	_box.add_child(Style.label(line, 17, Style.CREAM, "bold"))
 	if not mine:
 		_fit()

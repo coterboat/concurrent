@@ -28,6 +28,7 @@ var data := {
 	"battle_land": true, ## v2.0: battles fought on the map's own land in 3D (false: the painted field)
 	"map_land": true, ## v2.0: the board stands on the map's own land in 3D (false: the chart); L in the game
 	"motion": "all", ## v1.9: all (cutscenes and living paintings) | paintings (no cutscenes) | off (stills)
+	"shields": "ranked", ## v2.4: how a garrison's shield shows its depth: ranked | number | chevrons (G in a war; map_board.gd)
 }
 
 
