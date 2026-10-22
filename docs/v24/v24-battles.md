@@ -137,7 +137,9 @@ too: its takes open 6-10 dB under the bugle and fade in, so nothing in it stacks
   again, your two columns asked one by one, the battle that ends by itself, one bugle on each field and its
   level, the two How to Play pages saying it and fitting 1440×900. It dry-runs the round on the session's own
   world to pick a seed where each moment happens, then plays it in the client.
-- `./scripts/check.sh` green. PROBES_RUN
+- `./scripts/check.sh` green; the full suite `CONCURRENT ok passed=769 failed=0`; every probe (`./scripts/probes.sh`,
+  windowed, on this PC): 33 of 33 ok, v24b's shots looked at (the retreat lines clear the commanders' bubbles,
+  the re-fire note sits over the fronts' tags, both How to Play pages fit).
 
 ## Outside my list (small, needed by the bump)
 
@@ -173,4 +175,12 @@ too: its takes open 6-10 dB under the bugle and fade in, so nothing in it stacks
 
 ## Open questions
 
-- OPEN_Q
+- **One call for all your columns?** You're asked column by column, as before: sending both home is F, then F
+  again. A "fall back with every column" button would be a new control, so it's Alex's call: build it, or park it?
+- **How long a won battle lingers.** It now moves on 0.5 s after the last line, never sooner than 2.6 s after the
+  verdict (the probe's took 7.7 s, Varek's line and then the advisor's). If Alex wants longer to look at a battle
+  he rolled himself, it's one number.
+- **Hask** won a few more in all three arena tables (above). Watch it in play before touching anything.
+- Not mine, noticed: `session.gd` `officer_call()` (the auto-roll call for a plain assault) ignores a fortress's
+  longer line, where the engine's officers count it; and the AI's Fortune doctrine in a melee (rules 19) weighs
+  the attackers as one force. Both predate v2.4 and change nothing here.
