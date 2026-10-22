@@ -372,11 +372,11 @@ func swoop_to(ids: Array, zmult: float, dur: float) -> Tween:
 	_at_fit = false
 	var tw := create_tween()
 	_swoop_tw = tw ## (RV-002 F5: a report skipped mid-swoop stops it, so the view it found comes back)
-	tw.tween_method(func(t: float):
+	_swoop_move(tw, func(t: float):
 		var e: float = ease(t, -2.2)
 		zoom = lerpf(z0, z1, e)
 		offset = o0.lerp(o1, e)
-		_apply_view(), 0.0, 1.0, dur)
+		_apply_view(), dur)
 	return tw
 
 
@@ -388,16 +388,53 @@ func swoop_back(dur: float) -> Tween:
 	var avail2 := Vector2(size.x, size.y - pad_top - pad_bottom)
 	var o1 := Vector2((size.x - art.size.x * fit) * 0.5, pad_top + (avail2.y - art.size.y * fit) * 0.5)
 	var tw := create_tween()
-	tw.tween_method(func(t: float):
+	_swoop_move(tw, func(t: float):
 		var e: float = ease(t, -2.2)
 		zoom = lerpf(z0, fit, e)
 		offset = o0.lerp(o1, e)
-		_apply_view(), 0.0, 1.0, dur)
+		_apply_view(), dur)
 	tw.tween_callback(func():
 		_at_fit = true
 		_on_resized())
 	_back_tw = tw
 	return tw
+
+
+## v2.4: a swoop's camera is moved in the frame's process (_SwoopDriver: before the land's camera
+## follows the board, and with every other call for the board to be drawn), not by its tween after
+## them. The tween's move was drawn at the next frame's start, through the land's camera of the frame
+## before, and drawn again once the land's camera had caught up: two draws a frame, the first wasted
+## (tools/study/swoop.gd). The tween keeps the time; its last step moves the camera itself, so whoever
+## waits for it to finish finds the camera there.
+var _swoop_driver: Node
+
+
+func _swoop_move(tw: Tween, apply: Callable, dur: float) -> void:
+	if _swoop_driver == null:
+		_swoop_driver = _SwoopDriver.new()
+		_swoop_driver.process_priority = -10
+		add_child(_swoop_driver)
+	var m: Array = [apply, 0.0, 0.0] ## [apply, the tween's time, the time last applied]
+	_swoop_driver.moves[tw] = m
+	tw.tween_method(func(t: float):
+		m[1] = t
+		if t >= 1.0:
+			m[2] = t
+			apply.call(t), 0.0, 1.0, dur)
+
+
+class _SwoopDriver extends Node:
+	var moves := {} ## tween -> [apply, its time, the time last applied]
+
+	func _process(_delta: float) -> void:
+		for tw in moves.keys():
+			if not (tw as Tween).is_valid():
+				moves.erase(tw)
+				continue
+			var m: Array = moves[tw]
+			if float(m[1]) != float(m[2]):
+				m[2] = m[1]
+				(m[0] as Callable).call(float(m[1]))
 
 
 ## v2.0.2: the battle report's camera on the land. It leans in on each fight as it's told, close

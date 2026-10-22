@@ -31,6 +31,9 @@ var _watch: PackedStringArray = PackedStringArray() ## what a battle on the land
 var _cached := {}
 var _covered_draws := 0 ## the board's overlay, drawn while the land covered it
 var _covered_frames := 0
+var _draws := 0 ## the board's overlay, drawn since the last frame looked
+var _swoop_frames := 0 ## frames of the board's swoops down to a battle and back
+var _swoop_twice := 0 ## ...that drew the board twice
 
 
 func run(probe) -> void:
@@ -64,6 +67,7 @@ func run(probe) -> void:
 		await p.frames(1)
 	p.ok(lf.prepared and gs.land_board.active(), "the land is built and the board stands on it (%d frames)" % guard)
 	gs.board.overlay.draw.connect(func():
+		_draws += 1
 		if lf.covering:
 			_covered_draws += 1)
 	await p.frames(10)
@@ -89,6 +93,7 @@ func run(probe) -> void:
 	p.ok(_covered_frames > 0 and _covered_draws == 0,
 		"while the land covers the screen the board under it isn't drawn (%d draws in %d frames covered)" % [_covered_draws, _covered_frames])
 	p.ok(gs.board.overlay.visible, "and it is drawn again once the land has gone")
+	p.ok(_swoop_frames > 0 and _swoop_twice <= 6, "while the board swoops down to a battle and back it is drawn once a frame (%d of %d frames drew it twice: the swoops' ends)" % [_swoop_twice, _swoop_frames])
 	## nothing loaded mid-battle
 	for b in [first, second, third]:
 		p.ok((b["loads"] as Array).is_empty(), "battle %s: nothing the 3D needs is loaded from disk during it (%s)" % [b["tag"], ", ".join(b["loads"]) if not (b["loads"] as Array).is_empty() else "none"])
@@ -220,6 +225,13 @@ func _battle(s: Node, gs: Control, pair: Array, tag: String) -> Dictionary:
 		if swoop:
 			out["pipelines"] = int(out["pipelines"]) + now - pc
 		pc = now
+		## the board's own swoops (down, before the battlefield opens; back, after it has gone)
+		var board_swoop: bool = (gs.cinema._waiting and not th.visible and not lf.visible) or (fought and not th.visible and not lf.visible and gs.board._back_tw != null and gs.board._back_tw.is_valid() and gs.board._back_tw.is_running())
+		if board_swoop and gs.board.projector.is_valid():
+			_swoop_frames += 1
+			if _draws > 1:
+				_swoop_twice += 1
+		_draws = 0
 		if lf.covering:
 			_covered_frames += 1
 		for f in _loaded():
