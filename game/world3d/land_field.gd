@@ -53,7 +53,10 @@ var handoff_px := -1.0 ## how far the land's token sits from the board's at the 
 var from_board := false ## this battle left from the board on the land (not the chart)
 var _seq := 0 ## the camera move under way: a newer one (a skip mid-tilt) stops the older
 var _near: Array = [] ## the buildings round the fight the camera is placed for (scenery.gd)
+var _top_roof := -1.0e9 ## v2.4: the highest of their roofs (a sight line above it passes them all)
 var _walls := -1 ## the army holding a fort's or a capital's walls (its guns boom when it wins a volley)
+var covering := false ## v2.4: the land covers the screen and the board under it rests (_cover)
+var _fort := {} ## v2.4: the fort the fight is at (a scenery piece), or {}
 
 
 func _ready() -> void:
@@ -133,9 +136,11 @@ func open(land_id: String, first_spots: Array) -> void:
 	var r0: Dictionary = wv.rig.duplicate() if from_board else _board_rig()
 	var s0: Dictionary = land.state() if from_board else CHART.duplicate()
 	land.apply_state(s0)
-	## the scenery where the fight will stand is lifted off the table (before the camera is placed)
-	land.scenery.clear_for(first_spots, Diorama.FIG * 2.5)
-	var r1: Dictionary = _battle_rig(land_id, first_spots)
+	## the scenery where the fight will stand is lifted off the table (before the camera is placed);
+	## v2.4: a fort stays, the fight is at its walls (_at_the_fort), and the camera takes it in
+	_fort = _fort_of(land_id)
+	land.scenery.clear_for(first_spots, Diorama.FIG * 2.5, [] if _fort.is_empty() else [_fort])
+	var r1: Dictionary = _battle_rig(land_id, first_spots, _fort_frame())
 	var s1 := {"relief": 1.0, "realism": 1.0, "paint": 0.0, "fog": 1.0, "sun": WorldView.sun_for(float(r1["yaw"]))}
 	wv.rig = r0
 	wv.apply_rig()
@@ -150,6 +155,9 @@ func open(land_id: String, first_spots: Array) -> void:
 	await get_tree().process_frame
 	var fade := create_tween()
 	fade.tween_property(self, "modulate:a", 1.0, 0.35)
+	fade.finished.connect(func():
+		if my == _seq and visible:
+			_cover(true))
 	await _tilt(r0, r1, s0, s1, 2.2 if from_board else 2.6, true, my)
 	if my == _seq:
 		_rig_base = r1
@@ -176,6 +184,7 @@ func close() -> void:
 	var s0: Dictionary = land.view.state_for(land.view.t) if back_on else CHART.duplicate()
 	## (the board may move while the camera rises: it rises to where the board is)
 	await _tilt(r1, r0, s1, s0, 1.6, false, my, Callable(land.view, "rig_now") if back_on else Callable())
+	_cover(false) ## the board shows through again as the land fades
 	var fade := create_tween()
 	fade.tween_property(self, "modulate:a", 0.0, 0.3)
 	await fade.finished
@@ -196,8 +205,19 @@ func abort() -> void:
 	_release()
 
 
+func _cover(on: bool) -> void:
+	## v2.4: while the land covers the whole screen the board under it isn't drawn. It went on drawing
+	## every frame through the battle's camera, unseen, and on the land a frame of it could take a
+	## third of a second as the camera tipped down (the owner: "the zoom in between the main map and
+	## battle map on 3d absolutely chugs"); every frame of the fight paid for it too
+	covering = on
+	if board != null and is_instance_valid(board) and board.get("overlay") != null:
+		(board.overlay as CanvasItem).visible = not on
+
+
 func _release() -> void:
 	## the camera goes back to the board (if it stands on the land), the garrisons come back
+	_cover(false)
 	if land == null:
 		return
 	land.show_for("battle", false)
@@ -251,19 +271,25 @@ func _board_rig() -> Dictionary:
 	return {"target": Vector3(c.x, 0.0, c.y), "pitch": 90.0, "yaw": 0.0, "fov": 1.2, "span": span}
 
 
-func _battle_rig(land_id: String, spots: Array) -> Dictionary:
+func _battle_rig(land_id: String, spots: Array, frame: Array = []) -> Dictionary:
 	## The camera for a fight. The battle's words leave a band of screen clear between the title
 	## and the dice tray, wide and short, so the camera stands on the side from which the armies
 	## spread across the screen rather than towards it, rises until no hill hides any of them,
 	## comes in as close as the band allows, and sets the fight in the middle of the band.
+	## v2.4: `frame` is ground it takes in as well, that needn't be seen whole (a fort's walls)
 	var heart: Vector2 = _art.anchors[land_id]
 	if spots.is_empty():
 		spots = [heart]
+	var seen: Array = spots
+	spots = spots + frame
 	var c := Vector2.ZERO
 	for s in spots:
 		c += s
 	c /= float(spots.size())
 	_near = land.scenery.near(c, 900.0) if land != null and land.scenery != null else []
+	_top_roof = -1.0e9
+	for pc in _near:
+		_top_roof = maxf(_top_roof, float(pc["base"]) + float(pc["h"]))
 	var band_h: float = size.y - BAND_TOP - BAND_BOTTOM
 	var band_w: float = size.x - 120.0
 	var best: Dictionary = {}
@@ -279,7 +305,7 @@ func _battle_rig(land_id: String, spots: Array) -> Dictionary:
 			lat = Vector2(minf(lat.x, d.dot(right)), maxf(lat.y, d.dot(right)))
 			dep = Vector2(minf(dep.x, d.dot(back)), maxf(dep.y, d.dot(back)))
 		var r := {"target": Vector3(c.x, _terrain.height_at(c), c.y), "pitch": 36.0, "yaw": yaw, "fov": 32.0, "span": 300.0}
-		while float(r["pitch"]) < 70.0 and not _sees_all(r, spots):
+		while float(r["pitch"]) < 70.0 and not _sees_all(r, seen):
 			r["pitch"] = float(r["pitch"]) + 4.0
 		## the span (world units, top to bottom of the screen) that fits the spread into the band
 		var need_w: float = (lat.y - lat.x + Diorama.FIG * 6.0) * size.y / band_w
@@ -321,17 +347,35 @@ func _centre_in_band(r: Dictionary, c: Vector2) -> void:
 
 
 func _sees_all(r: Dictionary, spots: Array) -> bool:
-	## no hill and no building between the camera and anyone
+	## no hill and no building between the camera and anyone. v2.4: the same answer, asked only where
+	## it could be no: a point of the line above the highest ground and the highest roof hides nothing,
+	## and only a building whose walls come near the line can stand in it (asked of every building at
+	## every point, the camera's search took 35-50 ms, in the frame the battlefield opens)
 	var eye: Vector3 = wv.rig_eye(r)
+	var top: float = _terrain.hi
 	for s in spots:
 		var p := Vector3(s.x, _terrain.height_at(s) + Diorama.FIG * 0.7, s.y)
+		var in_way: Array = _near_line(eye, p)
 		for i in range(1, 40):
 			var q: Vector3 = eye.lerp(p, float(i) / 40.0)
-			if _terrain.height_at(Vector2(q.x, q.z)) > q.y + 1.0:
+			if q.y + 1.0 < top and _terrain.height_at(Vector2(q.x, q.z)) > q.y + 1.0:
 				return false
-			if not _near.is_empty() and i > 4 and i < 38 and Scenery.blocks(q, _near):
+			if not in_way.is_empty() and i > 4 and i < 38 and q.y < _top_roof and Scenery.blocks(q, in_way):
 				return false
 	return true
+
+
+func _near_line(a: Vector3, b: Vector3) -> Array:
+	## the buildings round the fight whose walls come near enough the line from a to b, seen from
+	## above, to stand in it (Scenery.blocks: within 0.8 of its reach of a point of the line)
+	var out: Array = []
+	var a2 := Vector2(a.x, a.z)
+	var b2 := Vector2(b.x, b.z)
+	for pc in _near:
+		var at: Vector2 = pc["at"]
+		if Geometry2D.get_closest_point_to_segment(at, a2, b2).distance_to(at) < float(pc["r"]) * 0.8:
+			out.append(pc)
+	return out
 
 
 func _in_band(r: Dictionary, spots: Array) -> bool:
@@ -472,14 +516,20 @@ func _plan(land: String, e: Dictionary, b: Dictionary, list: Array) -> Dictionar
 		big["horse"] = int(tr["horse"])
 		big["guns"] = int(tr["guns"])
 		big["train"] = true
+	## v2.4: a fort's defenders hold its walls
+	var fort: Dictionary = _fort_of(land)
+	if not fort.is_empty() and (kind == Types.EVENT_MELEE or kind == Types.EVENT_INVASION) and out.size() >= 2:
+		heart = _at_the_fort(out, fort)
 	## the camera frames every group whole: its front and its rear rank (and its horse and guns)
 	spots = []
 	for a in out:
 		for g in a["groups"]:
 			var men: int = int(Diorama.pieces(int(g["share"]))["inf"])
-			var files: int = clampi(int(ceil(sqrt(float(men) * 1.6))), 1, 6)
-			var heavy: bool = int(g["share"]) > 12 or bool(g.get("train", false))
+			var files: int = Diorama.files_for(men, g.has("fort"))
+			var heavy: bool = (int(g["share"]) > 12 or bool(g.get("train", false))) and not g.has("fort") ## (at a fort: beside the men)
 			var depth: float = ceil(float(men) / float(files)) * Diorama.FIG * 1.05 + Diorama.FIG * (2.4 if heavy else 1.0)
+			if g.has("fort"):
+				depth = _deep(g) - Diorama.FIG * 0.2 ## (its rear rank, at the foot of the wall: the walls are the fort's)
 			spots.append(g["at"])
 			spots.append((g["at"] as Vector2) - (g["dir"] as Vector2) * depth)
 			if bool(g.get("by_sea", false)) and g.has("sea_from"):
@@ -488,6 +538,77 @@ func _plan(land: String, e: Dictionary, b: Dictionary, list: Array) -> Dictionar
 				spots.append(x)
 				spots.append(x + ((g["sea_from"] as Vector2) - x) * 0.3)
 	return {"armies": out, "spots": spots, "heart": heart}
+
+
+# ------------------------------------------------------------------ v2.4: a fight at a fort
+
+func _fort_of(land_id: String) -> Dictionary:
+	## the land's star fort as it stands on the land (scenery.gd), if the rules give it one
+	if land_id == "" or land == null or land.scenery == null or _map == null or not MapLib.has_trait(_map, land_id, "fort"):
+		return {}
+	for pc in land.scenery.pieces:
+		if str(pc["land"]) == land_id and str(pc["kind"]) == "starfort":
+			return pc
+	return {}
+
+
+func _fort_frame() -> Array:
+	## the fort's ground, for the camera to take in (it needn't see over every wall of it)
+	if _fort.is_empty():
+		return []
+	var at: Vector2 = _fort["at"]
+	var r: float = float(_fort["r"]) * 0.9
+	return [at + Vector2(r, 0), at - Vector2(r, 0), at + Vector2(0, r), at - Vector2(0, r)]
+
+
+func _at_the_fort(out: Array, fort: Dictionary) -> Vector2:
+	## The owner: "when a fort exists in a territory... have the defending army defending from
+	## within/outside the fort against the direction(s) of the foe(s) they're facing". The fort stays
+	## on the table and the fight is at its walls: each of the defender's groups lines the wall that
+	## faces its foe, two deep, its horse and guns beside it and its drummer and colours inside the
+	## walls with the commander; each column halts on its road in, facing that wall a few men's
+	## heights off. Only where they stand changes, never the dice. Returns the fight's heart: the fort.
+	var at: Vector2 = fort["at"]
+	var wall: float = float(fort["r"]) * 0.85 + Diorama.FIG * 0.4 ## (scenery.clear_of keeps a man this far out)
+	var di: int = out.size() - 1 ## the defender is the last army
+	for dg in out[di]["groups"]:
+		var foe: int = int(dg.get("foe", -1))
+		if foe < 0 or foe >= di or (out[foe]["groups"] as Array).is_empty():
+			continue
+		var ag: Dictionary = out[foe]["groups"][0]
+		var x: Vector2 = ag.get("cross", ag["at"])
+		var toward: Vector2 = (x - at).normalized() if x.distance_to(at) > 1.0 else -(ag["dir"] as Vector2)
+		var d: float = wall + _deep(dg)
+		dg["at"] = at + toward * d
+		dg["dir"] = toward
+		dg["fort"] = at
+		dg["fort_r"] = float(fort["r"])
+		var stand: float = d + Diorama.FIG * 4.0
+		var dx: float = x.distance_to(at)
+		if stand > dx - Diorama.FIG:
+			stand = maxf(dx - Diorama.FIG, d + Diorama.FIG * 2.5)
+		ag["at"] = at + toward * stand
+		ag["dir"] = -toward
+		ag["dist"] = dx
+	return at
+
+
+static func _deep(g: Dictionary) -> float:
+	## how far a group lining a fort's walls stands from its front rank to its rear one, with a step
+	## to spare (diorama.gd _form: two deep, its train beside it, its colours inside the walls)
+	var men: int = int(Diorama.pieces(int(g["share"]))["inf"])
+	var ranks: int = int(ceil(float(men) / float(Diorama.files_for(men, true))))
+	return float(ranks - 1) * Diorama.FIG * 1.05 + Diorama.FIG * 0.5
+
+
+func _fort_guns(foe: int) -> void:
+	## the fort's own guns speak from the bastion facing the foe
+	if _fort.is_empty() or dio == null or foe < 0 or foe >= dio.armies.size():
+		return
+	var at: Vector2 = _fort["at"]
+	var them: Vector2 = dio.armies[foe]["groups"][dio.group_against(foe, _walls)]["at"]
+	var toward: Vector2 = (them - at).normalized() if them.distance_to(at) > 1.0 else Vector2(0, 1)
+	dio.gun_smoke(at + toward * float(_fort["r"]) * 0.72, toward)
 
 
 # ------------------------------------------------------------------ BattleField's calls
@@ -505,8 +626,10 @@ func volley(ai: int, foe: int = -1) -> String:
 	if foe >= 0:
 		_last_foe[foe] = ai
 	var did: String = dio.volley(ai, foe)
-	if ai == _walls and not quiet and randf() < 0.6:
-		Audio.field("fort_gun", -5.0) ## the guns on the walls
+	if ai == _walls and randf() < 0.6:
+		_fort_guns(foe) ## v2.4: seen to fire too, at a fort
+		if not quiet:
+			Audio.field("fort_gun", -5.0) ## the guns on the walls
 	return "cavalry" if did == "cavalry" else ""
 
 
