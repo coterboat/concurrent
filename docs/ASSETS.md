@@ -155,6 +155,22 @@ is about 16,000 characters.
 - A loop may carry its own `fps`: the v1.9 talk loops (Hydra, 35 frames, real mouth shapes)
   play at 12–14. Without one, a loop plays at 8.
 
+### Reactions: `assets/portraits/loops/<who>_{win,lose,taunt,dead}.webp` + `.json` (v2.4)
+
+- A face's reaction to a mood (`game/ui/leader_face.gd` `CLIPS`: win and happy play `win`, lose and alarm
+  play `lose`, dead plays `dead`; the taunt line plays `taunt`, or `win` without one). The advisor has
+  `win` (good news), `lose` (a warning) and `dead` (the war lost); the faces a player wears have win,
+  lose and dead.
+- Made like the talk loops (Hydra, portrait, 3 s, 36 frames, the talk loops' margins), from the portrait
+  and back to it (`final_same`), so the game cuts from the idle loop in and out without a jump. The
+  duplicate last frame is dropped; the json says `"once": true` and its `fps` (about 12).
+- A fall (`dead`, but the advisor's) has no final image: it ends bowed, its json says `"hold": true`,
+  and the face stays on its last frame, greyed. A fallen face in the roster shows that frame at once.
+- **Only an accepted take is in the game.** `tools/ludo/v24_content.py` rolls two takes of each into
+  the review batch `v24_faces` (an animated WebP of the face in its ring; the sheet beside it as
+  `<stem>.sheet.webp`), and Install copies the kept take's sheet here. A mood with no file here shows
+  its v1.2 still (`<who>_triumphant|angry|defeated.png`, the advisor's `pleased|alarmed`) and a bump.
+
 ### Video: `assets/video/*.ogv` (v1.9)
 
 - Godot plays **Ogg Theora** only. Convert with the keg-only full build:

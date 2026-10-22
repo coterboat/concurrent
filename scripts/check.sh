@@ -63,7 +63,7 @@ for p in python3 python; do
 	[ -z "$PY" ] && "$p" -c "" >/dev/null 2>&1 && PY="$p"
 done
 if [ -n "$PY" ]; then
-	step "tool tests" 120 sh -c "$PY tools/review/test_review.py && $PY tools/ludo/test_notes.py"
+	step "tool tests" 120 sh -c "$PY tools/review/test_review.py && $PY tools/ludo/test_notes.py && $PY tools/ludo/test_ludo.py"
 else
 	echo "check: skip  tool tests (no python3)"
 fi
