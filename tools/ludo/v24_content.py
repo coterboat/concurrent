@@ -162,7 +162,14 @@ def person(who):
 ## portrait would jump. Remade the way the other faces' idles were (v1.2 LOOPS, forge, 2 s).
 LOOPS = {("you_lioness", "idle"): "breathes slowly and blinks, subtle idle motion, head nearly still"}
 LOOP_CONTEXT = {("you_lioness", "idle"): "her face at rest everywhere: the setup screen, the roster, the battles. Remade from "
-                                         "her current portrait (today she breathes in her old khaki coat)"}
+                                         "her current portrait (today she breathes in her old khaki coat). Takes 1-2 on forge "
+                                         "(as every other face's idle), 3-4 on Hydra with her lips closed"}
+## A loop can draw two more takes from a second model: the forge takes of the Lioness's idle came back
+## with a white smudge beside her face in one frame and a mouth that opens as if talking, so two Hydra
+## takes (as the reactions, which came back clean) sit beside them as takes 3 and 4.
+EXTRA = {("you_lioness", "idle"): "The red-haired woman officer breathes slowly and blinks once, her lips gently closed "
+                                  "and her head nearly still, then settles back exactly into the starting pose, looking at "
+                                  "the viewer. The whole head and the slouch hat stay inside the frame."}
 
 
 def is_loop(who, clip):
@@ -225,6 +232,32 @@ def entry(who, clip):
     return e
 
 
+def extra_entry(who, clip):
+    """A loop's second model: Hydra, the reactions' settings, its own prompt."""
+    return {"id": aid_of(who, clip) + "_hydra", "group": "v24f", "kind": "animate",
+            "from_file": "assets/portraits/%s.png" % who, "fit": True, "model": "hydra", "image_type": "portrait",
+            "duration": 3, "frames": 36, "frame_size": -9, "loop": False, "crop": False, "final_same": True,
+            "margin_ratio_mode": "manual", "margin_ratio_horizontal": 0.02, "margin_ratio_vertical": 0.02,
+            "takes": TAKES, "out": "%s/%s_hydra" % (RAW, name_of(who, clip)), "prompt": EXTRA[(who, clip)]}
+
+
+def entries_of(who, clip):
+    return [entry(who, clip)] + ([extra_entry(who, clip)] if (who, clip) in EXTRA else [])
+
+
+def sources(who, clip):
+    """An item's takes in review order: [(its take number, manifest entry, that entry's take)]."""
+    out = []
+    for e in entries_of(who, clip):
+        for k in range(1, TAKES + 1):
+            out.append((len(out) + 1, e, k))
+    return out
+
+
+def ledger_id(aid, k):
+    return aid if k == 1 else "%s~t%d" % (aid, k)
+
+
 # ---------------------------------------------------------------- helpers
 def log(*a):
     print(time.strftime("%H:%M:%S"), *a, flush=True)
@@ -270,14 +303,14 @@ def write_manifest():
     by = {a["id"]: a for a in man["assets"]}
     changed = 0
     for who, clip in ITEMS:
-        e = entry(who, clip)
-        old = by.get(e["id"])
-        if old is None:
-            man["assets"].append(e)
-            changed += 1
-        elif e["id"] not in led and old.get("prompt") != e["prompt"]:
-            old["prompt"] = e["prompt"]
-            changed += 1
+        for e in entries_of(who, clip):
+            old = by.get(e["id"])
+            if old is None:
+                man["assets"].append(e)
+                changed += 1
+            elif e["id"] not in led and old.get("prompt") != e["prompt"]:
+                old["prompt"] = e["prompt"]
+                changed += 1
     if changed:
         save_json(MAN, man, indent=1)
     return changed
@@ -308,9 +341,10 @@ def pick_items(only):
     return out
 
 
-def raw_of(who, clip, k):
-    """The raw sheet of take k (1, 2, ...): ludo.py writes take k > 1 into .takes/."""
-    base = "%s/%s" % (RAW, name_of(who, clip)) if k == 1 else "%s/.takes/%s.t%d" % (RAW, name_of(who, clip), k)
+def raw_of(e, k):
+    """The raw sheet of a manifest entry's take k (1, 2, ...): ludo.py writes take k > 1 into .takes/."""
+    out = e["out"]
+    base = out if k == 1 else "%s/.takes/%s.t%d" % (os.path.dirname(out), os.path.basename(out), k)
     return abs_(base + ".webp"), abs_(base + ".json")
 
 
@@ -407,11 +441,10 @@ def make_preview(frames, fps, out, hold_end, hold_start=600):
     views[0].save(out, "WEBP", save_all=True, append_images=views[1:], duration=durs, loop=0, quality=82, method=4)
 
 
-def pack(who, clip, k):
+def pack(who, clip, k, raw, raw_json):
     """One take: the raw sheet -> the game's sheet (256 px cells, the duplicate last frame of a clip
     that ends where it began dropped, `fps` and `once`; a fall also `hold`), its review preview, and
     the checks. A remade idle loop packs the way the others were (pack_anims.pack_loop)."""
-    raw, raw_json = raw_of(who, clip, k)
     if not (os.path.exists(raw) and os.path.exists(raw_json)):
         return None
     m = load_json(raw_json)
@@ -453,13 +486,12 @@ def pack(who, clip, k):
     ## (a bust always runs off its frame, so the check's edge list says nothing here: its steps do)
     summ = [l.split("  edge_frames")[0] for l in report.splitlines() if l.startswith("SUMMARY")]
     step = re.search(r"max_step ([0-9.]+)", summ[0]) if summ else None
-    info = "starts %.1f from the portrait, ends %.1f" % (start, end) if back else "starts %.1f from the portrait" % start
     kind = ("loops%s" % (", back and forth" if meta.get("order") else "")) if is_loop(who, clip) else \
         "plays once" + (", holds its last frame" if not back else "")
     return {"grid": "%sx%s, %s frames of %sx%s at %s fps, %s" % (meta["cols"], meta["rows"], meta["frames"], meta["fw"],
                                                                    meta["fh"], meta.get("fps", 8), kind),
             "likeness": {"start": start, "end": end}, "max_step": float(step.group(1)) if step else None,
-            "check": summ[0] if summ else "", "info": info}
+            "check": summ[0] if summ else ""}
 
 
 # ---------------------------------------------------------------- the batch
@@ -470,27 +502,36 @@ def state_path():
 def post(only=None):
     st = load_json(state_path(), {})
     led = ledger()
+    by = {a["id"]: a for a in manifest()["assets"]}
     for who, clip in pick_items(only):
-        for k in range(1, TAKES + 1):
-            aid = aid_of(who, clip) + ("" if k == 1 else "~t%d" % k)
+        for k, e, kk in sources(who, clip):
+            lid = ledger_id(e["id"], kk)
             key = "%s#%d" % (name_of(who, clip), k)
-            if aid not in led:
+            if lid not in led:
                 continue
-            ver = int(led[aid].get("v", 1))
+            ver = int(led[lid].get("v", 1))
             have = st.get(key)
             if have and have.get("v") == ver and os.path.exists(os.path.join(batch_dir(), review_of(who, clip, k) + PREVIEW)):
                 continue
             try:
-                got = pack(who, clip, k)
+                got = pack(who, clip, k, *raw_of(by.get(e["id"], e), kk))
             except Exception as ex:
                 log("  ! pack %s take %d failed: %s" % (name_of(who, clip), k, str(ex)[:300]))
                 continue
             if got:
                 got["v"] = ver
                 st[key] = got
-                log("packed %-22s take %d  %s" % (name_of(who, clip), k, got["info"]))
+                log("packed %-22s take %d  %s" % (name_of(who, clip), k, chip(who, clip, e, got)))
     save_json(state_path(), st, indent=1)
     write_batch()
+
+
+def chip(who, clip, e, s):
+    """A take's few words in the table (it shows 40 characters): how far its first and last frames are
+    from the portrait (5-15 is the portrait itself), and the model when an item has two."""
+    lk = s["likeness"]
+    words = "from portrait: %.1f in, %s" % (lk["start"], "%.1f out" % lk["end"] if returns(who, clip) else "ends down")
+    return ("%s · %s" % (e["model"].capitalize(), words)) if e["id"] != aid_of(who, clip) else words
 
 
 def actions():
@@ -535,14 +576,16 @@ def write_batch():
         else:
             ctx = (ADVISOR_CONTEXT if who == "advisor" else PLAYER_CONTEXT if who in PLAYERS else CONTEXT)[clip]
             replaces = "assets/portraits/%s_%s.png" % (who, (ADVISOR_STILL if who == "advisor" else STILL)[clip])
-        meta = {"manifest_ids": [aid], "endpoints": ["/assets/sprite/animate"], "versions": {aid: int(a.get("v", 1))},
-                "credits": round(sum(float(led.get(i, {}).get("credits") or 0) for i in (aid, aid + "~t2")), 2),
+        meta = {"manifest_ids": [e["id"] for e in entries_of(who, clip)], "endpoints": ["/assets/sprite/animate"],
+                "versions": {e["id"]: int(by.get(e["id"], e).get("v", 1)) for e in entries_of(who, clip)},
+                "credits": round(sum(float(led.get(ledger_id(e["id"], kk), {}).get("credits") or 0)
+                                     for k, e, kk in sources(who, clip)), 2),
                 "context": ctx, "replaces": replaces}
         info = {}
-        for k in range(1, TAKES + 1):
+        for k, e, kk in sources(who, clip):
             s = st.get("%s#%d" % (name, k))
             if s:
-                info[review_of(who, clip, k) + PREVIEW] = s["info"]
+                info[review_of(who, clip, k) + PREVIEW] = chip(who, clip, e, s)
         if info:
             meta["take_info"] = info
         if s1:
@@ -619,8 +662,8 @@ def install(dry):
 
 
 def cost_of(items, takes):
-    ## Hydra, 3 s: 3 credits a second, 9 at least; a forge idle, 2 s: 4 at least
-    return sum((4.0 if is_loop(w, c) else 9.0) for w, c in items) * takes
+    ## Hydra, 3 s: 3 credits a second, 9 at least; a forge idle, 2 s: 1.5 a second, 3
+    return sum((3.0 if e["model"] == "forge" else 9.0) for w, c in items for e in entries_of(w, c)) * takes
 
 
 def run_ludo(ids, jobs, takes=None):
@@ -635,7 +678,7 @@ def run_ludo(ids, jobs, takes=None):
 def make(only, jobs, takes):
     write_manifest()
     items = pick_items(only)
-    ids = [aid_of(w, c) for w, c in items]
+    ids = [e["id"] for w, c in items for e in entries_of(w, c)]
     log("make %d reactions x %d takes, about %.0f credits" % (len(ids), takes or TAKES, cost_of(items, takes or TAKES)))
     rc = run_ludo(ids, jobs, takes)
     post(only)
@@ -663,6 +706,11 @@ def regen(dry, jobs, use_notes=True):
                 by[aid]["prompt"] = new_text
         elif use_notes and notes.meaningful(r.get("note"), "image"):
             directed.append({"id": aid, "kind": "image", "prompt": by[aid].get("prompt", ""), "note": r["note"], "item": r["id"]})
+        if use_notes and notes.meaningful(r.get("note"), "image") and not new_text:
+            for e in entries_of(who, clip)[1:]:  ## a loop's second model reads the same note
+                if e["id"] in by:
+                    directed.append({"id": e["id"], "kind": "image", "prompt": by[e["id"]].get("prompt", ""),
+                                     "note": r["note"], "item": r["id"]})
         redo.append((who, clip))
     if directed:
         if dry:
@@ -676,7 +724,9 @@ def regen(dry, jobs, use_notes=True):
     if dry:
         return
     for who, clip in redo:
-        by[aid_of(who, clip)]["v"] = int(by[aid_of(who, clip)].get("v", 1)) + 1
+        for e in entries_of(who, clip):
+            if e["id"] in by:
+                by[e["id"]]["v"] = int(by[e["id"]].get("v", 1)) + 1
     save_json(MAN, man, indent=1)
     ## the rejected take stays beside the new ones ("rejected in round N" in the table); the rest go to old/
     d = batch_dir()
@@ -687,7 +737,7 @@ def regen(dry, jobs, use_notes=True):
         rounds = [int(m.group(1)) for f in (os.listdir(tk) if os.path.isdir(tk) else [])
                   for m in [re.match(re.escape(name) + r"\.r(\d+)" + re.escape(PREVIEW) + "$", f)] if m]
         nxt = max(rounds or [0]) + 1
-        for k in range(1, TAKES + 1):
+        for k, e, kk in sources(who, clip):
             for ext in (PREVIEW, SHEET + ".webp", SHEET + ".json"):
                 p = os.path.join(d, review_of(who, clip, k) + ext)
                 if not os.path.exists(p):
@@ -698,7 +748,7 @@ def regen(dry, jobs, use_notes=True):
                     dst = os.path.join(d, "old", "%s_%s" % (name, stamp), os.path.basename(p))
                 os.makedirs(os.path.dirname(dst), exist_ok=True)
                 shutil.move(p, dst)
-    run_ludo([aid_of(w, c) for w, c in redo], jobs)
+    run_ludo([e["id"] for w, c in redo for e in entries_of(w, c)], jobs)
     post(",".join(name_of(w, c) for w, c in redo))
 
 

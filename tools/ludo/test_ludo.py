@@ -135,6 +135,15 @@ class Faces(unittest.TestCase):
         self.assertIn("you_lioness_idle", names)
         self.assertEqual(len(v.ITEMS), 6 * 4 + 3 + 6 * 3 + 1)
 
+    def test_every_take_has_its_own_number(self):
+        v = self.v
+        self.assertEqual([(k, e["id"], kk) for k, e, kk in v.sources("hask", "win")],
+                         [(1, "v24_react_hask_win", 1), (2, "v24_react_hask_win", 2)])
+        got = [(k, e["id"], kk) for k, e, kk in v.sources("you_lioness", "idle")]
+        self.assertEqual(got, [(1, "v24_loop_you_lioness_idle", 1), (2, "v24_loop_you_lioness_idle", 2),
+                               (3, "v24_loop_you_lioness_idle_hydra", 1), (4, "v24_loop_you_lioness_idle_hydra", 2)])
+        self.assertEqual(v.review_of("you_lioness", "idle", 4), "faces/.takes/you_lioness_idle.t4")
+
     def test_a_reaction_comes_home_and_a_fall_stays_down(self):
         v = self.v
         for who, clip in v.ITEMS:

@@ -9993,6 +9993,27 @@
    "takes": 2,
    "out": "assets/raw/v24/faces/you_lioness_idle",
    "prompt": "breathes slowly and blinks, subtle idle motion, head nearly still"
+  },
+  {
+   "id": "v24_loop_you_lioness_idle_hydra",
+   "group": "v24f",
+   "kind": "animate",
+   "from_file": "assets/portraits/you_lioness.png",
+   "fit": true,
+   "model": "hydra",
+   "image_type": "portrait",
+   "duration": 3,
+   "frames": 36,
+   "frame_size": -9,
+   "loop": false,
+   "crop": false,
+   "final_same": true,
+   "margin_ratio_mode": "manual",
+   "margin_ratio_horizontal": 0.02,
+   "margin_ratio_vertical": 0.02,
+   "takes": 2,
+   "out": "assets/raw/v24/faces/you_lioness_idle_hydra",
+   "prompt": "The red-haired woman officer breathes slowly and blinks once, her lips gently closed and her head nearly still, then settles back exactly into the starting pose, looking at the viewer. The whole head and the slouch hat stay inside the frame."
   }
  ]
 }

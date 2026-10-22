@@ -225,8 +225,10 @@ func in_game() -> void:
 		{"id": "green", "name": "Governor Quill", "kind": "ai", "ai": "quill", "portrait": "quill"}]})
 	await p.frames(8)
 	var gs: Control = main.current
-	if gs.get("intro") != null and is_instance_valid(gs.intro):
-		gs.intro._done()
+	## (the commanders' introductions, wherever they are shown, are not what this looks at)
+	var intro: Variant = gs.get("intro")
+	if intro is Node and is_instance_valid(intro) and intro.has_method("_done"):
+		intro._done()
 	await p.frames(10)
 	Audio.skip_voice()
 	var taunt: Dictionary = stand_in("hask", "taunt")
@@ -234,12 +236,14 @@ func in_game() -> void:
 	var qf: Control = gs.roster.faces["green"]
 	LeaderFace._loops["quill_win"] = {}
 	_stood_in.append("quill_win")
+	LeaderFace.still_for("quill", "triumphant")
 	hf.react("win", "taunt", 3.0)
 	qf.react("win")
-	await p.frames(10)
-	await snap("06_roster_taunt")
+	await p.frames(3)
 	p.ok(hf._view.showing() == taunt["tex"], "in the war, Hask's taunt plays on his roster face")
 	p.ok(qf._view.showing() == LeaderFace.still_for("quill", "triumphant"), "...and Quill, with no reaction, shows his still")
+	await p.frames(7)
+	await snap("06_roster_taunt")
 	var back: bool = await until(func(): return not hf._clip_on and not hf._talk_left > 0.0, 600)
 	p.ok(back, "...and Hask's face comes back to rest")
 	Audio.skip_voice()
