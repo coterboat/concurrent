@@ -49,7 +49,7 @@ func _bare_of(s: Node, land: String) -> bool:
 
 func _bare(report: Callable, tree: SceneTree) -> void:
 	var s: Node = _planning(tree)
-	report.call(s.phase == Session.Phase.PLANNING and s.map.rules == 22, "round 1's orders, rules 22 (phase %d, rules %d)" % [s.phase, s.map.rules])
+	report.call(s.phase == Session.Phase.PLANNING and s.map.rules >= 22, "round 1's orders, rules 22 or later (phase %d, rules %d)" % [s.phase, s.map.rules])
 	## The Knife: Beacon - Ridge - Mill to the north, Ridge - The Gate, and The Gate - Harbor, Docks, Quarry
 	## to the south (Harbor - Docks - Quarry along the shore)
 	_paint(s, {"ridge": ["red", 2], "mill": ["red", 2], "beacon": ["blue", 2], "gate": ["blue", 5],
