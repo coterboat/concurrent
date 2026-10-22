@@ -636,9 +636,9 @@ func _lines_due() -> bool:
 
 
 func _officer_call() -> String:
-	## what the sealed standing order calls for the paused battle (auto-roll). v2.4 (rules 23): a melee
-	## front's comes from the engine, which judges a commander's fronts together; the session's own
-	## reads one front alone
+	## what the sealed standing order calls for the paused battle (auto-roll). v2.4: the engine puts
+	## it on the pause, the very call its officers make unwatched (a commander's fronts judged together
+	## under rules 23, a fortress's longer line counted); the session's own is only a fallback
 	var p: Dictionary = session.pending
 	if p.has("officer") and not bool(p.get("fortune", false)):
 		return str(p["officer"])

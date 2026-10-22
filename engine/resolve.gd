@@ -275,7 +275,10 @@ static func _invade(w: Types.World, map: Types.MapDef, t: Transit, dest: String,
 			fight.winner_remaining = d
 			ctx["pending"] = {"key": key, "attacker": t.owner, "defender": ts.owner, "to": dest, "from": t.from_id,
 				"a": a, "d": d, "reserves": reserves, "reserveFrom": _reserve_sources(w, t.owner, froms),
-				"refuge": refuge, "stance": stance, "call": fight.calls.size(), "rolls": fight.rolls.size()}
+				"refuge": refuge, "stance": stance, "call": fight.calls.size(), "rolls": fight.rolls.size(),
+				## v2.4: what his officers would call here (auto-roll), the very call they make unwatched:
+				## a fortress's or a capital's longer line counted (the session's own officer_call() didn't)
+				"officer": Combat.doctrine(stance, a, d, reserves, refuge != "", fortify)}
 			return fight
 		else:
 			call = Combat.doctrine(stance, a, d, reserves, refuge != "", fortify)
@@ -854,10 +857,10 @@ static func _melee(w: Types.World, map: Types.MapDef, dest: String, invaders: Ar
 				ctx["pending"] = {"key": f["key"], "attacker": t.owner, "defender": defender, "to": dest, "from": t.from_id,
 					"a": int(f["a"]), "d": share_now, "dTotal": d, "reserves": reserves, "reserveFrom": _reserve_sources(w, t.owner, froms),
 					"refuge": refuge, "stance": f["stance"], "call": (f["calls"] as Array).size(), "rolls": salvos.size(),
-					"melee": true, "front": i, "mine": _mine(fronts, i)}
-				if map.rules >= 23:
-					## what his officers would call here, for a commander who leaves it to them (auto-roll)
-					ctx["pending"]["officer"] = _officers(w, map, dest, fronts, i, d, share_now, reserves, refuge, fortify, together)
+					"melee": true, "front": i, "mine": _mine(fronts, i),
+					## what his officers would call here, for a commander who leaves it to them (auto-roll):
+					## the very call they make unwatched, under the game's own rules
+					"officer": _officers(w, map, dest, fronts, i, d, share_now, reserves, refuge, fortify, together)}
 				pending = true
 				break
 			else:

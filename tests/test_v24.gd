@@ -32,6 +32,7 @@ func run(report: Callable, tree: SceneTree) -> void:
 	_refire(report)
 	_priced(report)
 	_officer_on_the_plate(report)
+	_officer_at_a_fortress(report)
 	_old_wars(report)
 	_wars(report)
 	_session(report, tree)
@@ -282,7 +283,8 @@ func _priced(report: Callable) -> void:
 
 func _officer_on_the_plate(report: Callable) -> void:
 	## a commander watching his own storm is asked column by column; the plate carries his columns'
-	## numbers (for the odds of them together), and what his officers would call there (auto-roll)
+	## numbers (for the odds of them together), and what his officers would call there (auto-roll):
+	## the very call they make when nobody watches, under the game's own rules
 	for rules in [23, 22]:
 		var m: Types.MapDef = _map(rules)
 		var asked := 0
@@ -296,24 +298,58 @@ func _officer_on_the_plate(report: Callable) -> void:
 				continue
 			asked += 1
 			var mine: Array = pend.get("mine", [])
-			carried = carried and mine.size() == 2 and int(mine[0]) == int(pend["a"])
-			if rules == 22:
-				carried = carried and not pend.has("officer")
-				continue
+			carried = carried and mine.size() == 2 and int(mine[0]) == int(pend["a"]) and pend.has("officer")
 			## the officers, left to it, make that very call at that very moment
 			var off: Dictionary = _storm(m, _gate(m, 8, 6, 10), 7, 5, Combat.STANCE_JUDGMENT, Combat.STANCE_JUDGMENT, sd)
 			var mel: Dictionary = H.first(off["events"], Types.EVENT_MELEE)
 			var f: Dictionary = mel["fronts"][int(pend["front"])]
-			var made := Combat.CALL_PRESS
-			for c in f.get("calls", []):
-				if int(c["at"]) == int(pend["rolls"]):
-					made = str(c["call"])
-			if made == str(pend.get("officer", "")):
+			if _call_at(f.get("calls", []), int(pend["rolls"])) == str(pend.get("officer", "")):
 				agree += 1
-		if rules == 23:
-			report.call(asked > 0 and carried and agree == asked, "rules 23: the call plate carries his columns' numbers, and the officers' call on it is the one they make unwatched (%d of %d)" % [agree, asked])
-		else:
-			report.call(asked > 0 and carried, "rules 22: the plate carries the numbers too (only the words change), and the session's officers call as before (%d asked)" % asked)
+		report.call(asked > 0 and carried and agree == asked, "rules %d: the call plate carries his columns' numbers, and the officers' call on it is the one they make unwatched (%d of %d)" % [rules, agree, asked])
+
+
+func _call_at(calls: Array, at: int) -> String:
+	## the call made after `at` volleys (a press isn't written down)
+	for c in calls:
+		if int(c["at"]) == at and str(c["call"]) != Combat.CALL_FORTUNE and str(c["call"]) != Combat.CALL_STAND:
+			return str(c["call"])
+	return Combat.CALL_PRESS
+
+
+func _officer_at_a_fortress(report: Callable) -> void:
+	## (the coordinator, after the merge) a plain assault's pause carries the officers' call too, so a
+	## battle watched on auto-roll calls as one skipped: behind a capital's walls (a fortress's longer
+	## line) the odds are worse, and the session's own officer_call() never counted that
+	for rules in [23, 22]:
+		var m: Types.MapDef = _map(rules)
+		m.capitals = true
+		var asked := 0
+		var differ := 0
+		var agree := 0
+		for sd in range(1, 121):
+			var w: Types.World = H.paint(m, {"ridge": ["red", 11], "harbor": ["red", 2], "gate": ["blue", 12], "beacon": ["blue", 1], "mill": ["blue", 1],
+				"docks": ["blue", 1], "quarry": ["blue", 1]})
+			(w.players["blue"] as Types.PlayerState).capital = "gate"
+			(w.players["red"] as Types.PlayerState).capital = "harbor"
+			var pk: Types.Packet = H.pkt("ridge", "gate", 10)
+			pk.stance = Combat.STANCE_CAREFUL
+			var live: Dictionary = Resolve.resolve_round(w, m, [H.sheet("red", [pk]), H.sheet("blue")], sd, ["red"])
+			var pend: Dictionary = live.get("pending", {})
+			if pend.is_empty() or bool(pend.get("melee", false)) or bool(pend.get("fortune", false)):
+				continue
+			asked += 1
+			var a: int = int(pend["a"])
+			var d: int = int(pend["d"])
+			var go: bool = str(pend["refuge"]) != ""
+			var walls: String = Combat.doctrine(str(pend["stance"]), a, d, int(pend["reserves"]), go, 1)
+			if walls != Combat.doctrine(str(pend["stance"]), a, d, int(pend["reserves"]), go, 0):
+				differ += 1
+			var off: Dictionary = Resolve.resolve_round(w, m, [H.sheet("red", [pk]), H.sheet("blue")], sd)
+			var inv: Dictionary = H.first(off["events"], Types.EVENT_INVASION)
+			if str(pend.get("officer", "")) == walls and _call_at(inv.get("calls", []), int(pend["rolls"])) == walls:
+				agree += 1
+		report.call(differ > 0 and agree == asked,
+			"rules %d: an assault on a capital paused for its call carries the officers' call, the walls counted, and it is the call they make unwatched (%d of %d; at %d of them the walls change the call)" % [rules, agree, asked, differ])
 
 
 func _old_wars(report: Callable) -> void:

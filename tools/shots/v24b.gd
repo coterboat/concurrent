@@ -465,10 +465,12 @@ func _ends_by_itself() -> void:
 
 
 func _howto() -> void:
-	## the rules book says it, and its two pages still fit the 1440x900 screen
+	## the rules book says it, and its pages still fit the 1440x900 screen (with v24-map's ranked
+	## garrison shields, the shield is no longer always gold: the two pages that called it so)
 	var HowTo: Script = load("res://game/ui/howto_screen.gd")
 	var shot := 9
-	for page in [["Battles", "An even volley on a front is fired again"], ["Press, reserves, or fall back", "They judge your columns in a melee together"]]:
+	for page in [["Battles", "An even volley on a front is fired again"], ["Press, reserves, or fall back", "They judge your columns in a melee together"],
+			["Attack — and leave home", "the shield beside its number"], ["Digging in", "plain wood for the one man held back"]]:
 		var idx := -1
 		for i in HowTo.PAGES.size():
 			if str(HowTo.PAGES[i][0]) == str(page[0]):
