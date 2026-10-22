@@ -135,7 +135,7 @@ func _session(report: Callable, tree: SceneTree) -> void:
 	s.new_game({"map": "res://maps/knife7.json", "seed": 5, "length": "short", "deal": "random", "seats": [
 		{"id": "red", "name": "You", "kind": "human", "ai": ""},
 		{"id": "blue", "name": "Varek", "kind": "ai", "ai": "varek"}]})
-	report.call(s.map.rules == 22, "a new game still plays rules 22 (nothing in this pass changes an outcome)")
+	report.call(s.map.rules >= 22, "a new game plays rules 22 or later (%d): nothing in this pass changed an outcome" % s.map.rules)
 	## the Isthmus deals the north shore 15 to place on three lands that hold 4, 6 and 4
 	var room := 0
 	for t in MapLib.player_territory_ids(s.world, s.planner):

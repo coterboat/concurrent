@@ -26,12 +26,16 @@ const LINE := 5
 static var line := 0 ## 0 = every man fires (games from before v1.6)
 static var fair_ties := false
 static var line_size := LINE ## tuning only (the arena's line=): the size of the line use_rules sets
+## v2.4 (rules 23): a melee's even volley is fired again, as an assault's is (Amendment 18), so every
+## front's volley in a salvo is decided. Before, it cost nobody and was one of the exchange's three.
+static var refire := false
 
 
 static func use_rules(map) -> void:
 	var on: bool = map != null and bool(map.fire_line)
 	line = line_size if on else 0
 	fair_ties = on
+	refire = map != null and int(map.rules) >= 23
 
 
 static func fire(n: int, bonus: int = 0) -> int:
@@ -258,7 +262,30 @@ static func doctrine(stance: String, a: int, d: int, reserves: int, can_fall_bac
 	## Pure: the same stance and numbers always give the same call.
 	if stance == STANCE_HOLD or stance == "" or (reserves <= 0 and not can_fall_back):
 		return CALL_PRESS
-	var p: float = volley_capture_rate(a, d, true, d_bonus)
+	return _judge(stance, volley_capture_rate(a, d, true, d_bonus), func(): return volley_capture_rate(a + reserves, d, true, d_bonus), reserves, can_fall_back)
+
+
+static func fronts_doctrine(stance: String, sizes: Array, d: int, reserves: Array, can_fall_back: bool, d_bonus: int = 0) -> String:
+	## v2.4 (rules 23): one call for a commander's fronts in a melee that carry the same standing
+	## order, made together on the odds of all his fronts still fighting (sizes), as the land falls
+	## to them together. reserves[k]: what front k could throw in now (0 if it can't, or carries
+	## another order); can_fall_back: one of them has somewhere to go. Judged alone against the
+	## defenders' whole line, each front of a storm from two sides looked lost: one column fell back
+	## while the other fought on, and the next call took the rest (the owner, 10-21: "one side
+	## animated a retreat, their total strength didn't go down").
+	var res := 0
+	var more: Array = []
+	for k in sizes.size():
+		var r: int = maxi(0, int(reserves[k])) if k < reserves.size() else 0
+		res += r
+		more.append(int(sizes[k]) + r)
+	if stance == STANCE_HOLD or stance == "" or (res <= 0 and not can_fall_back):
+		return CALL_PRESS
+	return _judge(stance, fronts_capture_rate(sizes, d, MODE_VOLLEYS, d_bonus), func(): return fronts_capture_rate(more, d, MODE_VOLLEYS, d_bonus), res, can_fall_back)
+
+
+static func _judge(stance: String, p: float, with_reserves: Callable, reserves: int, can_fall_back: bool) -> String:
+	## the standing orders, given the odds from here (and, asked only when it matters, with the reserves in)
 	match stance:
 		STANCE_CAREFUL:
 			if can_fall_back and p < 0.3:
@@ -267,7 +294,7 @@ static func doctrine(stance: String, a: int, d: int, reserves: int, can_fall_bac
 			if reserves > 0 and p < 0.8:
 				return CALL_RESERVES
 		STANCE_JUDGMENT:
-			if reserves > 0 and p < 0.65 and volley_capture_rate(a + reserves, d, true, d_bonus) >= p + 0.15:
+			if reserves > 0 and p < 0.65 and float(with_reserves.call()) >= p + 0.15:
 				return CALL_RESERVES
 			if can_fall_back and p < 0.2:
 				return CALL_FALL_BACK
@@ -411,8 +438,8 @@ static func capture_rate(att: int, def: int, mode: String = MODE_DECISIVE, d_bon
 ## planners and the odds shown (the AI, the order card, the advisor); no battle is fought by it.
 ## Each salvo every front fires one volley at the defenders' line: a win costs the defenders a man,
 ## a loss costs that front one, an even volley costs nobody (resolve.gd's melee under the firing
-## line). Exact for up to three fronts (RV-006 F1: folding small fronts into one priced [1,1,1]
-## against 2 at 66%, the battles' 59%). A fourth or more fold the two smallest together (a little
+## line; from rules 23 it is fired again, so every front's volley is decided). Exact for up to three
+## fronts (RV-006 F1: folding small fronts into one priced [1,1,1] against 2 at 66%, the battles' 59%). A fourth or more fold the two smallest together (a little
 ## kind to the attacker: the folded front fires a longer line than its parts); a fight too big to
 ## count (FRONTS_STATES) is priced scaled down. Without the firing line, or in one decisive roll,
 ## the old sum.
@@ -466,10 +493,11 @@ static func _states(fronts: Array, d: int) -> int:
 
 
 static func _volley_odds(a: int, d: int, d_bonus: int) -> Array:
-	## [win, lose, even] for one front's volley at the defenders' line (by the men who fire)
+	## [win, lose, even] for one front's volley at the defenders' line (by the men who fire); from
+	## rules 23 an even volley is fired again until it is decided, so [win, lose, 0] of the decided ones
 	var fa: int = fire(a)
 	var fd: int = fire(d, d_bonus)
-	var key: int = fa * 1024 + fd
+	var key: int = (fa * 1024 + fd) * 2 + (1 if refire else 0)
 	if _odds_memo.has(key):
 		return _odds_memo[key]
 	var wins := 0
@@ -483,6 +511,8 @@ static func _volley_odds(a: int, d: int, d_bonus: int) -> Array:
 			elif sa == sb:
 				ties += 1
 	var o: Array = [float(wins) / 36.0, float(36 - wins - ties) / 36.0, float(ties) / 36.0]
+	if refire and ties < 36:
+		o = [float(wins) / float(36 - ties), float(36 - wins - ties) / float(36 - ties), 0.0]
 	_odds_memo[key] = o
 	return o
 
@@ -500,7 +530,7 @@ static func _fronts(fronts: Array, d: int, d_bonus: int) -> float:
 	var key: int = 0
 	for f in fronts:
 		key = key * 1024 + mini(int(f), 1023)
-	key = (((key * 1024 + mini(d, 1023)) * 16 + mini(maxi(0, d_bonus), 15)) * 8 + fronts.size()) * 64 + mini(line, 63)
+	key = ((((key * 1024 + mini(d, 1023)) * 16 + mini(maxi(0, d_bonus), 15)) * 8 + fronts.size()) * 64 + mini(line, 63)) * 2 + (1 if refire else 0)
 	if _fronts_memo.has(key):
 		return _fronts_memo[key]
 	var odds: Array = []
@@ -545,7 +575,7 @@ static func _two_fronts(a: int, b: int, d: int, d_bonus: int) -> float:
 		return 1.0
 	if b <= 0:
 		return volley_capture_rate(a, d, true, d_bonus) if a > 0 else 0.0
-	var key: int = ((((a * 1024 + b) * 1024 + mini(d, 1023)) * 16 + mini(maxi(0, d_bonus), 15)) * 8 + 2) * 64 + mini(line, 63)
+	var key: int = (((((a * 1024 + b) * 1024 + mini(d, 1023)) * 16 + mini(maxi(0, d_bonus), 15)) * 8 + 2) * 64 + mini(line, 63)) * 2 + (1 if refire else 0)
 	if _fronts_memo.has(key):
 		return _fronts_memo[key]
 	var oa: Array = _volley_odds(a, d, d_bonus)

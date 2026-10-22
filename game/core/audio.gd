@@ -489,6 +489,11 @@ func voice_playing() -> bool:
 	return _voice.playing
 
 
+func voice_waiting() -> bool:
+	## v2.4: a line is queued behind the one being spoken (the battlefield waits for it before it closes)
+	return not _queue.is_empty()
+
+
 func _duck(on: bool) -> void:
 	if on == _ducked:
 		return

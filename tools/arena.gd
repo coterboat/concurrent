@@ -8,7 +8,7 @@ const Setup := preload("res://engine/setup.gd")
 
 
 func _initialize() -> void:
-	var args := {"map": "known24", "n": "30", "seats": "general,veteran,recruit", "rounds": "0", "seed": "1000", "battle": "volleys", "moves": "1", "wild": "0", "scramble": "1", "deal": "random", "dig": "3", "rules": "22", "first": "0", "line": "5", "supply": "map", "traits": "map", "capitals": "1", "fortune": "1", "levee": "map", "fbar": "0", "ffloor": "0", "frebate": "0"}
+	var args := {"map": "known24", "n": "30", "seats": "general,veteran,recruit", "rounds": "0", "seed": "1000", "battle": "volleys", "moves": "1", "wild": "0", "scramble": "1", "deal": "random", "dig": "3", "rules": "23", "first": "0", "line": "5", "supply": "map", "traits": "map", "capitals": "1", "fortune": "1", "levee": "map", "fbar": "0", "ffloor": "0", "frebate": "0"}
 	for a in OS.get_cmdline_user_args():
 		var kv := a.split("=", true, 1)
 		if kv.size() == 2:
@@ -34,6 +34,7 @@ func _initialize() -> void:
 	var res := 0
 	var fb := 0
 	var mel := 0
+	var split := 0 ## v2.4: melee fall-backs that left a column of the same commander fighting on
 	var scr := 0
 	var caps := 0
 	var f_spent := 0
@@ -95,6 +96,7 @@ func _initialize() -> void:
 			res += int(rd.get("reserves", 0))
 			fb += int(rd.get("fallbacks", 0))
 			mel += int(rd.get("melees", 0))
+			split += int(rd.get("splitFalls", 0))
 			scr += int(rd.get("scrambles", 0))
 			caps += int(rd.get("capitalsTaken", 0))
 			f_spent += int(rd.get("fortuneSpent", 0))
@@ -137,7 +139,7 @@ func _initialize() -> void:
 	print("  even fights %s, attacker took %.0f%% (a selected sample, not the rule: see test_v17)  ·  fought as they started: %s at %.0f%%"
 		% [even, 100.0 * even_cap / maxf(1.0, even), evenc, 100.0 * evenc_cap / maxf(1.0, evenc)])
 	print("  assaults    %.1f per game: reserves called in %.0f%%, fell back in %.0f%%" % [float(inv) / n, 100.0 * res / maxf(1.0, inv), 100.0 * fb / maxf(1.0, inv)])
-	print("  melees      %.1f per game, scrambles %.1f" % [float(mel) / n, float(scr) / n])
+	print("  melees      %.1f per game, scrambles %.1f; %.2f retreats a game left a column of the same commander fighting on" % [float(mel) / n, float(scr) / n, float(split) / n])
 	print("  capitals    %.2f fell per game" % (float(caps) / n))
 	print("  fortune     %.2f favours earned, %.2f spent per game (%.2f and %.2f per commander); %d%% of the battles it was spent in were won by the spender" % [float(f_gain) / n, float(f_spent) / n,
 		float(f_gain) / n / brains.size(), float(f_spent) / n / brains.size(), int(100.0 * f_saved / maxf(1.0, f_spent))])
