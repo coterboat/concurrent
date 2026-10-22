@@ -10,6 +10,7 @@ const Style := preload("res://game/core/style.gd")
 const MapArt := preload("res://game/board/map_art.gd")
 const LastRound := preload("res://game/core/last_round.gd")
 const BoardFacts := preload("res://game/core/board_facts.gd")
+const TokenMesh := preload("res://game/board/token_mesh.gd")
 
 signal territory_clicked(id: String, button: int)
 signal territory_hovered(id: String)
@@ -1820,13 +1821,28 @@ func _arrow_shadow(ci: CanvasItem, pts: PackedVector2Array, w: float, alpha: flo
 
 
 var drawn_shields: Dictionary = {} ## v2.4: land -> [style, tier, what's inside: the number or "chevrons" or "boss"] this frame (the probe reads it)
+## v2.4: a token's body, its shield and its road-home ring drawn from meshes made once a look (token_mesh.gd);
+## false: shape by shape, as before (the probe holds the one to the other)
+var token_meshes := true
+var tokens = TokenMesh.new()
+
+
+func _shield_body(ci: CanvasItem, at: Vector2, r: float, fill: Color, edge: Color, w: float, shadow: bool, glow: float = 0.0) -> void:
+	## a shield's glow, shadow, face and edge (the number goes on it after)
+	if token_meshes:
+		tokens.shield(ci, at, r, fill, edge, w, shadow, glow)
+		return
+	if glow > 0.0:
+		ci.draw_circle(at + Vector2(0, r * 0.12), r * 1.45, Color(1.0, 0.8, 0.35, glow * 0.8))
+	if shadow:
+		ci.draw_circle(at + Vector2(1.5, 2.5), r, Color(0, 0, 0, 0.35))
+	Style.draw_shape(ci, "shield", at, r, fill, edge, w)
 
 
 func _draw_shield(ci: CanvasItem, id: String, at: Vector2, gr: float, home: int, dug: int, f: Font) -> void:
 	## the garrison's shield: who stays home (shield_style says how it shows their depth)
 	if shield_style == "number":
-		ci.draw_circle(at + Vector2(1.5, 2.5), gr, Color(0, 0, 0, 0.35))
-		Style.draw_shape(ci, "shield", at, gr, Color(0.36, 0.24, 0.08), Color(1.0, 0.84, 0.45), 2.0)
+		_shield_body(ci, at, gr, Color(0.36, 0.24, 0.08), Color(1.0, 0.84, 0.45), 2.0, true)
 		_shield_number(ci, at, gr, home, Color(1, 0.94, 0.72), f)
 		drawn_shields[id] = ["number", -1, home]
 		return
@@ -1834,12 +1850,8 @@ func _draw_shield(ci: CanvasItem, id: String, at: Vector2, gr: float, home: int,
 	var look: Dictionary = SHIELD_TIERS[tier]
 	var chev: bool = shield_style == "chevrons" and dug <= 4
 	var sr: float = gr * float(look["size"]) * (1.1 if chev else 1.0)
-	var glow: float = float(look.get("glow", 0.0))
-	if glow > 0.0:
-		## (one soft disc: every shape drawn costs, and the board draws thirty tokens a frame on the land)
-		ci.draw_circle(at + Vector2(0, sr * 0.12), sr * 1.45, Color(1.0, 0.8, 0.35, glow * 0.8))
-	ci.draw_circle(at + Vector2(1.5, 2.5), sr, Color(0, 0, 0, 0.35))
-	Style.draw_shape(ci, "shield", at, sr, look["fill"], look["edge"], float(look["w"]))
+	## (its glow one soft disc: every shape drawn costs, and the board draws thirty tokens a frame on the land)
+	_shield_body(ci, at, sr, look["fill"], look["edge"], float(look["w"]), true, float(look.get("glow", 0.0)))
 	var ink: Color = look["ink"]
 	if not chev:
 		_shield_number(ci, at, sr, home, ink, f)
@@ -1962,24 +1974,14 @@ func _draw_token(ci: CanvasItem, id: String) -> void:
 		return
 	var col: Color = Style.seat_color(owner)
 	var shape: String = Style.seat_shape(owner)
-	if projector.is_valid():
-		## v2.0, on the land: the token stands on its ground (a soft shadow on the land under it)
-		ci.draw_set_transform(p + Vector2(r * 0.15, r * 0.62), 0.0, Vector2(1.0, 0.42))
-		for k in 3:
-			ci.draw_circle(Vector2.ZERO, r * (1.25 - 0.18 * k), Color(0, 0, 0, 0.09))
-		ci.draw_set_transform(Vector2.ZERO, 0.0, Vector2.ONE)
-	ci.draw_circle(p + Vector2(2, 3), r + 1, Color(0, 0, 0, 0.35))
+	## the token's body: on the land its shadow on the ground and its thickness; its rim, its face in its
+	## commander's colours and its edge (gold when chosen), the lacquer's sheen (v2.4: token_mesh.gd)
 	var edge := Color(0.96, 0.9, 0.76) if id != selected else Color(1.0, 0.85, 0.35)
-	if projector.is_valid():
-		## v2.0.2, on the land: the piece has a thickness, its edge showing under the face
-		var thick: Vector2 = Vector2(0, maxf(3.0, r * 0.16))
-		Style.draw_shape(ci, shape, p + thick, r + 2.5, Color(0.08, 0.06, 0.05), Color(0.08, 0.06, 0.05), 1.0)
-		Style.draw_shape(ci, shape, p + thick, r, col.darkened(0.5), col.darkened(0.6), 1.0)
-	Style.draw_shape(ci, shape, p, r + 2.5, Color(0.08, 0.06, 0.05), Color(0.08, 0.06, 0.05), 1.0)
-	Style.draw_shape(ci, shape, p, r, col.darkened(0.08), edge, 2.0 if id != selected else 3.5)
-	## lacquer sheen: a soft highlight up and to the left, a shade below
-	Style.draw_shape(ci, shape, p + Vector2(0, r * 0.12), r * 0.78, Color(0, 0, 0, 0.12), Color(0, 0, 0, 0), 0.0)
-	ci.draw_circle(p + Vector2(-r * 0.3, -r * 0.34), r * 0.42, Color(1, 1, 1, 0.13))
+	var edge_w: float = 2.0 if id != selected else 3.5
+	if token_meshes:
+		tokens.body(ci, p, r, shape, col, edge, edge_w, projector.is_valid())
+	else:
+		TokenMesh.body_shapes(ci, p, r, shape, col, edge, edge_w, projector.is_valid())
 	var n: int = ts.armies + ts.garrison ## everyone who defends (the ceiling counts them all)
 	## v1.3: the token's number is the army that can march; the dug-in defenders who never
 	## march sit on their own shield. Two separate numbers, never one inside the other.
@@ -2007,7 +2009,7 @@ func _draw_token(ci: CanvasItem, id: String) -> void:
 		_draw_shield(ci, id, gp, gr, home, ts.garrison, f)
 	elif owner != "neutral":
 		## nobody dug in yet: a faint empty shield, so the absence reads too
-		Style.draw_shape(ci, "shield", gp, gr * 0.8, Color(0, 0, 0, 0.0), Color(0.95, 0.9, 0.78, 0.28), 1.2)
+		_shield_body(ci, gp, gr * 0.8, Color(0, 0, 0, 0.0), Color(0.95, 0.9, 0.78, 0.28), 1.2, false)
 	## queued reinforcements: gold "+n" top-right
 	var q: int = int(placements.get(id, 0))
 	if q > 0:
@@ -2098,8 +2100,11 @@ func _draw_token(ci: CanvasItem, id: String) -> void:
 	## v1.13: a land that holds the road home for others: an amber ring, dashed (the tooltip names them)
 	if hinges.has(id):
 		var amber := Color(1.0, 0.72, 0.25, 0.85)
-		for k in 16:
-			ci.draw_arc(p, r + 6.0, TAU * k / 16.0, TAU * (k + 0.55) / 16.0, 4, amber, 2.5, true)
+		if token_meshes:
+			tokens.ring(ci, p, r + 6.0, amber, 2.5, 16) ## (one mesh: it was sixteen arcs, each its own polyline)
+		else:
+			for k in 16:
+				ci.draw_arc(p, r + 6.0, TAU * k / 16.0, TAU * (k + 0.55) / 16.0, 4, amber, 2.5, true)
 	## enemy ceiling: the most this hex could hold after their hidden reinforcement. v1.13.2: only
 	## where you could march on it (it borders a land of yours) and on the land you hover; on every
 	## enemy land at once it was clutter (the play critic counted about 20 numbers on the ring)

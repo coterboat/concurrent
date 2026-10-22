@@ -12,6 +12,9 @@
 ##   - the second battle stands on the first one's figures, none made afresh
 ##   - no pipeline is compiled in the second battle's swoops
 ##   - a musket's streak is a thin ribbon facing the camera, its tail never behind the muzzle
+## The board's tokens are drawn from meshes made once a look (token_mesh.gd): they look as they did
+## (every seat's token on the chart and on the land, chosen or not, every shield, the road's ring, against
+## the old drawing, pixel by pixel), and the board draws them from the meshes, making few.
 ## And (the owner: "when a fort exists in a territory... have the defending army defending from
 ## within/outside the fort against the direction(s) of the foe(s) they're facing") a fight at a fort
 ## is at its walls: the fort stays on the table, on level ground; each defending group lines the
@@ -25,6 +28,9 @@ const Types := preload("res://engine/types.gd")
 const MapLib := preload("res://engine/map.gd")
 const Diorama := preload("res://game/world3d/diorama.gd")
 const Scenery := preload("res://game/world3d/scenery.gd")
+const Style := preload("res://game/core/style.gd")
+const TokenMesh := preload("res://game/board/token_mesh.gd")
+const MapBoard := preload("res://game/board/map_board.gd")
 
 var p
 var _watch: PackedStringArray = PackedStringArray() ## what a battle on the land must find loaded already
@@ -49,6 +55,7 @@ func run(probe) -> void:
 	_list("res://game", ["gdshader"])
 	_list("res://assets/audio/sfx", ["mp3", "wav", "ogg"])
 	_list("res://assets/battle", ["webp", "png"]) ## (told, not held against the 3D: the battle's own)
+	await _tokens_alike()
 	var main: Control = load("res://game/main.tscn").instantiate()
 	p.get_tree().root.add_child(main)
 	await p.frames(5)
@@ -73,10 +80,15 @@ func run(probe) -> void:
 	await p.frames(10)
 	for a in _watch:
 		_cached[a] = ResourceLoader.has_cached(a)
+	var made0: int = gs.board.tokens.made
+	var drawn0: int = gs.board.tokens.drawn
 	var used: Array = []
 	var first: Dictionary = await _battle(s, gs, _pick(s, gs, used), "01")
 	await _to_planning(s, gs)
 	var second: Dictionary = await _battle(s, gs, _pick(s, gs, used), "02")
+	var tok_made: int = gs.board.tokens.made - made0
+	var tok_drawn: int = gs.board.tokens.drawn - drawn0
+	p.ok(gs.board.token_meshes and tok_drawn > 0 and tok_made * 20 < tok_drawn, "the board's tokens are drawn from meshes through two battles: %d drawn, %d made" % [tok_drawn, tok_made])
 	await _to_planning(s, gs)
 	Settings.data["roll_yourself"] = true ## (the fort is photographed before the first throw)
 	var third: Dictionary = await _battle(s, gs, ["blackford", "coldwater", "redgate"], "03")
@@ -123,6 +135,112 @@ func run(probe) -> void:
 	p.ok(int(st["seen"]) > 0 and int(st["behind"]) == 0, "its tail never reaching back past the muzzle (%d did)" % st["behind"])
 	main.queue_free()
 	await p.frames(5)
+
+
+class _Sheet extends Control:
+	## every seat's token at three sizes, on the chart and on the land, chosen and not; every shield
+	## (each tier of the ranked look, the number's, the empty one); the road's ring: drawn shape by shape
+	## (as before v2.4) or from meshes
+	var meshes := false
+	var tm = TokenMesh.new()
+
+	func _draw() -> void:
+		draw_rect(Rect2(Vector2.ZERO, size), Color(0.36, 0.43, 0.3))
+		var y := 50.0
+		for r in [16.0, 23.0, 31.0]:
+			var x := 50.0
+			for land in [false, true]:
+				for sel in [false, true]:
+					for pid in ["red", "blue", "green", "gold", "purple", "neutral"]:
+						var edge := Color(0.96, 0.9, 0.76) if not sel else Color(1.0, 0.85, 0.35)
+						var w: float = 2.0 if not sel else 3.5
+						if meshes:
+							tm.body(self, Vector2(x, y), r, Style.seat_shape(pid), Style.seat_color(pid), edge, w, land)
+						else:
+							TokenMesh.body_shapes(self, Vector2(x, y), r, Style.seat_shape(pid), Style.seat_color(pid), edge, w, land)
+						x += r * 2.9
+			y += r * 3.4
+		var x2 := 50.0
+		for gr in [9.0, 12.0, 14.0]:
+			for tier in MapBoard.SHIELD_TIERS.size():
+				var look: Dictionary = MapBoard.SHIELD_TIERS[tier]
+				_shield(Vector2(x2, y), gr * float(look["size"]), look["fill"], look["edge"], float(look["w"]), true, float(look.get("glow", 0.0)))
+				x2 += 40.0
+			_shield(Vector2(x2, y), gr, Color(0.36, 0.24, 0.08), Color(1.0, 0.84, 0.45), 2.0, true, 0.0)
+			x2 += 40.0
+			_shield(Vector2(x2, y), gr * 0.8, Color(0, 0, 0, 0), Color(0.95, 0.9, 0.78, 0.28), 1.2, false, 0.0)
+			x2 += 40.0
+		for rr in [22.0, 30.0]:
+			if meshes:
+				tm.ring(self, Vector2(x2 + rr, y), rr, Color(1.0, 0.72, 0.25, 0.85), 2.5, 16)
+			else:
+				for k in 16:
+					draw_arc(Vector2(x2 + rr, y), rr, TAU * k / 16.0, TAU * (k + 0.55) / 16.0, 4, Color(1.0, 0.72, 0.25, 0.85), 2.5, true)
+			x2 += rr * 2.0 + 20.0
+
+	func _shield(at: Vector2, r: float, fill: Color, edge: Color, w: float, shadow: bool, glow: float) -> void:
+		if meshes:
+			tm.shield(self, at, r, fill, edge, w, shadow, glow)
+			return
+		if glow > 0.0:
+			draw_circle(at + Vector2(0, r * 0.12), r * 1.45, Color(1.0, 0.8, 0.35, glow * 0.8))
+		if shadow:
+			draw_circle(at + Vector2(1.5, 2.5), r, Color(0, 0, 0, 0.35))
+		Style.draw_shape(self, "shield", at, r, fill, edge, w)
+
+
+func _tokens_alike() -> void:
+	## the meshes against the old drawing, pixel by pixel, over the pixels either draws on
+	var imgs: Array = []
+	for meshes in [false, true]:
+		var vp := SubViewport.new()
+		vp.size = Vector2i(1700, 560)
+		vp.render_target_update_mode = SubViewport.UPDATE_ALWAYS
+		p.add_child(vp)
+		var sh := _Sheet.new()
+		sh.meshes = meshes
+		sh.size = Vector2(1700, 560)
+		vp.add_child(sh)
+		await p.frames(4)
+		await RenderingServer.frame_post_draw
+		var img: Image = vp.get_texture().get_image()
+		img.convert(Image.FORMAT_RGB8)
+		img.save_png(OS.get_environment("SHOT_DIR") + "/v24p_00_tokens_%s.png" % ("meshes" if meshes else "shapes"))
+		imgs.append(img)
+		vp.queue_free()
+	var a: Image = imgs[0]
+	var b: Image = imgs[1]
+	var fine: Array = _apart(a, b, 1)
+	var coarse: Array = _apart(a, b, 2)
+	p.ok(int(fine[0]) > 50000 and float(fine[1]) < 6.0 and float(coarse[2]) < 1.0,
+		"the tokens, shields and rings drawn from meshes look as they did: %.1f/255 apart on average over %d pixels, %.1f%% off by more than 24/255 (where an antialiased edge falls in a pixel); %.2f%% two pixels across" % [fine[1], fine[0], fine[2], coarse[2]])
+
+
+static func _apart(a: Image, b: Image, k: int) -> Array:
+	## [pixels either draws on, their mean difference /255, the share off by more than 24/255 in %],
+	## each pixel the mean of a k by k block
+	var bg: Color = a.get_pixel(1, 1)
+	var n := 0
+	var total := 0.0
+	var off := 0
+	for yy in range(0, a.get_height() - k + 1, k):
+		for xx in range(0, a.get_width() - k + 1, k):
+			var ca := Color(0, 0, 0, 0)
+			var cb := Color(0, 0, 0, 0)
+			for j in k:
+				for i in k:
+					ca += a.get_pixel(xx + i, yy + j)
+					cb += b.get_pixel(xx + i, yy + j)
+			ca /= float(k * k)
+			cb /= float(k * k)
+			if ca.is_equal_approx(bg) and cb.is_equal_approx(bg):
+				continue
+			n += 1
+			var d: float = maxf(absf(ca.r - cb.r), maxf(absf(ca.g - cb.g), absf(ca.b - cb.b))) * 255.0
+			total += d
+			if d > 24.0:
+				off += 1
+	return [n, total / float(maxi(n, 1)), 100.0 * float(off) / float(maxi(n, 1))]
 
 
 func _list(dir: String, exts: Array) -> void:
