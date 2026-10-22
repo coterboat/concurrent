@@ -132,8 +132,8 @@ too: its takes open 6-10 dB under the bugle and fade in, so nothing in it stacks
   price against the battles; the call plate's `mine`/`officer` against the unwatched call; rules-22 golden
   world hashes; two rules-23 wars on known24 and isles24 (five commanders) legal, conserved, the report
   agreeing and replaying to the same world, with no split retreat; a new game plays rules 23.
-- `tools/shots/v24b.gd` (25 facts, 10 shots): the old save's split retreat on the land (line, count, odds,
-  the field, the verdict, the line's width), rules 23's retreat together and a melee's even volleys fired
+- `tools/shots/v24b.gd` (26 facts, 10 shots): the old save's split retreat on the land (line, count, odds,
+  the field, the verdict, the line's width, the battle report's line), rules 23's retreat together and a melee's even volleys fired
   again, your two columns asked one by one, the battle that ends by itself, one bugle on each field and its
   level, the two How to Play pages saying it and fitting 1440×900. It dry-runs the round on the session's own
   world to pick a seed where each moment happens, then plays it in the client.
@@ -147,6 +147,7 @@ too: its takes open 6-10 dB under the bugle and fade in, so nothing in it stacks
   already used).
 - `tools/audio/levels.py`: the `EAR` trim (item 4).
 - `game/core/session.gd`: only `_apply_length` (the default rules, 22 → 23).
+- `CLAUDE.md`: the rules-23 row in the engine's table of rules versions.
 
 ## For the merge
 
