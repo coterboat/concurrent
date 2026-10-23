@@ -6,19 +6,35 @@ running ledger kept by bug clerk from playtester's reports. one file per red run
 
 | id | severity | title | first seen | latest report |
 |---|---|---|---|---|
-| B-014 | broken | v22 never sees the musket shots fly, and the fall-timing fact gets no samples | bacccac | [2026-10-20-2218-d7a840b](reports/2026-10-20-2218-d7a840b.md) |
-| B-013 | broken | v202 border-clash probe never sees the winner, then hangs on a script error | bacccac | [2026-10-20-2218-d7a840b](reports/2026-10-20-2218-d7a840b.md) |
+| B-016 | glitch | v24p token meshes don't match the old drawing on this box | d6c1f58 | [2026-10-22-2208-d6c1f58](reports/2026-10-22-2208-d6c1f58.md) |
+| B-015 | broken | v21 never sees the battle's loser at 0, reports -1 left standing | d6c1f58 | [2026-10-22-2208-d6c1f58](reports/2026-10-22-2208-d6c1f58.md) |
+| B-014 | broken | v22 never sees the musket shots fly, and the fall-timing fact gets no samples | bacccac | [2026-10-22-2208-d6c1f58](reports/2026-10-22-2208-d6c1f58.md) |
+| B-013 | broken | v202 border-clash probe never sees the winner, then hangs on a script error | bacccac | [2026-10-22-2208-d6c1f58](reports/2026-10-22-2208-d6c1f58.md) |
+
+### B-016: v24p token meshes don't match the old drawing on this box
+- repro:
+  1. `cd $R && DISPLAY=:5 GODOT=$G PROBE_SECS=5400 sh scripts/probes.sh v24p`
+- error: `PROBE FAIL the tokens, shields and rings drawn from meshes look as they did: 19.6/255 apart on average over 177518 pixels, 26.2% off by more than 24/255 (where an antialiased edge falls in a pixel); 28.84% two pixels across` (limits: mean <6.0, coarse <1%)
+- suspect: `game/board/token_mesh.gd` vs shape draw; check at `tools/shots/v24p.gd:193-215`
+
+### B-015: v21 never sees the battle's loser at 0, reports -1 left standing
+- repro:
+  1. `cd $R && DISPLAY=:5 GODOT=$G PROBE_SECS=5400 sh scripts/probes.sh v21`
+- error: `PROBE FAIL the battle's loser is destroyed to the last piece, its horse and guns too (-1 left standing)`
+- suspect: `tools/shots/v21.gd:310-328` (`standing` stays -1: the theater closed or reached "done" with no army at n==0, so the count never ran)
 
 ### B-014: v22 never sees the musket shots fly, and the fall-timing fact gets no samples
 - repro:
   1. `cd /home/box/playtester/concurrent && DISPLAY=:5 GODOT=/home/box/playtester/godot/godot sh scripts/probes.sh v22`
 - error: run 1 `PROBE FAIL the shots fly: 4 seen, each from the side that won its pair at the men facing it across the field (1 sides fired)` and `PROBE FAIL the first man falls as the first ball reaches him, never before it (0 volleys timed, 0 early)`; run 2 `PROBE FAIL the shots fly: 0 seen … (0 sides fired)`, `PROBE FAIL a moment with a thread and shots in the air was caught (v22_01)`, `PROBE FAIL the first man falls as the first ball reaches him, never before it (1 volleys timed, 1 early)`
+- latest (d6c1f58): now a crash, 2 facts ok then `handle_crash: Program crashed with signal 11` (exit 134) after ~630 s; earlier run exit 1
 - suspect: `tools/shots/v22.gd:229` and `:314` (samples `dio.tracers` once per frame); tracers may spawn and finish between frames at this box's frame rate. Counts change run to run, so possibly frame-rate sensitive, but it fails every time here. Tags, threads, colours, Fortune rebate line and free-for-all ordering facts all pass.
 
 ### B-013: v202 border-clash probe never sees the winner, then hangs on a script error
 - repro:
   1. `cd /home/box/playtester/concurrent && DISPLAY=:5 GODOT=/home/box/playtester/godot/godot sh scripts/probes.sh v202`
 - error: `PROBE FAIL the dice land and the clash knows its winner (red)` then `SCRIPT ERROR: Invalid access to property or key 'meet' on a base object of type 'Dictionary'.` at `_clash (res://tools/shots/v202.gd:180)`; probe never quits (killed after 900 s). Same on both runs.
+- latest (d6c1f58): under PROBE_SECS=5400 got only 1 fact (`a red land and a blue land share a border...`), then killed after 5400 s (2/2 runs)
 - suspect: `tools/shots/v202.gd:180` indexes `b.drawn_clash["meet"]` with no empty check (line 183 has one); underlying: `game/board/map_board.gd:1055-1056` returns before setting `drawn_clash` once `w >= 1.0` (CLASH_PUSH 0.65 s), after `:813` cleared it, so a frame carrying `winner` may never be drawn at this box's low software-GL frame rate. Facts before the break (meet head-on, camera lean-in, lands clear of the card) all pass.
 
 ## fixed
