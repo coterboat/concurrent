@@ -70,7 +70,9 @@ points as noise.
 - **The owner's review notes are the other outside eyes.** `docs/PROMPTING.md` is the playbook
   they built: read it before writing a line or a prompt. After a review round, run
   `python3 tools/review/review.py lessons --write docs/PROMPTING.md` and fold any new pattern into
-  its rules.
+  its rules. **Write it on the Mac only:** `review/` is gitignored, so the tool counts only the batches
+  on the machine it runs on, and on the PC (three batches) `--write` replaced the Mac's history of
+  every past round with those three (caught and reverted, v2.4).
 - **The bots' loop.** Two bots answer each push (both commit as "bug clerk"): the playtester's verdict
   (`bugs: <sha> N open, M fixed`, about 25 min after the push) and the play critic's review
   (`bugs: review <sha> <slug>`, about 50 min after that). A scheduled task in the Claude app

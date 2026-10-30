@@ -2,6 +2,31 @@
 
 The bible says amendments come with a dated entry and the test or band that justified them. Everything below has both.
 
+## v2.4.1 — 22 Oct 2026: the review round in, and Dad's build (no rule change: rules 23)
+
+Alex folded in the two batches that had waited since v2.3, and every take was accepted.
+- **`el_lines` (3 of 3)**, three lines in the cast's own ElevenLabs voices. Before, one was a broken clip and
+  two had words but no voice:
+  - Imre's "Check." (`taunt_v4`; it was a 0.24 s clip);
+  - the advisor's "Fortune, favour us now! Throw again!" (`fortune_us`);
+  - Quill's Fortune line (`fortune_v2`).
+- **`v20_diorama` (25 of 25)**: the land's B models, the quarry and the oasis, in the game since v2.3, are kept.
+  Their pictures now sit beside them (`assets/models/land/*_b.png`), as the A models' do.
+- **`review.py lessons --write` only counts this machine's batches** (`review/` is gitignored). On the PC
+  (three batches) it rewrote PROMPTING.md's Lessons from those alone and wiped the Mac's history: caught and
+  reverted, and CLAUDE.md now says to write lessons on the Mac only. This round adds no lesson: every take
+  was kept first time, with no notes.
+- **Evidence, on the main checkout with the new assets:**
+  - `check.sh` green; the full suite 815 passed, 0 failed.
+  - Every probe, 36 of 36. The tutorial probe (v23) won its war in round 3 once under load and skipped the
+    last lessons. Two reruns played the full tutorial, all ten lessons to round 6.
+  - The export smoke on all six maps, and an exported war kept.
+- **Dad's build:** `build/CONCURRENT-windows.zip` (512 MB: `CONCURRENT.exe` 589 MB, and `Read me first.txt`),
+  from this tree with Godot 4.7.1.
+  - The game inside the exe starts a war on all six maps, and keeps its war record.
+  - The real exe boots headless and quits cleanly, with the user folder and settings untouched.
+  - The v2.3 zip is kept beside it.
+
 ## v2.4 — 21 Oct 2026: Alex's playtest of v2.3.1 (rules 23)
 
 Alex played v2.3.1 on the PC and left notes (`concurrent_playtest_notes.txt`, 10-21): "the polish worked

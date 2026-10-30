@@ -56,7 +56,16 @@ shown: fine" is as useful as a bug.
   take every recruit. Since v2.3 the game says so once in the log and the tally ("· 2 no room") rather
   than asking about them.
 
-## v2.4: Alex's playtest of v2.3.1 (this push)
+## v2.4.1: the review round (this push)
+
+- **Three lines have voices now:** Imre's "Check." (was a 0.24 s clip), the advisor's "Fortune, favour us now!
+  Throw again!" and Quill's Fortune line. **Poke:** `./scripts/probes.sh v23`. Its sound trace should find
+  nothing missing. Say which round its war ends in: it can be won early, and then the last lessons go untested.
+- **The land's B models** are kept as they were; their pictures are added beside them (`assets/models/land/*_b.png`).
+- This push adds the review round's assets and changes no code: your report on d6c1f58 (B-013 to B-016,
+  all probes on your box) still stands, and its fixes come next.
+
+## v2.4: Alex's playtest of v2.3.1
 
 **Rules 23** for new games: a commander's fronts make one call together, and a melee's even volley is
 fired again. Every older save replays as it was played. The full story is in `docs/CHANGELOG.md` (v2.4),
