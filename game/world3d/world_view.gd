@@ -140,7 +140,9 @@ func setup(p_art: RefCounted, p_map: RefCounted, state_tex: Texture2D, p_terrain
 	env.glow_enabled = true
 	env.glow_intensity = 0.35
 	env.glow_bloom = 0.04
-	env.fog_enabled = true
+	## v2.5: no haze on the Compatibility renderer (OpenGL, a PC with neither Vulkan nor Direct3D 12):
+	## there it greyed the whole land, and the sea under it went from navy to the colour of the haze
+	env.fog_enabled = RenderingServer.get_current_rendering_method() != "gl_compatibility"
 	env.fog_light_color = Color(0.76, 0.74, 0.70)
 	env.fog_density = 0.0
 	env.fog_sky_affect = 0.35

@@ -451,7 +451,12 @@ static var _coats := {} ## a model's own material -> it with the seating coat ov
 
 static func _seat_coat(inst: Node) -> void:
 	## v2.0.2: the model's own material, with a second coat over it (seat.gdshader): its grass
-	## plate's lime toned toward the land's greens and its foot darkened where it meets the ground
+	## plate's lime toned toward the land's greens and its foot darkened where it meets the ground.
+	## v2.5: not on the Compatibility renderer (OpenGL, a PC with neither Vulkan nor Direct3D 12),
+	## which drew the coat's multiply over every building near-black: there the model's own
+	## material stands alone, as the decals' contact shadow already leaves it (_contact)
+	if RenderingServer.get_current_rendering_method() == "gl_compatibility":
+		return
 	for mi in inst.find_children("*", "MeshInstance3D", true, false):
 		var m: Mesh = (mi as MeshInstance3D).mesh
 		if m == null or m.get_surface_count() < 1:

@@ -5,6 +5,11 @@ const Style := preload("res://game/core/style.gd")
 
 signal closed
 
+var _scroll: ScrollContainer ## v2.5: the rows, so the panel is never taller than the screen
+var _rows: VBoxContainer
+var _head: Control
+var _done: Control
+
 
 func _ready() -> void:
 	mouse_filter = Control.MOUSE_FILTER_STOP
@@ -18,11 +23,22 @@ func _ready() -> void:
 	var p := PanelContainer.new()
 	p.add_theme_stylebox_override("panel", Style.panel_box(28))
 	c.add_child(p)
+	var outer := VBoxContainer.new()
+	outer.add_theme_constant_override("separation", 10)
+	outer.custom_minimum_size = Vector2(560, 0)
+	p.add_child(outer)
+	_head = Style.label("Settings", 40, Style.CREAM, "display")
+	outer.add_child(_head)
+	## v2.5: at Large text the panel stood 827 high in a 783 screen, its Done below the edge. The rows
+	## scroll when the screen is shorter than they are; the title and Done stay put
+	_scroll = ScrollContainer.new()
+	_scroll.horizontal_scroll_mode = ScrollContainer.SCROLL_MODE_DISABLED
+	outer.add_child(_scroll)
 	var v := VBoxContainer.new()
 	v.add_theme_constant_override("separation", 10)
-	v.custom_minimum_size = Vector2(560, 0)
-	p.add_child(v)
-	v.add_child(Style.label("Settings", 40, Style.CREAM, "display"))
+	v.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	_rows = v
+	_scroll.add_child(v)
 	v.add_child(_slider("Music", "music"))
 	v.add_child(_slider("Sound effects", "sfx"))
 	v.add_child(_slider("Campfire ambience", "ambience"))
@@ -33,13 +49,25 @@ func _ready() -> void:
 	v.add_child(_toggle("Roll the dice yourself in your battles", "roll_yourself"))
 	v.add_child(_choice("Films", "motion", ["Cutscenes and living paintings", "Living paintings only", "Still paintings"], ["all", "paintings", "off"]))
 	v.add_child(_choice("Battle speed", "speed", ["Slow — savor every roll", "Normal", "Fast"], ["slow", "normal", "fast"]))
-	v.add_child(_choice("Text size", "ui_scale", ["Normal", "Large", "Extra large"], [1.0, 1.15, 1.3]))
+	v.add_child(_choice("Text size", "ui_scale", ["Normal", "Large"], [1.0, Settings.UI_SCALE_MAX])) ## (v2.5: no Extra large, see settings.gd)
 	v.add_child(_toggle("Advisor tips", "tips"))
 	v.add_child(_toggle("Show enemy ceilings (≤) at your borders", "ceilings"))
 	v.add_child(_toggle("Fullscreen", "fullscreen"))
 	var done := Style.button("Done", func(): closed.emit(), 0, 22)
 	done.custom_minimum_size = Vector2(0, 56)
-	v.add_child(done)
+	_done = done
+	outer.add_child(done)
+	resized.connect(_fit)
+	_fit.call_deferred()
+
+
+func _fit() -> void:
+	## the rows as tall as they are, or as the screen leaves room for (the panel's frame and margins,
+	## the title, Done, and a breath above and below)
+	if _rows == null:
+		return
+	var room: float = get_viewport_rect().size.y - 2.0 * 28.0 - _head.get_combined_minimum_size().y - _done.get_combined_minimum_size().y - 2.0 * 10.0 - 40.0
+	_scroll.custom_minimum_size.y = minf(_rows.get_combined_minimum_size().y, maxf(room, 120.0))
 
 
 func _row(title: String) -> HBoxContainer:

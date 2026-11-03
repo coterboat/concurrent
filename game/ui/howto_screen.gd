@@ -23,7 +23,7 @@ const PAGES := [
 	["The round", "howto_sealed",
 	"Every round has four phases, each announced as it begins:\n\n•  REINFORCEMENT PHASE — place your fresh recruits (and turn in cards).\n•  ORDERS PHASE — choose your attacks and surges, then seal them.\n•  THE BATTLES — everyone's orders happen at once: border clashes first, then the assaults, then every surge together, then the reckoning.\n•  REGROUP PHASE — march troops one land toward the front.\n\nIn hotseat games each commander places and orders in private, behind the cover screen."],
 	["Recruits", "howto_cards",
-	"Each round you get new armies: one for every three lands you hold (at least 3), a little extra for a big connected empire, and a bonus for every region you hold completely.\n\nYou can place at most 1 + (the number of your own lands touching it) on any single land — so a lonely outpost can't become a fortress overnight. Anything you don't place is lost."],
+	"Each round you get new armies: one for every three lands you hold (at least 3), a little extra for a big connected empire, and a bonus for every region you hold completely. With the levée (a Standard rule), a commander behind the leader in lands gets one more for every three lands behind, up to four.\n\nYou can place at most 1 + (the number of your own lands touching it) on any single land — so a lonely outpost can't become a fortress overnight. Anything you don't place is lost."],
 	["Attack — and leave home", "howto_march",
 	"To attack, pick one of your lands and send armies at a neighboring land. Those armies LEAVE HOME the moment orders are sealed. They do not defend the land they left.\n\nEvery land keeps its garrison at home (the shield beside its number, see Digging in); everyone else may march. Attack one land from two of yours and they go as two fronts, not one army: the defenders hold both (see Battles)."],
 	["The walk-in", "howto_walkin",
@@ -39,9 +39,9 @@ const PAGES := [
 	["Surge", "howto_surge",
 	"Order a surge like any march: drag from the land you're attacking to the next land beyond it (or press Surge onward on the attack's card). If you take the first land, the men who took it (from every direction) press on together into the second. Click the surge's arrow to choose how many: any number, up to all who survive but the one who stays.\n\nAll surges happen at once, after every other battle — THE SURGES stage of the battle report. Two surges running at each other's lands meet head-on in a border clash.\n\nA surge into a land you also attack directly is a second wave. It arrives after that assault: if the land has already fallen, its men march in to hold it; if it still stands, they storm what is left."],
 	["The regroup phase", "howto_march",
-	"After the battles, everyone marches troops between their own lands at the same time: drag from one of your lands onto a neighbour of yours. Each soldier moves one land and no further. Those who just arrived stay put, and dug-in defenders never leave.\n\nFeed the front, shore up a land that faces a big stack, or pull back from one that's lost. Then the next round's orders begin."],
+	"After the battles, everyone marches troops between their own lands at the same time: drag from one of your lands onto a neighbour of yours. Each soldier moves one land and no further. Those who just arrived stay put, and dug-in defenders never leave.\n\nFeed the front, shore up a land that faces a big stack, or pull back from one that's lost. Then the next round begins."],
 	["Digging in", "howto_dugin",
-	"Every land keeps a garrison: the men on the shield beside its number. They never march. On a land with nobody dug in yet, the one man who must stay behind stands in the garrison, so the shield always shows who stays home and the big number shows exactly who can march.\n\nEvery round you keep a land, one more man digs in, up to three (fewer on a land with few neighbours of yours; a fortress or a capital takes a fourth). Fresh conquests start with just the man who stays. The shield shows how deep they are: plain wood for the one man held back, then brass, steel and gold, and gold on crimson for a fortress's or a capital's four.\n\nBoth defend; the field army falls first and the garrison last."],
+	"Every land keeps a garrison: the men on the shield beside its number. They never march. On a land with nobody dug in yet, the one man who must stay behind stands in the garrison, so the shield always shows who stays home and the big number shows exactly who can march.\n\nEvery round you keep a land, a fresh man joins its garrison, free, up to three (fewer on a land with few neighbours of yours; a fortress or a capital takes a fourth). Fresh conquests start with just the man who stays. The shield shows how deep they are: plain wood for the one man held back, then brass, steel and gold, and gold on crimson for a fortress's or a capital's four.\n\nBoth defend; the field army falls first and the garrison last."],
 	["Capitals", "howto_capital",
 	"Every commander keeps a capital, marked with a crown. After a random deal you name yours at deployment (the advisor pencils one in; choose 'Make this our capital' on any of your lands to move it). When lands are claimed in turn, your first claim is your capital.\n\n•  It pays the treasury: 2 recruits every round you hold it.\n•  It is a fortress: its defenders fire a line of six, and one more man may dig in there.\n•  On maps with supply, the road home runs to your capital.\n\nIf it falls, the captor plunders it: half your cards (drawn by lot) and 3 fresh troops raised in the city on the spot. The court flees at once to the land deepest among your own, with its guard: one fresh troop, and the garrison there dug in to the full. In your next reinforcement phase you may move it anywhere you hold."],
 	["Fortune", "howto_fortune",
@@ -82,8 +82,9 @@ func _ready() -> void:
 	head.add_child(sp)
 	if not overlay:
 		head.add_child(Style.button("Play the Tutorial", func():
-			Settings.set_value("seen_tutorial", true) ## v1.14: as the title's button does (it kept offering it)
-			main.start_tutorial(), 0))
+			main.new_war(func(): ## v2.5: asks first when a war is saved
+				Settings.set_value("seen_tutorial", true) ## v1.14: as the title's button does (it kept offering it)
+				main.start_tutorial(), true), 0))
 	head.add_child(Style.button("Close" if overlay else "Back", func(): _close(), 140))
 	v.add_child(head)
 	var row := HBoxContainer.new()

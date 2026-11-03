@@ -46,6 +46,10 @@ func run(probe) -> void:
 		return
 	await _click_at(btn.get_global_rect().get_center())
 	await p.frames(10)
+	var go: Button = _button(main, "Start the tutorial")
+	if go != null: ## v2.5: a saved war (an earlier probe's) is asked about first
+		await _click_at(go.get_global_rect().get_center())
+		await p.frames(10)
 	gs = main.current
 	s = main.session
 	p.ok(bool(s.config.get("tutorial", false)) and s.map.id == "knife7", "a click on it starts the tutorial on the Isthmus (%s)" % s.map.id)

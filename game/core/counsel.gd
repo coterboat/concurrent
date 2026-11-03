@@ -97,7 +97,7 @@ static func advice(s: Node) -> Array:
 		out.append(_item("cards", "We hold a set of cards. Open the Cards and turn them in for %d more troops this round." % s.set_value_now(), "pleased", "cards", [], 55))
 	## 7. the clock
 	if s.is_last_round() and not s.conquest():
-		out.append(_item("final", "Final round. Only land counts when this resolves — spend every soldier.", "alarmed", "final", [], 90))
+		out.append(_item("final", "Final round. Only land counts when this resolves: strike where you can take it, and keep enough at home to hold what you have.", "alarmed", "final", [], 90))
 	out.sort_custom(func(a, b): return int(a["rank"]) > int(b["rank"]))
 	return out
 
@@ -233,11 +233,11 @@ static func lesson(s: Node, surge_pick: int) -> Dictionary:
 				return _item("t-r1b", "Now attack: with our land selected, click an enemy or empty neighbor, or drag onto it. Every order happens at once — and armies you send LEAVE HOME.", "neutral", "attack_hint", [], 150)
 			return _item("t-r1c", battle_rule + " Happy? Press SEAL, then watch it unfold — you roll the dice in your own battles.", "pleased", "", [], 150)
 		if r == 2:
-			return _item("t-r2", "Lands we hold dig in: each round a held land gains a dug-in defender (the gold shield beside its number). They never march, so a dug-in land can send every other soldier and still stay ours. And after every round's battles comes the regroup phase, when we march troops one land toward the front." if s.map.maneuvers else "Lands we hold dig in: each round a held land gains a dug-in defender (the little shield). They never march, so a dug-in land can send every other soldier and still stay ours. From now on we may also make one move: drag onto a land of ours.", "neutral", "dug_in", [], 150)
+			return _item("t-r2", "Lands we hold dig in: each round a held land gains a dug-in defender (the brass shield beside its number: steel, then gold, as more dig in). They never march, so a dug-in land can send every other soldier and still stay ours. And after every round's battles comes the regroup phase, when we march troops one land toward the front." if s.map.maneuvers else "Lands we hold dig in: each round a held land gains a dug-in defender (the little shield). They never march, so a dug-in land can send every other soldier and still stay ours. From now on we may also make one move: drag onto a land of ours.", "neutral", "dug_in", [], 150)
 		if r == 3:
 			return _item("t-r3", "Surge: after ordering an attack, drag from the land you're attacking on to the next one. If the attack wins, the men who took it push on — after every other battle. Click the surge arrow to choose how many.", "neutral", "surge", [], 150)
 		if s.is_last_round():
-			return _item("t-last", "Final round! Score is lands plus region bonuses. Soldiers left standing are worth nothing now — spend them.", "alarmed", "final", [], 150)
+			return _item("t-last", "Final round! Score is lands plus region bonuses, so take what land you can. But armies that march leave home: keep enough behind to hold what you have.", "alarmed", "final", [], 150)
 		if r == 4:
 			return _item("t-r4", "Look for a walk-in: the faded arrows show where everyone marched last round. A land left with one man falls to a small push.", "neutral", "", [], 150)
 	elif s.world.round == 1 and ph == Session.Phase.PLANNING and s.plan_step == "reinforce":

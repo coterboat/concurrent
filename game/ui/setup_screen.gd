@@ -405,7 +405,7 @@ func _start() -> void:
 	var cfg := {"map": map_path, "seats": cfg_seats, "length": length, "timer": timer, "tutorial": false, "preset": Rules.preset_of(rules)}
 	for k in rules.keys():
 		cfg[k] = rules[k]
-	main.start_game(cfg)
+	main.new_war(func(): main.start_game(cfg)) ## v2.5: asks first when a war is saved
 
 
 func _refresh_rules() -> void:
