@@ -2,6 +2,191 @@
 
 The bible says amendments come with a dated entry and the test or band that justified them. Everything below has both.
 
+## v2.5 — 3 Nov 2026: Dad's laptop (no rule change: rules 23)
+
+Alex: "let's address these bugs, start another general pass, and then let's be ready with a final version i
+can hand off to my dad to start playing". A first-time player's pass aimed at Dad's PC (Alex, 11-03: a
+Lenovo laptop, 13 to 14 inches; likely integrated graphics, a 1920×1080 or 1366×768 screen), built beside
+v2.4.2 and merged with it. Nothing in `engine/` changed: every save replays as it was played, and the
+arena's fingerprint is main's. The pass's full notes, every number in them: `docs/v25/v25-pass.md`.
+
+### Will it start on his PC? (the renderer)
+
+- **The fallback is on.** Godot's defaults go Vulkan, then Direct3D 12, then OpenGL 3.3, then ANGLE for old
+  drivers. Nothing held that before; `test_v25` does now. A whole war plays on OpenGL, and the real `.exe`
+  starts there.
+- **On OpenGL the land looked broken:** every building near-black (v2.0.2's seating coat) and the land and sea
+  grey (the haze). On the Compatibility renderer only, the buildings now go without the coat and the land
+  without the haze (`scenery.gd`, `world_view.gd`). Vulkan and Direct3D 12 are untouched.
+- **On OpenGL the land stepped itself down for nothing:** that renderer reports no timings, so a first-draw
+  hitch (100 to 600 ms, a material compiled) counted in full against it. A frame now counts a tenth of a
+  second at most (`land.gd` `_watch_speed`); a land slow for real still steps down.
+
+### Will it fit his screen?
+
+- **The window ran off a 1366×768 laptop's screen.** Its least size plus its borders put the title bar above
+  the top of the screen, out of reach. The window now keeps its least size inside the screen and is centred
+  with its borders counted (`game/core/window_fit.gd`, peeled out of `main.gd`). On a screen under about
+  1390×850, as Windows shows it, it opens maximized, and F11 comes back to maximized. That covers a 1366×768
+  laptop and a 1080p one at 125% or 150%.
+- **A 14-inch 1080p laptop runs Windows at 150%, and the game ignored it:** every word three-fifths the size
+  of everything else. **A laptop's first launch now reads Large text** (only before a text size was ever
+  saved, so Alex's machines and the probes keep theirs). On 1366×768 the words go from 78% to 90% of their
+  design size; at 1080p 150%, from 111% to 128%.
+- **Extra large text hid the ORDERS dial.** Text size is now Normal or Large, and a saved Extra large reads as
+  Large. The settings panel scrolls on a short screen, its Done always in reach.
+- **The land drew 1.6 times a small window's pixels.** It now draws the window's own.
+
+### A first-time player's war, end to end
+
+- **`tools/first_war.gd` walks it as Dad meets it, in two launches.** The first: title, tutorial, New Game on
+  the readme's war, two rounds, quit. The second: settings back, F11, Continue, played to the end. Both wars
+  are kept and replay to every round's hash. Results:
+  - 22 of 22 in the project, and 22 of 22 from the exported `.exe`'s pack;
+  - 23 of 23 on OpenGL;
+  - the real `.exe` opens on its title at 85% of the screen, with its title bar on the screen.
+- **The words, audited against rules 23, and fixed:**
+  - "(ties go to the attacker)" on the battle card;
+  - the "Your lands" hint and the orders' "click again to add a recruit";
+  - the tutorial's "gold shield" (brass since v2.4);
+  - the final round's advice: it said to spend every soldier, and now says to keep enough at home to hold
+    what you have;
+  - "so every volley is even";
+  - "at most 5 a side" at a capital or fortress (6 there);
+  - a scramble's "fired again";
+  - How to Play on digging in, the levée and the regroup, and the README on digging in;
+  - "Save & quit to title" promised a save it doesn't make: it's "Quit to title".
+
+### Soaks, and the land on a laptop's graphics
+
+- **A whole war on the land on each of the six maps,** every battle opened, and the Wide World again on
+  OpenGL: no script error and no leak. The nodes that grow are v2.4's figure pool, which stops at the biggest
+  battle so far; memory rises 17 to 22 MB over a war.
+- **The land's own GPU time on the RTX 3070 at 1080p**, step 0 to step 4: 5.3 ms to 2.2 ms on the board, 4.1
+  ms to 1.8 ms in a battle. An Iris Xe draws roughly an eighth of that, so about 40 ms and 18 ms (an
+  estimate).
+- **On integrated graphics the land now starts two steps down** (no SSAO, no MSAA, two shadow splits). Every
+  machine also starts its land on the step it settled on last time, less one, and a minute of smooth play
+  remembers the better step, so a capable laptop climbs back over a few wars (`game/world3d/adapter.gd`,
+  `land.gd`, settings key `land_quality`). On a graphics card nothing changes.
+
+### Anything else that would make Dad stop playing
+
+- **A new war silently replaced the saved one:** "Tutorial", or New Game then Begin, ended a war played over
+  three evenings at one click. Now the game asks first, "Start the new war" or "Keep my war"
+  (`game/ui/confirm.gd`). The old war is kept in `wars/` either way.
+- **A save cut short** (a crash, a power cut) or written by a newer build left a Continue to nowhere. The
+  save is now written whole beside the slot, then put in place. One that can't be read is set aside
+  (`savegame.unreadable.json`, kept for Alex), with a line on the title.
+- **Dad's readme** now says to extract the zip first; on a laptop, Text size Large and F11 if the words are
+  small, and L for the flat chart if the land is slow; and that a new war ends the saved one, so the game asks.
+
+### Evidence (the merged branch: v2.4.2 and v2.5 on v2.4.1)
+
+On the PC, branch `v25` (v2.4.2's `1953944` and the pass's `e6ffbc1`, merged without a conflict; the one line
+both changed in `land.gd`, the watchdog's, was the same in each):
+- `check.sh` green, and the full suite `CONCURRENT ok passed=831 failed=0` (815, and `test_v25`'s 16);
+- every probe, windowed: **37 of 37**, among them v25 (45 facts), the whole tutorial (v23, 45) and v2.4.2's four
+  (v202 34, v21 13, v22 19, v24p 30);
+- the export: the Windows pack (483 MB) loads every map's art and data and starts a war on all six, and the
+  exported game kept its own war record (rules 23).
+
+### Alex's calls (C12-C17)
+
+Open when v2.5 was built (each with the pass's pick, which the coordinator shares):
+- **C12: Extra large text is gone** (it hid the ORDERS dial). a) leave it so, the pick; b) rework the bar,
+  How to Play, the settings and the setup to fit bigger text.
+- **C13: the setup's map cards cut their names at Large text** (the chosen map's is whole). a) leave it, the
+  pick; b) rework the card.
+- **C14: the final round's voiced line** ("Throw in everything. Leave nothing in the barracks.") now says the
+  opposite of the advice under it. a) keep the advisor's voice, the pick; b) a new take.
+- **C15: OpenGL's first-use hitches** (100 to 600 ms, the first time a battle's pieces are drawn, once a
+  launch). a) leave them, the pick: they no longer cost the land its quality; b) draw every battle material
+  once, offscreen, while the land is built.
+- **C16: small words left:** the hotseat's "Pass the computer to You", two map blurbs that overstate, a few
+  subtitles' stray commas. a) leave them, the pick; b) fix the words.
+- **C17: the war's chips are 22 to 24 px on a laptop** (Auto-place, Clear, Cards, Review, ◀ Recruits, ? Dice,
+  Auto-roll, Skip battles). a) raise them to about 32 px in a pass of their own, the pick: the command bar is
+  full, so it's a re-layout; b) leave them (each has a bigger way round: the dial, Space, Esc).
+
+## v2.4.2 — 3 Nov 2026: the bot's four probes on a slow box (no rule change: rules 23)
+
+The playtest bot's verdicts on v2.4 (`d6c1f58`) and v2.4.1 (`91128e7`) left four open bugs, B-013 to B-016,
+all in probes on its box, which draws in software (llvmpipe). Three were frame-rate traps. One was the Godot
+version. Under them was one thing in the game: the land's watchdog couldn't see a slow machine while a probe
+held the clock.
+
+- **B-013** (`v202`: one fact in 5,400 s on `d6c1f58`, none in 900 s on `91128e7`). Two causes:
+  - **The land's watchdog judged the machine by the game's clock.** Since v2.3.1, `p.steady()` holds the
+    game to a 60th of a second a frame, so a frame that took seconds looked like a 60th. The land never gave
+    up its dearest effects: on the bot's box it drew SSAO, 2× MSAA and four shadow splits in software
+    through every held moment. It now judges the machine's own frame (`land.gd`: the frame's delta over the
+    clock's rate). The game never changes that rate, so play is untouched. Shown with the new `--slow=100`
+    on the Compatibility renderer (about 9 frames a second, held a 60th): the land stepped from quality 0
+    to 4 within 100 frames. Before the change it stayed at 0.
+  - **The whole probe was held a 60th of a second a frame**: 4,114 frames at `--box=40`. Now a frame moves
+    the game a quarter of a second at most, which changes nothing on a machine that draws faster than that.
+    It drops to a 60th only from the clash's charge to the winner carrying on, for the swoop, and for a
+    second of the battle. Waits that meant seconds are now seconds (`p.secs()`).
+- **B-014** (`v22`): "then Dad's assault on Mill from Ridge" failed after 18 facts (`91128e7`, and here at
+  `--box=40`, to the fact). A finished battle moves on by itself 2.6 s after its end (v2.4), and the probe
+  waited 40 frames there before pressing on: a minute on the box. By then the melee had gone and the assault
+  on Mill had opened, so the probe's press fought that too, and the battle it waited for next never came. The
+  wait is two-thirds of a second of game time now. The shots are watched at a 20th of a second (six frames
+  to a ball's flight; a 60th tripled the frames and saw no more), and the fall-timing volleys at a 60th.
+  - **Found on the way:** `steady()` takes hold from the next frame, because Godot sets a frame's step before
+    any script runs. The probe ordered its first timed volley in the frame it asked for a 60th, and that frame
+    still moved a quarter of a second. The first men fired and their balls landed unseen, so the first fall
+    looked early (4 runs in 6). It now waits a frame.
+  - **The crash** (signal 11 after about 630 s, once, on `d6c1f58`) didn't reproduce here in 15 runs (NVIDIA;
+    Forward+ and Compatibility; full speed, `--box=40` and `--box=120`), and the bot's run on `91128e7` didn't
+    crash. It isn't called fixed: PLAYTEST asks for a backtrace if it comes back.
+- **B-015** (`v21`: "-1 left standing", 3 runs in 3; reproduced here at `--box=40`). The same trap: the probe
+  waited 90 frames at a battle's end before counting the loser's pieces, and on the box the battle had closed
+  and its field was gone. That wait is now held a 60th of a second a frame (1.5 s, inside the 2.6 s before
+  the battle moves on), and the rest of the probe a quarter at most. The clash on Ridge's border, which failed
+  once on the bot (Harbor's column "-1"), is watched a 60th too: Ridge's column stands aside until the shove
+  is over, and the clash is gone a quarter of a second later.
+- **B-016** (`v24p`: the token meshes "19.6/255 apart"). It wasn't llvmpipe or the renderer: it was the Godot
+  version.
+  - Godot 4.4 on the PC's RTX 3070 gives the bot's numbers: 19.6/255 over 177,507 pixels (the bot's 177,518),
+    26.2% off, 28.85% two pixels across (28.84%). Godot 4.7.1 gives 4.0/255 on Forward+, Compatibility, ANGLE
+    and D3D12.
+  - The meshes draw pixel for pixel the same on 4.4 and 4.7.1; the old drawing doesn't. Before 4.7 an
+    antialiased line comes out about a pixel wider than asked (a 2 px line covers 3.24 px on 4.4 and 2.20 on
+    4.7.1), and the meshes were matched to 4.7's lines.
+  - On Godot 4.7 or later the meshes are still held to the old drawing. On any Godot they're held to their
+    own 4.7 picture, `tools/shots/ref/v24p_tokens.webp` (lossless, 94 KB, kept out of the import): 0.00/255
+    on 4.4 and 4.7.1, 0.42 on Compatibility, 0.88 on ANGLE. Five planted faults fail it on both Godots: a
+    token a pixel too big (1.9/255, half a percent off), its edge a pixel too thin (10/255, 15%), its sheen or
+    its shadow gone (3.2/255 and 8%; 1.7/255 and 4%), its face a shade lighter (5.3/255). The probe logs
+    the Godot, the renderer and how wide this Godot draws its lines. `PROBE_ARGS=--ref ./scripts/probes.sh
+    v24p` writes the picture afresh, on 4.7 or later and only while the meshes match the old drawing.
+  - On an older Godot (the Mac's 4.5.1, and the bot's) the tokens' lines are now 4.7's, about a pixel
+    thinner than v2.3 drew them there. On the PC and in Dad's build (4.7.1) they look as they always did.
+  - **Also caught at `--box=40`:** "musket balls are seen to fly (0 streaks)", the bot's "once under load".
+    v24p's battles are now held a quarter of a second a frame, and a 20th until six streaks have been seen
+    in each of the first two.
+- **The probe harness** (`tools/probe.gd`):
+  - `p.steady(on, step)` with a coarse step costs a fast machine nothing and keeps a slow one from leaping over
+    a moment. Its floor is now a thousandth (was a hundredth), so a 60th holds on a box as slow as 16 s a frame.
+  - `p.secs(t)` waits t seconds of game time.
+  - `p.lap(part)` logs the frames and seconds a part took.
+  - `--slow=MS` makes every frame take MS longer, as a slow box's do. `--box` only moves the game on.
+- **Evidence** (the PC, Godot 4.7.1, with the v2.5 session's soak and suite running alongside). Frames as the
+  bot's box (`--box=40`) before and after, every fact passing after:
+
+  | probe | facts | `--box=40` before → after | `--box=120` | full speed |
+  |---|---|---|---|---|
+  | v202 | 34 | 4,114 → 2,234 | 2,048 | 6,440 |
+  | v21 | 13 | 1,647, FAIL → 1,246 | 1,238 | 6,743 |
+  | v22 | 19 | 4,181, FAIL → 1,692 | 1,705 | 5,784 |
+  | v24p | 30 | about 800, FAIL (0 streaks) → 1,243 | 1,273 | 3,160 |
+
+  Here a frame also waits on things that take real time (the land is built on a worker thread), which cost
+  this PC more frames than they will cost the bot. `check.sh` green.
+- The merged branch's full gate is in v2.5's entry.
+
 ## v2.4.1 — 22 Oct 2026: the review round in, and Dad's build (no rule change: rules 23)
 
 Alex folded in the two batches that had waited since v2.3, and every take was accepted.

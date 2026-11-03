@@ -151,6 +151,14 @@ points as noise.
   key may cut in, and Space/Enter skips. Faces show their bubble when their line starts. The
   battle report and auto-rolled battles hold a few seconds for a line to finish.
 - Probes run with films off (`tools/probe.gd` sets `motion = "paintings"`); `v19` turns them on.
+- **The bot's box draws a frame every second or more** (software GL), so `p.frames(N)` is N/60 of a
+  second only at 60 frames a second. A wait that means time is `p.secs(t)`. A moment a probe samples
+  needs `p.steady(true, step)` around it (a quarter of a second costs a fast machine nothing), and
+  `steady()` takes hold from the next frame. See the box here with `PROBE_ARGS=--box=40` (its leaps)
+  or `--slow=MS` (its slowness). (v2.4.2: B-013 to B-016)
+- **A laptop's first launch reads Large text, and the land starts lower on integrated graphics** (v2.5:
+  `main.gd` `first_text_size`, `game/world3d/adapter.gd`, the remembered `land_quality`). Neither applies in
+  a probe, which isn't the main scene: `tools/first_war.gd` walks a first launch on a fresh user folder.
 - `ready` is a member of every Control. Don't name a variable `ready` (a parse error that
   fails every script that preloads it).
 - **Media stays in plain git** so the playtest bot's clone is complete. Encode for size (Theora

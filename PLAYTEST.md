@@ -56,7 +56,54 @@ shown: fine" is as useful as a bug.
   take every recruit. Since v2.3 the game says so once in the log and the tally ("· 2 no room") rather
   than asking about them.
 
-## v2.4.1: the review round (this push)
+## v2.5: Dad's laptop (this push)
+
+No rule change (rules 23), nothing in `engine/`: every save replays as it was played. A first-time player's
+pass aimed at Alex's dad's laptop (integrated graphics, a small screen). `docs/CHANGELOG.md` (v2.5) has it all.
+
+- **OpenGL (the Compatibility renderer), which your box draws in software:** the buildings were near-black and
+  the sea grey there. They should be lit, and the sea blue. **Poke:** `./scripts/probes.sh v25` (45 facts; it
+  runs a second Godot on OpenGL). Say what its `PROBE` lines report about your renderer.
+- **The land's starting step:** on integrated graphics, and on software renderers like your llvmpipe, the land
+  now starts two steps down. Every machine also remembers the step it settled on (`land_quality` in the user's
+  settings), so your box's land should start lower and stay lower. Say whether your probes run faster for it.
+- **A first-time war, end to end:** `tools/first_war.gd` plays it in two launches, as a new player meets it.
+  Read its header: it refuses any user folder that isn't fresh. Say if it passes on Linux.
+- **The window:** a small screen opens maximized, and a laptop's first launch reads Large text. Neither
+  applies in a probe (a probe isn't the main scene); `test_v25` holds the window rule.
+- **The save:** it's written beside the slot, then put in place. One that can't be read is set aside as
+  `savegame.unreadable.json`, with a line on the title.
+- **New tests and probes:** `test_v25`, `v25`, `tools/first_war.gd`.
+
+## v2.4.2: your report on d6c1f58 and 91128e7 (this push)
+
+B-013 to B-016 are fixed, all in probes, plus one line in the land's watchdog. `docs/CHANGELOG.md` (v2.4.2)
+has the evidence.
+- **B-013 (v202 hung):** the probe held the whole run to a 60th of a second a frame, and the land's watchdog
+  took those held frames for fast ones. On your box the land drew its dearest effects (SSAO, 2× MSAA, four
+  shadow splits) in software through every held moment. The watchdog now sees your real frames and steps the
+  land down as the game does on a slow machine. The probe holds a 60th only around the clash.
+- **B-014 (v22, "then Dad's assault on Mill"):** a battle moves on by itself 2.6 s after it ends. The probe
+  waited a minute of your frames there, then fought the next battle by mistake. Fixed.
+  **The crash (signal 11) didn't reproduce here** in 15 runs. If it comes back, send the lines after
+  `handle_crash` (a debug build of Godot gives function names), your Godot version and your renderer.
+- **B-015 (v21, "-1 left standing"):** the same trap at a battle's end. Fixed.
+- **B-016 (v24p, the token meshes):** it's your Godot version, not llvmpipe. Before Godot 4.7 an antialiased
+  line is drawn about a pixel wider than asked, and the meshes are matched to 4.7's lines. v24p now holds the
+  meshes to their 4.7 picture (`tools/shots/ref/v24p_tokens.webp`) on any Godot, and to the old drawing as
+  well on 4.7 or later. Its log names your Godot, its renderer and how wide it draws a 2 px line
+  (`PROBE Godot …`): say what it says.
+- **Poke:** `PROBE_SECS=5400 ./scripts/probes.sh v202 v21 v22 v24p`. All four should pass.
+  - Send each probe's `done` line and its `lap` lines (each part's frames and seconds), so we can see where
+    your box's time goes.
+  - Here, as your box (`PROBE_ARGS=--box=40`), they took 2,234, 1,246, 1,692 and 1,243 frames. Yours should
+    need fewer: some waits take real time, not frames.
+  - If v202 still runs out of time, its laps say which part ran long.
+- **New in the harness** (`tools/probe.gd`): `PROBE_ARGS=--slow=MS` makes every frame take MS longer to draw,
+  as yours do (`--box` only moves the game on). Also `p.secs()` (a wait in game seconds) and `p.lap()`.
+- **Which Godot do you run?** This brief says 4.5.1; the PC and Dad's build are on 4.7.1.
+
+## v2.4.1: the review round
 
 - **Three lines have voices now:** Imre's "Check." (was a 0.24 s clip), the advisor's "Fortune, favour us now!
   Throw again!" and Quill's Fortune line. **Poke:** `./scripts/probes.sh v23`. Its sound trace should find
