@@ -35,8 +35,11 @@ var data := {
 	"map_land": true, ## v2.0: the board stands on the map's own land in 3D (false: the chart); L in the game
 	"motion": "all", ## v1.9: all (cutscenes and living paintings) | paintings (no cutscenes) | off (stills)
 	"shields": "ranked", ## v2.4: how a garrison's shield shows its depth: ranked (Alex's pick) | number | chevrons (map_board.gd)
-	"land_quality": 0, ## v2.5: the step the land's watchdog settled on, on this machine (land.gd)
+	"land_quality": -1, ## v2.5: the step the land's watchdog settled on, on this machine; -1 not yet (land.gd)
 }
+
+
+var ui_scale_kept := false ## v2.5: a text size was saved: the player's, or the one their screen was given at the first launch
 
 
 func _ready() -> void:
@@ -45,6 +48,7 @@ func _ready() -> void:
 		for k in data.keys():
 			if cfg.has_section_key("prefs", k):
 				data[k] = cfg.get_value("prefs", k)
+		ui_scale_kept = cfg.has_section_key("prefs", "ui_scale")
 	data["ui_scale"] = clampf(float(data["ui_scale"]), 1.0, UI_SCALE_MAX)
 	apply()
 

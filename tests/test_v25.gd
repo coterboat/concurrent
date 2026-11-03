@@ -5,6 +5,7 @@ extends RefCounted
 
 const WindowFit := preload("res://game/core/window_fit.gd")
 const Session := preload("res://game/core/session.gd")
+const Adapter := preload("res://game/world3d/adapter.gd")
 
 ## Windows 10's title bar and borders at 100% (measured on the PC: 16 wider, 39 taller, the client area
 ## 8 in from the left and 31 down)
@@ -16,6 +17,29 @@ func run(report: Callable, tree: SceneTree) -> void:
 	_window(report)
 	_renderer(report)
 	_saves(report, tree)
+	_adapters(report)
+
+
+func _adapters(report: Callable) -> void:
+	## the land starts a few effects down on integrated graphics or a software renderer, as the driver says
+	## (Vulkan, Direct3D 12) or, on OpenGL (always OTHER), as its name says
+	var O: int = RenderingDevice.DEVICE_TYPE_OTHER
+	var weak := [[RenderingDevice.DEVICE_TYPE_INTEGRATED_GPU, "Intel", "Intel(R) Iris(R) Xe Graphics"],
+		[O, "Intel", "Intel(R) UHD Graphics 620"], [O, "Intel", "Intel(R) Iris(R) Xe Graphics"],
+		[O, "ATI Technologies Inc.", "AMD Radeon(TM) Graphics"], [O, "AMD", "AMD Radeon(TM) Vega 8 Graphics"],
+		[O, "Mesa", "llvmpipe (LLVM 15.0.7, 256 bits)"], [RenderingDevice.DEVICE_TYPE_CPU, "", "SwiftShader Device"],
+		[O, "Microsoft Corporation", "Microsoft Basic Render Driver"]]
+	var strong := [[RenderingDevice.DEVICE_TYPE_DISCRETE_GPU, "NVIDIA", "NVIDIA GeForce RTX 3070"],
+		[O, "NVIDIA Corporation", "NVIDIA GeForce RTX 3070/PCIe/SSE2"], [O, "Intel", "Intel(R) Arc(TM) A770 Graphics"],
+		[O, "ATI Technologies Inc.", "AMD Radeon RX 6600"], [O, "Apple", "Apple M2"]]
+	var wrong: Array = []
+	for a in weak:
+		if not Adapter.weak(int(a[0]), str(a[1]), str(a[2])):
+			wrong.append(str(a[2]) + " read as a card")
+	for a in strong:
+		if Adapter.weak(int(a[0]), str(a[1]), str(a[2])):
+			wrong.append(str(a[2]) + " read as integrated")
+	report.call(wrong.is_empty(), "integrated graphics and software renderers are told from graphics cards (%d and %d): %s" % [weak.size(), strong.size(), ", ".join(wrong) if not wrong.is_empty() else "all right"])
 
 
 func _saves(report: Callable, tree: SceneTree) -> void:

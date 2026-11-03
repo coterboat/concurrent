@@ -11,6 +11,8 @@ const Diorama := preload("res://game/world3d/diorama.gd")
 const Scenery := preload("res://game/world3d/scenery.gd")
 const Marches := preload("res://game/world3d/marches.gd")
 const DiceStage := preload("res://game/ui/dice_stage.gd")
+const Adapter := preload("res://game/world3d/adapter.gd")
+const WEAK_START := 3 ## v2.5: the step a machine on integrated graphics is taken to have settled on, till it shows otherwise
 
 signal built
 
@@ -198,7 +200,7 @@ func _watch_speed(delta: float) -> void:
 		Settings.remember("land_quality", quality) ## v2.5: where the next war's land starts (_build_world)
 	## v2.5: a minute smooth at a better step than the one remembered, and that's the one remembered
 	_smooth = _smooth + delta if _slow == 0.0 else 0.0
-	if _smooth > 60.0 and quality < int(Settings.get_value("land_quality", 0)):
+	if _smooth > 60.0 and quality < _remembered():
 		Settings.remember("land_quality", quality)
 
 
@@ -272,8 +274,19 @@ func _build_world() -> void:
 	## effect and stepped down 3 s at a time: on a slow laptop, ten seconds and more of a chugging land
 	## every war (the first swoop to a battle among them). One better than last time, so a machine that
 	## was only busy that once climbs back; the watchdog takes it on from there
-	set_quality(maxi(quality, int(Settings.get_value("land_quality", 0)) - 1))
+	set_quality(maxi(quality, _remembered() - 1))
 	built.emit()
+
+
+func _remembered() -> int:
+	## the step this machine settled on (Settings land_quality). One it has never measured is taken at
+	## step 3 on integrated graphics or a software renderer (its land starting at 2: no SSAO, no MSAA, two
+	## shadow splits), and at 0 on a graphics card. Measured on an RTX 3070 at 1920x1080, the board's land
+	## costs 5.3 ms at step 0 and 3.6 at step 2; an Iris Xe, an eighth of that card, about 42 and 29 ms
+	var r: int = int(Settings.get_value("land_quality", -1))
+	if r < 0:
+		r = WEAK_START if Adapter.weak_here() else 0
+	return r
 
 
 # ------------------------------------------------------------------ what the camera sees

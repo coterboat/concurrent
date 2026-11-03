@@ -50,7 +50,7 @@ Written as I went. The coordinator writes the CHANGELOG and PLAYTEST from it.
     Engine.time_scale`). It's carried here line for line, so the two branches merge clean (checked with
     `git merge-file` against `1953944`).
 
-**Facts:** probe `v25` (43 facts, all passing) runs `tools/probes/v25_gl.gd` in a second Godot on OpenGL.
+**Facts:** probe `v25` (45 facts, all passing) runs `tools/probes/v25_gl.gd` in a second Godot on OpenGL.
 That child checks:
 - the renderer is Compatibility;
 - no coat and no haze there;
@@ -105,6 +105,23 @@ fullscreen and back is in the walk (section 3).
   their design size.
 - **The settings panel scrolls its rows** when the screen is shorter than they are; its title and Done
   stay put.
+- **A laptop's first launch reads Large** (`main.gd` `first_text_size`). Alex 11-03, Dad's Lenovo, and the
+  coordinator's go-ahead for robust defaults. A screen the window opens maximized on (a laptop's, as Windows
+  shows it) starts at Large:
+  - 1366×768: from 78% to 90% of the words' design size;
+  - 1920×1080 at 150%: from 111% to 128%, where Windows gives everything else 150%.
+
+  It happens only before a text size was ever saved: Alex's machines keep theirs, a desktop's screen keeps
+  Normal, and Settings, Text size goes back to Normal any time. It isn't applied in the probes (a probe
+  isn't the main scene), so their layouts are unchanged.
+
+**Click targets on a laptop** (probe `v25` logs the smallest buttons of each screen, in the screen's own
+pixels, at Large text):
+- The big ones are fine: the dial 150 px, ROLL and the title's buttons 54 px, the zoom buttons 40.
+- The small ones are the chips: Auto-place, Clear, Cards, Review, ◀ Recruits, ? Dice, Auto-roll and Skip
+  battles. They're 22 to 24 px tall on a 1366×768 laptop, 28 to 31 at 1440×900, and about 20 at Normal
+  text. That's small for a touchpad and older eyes; each has a bigger way round (the dial does the
+  advisor's plan, Space rolls, Esc skips), but Q6 asks about raising them.
 
 **Facts** (`tests/test_v25.gd`, probe `v25`):
 - the window rule for seven screens (1366×768 to 4K) and for Windows at 100%, 125% and 150%;
@@ -112,6 +129,7 @@ fullscreen and back is in the walk (section 3).
 - every screen above fits at Large text on a 1440×900 window and on a 1366×705 one: all 19 How to Play
   pages, the dial, the battle, the report;
 - a saved 1.3 reads as 1.15;
+- a first launch on a laptop's screen reads Large, a desktop's Normal, and a text size once saved is kept;
 - on 1366×705 the land draws 1366×705 pixels.
 
 ## 3. A first-time player's war, end to end
@@ -227,11 +245,11 @@ down to a twentieth (an older UHD 620).
 land settled at 2 in the first and 4 in the second, then started the second war at 1 better.
 
 **Tests:**
-- **The full suite:** `CONCURRENT ok passed=830 failed=0` (815, plus test_v25's 15), no SCRIPT ERROR.
+- **The full suite:** `CONCURRENT ok passed=831 failed=0` (815, plus test_v25's 16), no SCRIPT ERROR.
 - **`check.sh`:** green.
-- **The probes this pass touches**, one at a time on a quiet machine: v25 43 facts, v23 42 (the tutorial
-  end to end, answering the new question), v24m 59, v113 36, v24b 28, v114 23, v19 12, v17 11, ui 1. All
-  pass. The rest are untouched by this branch; v202, v21, v22 and v24p are v2.4.2's.
+- **The probes this pass touches**, one at a time on a quiet machine: v25 45 facts, v23 41 or 42 (the
+  tutorial end to end, answering the new question; 41 when the war is won before its last round, as
+  PLAYTEST says it can be), v24m 59, v113 36, v24b 28, v114 23, v19 12, v17 11, ui 1. All pass. The rest are untouched by this branch; v202, v21, v22 and v24p are v2.4.2's.
 - **The arena:** 40 wars on the Known World (`deal=draft levee=3`, four AIs) with 0 violations, 0 split
   retreats a game, and Hask 15 of 40 (as in v2.4). The bot's command prints `fingerprint 12f8de1f36de`,
   which is main's: the arena loads only `engine/`, untouched here.
@@ -257,6 +275,29 @@ land settled at 2 in the first and 4 in the second, then started the second war 
   machine settled on last time, less one (`land.gd`, settings key `land_quality`). That way a machine
   that was only busy once climbs back a step a war, and a minute smooth at a better step is remembered.
   On Alex's PC nothing changes (it never steps down).
+- **A machine the land hasn't measured yet starts it lower on integrated graphics** (`game/world3d/adapter.gd`,
+  `land.gd` `_remembered`). This is what Dad's first war meets.
+  - **How the graphics are told apart:** the driver says integrated or discrete on Vulkan and Direct3D 12.
+    On OpenGL, which can't tell, the name does: Intel (but not Arc), a Ryzen's "Radeon(TM) Graphics" or
+    Vega, and the software renderers (llvmpipe, SwiftShader, Microsoft Basic Render).
+  - **Where it starts:** such a machine is taken to have settled on step 3, so its land starts at 2: no
+    SSAO, no MSAA, two shadow splits. That's 3.6 ms on the 3070 against 5.3 at full, so about 29 ms
+    against 42 on an Iris Xe. The watchdog takes it lower within seconds if that's still slow.
+  - **And back up:** a minute smooth remembers the better step, so a capable Iris Xe climbs back to full
+    over three wars.
+  - **On a graphics card** it starts with everything, as before (`test_v25` names 13 adapters; probe
+    `v25`: step 0 on this RTX 3070).
+- **What `land.gd` changes around v2.4.2's line** (`_process`, `_watch_speed(delta / maxf(Engine.time_scale,
+  0.0001))`, carried verbatim), for the merge:
+  - the constants `Adapter` and `WEAK_START` at the top, and `var _smooth`;
+  - `fit()`: `px` clamped from 0.5, not 1.0;
+  - `_watch_speed()`: a frame counts at most 0.1 s (`_slow += minf(delta, 0.1)`), a step down is
+    remembered (`Settings.remember("land_quality", …)`), and a minute smooth remembers the better step;
+  - `_build_world()` ends `set_quality(maxi(quality, _remembered() - 1))`, with the new `_remembered()`
+    after it;
+  - `_land_heavy()` is unchanged.
+
+  Everything is measured on the real frame (the delta v2.4.2 divides by the time scale).
 - **Dad's readme** (`scripts/dad_readme.txt`) now says:
   - extract the zip first (started from inside the zip, Windows stops to ask);
   - on a laptop: Text size Large and F11 if the words are small, L for the flat chart if the land is slow;
@@ -264,8 +305,8 @@ land settled at 2 in the first and 4 in the second, then started the second war 
 
 ## What Alex should poke at
 
-1. **On a laptop** (Dad's if you can): the window should open maximized. Try Settings, then Text size:
-   Large, and F11.
+1. **On a laptop** (Dad's if you can), a first launch: the window should open maximized, the words at
+   Large (Settings, Text size), the land a few effects down on integrated graphics. Then F11.
 2. **With a war saved**, click Tutorial, or New Game then Begin: it should ask, and "Keep my war" should
    keep it.
 3. **The OpenGL look** (any PC): `CONCURRENT.exe --rendering-driver opengl3`. The buildings should be lit
@@ -280,28 +321,31 @@ land settled at 2 in the first and 4 in the second, then started the second war 
 
 ## Open questions (my pick first)
 
-1. **Large text by default on a scaled laptop screen?** Windows at 125% or more (a 14-inch 1080p laptop is
-   at 150%) would start the game at Large: its words at 128% of their design size there, against 111% at
-   Normal.
-   - a) yes, my pick: it's the setting Dad would need and may never find;
-   - b) no, the readme points at it.
-2. **Extra large is gone** (it hid the ORDERS dial). Large is the most the screens hold.
+1. **Extra large is gone** (it hid the ORDERS dial). Large is the most the screens hold.
    - a) leave it so, my pick;
    - b) rework the bar, How to Play, the settings and the setup to fit 1108×692, a bigger job.
-3. **The setup's map cards cut their names at Large text.** The chosen map is lit and the rest fits.
+2. **The setup's map cards cut their names at Large text.** The chosen map is lit and the rest fits.
    - a) leave it, my pick;
    - b) rework the card (a smaller picture at narrow widths).
-4. **The final round's voiced line** ("Throw in everything. Leave nothing in the barracks.") now says the
+3. **The final round's voiced line** ("Throw in everything. Leave nothing in the barracks.") now says the
    opposite of the words under it, which say to keep enough at home.
    - a) keep the voice, my pick: it's the advisor's;
    - b) a new take.
-5. **OpenGL's first-use hitches** (a few frames of 100 to 600 ms the first time a battle's pieces are drawn,
+4. **OpenGL's first-use hitches** (a few frames of 100 to 600 ms the first time a battle's pieces are drawn,
    once a launch).
    - a) leave them, my pick: they no longer cost the land its quality;
    - b) draw every battle material once, offscreen, while the land is built.
-6. **Small words left as they are** (low, from the audit):
+5. **Small words left as they are** (low, from the audit):
    - the hotseat names seat one "You" ("Pass the computer to You");
    - two map blurbs overstate (the Isles' "starves": a cut-off army only pays nothing);
    - a few subtitles have stray commas, which a voice line can't lose without a new take.
    - a) leave all three for now, my pick;
    - b) fix the words.
+6. **The war's chips are 22 to 24 px on a laptop** (Auto-place, Clear, Cards, Review, ◀ Recruits, ? Dice,
+   Auto-roll, Skip battles).
+   - a) raise them to about 32 px in a pass of their own, my pick: the command bar is full at 900 high, so
+     it's a re-layout with its probes, not a tweak;
+   - b) leave them: each has a bigger way round (the dial, Space, Esc).
+
+(Answered on the way: Large text by default on a laptop. The coordinator's message of 11-03 counted it a
+robust default, so it's in, kept to a first launch that hasn't saved a text size.)

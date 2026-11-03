@@ -13,6 +13,7 @@ const WindowFit := preload("res://game/core/window_fit.gd")
 const Counsel := preload("res://game/core/counsel.gd")
 const Setup := preload("res://engine/setup.gd")
 const GlLook := preload("res://tools/probes/v25_gl.gd")
+const Adapter := preload("res://game/world3d/adapter.gd")
 
 var p
 var main: Control
@@ -36,6 +37,7 @@ func run(probe) -> void:
 	Settings.apply()
 	p.get_window().size = Vector2i(1440, 900)
 	await p.frames(5)
+	Settings.data["land_quality"] = -1 ## (never measured: the next land starts where this machine's graphics say)
 	await _new_war_asks()
 	await _unreadable_save()
 	await _vulkan_look()
@@ -64,6 +66,20 @@ func _text_size() -> void:
 	Settings.data["ui_scale"] = 1.3 ## a settings.cfg from before v2.5 ("Extra large")
 	Settings.apply()
 	p.ok(p.get_window().content_scale_factor <= Settings.UI_SCALE_MAX + 0.001, "a saved Extra large text reads as Large, the most the screens hold (%.2f)" % p.get_window().content_scale_factor)
+	## a laptop's first launch reads Large; a desktop's, or a text size ever saved, is left as it is
+	var kept: bool = Settings.ui_scale_kept
+	Settings.data["ui_scale"] = 1.0
+	Settings.ui_scale_kept = false
+	main.first_text_size(false)
+	var desk: float = float(Settings.data["ui_scale"])
+	main.first_text_size(true)
+	var lap: float = float(Settings.data["ui_scale"])
+	Settings.data["ui_scale"] = 1.0
+	main.first_text_size(true) ## (now kept: the laptop's pick was saved)
+	var again: float = float(Settings.data["ui_scale"])
+	p.ok(desk == 1.0 and lap == Settings.UI_SCALE_MAX and again == 1.0,
+		"a first launch on a laptop's screen reads Large (%.2f), on a desktop's Normal (%.2f), and a text size once saved is the player's (%.2f)" % [lap, desk, again])
+	Settings.ui_scale_kept = kept
 	Settings.data["ui_scale"] = Settings.UI_SCALE_MAX
 	Settings.apply()
 
@@ -192,8 +208,27 @@ func _on_screen(what: String, shot: String) -> void:
 	await RenderingServer.frame_post_draw
 	var bad: Array = _off_screen()
 	p.ok(bad.is_empty(), "%s: nothing a player needs runs off the screen (%s)" % [what, "; ".join(bad.slice(0, 3)) if not bad.is_empty() else "all on it"])
+	p.log("%s: %s" % [what, _targets()])
 	var img: Image = p.get_viewport().get_texture().get_image()
 	img.save_png(OS.get_environment("SHOT_DIR") + "/" + shot + ".png")
+
+
+func _targets() -> String:
+	## the click targets, in the screen's own pixels: the smallest buttons a player has to hit here
+	var k: float = main.get_viewport().get_final_transform().get_scale().y
+	var sizes: Array = []
+	for c in p.get_tree().root.find_children("*", "BaseButton", true, false):
+		var b: BaseButton = c
+		if b.is_visible_in_tree() and not b.disabled and b.modulate.a > 0.05 and b.mouse_filter != Control.MOUSE_FILTER_IGNORE:
+			var r: Rect2 = b.get_global_rect()
+			if r.size.x > 2 and r.size.y > 2:
+				var label: String = str(b.get("text")) if b.get("text") != null and str(b.get("text")) != "" else (str(b.tooltip_text) if b.tooltip_text != "" else b.get_class())
+				sizes.append([r.size.y * k, r.size.x * k, label.left(18).replace(char(10), " ")])
+	sizes.sort_custom(func(a, b): return float(a[0]) < float(b[0]))
+	var out: Array = []
+	for t in sizes.slice(0, 3):
+		out.append("%.0fx%.0f '%s'" % [float(t[1]), float(t[0]), str(t[2])])
+	return "%d buttons, the smallest %s (real px)" % [sizes.size(), ", ".join(out)]
 
 
 func _off_screen() -> Array:
@@ -334,6 +369,9 @@ func _vulkan_look() -> void:
 	if gs.land == null or not gs.land.prepared:
 		p.fail("the land was never built")
 		return
+	var weak: bool = Adapter.weak_here()
+	p.ok(gs.land.quality == (2 if weak else 0) or (weak and gs.land.quality > 2),
+		"a land this machine never measured starts at step %d on %s (%s): 0 on a graphics card, 2 on integrated graphics" % [gs.land.quality, RenderingServer.get_video_adapter_name(), "integrated" if weak else "a card"])
 	var look: Dictionary = await GlLook.look_of(gs, gs.land, "v25_land_%s" % RenderingServer.get_current_rendering_method())
 	p.log("on %s: %s" % [RenderingServer.get_current_rendering_method(), str(look)])
 	if RenderingServer.get_current_rendering_method() != "gl_compatibility":

@@ -7,6 +7,7 @@
 extends RefCounted
 
 const Session := preload("res://game/core/session.gd")
+const Adapter := preload("res://game/world3d/adapter.gd")
 
 var p
 
@@ -59,7 +60,12 @@ func run(probe) -> void:
 	## a slow machine: three seconds of slow frames step the land down (on this renderer every slow frame
 	## counts, having no timings), the step is remembered, and the next war's land starts one better
 	var q0: int = land.quality
-	p.ok(q0 == 0, "the land kept every effect through the war's opening on this machine (step %d): a hitch is one frame, not a slow land" % q0)
+	if not Adapter.weak_here():
+		p.ok(q0 == 0, "on a graphics card the land kept every effect through the war's opening (step %d): a hitch is one frame, not a slow land" % q0)
+	else:
+		p.log("integrated or software graphics (%s): the land started at 2 and is at step %d" % [RenderingServer.get_video_adapter_name(), q0])
+	land.set_quality(mini(q0, 2))
+	q0 = land.quality
 	land._slow = 0.0
 	for i in 35:
 		land._watch_speed(0.1)
@@ -78,8 +84,10 @@ func run(probe) -> void:
 	while (land2 == null or not land2.prepared) and guard < 1800:
 		guard += 1
 		await p.frames(1)
-	p.ok(land2 != null and land2.prepared and land2.quality == maxi(0, remembered - 1), "the next war's land starts a step better than the one remembered (%d; remembered %d)" % [land2.quality if land2 != null else -1, remembered])
-	Settings.data["land_quality"] = 0
+	## (a slow box's watchdog may already have taken it further down)
+	var start_ok: bool = land2 != null and land2.prepared and (land2.quality == maxi(0, remembered - 1) or (Adapter.weak_here() and land2.quality > maxi(0, remembered - 1)))
+	p.ok(start_ok, "the next war's land starts a step better than the one remembered (%d; remembered %d)" % [land2.quality if land2 != null else -1, remembered])
+	Settings.data["land_quality"] = -1
 
 
 static func look_of(gs: Control, land: Node, shot: String) -> Dictionary:

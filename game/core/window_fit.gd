@@ -31,26 +31,28 @@ static func plan(area: Rect2i, deco: Vector2i, inset: Vector2i, scale: float = 1
 	return {"least": least, "maximize": false, "size": want, "position": area.position + inset + (room - want) / 2}
 
 
-static func apply(win: Window, opening: bool, area: Rect2i = Rect2i()) -> void:
+static func apply(win: Window, opening: bool, area: Rect2i = Rect2i()) -> bool:
 	## opening: the game starting, when the window is placed. Otherwise (back from fullscreen) the window
 	## is left as the player had it, unless it runs off the screen. area: the screen's usable rect (a probe
-	## passes a laptop's)
+	## passes a laptop's). True on a small screen (a laptop's), where the window is maximized
 	if area.size.x <= 0 or area.size.y <= 0:
 		area = DisplayServer.screen_get_usable_rect(win.current_screen)
 	if area.size.x <= 0 or area.size.y <= 0:
-		return
+		return false
 	var deco: Vector2i = (win.get_size_with_decorations() - win.size).max(Vector2i.ZERO)
 	var inset: Vector2i = (win.position - win.get_position_with_decorations()).max(Vector2i.ZERO)
 	var pl: Dictionary = plan(area, deco, inset, float(DisplayServer.screen_get_dpi(win.current_screen)) / 96.0)
 	win.min_size = pl["least"]
+	var small: bool = pl["maximize"]
 	if win.mode != Window.MODE_WINDOWED:
-		return
-	if pl["maximize"]:
+		return small
+	if small:
 		win.mode = Window.MODE_MAXIMIZED
-		return
+		return small
 	var on_screen: bool = area.encloses(Rect2i(win.get_position_with_decorations(), win.get_size_with_decorations()))
 	var want: Vector2i = pl["size"]
 	if on_screen and (not opening or absf(float(want.x) / float(win.size.x) - 1.0) < 0.1):
-		return ## as the player left it, or near enough to what it opened at
+		return small ## as the player left it, or near enough to what it opened at
 	win.size = want
 	win.position = pl["position"]
+	return small

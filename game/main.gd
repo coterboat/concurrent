@@ -39,7 +39,18 @@ func _fit_window() -> void:
 	## The Mac sizes its windows in points and already fits; a probe (not the main scene) is left alone.
 	if OS.get_name() == "macOS" or get_tree().current_scene != self or DisplayServer.get_name().begins_with("headless"):
 		return
-	WindowFit.apply(get_window(), true)
+	first_text_size(WindowFit.apply(get_window(), true))
+
+
+func first_text_size(small_screen: bool) -> void:
+	## v2.5: a laptop's first launch reads Large (Settings, Text size: the player can go back to Normal).
+	## Dad's 14-inch Lenovo (Alex, 11-03): at 1366x768 the words came out at 78% of their size, and at a
+	## 1920x1080 panel's 150% at 111% where Windows gives everything else 150%. Large makes them 90% and
+	## 128%, and every screen holds it (probe v25). Only before a text size was ever saved: never a choice
+	## made, nor a desktop's screen
+	if small_screen and not Settings.ui_scale_kept:
+		Settings.set_value("ui_scale", Settings.UI_SCALE_MAX)
+		Settings.ui_scale_kept = true
 
 
 func _swap(next: Control) -> void:
