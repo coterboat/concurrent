@@ -171,7 +171,10 @@ func _process(delta: float) -> void:
 		DiceStage.warm_pieces() ## (loaded already: the dice tray takes them from here)
 		_build_world()
 	if prepared and shown():
-		_watch_speed(delta)
+		## (v2.4.2) the machine's own frame, as long as it took to draw: the game never changes the
+		## clock's rate, but a probe holding it steady (tools/probe.gd) hid a slow box from the watchdog,
+		## and the bot's software GL drew the land at its dearest through every held moment (B-013)
+		_watch_speed(delta / maxf(Engine.time_scale, 0.0001))
 
 
 func _watch_speed(delta: float) -> void:

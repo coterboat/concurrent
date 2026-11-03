@@ -14,6 +14,10 @@ const Style := preload("res://game/core/style.gd")
 const Session := preload("res://game/core/session.gd")
 const FrontMarks := preload("res://game/ui/front_marks.gd")
 
+const COARSE := 0.25 ## (B-014) the most a frame moves the game on while the probe watches...
+const SHOTS := 1.0 / 20.0 ## ...while shots fly (six frames to a ball's flight)...
+const FINE := 1.0 / 60.0 ## ...and while a ball's landing is timed against a man's fall
+
 var p
 
 
@@ -26,9 +30,18 @@ func run(probe) -> void:
 	Settings.data["roll_yourself"] = true
 	Settings.data["speed"] = "fast"
 	Settings.data["battle_land"] = true
+	## (B-014) the bot's box draws a frame every second or more: a finished battle moves on by itself
+	## 2.6 s after its end, and a frame there carried the probe out of one battle and through the next
+	## ("then Dad's assault on Mill" never came). A frame moves the game on a quarter of a second at
+	## most (nothing changes on a machine that draws faster than that), and less around the shots
+	p.steady(true, COARSE)
 	await _dice_find_their_fronts()
+	p.lap("dice find their fronts")
 	await _fortune_owed()
+	p.lap("fortune owed")
 	await _free_for_all()
+	p.lap("free-for-all")
+	p.steady(false)
 
 
 func _game(map: String, seats: Array) -> Array:
@@ -85,7 +98,7 @@ func _fight_out(th: Control) -> void:
 			"call":
 				th._answer(Combat.CALL_PRESS)
 			"done":
-				await p.frames(40)
+				await p.secs(40.0 / 60.0)
 				th.press()
 		await p.frames(1)
 
@@ -127,10 +140,11 @@ func _dice_find_their_fronts() -> void:
 		await _fight_out(th)
 		await _into_battle(gs, th)
 	var dio: Node3D = lf.dio
+	await p.secs(dio.arrival() + 0.5)
 	## (B-014) a ball is in the air a third of a second: a frame a second (the bot's box) can fire
-	## and land it unseen, so while the shots are watched a frame is a 60th of a second
-	p.steady(true)
-	await p.frames(int(dio.arrival() * 60.0) + 30)
+	## and land it unseen, so while the shots are watched a frame is a 20th of a second (a 60th, as
+	## v2.3.1 held it, tripled the frames and saw no more)
+	p.steady(true, SHOTS)
 	p.ok(th._melee and th._one_commander() and th._fronts.size() == 2, "Dad storms The Gate from two of his own lands: one battle, two fronts, one colour")
 	var t0: String = _plate_tag(lf, 0)
 	var t1: String = _plate_tag(lf, 1)
@@ -223,7 +237,7 @@ func _dice_find_their_fronts() -> void:
 			if mid.size() >= 3:
 				flight_taken = true
 				await snap("v22_03_shots_in_flight")
-	p.steady(false)
+	p.steady(true, COARSE)
 	p.ok(tag_count >= 3 and tags_ok, "on the table every pair carries a tag naming the front its dice are for (%d tags)" % tag_count)
 	p.ok(placed_ok, "each tag hangs over its own pair of dice")
 	p.ok(ordered, "a throw's pairs lie on the table as their fronts stand on the field, left to right")
@@ -278,8 +292,10 @@ func _fortune_owed() -> void:
 	## (RV-005 F5) before the dice: Dad's line fires on Varek's eight times; each time the first of
 	## Varek's men to fall goes down no sooner than the first ball reaches him
 	var dio: Node3D = th._land_field.dio
-	p.steady(true) ## (B-014) a ball's landing and a man's fall a 60th of a second apart, at any frame rate
-	await p.frames(int(dio.arrival() * 60.0) + 30)
+	await p.secs(dio.arrival() + 0.5)
+	p.steady(true, FINE) ## (B-014) a ball's landing and a man's fall a 60th of a second apart, at any frame rate
+	await p.frames(1) ## (the frame it's asked in still moves a quarter of a second: a volley ordered in it fired and
+	## landed its first balls unseen, and the first fall looked early)
 	var early := 0
 	var timed := 0
 	for k in 8:
@@ -316,7 +332,7 @@ func _fortune_owed() -> void:
 			if fell < landed - 1.5 / 60.0:
 				early += 1
 		await p.frames(30)
-	p.steady(false)
+	p.steady(true, COARSE)
 	p.ok(timed >= 6 and early == 0, "the first man falls as the first ball reaches him, never before it (%d volleys timed, %d early)" % [timed, early])
 	var spent := false
 	var said := ""
@@ -334,7 +350,7 @@ func _fortune_owed() -> void:
 				else:
 					th._answer(Combat.CALL_PRESS)
 			"done":
-				await p.frames(40)
+				await p.secs(40.0 / 60.0)
 				th.press()
 		await p.frames(1)
 		if spent and said == "" and th._sub.text.contains("owed for it"):

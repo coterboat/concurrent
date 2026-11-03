@@ -13,6 +13,9 @@ const Types := preload("res://engine/types.gd")
 const MapLib := preload("res://engine/map.gd")
 const Style := preload("res://game/core/style.gd")
 
+const COARSE := 0.25 ## (B-013) the most a frame moves the game on while the probe watches...
+const FINE := 1.0 / 60.0 ## ...and while it watches a moment that lasts half a second
+
 var p
 
 
@@ -26,18 +29,30 @@ func run(probe) -> void:
 	Settings.data["battle_land"] = true
 	Settings.data["map_land"] = true
 	## (B-013) the break, the shove and the swoop each last half a second or so: a frame a second (the
-	## bot's box) can miss one whole, so while they're watched a frame is a 60th of a second
-	p.steady(true)
+	## bot's box) can miss one whole, so while they're watched a frame is a 60th of a second. Held so
+	## from start to finish (v2.3.1), the probe took 4,100 frames, more than that box draws in an hour
+	## and a half; so the rest of the way a frame moves the game on a quarter of a second at most
+	## (nothing changes on a machine that draws faster than that)
+	p.steady(true, COARSE)
 	await _clash()
+	p.lap("clash")
 	await _pictures()
+	p.lap("pictures")
 	await _theater()
-	p.steady(false)
+	p.lap("theater")
 	await _skip_mid_swoop()
+	p.lap("skip mid-swoop")
 	await _stills()
+	p.lap("stills")
 	await _surge_clash()
+	p.lap("surge clash")
 	await _old_rules_clash()
+	p.lap("old rules clash")
 	await _region_moment()
+	p.lap("region moment")
 	await _stale_question()
+	p.lap("stale question")
+	p.steady(false)
 
 
 func _game(map: String, seats: Array) -> Array:
@@ -64,7 +79,7 @@ func _settle(gs: Control) -> int:
 	while not (lb.ready_to_show() and lb.settled()) and guard < 900:
 		guard += 1
 		await p.frames(1)
-	await p.frames(30)
+	await p.secs(0.5)
 	return guard
 
 
@@ -131,6 +146,7 @@ func _clash() -> void:
 	p.ok(ra != "", "a red land and a blue land share a border, each marching on the other (%s, %s)" % [ra, bl])
 	var cin: Control = gs.cinema
 	var frames: int = await _to_clash(cin)
+	p.steady(true, FINE) ## (from the charge to the winner carrying on, two seconds or so)
 	p.ok(not b.clash.is_empty(), "the border clash is told on the land (%d frames in)" % frames)
 	## on the land: both columns march to the middle of the road and stand there, face to face,
 	## before the break (watched frame by frame, before any shot is taken)
@@ -225,6 +241,7 @@ func _clash() -> void:
 		if str(o["from"]) == loser_land and str(o["to"]) == win_land:
 			loser_arrow = true
 	p.ok(have == left and not loser_arrow and not b.clash_hides(ra, bl), "the winner's arrow carries on to %s with the %d still standing; the loser's is gone" % [loser_land, left])
+	p.steady(true, COARSE) ## (a land's colour takes 0.7 s to change hands)
 	## the land taken next: its new owner's colour spreads over it and its token pops
 	var owner0: String = b.world.get_territory(loser_land).owner
 	guard = 0
@@ -266,6 +283,7 @@ func _pictures() -> void:
 	await _settle(gs)
 	await _stage(gs, s)
 	await _to_clash(gs.cinema)
+	p.steady(true, FINE)
 	await p.frames(13)
 	await snap("v202_01_charge")
 	var guard := 0
@@ -280,6 +298,7 @@ func _pictures() -> void:
 	await snap("v202_03_break")
 	await p.frames(50)
 	await snap("v202_04_through")
+	p.steady(true, COARSE)
 	var guard2 := 0
 	while guard2 < 900:
 		guard2 += 1
@@ -312,6 +331,7 @@ func _theater() -> void:
 		guard += 1
 		await p.frames(1)
 	var met := false
+	p.steady(true, FINE) ## (the swoop down)
 	guard = 0
 	while not th.visible and guard < 300:
 		guard += 1
@@ -319,12 +339,15 @@ func _theater() -> void:
 		await p.frames(1)
 	p.ok(met, "Show my battles: the clash's arrows meet on the border as the camera swoops down on them")
 	await snap("v202_05_swoop")
+	p.steady(true, COARSE)
 	guard = 0
 	while th.get("_state") == "idle" and guard < 600:
 		guard += 1
 		await p.frames(1)
+	p.steady(true, FINE) ## (a second of the battle, not a minute of it)
 	await p.frames(60)
 	th._skip()
+	p.steady(true, COARSE) ## (the land closes and the board comes back; the shove takes 0.65 s)
 	var won := ""
 	guard = 0
 	while won == "" and guard < 600:
@@ -332,8 +355,10 @@ func _theater() -> void:
 		won = str(b.drawn_clash.get("winner", ""))
 		await p.frames(1)
 	p.ok(won != "", "back from the battle, the winner's arrow carries through on the map (%s, %d frames)" % [won, guard])
+	p.steady(true, FINE)
 	await p.frames(8)
 	await snap("v202_06_back_from_battle")
+	p.steady(true, COARSE)
 	Settings.data["battles"] = "off"
 	gs.cinema.skip()
 	main.queue_free()
@@ -355,10 +380,12 @@ func _skip_mid_swoop() -> void:
 	while not gs.cinema._waiting and guard < 900:
 		guard += 1
 		await p.frames(1)
+	p.steady(true, FINE)
 	await p.frames(12) ## partway down
 	var mid_zoom: float = b.zoom
 	gs.cinema.skip()
-	await p.frames(70) ## longer than the swoop would have run
+	p.steady(true, COARSE)
+	await p.secs(1.2) ## longer than the swoop would have run
 	p.ok(mid_zoom > b.fit * 1.05 and is_equal_approx(b.zoom, b.fit), "skipped mid-swoop (zoom %.2f): the camera is back at the view it found (zoom %.2f, fit %.2f)" % [mid_zoom, b.zoom, b.fit])
 	Settings.data["battles"] = "off"
 	main.queue_free()
@@ -376,7 +403,7 @@ func _stills() -> void:
 	await _settle(gs)
 	await _stage(gs, s)
 	await _to_clash(gs.cinema)
-	await p.frames(40)
+	await p.secs(0.7)
 	p.ok(is_equal_approx(b.zoom, b.fit), "with motion off the report's camera stays where it is (zoom %.2f, fit %.2f)" % [b.zoom, b.fit])
 	Settings.data["motion"] = "paintings"
 	main.queue_free()
@@ -541,7 +568,7 @@ func _region_moment() -> void:
 	b.world = shown
 	b.refresh()
 	p.ok(ended, "and lost again before its moment is over, the flare ends with it")
-	await p.frames(20)
+	await p.secs(0.35) ## (its moment lasts 1.8 s)
 	await snap("v202_09_region_won")
 	gs.cinema.skip()
 	main.queue_free()

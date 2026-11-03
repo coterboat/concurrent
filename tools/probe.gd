@@ -18,6 +18,9 @@ var _steady := false
 var _step := 1.0 / 60.0
 var _last_us := 0
 var _frame := 1.0 / 60.0 ## the slowest recent frame, in real seconds (as the box sees them)
+var _lap_frames := 0
+var _lap_us := 0
+var _slow_ms := 0 ## (v2.4.2) --slow=MS: every frame takes MS longer to draw, as a slow box's do (--box only moves the game)
 
 
 func _ready() -> void:
@@ -52,6 +55,7 @@ func _ready() -> void:
 		get_tree().quit(2)
 		return
 	log_line("script=%s" % _script_path)
+	_lap_us = Time.get_ticks_usec()
 	# _ready is still wiring children; wait one frame so add_child on the tree works.
 	await get_tree().process_frame
 	await body.run(self)
@@ -84,14 +88,38 @@ func frames(n: int) -> void:
 		await get_tree().process_frame
 
 
+func secs(t: float) -> void:
+	## (v2.4.2) wait t seconds of the game's own time, in as many frames as that takes at the pace it
+	## is held to: half a second is 30 frames at a 60th of a second a frame, 2 at a quarter
+	var left: float = t
+	while left > 0.0:
+		await get_tree().process_frame
+		left -= get_process_delta_time()
+
+
 func steady(on: bool, step := 1.0 / 60.0) -> void:
-	## while on, a frame moves the game on by `step` at most, however long it took to draw
+	## while on, a frame moves the game on by `step` at most, however long it took to draw. On a
+	## machine that draws faster than `step`, nothing changes: a coarse step (a quarter of a second)
+	## costs a fast box no frames, and keeps a slow one from leaping over a moment that lasts longer.
+	## It holds from the next frame: the one it's asked in has its step already (wait a frame before
+	## timing anything to the 60th)
 	_steady = on
 	_step = step
 	_pace()
 
 
+func lap(part: String) -> void:
+	## (v2.4.2) the frames and seconds a probe's part took, so a slow box's report says where they went
+	var f: int = Engine.get_process_frames()
+	var us: int = Time.get_ticks_usec()
+	log_line("lap %s: %d frames, %.0f s" % [part, f - _lap_frames, float(us - _lap_us) / 1e6])
+	_lap_frames = f
+	_lap_us = us
+
+
 func _process(_delta: float) -> void:
+	if _slow_ms > 0:
+		OS.delay_msec(_slow_ms)
 	var now := Time.get_ticks_usec()
 	if _last_us > 0:
 		## the slowest recent frame: the next one's pace is set before it is drawn
@@ -101,7 +129,9 @@ func _process(_delta: float) -> void:
 
 
 func _pace() -> void:
-	Engine.time_scale = clampf(_step / maxf(_frame, 1e-4) * _box, 0.01, _box) if _steady else _box
+	## (v2.4.2: down to a thousandth, so a 60th of a second holds on a box as slow as 16 s a frame;
+	## at a hundredth, a box slower than 1.7 s a frame was given more than it asked for)
+	Engine.time_scale = clampf(_step / maxf(_frame, 1e-4) * _box, 0.001, _box) if _steady else _box
 
 
 func _parse_args() -> void:
@@ -110,3 +140,5 @@ func _parse_args() -> void:
 			_script_path = arg.trim_prefix("--script=")
 		elif arg.begins_with("--box="):
 			_box = maxf(float(arg.trim_prefix("--box=")), 0.01)
+		elif arg.begins_with("--slow="):
+			_slow_ms = maxi(int(arg.trim_prefix("--slow=")), 0)

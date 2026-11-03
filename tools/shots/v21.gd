@@ -9,6 +9,9 @@ extends RefCounted
 const Types := preload("res://engine/types.gd")
 const Diorama := preload("res://game/world3d/diorama.gd")
 
+const COARSE := 0.25 ## (B-015) the most a frame moves the game on while the probe watches...
+const FINE := 1.0 / 60.0 ## ...and while it watches a moment that lasts half a second
+
 var p
 
 
@@ -21,10 +24,20 @@ func run(probe) -> void:
 	Settings.data["roll_yourself"] = true
 	Settings.data["speed"] = "fast"
 	Settings.data["battle_land"] = true
+	## (B-015) the bot's box draws a frame every second or more: a finished battle waits 2.6 s and moves
+	## on by itself, and a clash's broken column stands aside for a quarter of a second, so a frame there
+	## could carry the probe past either; a frame moves the game on a quarter of a second at most
+	## (nothing changes on a machine that draws faster than that), and a 60th around those moments
+	p.steady(true, COARSE)
 	await _two_fronts()
+	p.lap("two fronts")
 	await _clash_spares_the_other()
+	p.lap("clash spares the other")
 	await _mixed_melee()
+	p.lap("mixed melee")
 	await _big_battle()
+	p.lap("big battle")
+	p.steady(false)
 
 
 func _game(map: String, seats: Array) -> Array:
@@ -90,7 +103,7 @@ func _fight_out(gs: Control, th: Control) -> void:
 			"call":
 				th._answer("p")
 			"done":
-				await p.frames(40)
+				await p.secs(40.0 / 60.0)
 				th.press()
 		await p.frames(1)
 
@@ -125,7 +138,7 @@ func _two_fronts() -> void:
 	var ex: Array = th._extra
 	p.ok(ex.is_empty() and th._count_a.text == "9 + 9", "his second front has no ring of its own: its men stand beside his on his own count (\"%s\")" % th._count_a.text)
 	var dio: Node3D = lf.dio
-	await p.frames(int(dio.arrival() * 60.0) + 30)
+	await p.secs(dio.arrival() + 0.5)
 	var reds: Array = []
 	var blue := Vector2.ZERO
 	for a in dio.armies:
@@ -183,11 +196,14 @@ func _clash_spares_the_other() -> void:
 		await p.frames(1)
 		if cin.index >= 0 and cin.index < cin.beats.size() and str((cin.beats[cin.index] as Dictionary).get("event", {}).get("kind", "")) == Types.EVENT_CLASH:
 			break
-	## past the break
+	## past the break (Ridge's column stands aside until the shove is over, and the clash is gone a
+	## quarter of a second later: watched a 60th of a second a frame)
+	p.steady(true, FINE)
 	guard = 0
 	while (b.clash_fx.is_empty() or not b.clash_fx.has("won") or b.clash_hides("ridge", "gate")) and guard < 600:
 		guard += 1
 		await p.frames(1)
+	p.steady(true, COARSE)
 	var harbor := -1
 	for o in b.orders:
 		if str(o["from"]) == "harbor" and str(o["to"]) == "gate":
@@ -236,7 +252,7 @@ func _mixed_melee() -> void:
 	## the dice leave clear
 	var lf: Control = th._land_field
 	var dio: Node3D = lf.dio
-	await p.frames(int(dio.arrival() * 60.0) + 40)
+	await p.secs(dio.arrival() + 40.0 / 60.0)
 	var outside := 0
 	var where := ""
 	for ai in dio.armies.size():
@@ -275,7 +291,7 @@ func _big_battle() -> void:
 	s.lock()
 	await _into_battle(gs, th)
 	var dio: Node3D = lf.dio
-	await p.frames(int(dio.arrival() * 60.0) + 40)
+	await p.secs(dio.arrival() + 40.0 / 60.0)
 	var ok := true
 	var desc := ""
 	for ai in dio.armies.size():
@@ -297,7 +313,7 @@ func _big_battle() -> void:
 			"ready":
 				th.press()
 			"call":
-				await p.frames(70)
+				await p.secs(70.0 / 60.0)
 				for ai in dio.armies.size():
 					counted = counted and _value(dio, ai) == int(dio.armies[ai]["n"])
 				calls += 1
@@ -306,7 +322,9 @@ func _big_battle() -> void:
 	var train_up: int = dio.figs.filter(func(f): return f["alive"] and not bool(f["counts"]) and (f["kind"] == "cav" or f["kind"] == "gun")).size()
 	p.ok(counted and train_up > 0, "three exchanges in: the counting pieces are still the count, and no casualty took a gun or horse of the train (%d standing)" % train_up)
 	await snap("v21_03_big_battle_fighting")
-	## to the end: an army destroyed is down to the last piece, its train with it (RV-001 F2)
+	## to the end: an army destroyed is down to the last piece, its train with it (RV-001 F2). (B-015:
+	## a finished battle moves on by itself 2.6 s after its end; the last pieces have fallen 1.5 s in,
+	## so that's watched a 60th of a second a frame, and the field is counted before it's gone)
 	var standing := -1
 	guard = 0
 	while th.visible and guard < 20000:
@@ -317,12 +335,14 @@ func _big_battle() -> void:
 			"call":
 				th._answer("p")
 			"done":
+				p.steady(true, FINE)
 				await p.frames(90)
 				for ai in dio.armies.size():
 					if int(dio.armies[ai]["n"]) == 0:
 						standing = dio.figs.filter(func(f): return int(f["army"]) == ai and f["alive"]).size()
 				await snap("v21_04_big_battle_end")
 				th.press()
+				p.steady(true, COARSE)
 				break
 		await p.frames(1)
 	p.ok(standing == 0, "the battle's loser is destroyed to the last piece, its horse and guns too (%d left standing)" % standing)

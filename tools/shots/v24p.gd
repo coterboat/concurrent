@@ -31,6 +31,10 @@ const Scenery := preload("res://game/world3d/scenery.gd")
 const Style := preload("res://game/core/style.gd")
 const TokenMesh := preload("res://game/board/token_mesh.gd")
 const MapBoard := preload("res://game/board/map_board.gd")
+## (B-016) the meshes' sheet as Godot 4.7 draws it, where it matched the old drawing (`--ref` writes it afresh)
+const REF := "res://tools/shots/ref/v24p_tokens.webp"
+const COARSE := 0.25 ## (B-016) the most a frame moves the game on while the probe watches a battle...
+const SHOTS := 1.0 / 20.0 ## ...and while it waits to see musket balls fly (six frames to a ball's flight)
 
 var p
 var _watch: PackedStringArray = PackedStringArray() ## what a battle on the land must find loaded already
@@ -56,6 +60,11 @@ func run(probe) -> void:
 	_list("res://assets/audio/sfx", ["mp3", "wav", "ogg"])
 	_list("res://assets/battle", ["webp", "png"]) ## (told, not held against the 3D: the battle's own)
 	await _tokens_alike()
+	p.lap("tokens")
+	## (B-016: on the bot's box, under load, a frame a second once saw no musket ball fly) a frame moves
+	## the game on a quarter of a second at most (nothing changes on a machine that draws faster), a
+	## 20th while the first shots of the first two battles are watched
+	p.steady(true, COARSE)
 	var main: Control = load("res://game/main.tscn").instantiate()
 	p.get_tree().root.add_child(main)
 	await p.frames(5)
@@ -84,14 +93,18 @@ func run(probe) -> void:
 	var drawn0: int = gs.board.tokens.drawn
 	var used: Array = []
 	var first: Dictionary = await _battle(s, gs, _pick(s, gs, used), "01")
+	p.lap("battle 01")
 	await _to_planning(s, gs)
 	var second: Dictionary = await _battle(s, gs, _pick(s, gs, used), "02")
+	p.lap("battle 02")
 	var tok_made: int = gs.board.tokens.made - made0
 	var tok_drawn: int = gs.board.tokens.drawn - drawn0
 	p.ok(gs.board.token_meshes and tok_drawn > 0 and tok_made * 20 < tok_drawn, "the board's tokens are drawn from meshes through two battles: %d drawn, %d made" % [tok_drawn, tok_made])
 	await _to_planning(s, gs)
 	Settings.data["roll_yourself"] = true ## (the fort is photographed before the first throw)
 	var third: Dictionary = await _battle(s, gs, ["blackford", "coldwater", "redgate"], "03")
+	p.lap("battle 03")
+	p.steady(false)
 	## the fort
 	var ft: Dictionary = third.get("fort", {})
 	p.ok(not ft.is_empty() and bool(ft["kept"]), "at a fort the fort stays on the table (Redgate's)")
@@ -210,10 +223,61 @@ func _tokens_alike() -> void:
 		vp.queue_free()
 	var a: Image = imgs[0]
 	var b: Image = imgs[1]
+	## (B-016) the old drawing's lines are this Godot's: since 4.7 an antialiased line is as wide as asked
+	## (2 px covers 2.2 here), before it a pixel wider (4.4: 3.24 px, and the bot's 4.5.1 by its numbers).
+	## The meshes draw the same on any Godot (pixel for pixel on 4.4 and 4.7.1), matched to 4.7's lines:
+	## on an older one they are held to their 4.7 picture, not to its own old drawing
+	var line: float = await _line_cover(2.0)
+	var as_asked: bool = line < 2.6
+	p.log("Godot %s, %s on %s (%s): a 2 px antialiased line is drawn %.2f px wide" % [Engine.get_version_info()["string"],
+		RenderingServer.get_current_rendering_method(), RenderingServer.get_current_rendering_driver_name(), RenderingServer.get_video_adapter_name(), line])
+	var ref := Image.load_from_file(ProjectSettings.globalize_path(REF)) if FileAccess.file_exists(REF) else null
+	if ref != null:
+		ref.convert(Image.FORMAT_RGB8)
+	## (every renderer here draws them within 0.9/255 of it, none a pixel off by more than 24/255; a token
+	## a pixel too big is 1.9/255 and 0.5%, its edge a pixel too thin 10/255 and 15%)
+	var kept: Array = _apart(ref, b, 1) if ref != null and ref.get_size() == b.get_size() else [0, INF, 100.0]
+	var held: bool = int(kept[0]) > 50000 and float(kept[1]) < 1.5 and float(kept[2]) < 0.25
+	p.ok(held, "the meshes are drawn as Godot 4.7 draws them: %.2f/255 from %s on average over %d pixels, %.2f%% off by more than 24/255%s" % [kept[1], REF.get_file(), kept[0], kept[2],
+		"" if held else " (if the tokens' look changed on purpose: PROBE_ARGS=--ref ./scripts/probes.sh v24p, on Godot 4.7 or later)"])
+	if not as_asked:
+		p.log("this Godot's antialiased lines are a pixel wider than asked (4.7's are as wide as asked): its old drawing's lines are wider than the meshes', so they're not held to it here")
+		return
 	var fine: Array = _apart(a, b, 1)
 	var coarse: Array = _apart(a, b, 2)
 	p.ok(int(fine[0]) > 50000 and float(fine[1]) < 6.0 and float(coarse[2]) < 1.0,
 		"the tokens, shields and rings drawn from meshes look as they did: %.1f/255 apart on average over %d pixels, %.1f%% off by more than 24/255 (where an antialiased edge falls in a pixel); %.2f%% two pixels across" % [fine[1], fine[0], fine[2], coarse[2]])
+	if OS.get_cmdline_user_args().has("--ref") and float(fine[1]) < 6.0 and float(coarse[2]) < 1.0:
+		b.save_webp(ProjectSettings.globalize_path(REF)) ## (lossless)
+		p.log("wrote %s afresh" % REF)
+
+
+class _Line extends Control:
+	var w := 2.0
+
+	func _draw() -> void:
+		draw_rect(Rect2(Vector2.ZERO, size), Color(0, 0, 0))
+		draw_polyline(PackedVector2Array([Vector2(4, 16.3), Vector2(60, 16.3)]), Color(1, 1, 1), w, true)
+
+
+func _line_cover(w: float) -> float:
+	## how many pixels across this Godot's antialiased line of width w covers (white on black, summed)
+	var vp := SubViewport.new()
+	vp.size = Vector2i(64, 32)
+	vp.render_target_update_mode = SubViewport.UPDATE_ALWAYS
+	p.add_child(vp)
+	var l := _Line.new()
+	l.w = w
+	l.size = Vector2(64, 32)
+	vp.add_child(l)
+	await p.frames(3)
+	await RenderingServer.frame_post_draw
+	var img: Image = vp.get_texture().get_image()
+	vp.queue_free()
+	var sum := 0.0
+	for y in 32:
+		sum += img.get_pixel(32, y).r
+	return sum
 
 
 static func _apart(a: Image, b: Image, k: int) -> Array:
@@ -372,6 +436,7 @@ func _battle(s: Node, gs: Control, pair: Array, tag: String) -> Dictionary:
 					await p.frames(20)
 					await snap("v24p_%s_04_at_the_fort" % tag)
 			_streaks(lf, out["streaks"], seen_tr)
+			p.steady(true, SHOTS if fight and tag != "03" and int(out["streaks"]["seen"]) < 6 else COARSE)
 			if tag == "01" and not shot.has("volley") and (lf.dio.tracers as Array).filter(func(t): return not bool(t["gun"]) and is_instance_valid(t["node"]) and (t["node"] as Node3D).visible).size() >= 3:
 				shot["volley"] = true
 				await snap("v24p_%s_02_volley" % tag)
@@ -395,11 +460,12 @@ func _battle(s: Node, gs: Control, pair: Array, tag: String) -> Dictionary:
 				gs.cinema._wait = 0.3
 		elif gs.cinema._waiting and not th.visible and not shot.has("swoop"):
 			shot["swoop"] = true
-			await p.frames(6)
+			await p.secs(0.1)
 			await snap("v24p_%s_01_swoop" % tag)
 		elif not gs.cinema.visible and s.phase != Session.Phase.CINEMA and s.phase != Session.Phase.RESOLVING:
 			break
 		await p.frames(1)
+	p.steady(true, COARSE)
 	await snap("v24p_%s_03_board_again" % tag)
 	## a load that isn't the 3D's (the battle's own backdrop) is told, not held against it
 	var mine: Array = []
