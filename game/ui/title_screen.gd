@@ -6,6 +6,7 @@ const SessionScript := preload("res://game/core/session.gd")
 const LivingPainting := preload("res://game/ui/living_painting.gd")
 
 var main: Control
+var notice := "" ## v2.5: a line under the buttons (a saved war that couldn't be opened)
 var _art: Control
 var _t := 0.0
 var _living := false
@@ -49,8 +50,8 @@ func _ready() -> void:
 	gap.custom_minimum_size = Vector2(0, 22)
 	col.add_child(gap)
 
-	if SessionScript.has_save():
-		var info: Dictionary = SessionScript.save_summary()
+	var info: Dictionary = SessionScript.save_summary() ## (v2.5: {} for a save that can't be read: no Continue to nowhere)
+	if not info.is_empty():
 		var cont := Style.button("Continue  ·  %s, round %s" % [info.get("map", ""), info.get("round", "?")], func(): main.continue_game(), 420, 22)
 		col.add_child(cont)
 	col.add_child(Style.button("New Game", func(): main.show_setup(), 420, 22))
@@ -61,6 +62,11 @@ func _ready() -> void:
 	col.add_child(Style.button("How to Play", func(): main.show_howto(), 420, 22))
 	col.add_child(Style.button("Settings", func(): main.open_settings(), 420, 22))
 	col.add_child(Style.button("Quit", func(): get_tree().quit(), 420, 22))
+	if notice != "":
+		var nl := Style.label(notice, 18, Style.PARCH, "italic")
+		nl.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
+		nl.custom_minimum_size = Vector2(420, 0)
+		col.add_child(nl)
 
 	var foot := Style.label("A SameTime conquest game  ·  art & sound made with Ludo.ai", 15, Color(Style.MUTED, 0.8), "italic")
 	foot.set_anchors_preset(PRESET_BOTTOM_LEFT)
@@ -72,8 +78,9 @@ func _ready() -> void:
 
 
 func _tutorial() -> void:
-	Settings.set_value("seen_tutorial", true)
-	main.start_tutorial()
+	main.new_war(func():
+		Settings.set_value("seen_tutorial", true)
+		main.start_tutorial(), true) ## v2.5: asks first when a war is saved
 
 
 func _process(delta: float) -> void:

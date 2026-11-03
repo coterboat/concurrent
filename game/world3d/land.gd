@@ -38,6 +38,7 @@ var _state_tex: Texture2D
 var _shown := {} ## who is drawing it: "board", "battle"
 var quality := 0 ## 0 everything; each step gives up the dearest of what's left (a slower machine)
 var _slow := 0.0
+var _smooth := 0.0 ## v2.5: seconds the land has run smoothly at this step
 
 
 func _ready() -> void:
@@ -56,8 +57,10 @@ func texture() -> Texture2D:
 
 
 func fit(screen: Vector2, scale: float) -> void:
-	## the viewport at the screen's size, in physical pixels
-	px = clampf(scale, 1.0, 3.0)
+	## the viewport at the screen's size, in physical pixels. v2.5: a window smaller than the tables'
+	## 1440×900 too (a laptop's, maximized at 1366×705: 0.78): held at 1.0, the land drew the UI's 1743×900,
+	## 1.6 times the pixels the screen shows, on the very machines with the least to spare
+	px = clampf(scale, 0.5, 3.0)
 	var want := Vector2i(int(screen.x * px), int(screen.y * px))
 	if want.x > 4 and want.y > 4 and _vp.size != want:
 		_vp.size = want
@@ -171,7 +174,10 @@ func _process(delta: float) -> void:
 		DiceStage.warm_pieces() ## (loaded already: the dice tray takes them from here)
 		_build_world()
 	if prepared and shown():
-		_watch_speed(delta)
+		## (v2.4.2) the machine's own frame, as long as it took to draw: the game never changes the
+		## clock's rate, but a probe holding it steady (tools/probe.gd) hid a slow box from the watchdog,
+		## and the bot's software GL drew the land at its dearest through every held moment (B-013)
+		_watch_speed(delta / maxf(Engine.time_scale, 0.0001))
 
 
 func _watch_speed(delta: float) -> void:
@@ -180,12 +186,20 @@ func _watch_speed(delta: float) -> void:
 	if quality >= 4:
 		return
 	if delta > 1.0 / 40.0 and _land_heavy(delta):
-		_slow += delta
+		## v2.5: a tenth of a second at most for any one frame. A hitch is one frame, not a slow land:
+		## on the Compatibility renderer, where every slow frame counts (no timings), the first frames'
+		## shader compiling (100-600 ms each) stepped the land down on an RTX 3070
+		_slow += minf(delta, 0.1)
 	else:
 		_slow = maxf(0.0, _slow - delta * 0.5)
 	if _slow > 3.0:
 		_slow = 0.0
 		set_quality(quality + 1)
+		Settings.remember("land_quality", quality) ## v2.5: where the next war's land starts (_build_world)
+	## v2.5: a minute smooth at a better step than the one remembered, and that's the one remembered
+	_smooth = _smooth + delta if _slow == 0.0 else 0.0
+	if _smooth > 60.0 and quality < int(Settings.get_value("land_quality", 0)):
+		Settings.remember("land_quality", quality)
 
 
 func _land_heavy(delta: float) -> bool:
@@ -254,6 +268,11 @@ func _build_world() -> void:
 	marches.kit = garrisons
 	wv.add_child(marches)
 	prepared = true
+	## v2.5: on the step this machine settled on last time, less one. Each war's land began with every
+	## effect and stepped down 3 s at a time: on a slow laptop, ten seconds and more of a chugging land
+	## every war (the first swoop to a battle among them). One better than last time, so a machine that
+	## was only busy that once climbs back; the watchdog takes it on from there
+	set_quality(maxi(quality, int(Settings.get_value("land_quality", 0)) - 1))
 	built.emit()
 
 

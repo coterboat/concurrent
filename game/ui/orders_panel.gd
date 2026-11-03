@@ -282,9 +282,14 @@ func _selected() -> void:
 
 
 func _hint_text() -> String:
-	if session.phase == Session.Phase.OPENING:
-		return "Click one of your lands to select it. Click it again (or press +) to add armies. Right-click takes one back."
-	return "Click one of your lands to select it. Then click an enemy neighbor to attack, or drag from your land onto the target. Click your selected land again to add a recruit."
+	## v2.5: as a click does (game_screen.gd _on_click). It said "click it again (or press +) to add
+	## armies" (a first click places one, and the only + is the zoom), and in the orders "click your
+	## selected land again to add a recruit" (that click lets go of it)
+	if session.phase == Session.Phase.OPENING or (session.phase == Session.Phase.PLANNING and session.plan_step == "reinforce"):
+		return "Click one of your lands to put a recruit there; right-click takes one back. When they're all placed, press %s." % ("SEAL" if session.phase == Session.Phase.OPENING else "ORDERS")
+	if session.phase == Session.Phase.MANEUVER:
+		return "Drag from one of your lands onto a neighbour of yours to march troops there, one land a round. Then press MARCH."
+	return "Click one of your lands, then an enemy land beside it to attack (or drag from yours onto it). To place more recruits, press ◀ Recruits."
 
 
 func _attack_row(from_id: String, to_id: String, from_enemy_view: bool) -> Control:

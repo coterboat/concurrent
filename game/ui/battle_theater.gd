@@ -801,16 +801,19 @@ func _next_engagement() -> void:
 	else:
 		_field.setup(list)
 	_result.text = ""
+	## v2.5: behind a fortress's or a capital's walls the defenders fire a longer line, and the
+	## line under the title says so (it said "at most 5 a side" at a capital too)
+	var walls: String = ("; %d behind these walls" % Combat.fire(99, _fort_bonus())) if _fort_bonus() > 0 and Combat.line > 0 else ""
 	if _melee and Combat.line > 0 and _evens_refired():
-		_score.text = "Every front throws at once: pips × 5 + its firing line, against the defenders' whole line (at most %d a side). Even volleys are fired again." % Combat.line
+		_score.text = "Every front throws at once: pips × 5 + its firing line, against the defenders' whole line (at most %d a side%s). Even volleys are fired again." % [Combat.line, walls]
 	elif _melee and Combat.line > 0:
-		_score.text = "Every front throws at once: pips × 5 + its firing line, against pips × 5 + the defenders' whole firing line (at most %d a side)." % Combat.line
+		_score.text = "Every front throws at once: pips × 5 + its firing line, against pips × 5 + the defenders' whole firing line (at most %d a side%s)." % [Combat.line, walls]
 	elif _melee:
 		_score.text = "Every front throws at once: pips × 5 + its men, against pips × 5 + the defenders' share of the wall there."
 	elif _scramble:
 		_score.text = "Every army duels every other at once, its men split among its foes: pips × 5 + men. Last army standing takes it."
 	elif _volley_mode and Combat.line > 0:
-		_score.text = "Each volley: pips × 5 + the men firing (at most %d a side). The higher total wins; the loser loses a man; an even volley is fired again." % Combat.line
+		_score.text = "Each volley: pips × 5 + the men firing (at most %d a side%s). The higher total wins; the loser loses a man; an even volley is fired again." % [Combat.line, walls]
 	elif _volley_mode:
 		_score.text = "Each volley: pips × 5 + men standing, both sides. The higher total wins; the loser loses a man."
 	else:
@@ -1441,7 +1444,10 @@ func _plaque(k: int, sl: float, sr: float, tl: String, tr: String, w: String, lp
 
 func _evens_refired() -> bool:
 	## an even volley is fired again in this fight: an assault's since v1.7, a melee's since rules 23
-	## (before, a melee's even volley just cost nobody and was one of the exchange's three)
+	## (before, a melee's even volley just cost nobody and was one of the exchange's three). v2.5:
+	## never a scramble's, where an even volley costs nobody and isn't fired again (Combat's scramble)
+	if _scramble:
+		return false
 	return not _melee or (session != null and session.map != null and session.map.rules >= 23)
 
 
@@ -1550,7 +1556,7 @@ func _update_odds() -> void:
 		## v1.6: what the firing line means right now
 		if fa0 == fd0:
 			var deeper: String = who if a > d else (session.name_of(_b_pid) if _b_pid != "neutral" else "The garrison")
-			edge = "%s against %d: both fire a full line of %d, so every volley is even" % [men.call(a), d, fa0]
+			edge = "%s against %d: both fire a full line of %d, so the dice alone decide each volley" % [men.call(a), d, fa0]
 			if a != d:
 				edge += "; %s %d more to lose" % [Style.says(deeper, "has"), absi(a - d)]
 		else:

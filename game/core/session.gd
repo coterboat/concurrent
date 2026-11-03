@@ -1527,9 +1527,14 @@ func save() -> void:
 	}
 	if winner != "":
 		rec["winner"] = winner
-	var f := FileAccess.open(SAVE_PATH, FileAccess.WRITE)
+	## v2.5: written whole beside the save, then put in its place: a crash or a power cut mid-write left
+	## a save cut short, which the title offered and couldn't pick up
+	var part: String = SAVE_PATH + ".part"
+	var f := FileAccess.open(part, FileAccess.WRITE)
 	if f:
 		f.store_string(JSON.stringify(rec))
+		f.close()
+		DirAccess.rename_absolute(ProjectSettings.globalize_path(part), ProjectSettings.globalize_path(SAVE_PATH))
 	if WarRecords.on(SAVE_PATH):
 		WarRecords.keep(rec)
 
@@ -1541,12 +1546,16 @@ static func has_save() -> bool:
 static func save_summary() -> Dictionary:
 	if not has_save():
 		return {}
-	var parsed: Variant = JSON.parse_string(FileAccess.get_file_as_string(SAVE_PATH))
-	if typeof(parsed) != TYPE_DICTIONARY:
+	## v2.5: a save that can't be picked up has no summary, and the title offers no Continue for it
+	## (read quietly: a save cut short is no error, just nothing to continue)
+	var json := JSON.new()
+	if json.parse(FileAccess.get_file_as_string(SAVE_PATH)) != OK or typeof(json.data) != TYPE_DICTIONARY:
 		return {}
-	var d: Dictionary = parsed
+	var d: Dictionary = json.data
+	if typeof(d.get("config")) != TYPE_DICTIONARY or typeof(d.get("sheets")) != TYPE_ARRAY or typeof(d.get("setup")) != TYPE_DICTIONARY:
+		return {}
 	var map_name := str(d.get("mapId", ""))
-	var m: Variant = JSON.parse_string(FileAccess.get_file_as_string(str(d["config"]["map"])))
+	var m: Variant = JSON.parse_string(FileAccess.get_file_as_string(str((d["config"] as Dictionary).get("map", ""))))
 	if typeof(m) == TYPE_DICTIONARY:
 		map_name = str(m.get("name", map_name))
 	return {"map": map_name, "round": (d["sheets"] as Array).size() + 1, "saved": d.get("saved", "")}
@@ -1555,6 +1564,13 @@ static func save_summary() -> Dictionary:
 func clear_save() -> void:
 	if has_save():
 		DirAccess.remove_absolute(ProjectSettings.globalize_path(SAVE_PATH))
+
+
+static func set_aside_save() -> void:
+	## v2.5: a save the game couldn't pick up (a newer build's, a file cut short) is kept under another
+	## name for Alex to look at, and the title stops offering it
+	if has_save():
+		DirAccess.rename_absolute(ProjectSettings.globalize_path(SAVE_PATH), ProjectSettings.globalize_path(SAVE_PATH.get_basename() + ".unreadable.json"))
 
 
 func load_save() -> bool:

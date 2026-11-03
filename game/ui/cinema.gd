@@ -938,7 +938,8 @@ func _reveal_result() -> void:
 	var tb: int = int(b["b_size"]) + int(b["b_die"])
 	var a_won: bool = bool(b["a_won"])
 	var ev0: Dictionary = b.get("event", {})
-	if (ev0.get("rolls", []) as Array).size() > 0 and (ev0["rolls"][0] as Dictionary).has("sa"):
+	var volleys: bool = (ev0.get("rolls", []) as Array).size() > 0 and (ev0["rolls"][0] as Dictionary).has("sa")
+	if volleys:
 		## volleys: the card tells the whole fight, men in and men left
 		var a_end: int = int(b["left"]) if a_won else int(ev0.get("attackerLeft", 0))
 		var b_end: int = 0 if a_won else int(b["left"])
@@ -970,7 +971,9 @@ func _reveal_result() -> void:
 	elif inv:
 		if a_won:
 			txt += "%s %s with %d left" % [Style.says(_name(winner), "takes"), _hex(str(b["resolves"])), int(b["left"])]
-			if ta == tb:
+			if ta == tb and not volleys:
+				## (one decisive roll under rules before 17. v2.5: never a fight of volleys, where the
+				## sums are the last volley's and an even volley is fired again: it said so on 1 win in 10)
 				txt += "  (ties go to the attacker)"
 			Audio.sfx("capture")
 		else:

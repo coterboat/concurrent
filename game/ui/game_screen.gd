@@ -2512,11 +2512,13 @@ func _overlay_open() -> bool:
 
 
 func open_menu() -> void:
-	_confirm("Paused", "Your campaign is saved after every round.", [
+	## v2.5: the war is saved after every round, not when you quit ("Save & quit" promised the orders
+	## being written, which a war picked up again starts over)
+	_confirm("Paused", "Your war is saved after every round. Quit now and you'll come back to the start of this round.", [
 		["Resume", func(): pass],
 		["How to play", func(): _open_rules(0)],
 		["Settings", func(): main.open_settings()],
-		["Save & quit to title", func(): main.show_title()],
+		["Quit to title", func(): main.show_title()],
 		["Quit game", func(): get_tree().quit()],
 	])
 

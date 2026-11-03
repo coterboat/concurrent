@@ -2,6 +2,12 @@
 extends Node
 
 const PATH := "user://settings.cfg"
+const WindowFit := preload("res://game/core/window_fit.gd")
+## v2.5: the largest text the screens hold. The UI is laid out in 1440×900 and the text size shrinks
+## that canvas: "Extra large" (1.3) left 1108×692, and the war's own bar ran off the foot of the screen
+## with the ORDERS dial and the advisor's buttons, as did How to Play's and the settings' buttons.
+## "Large" (1.15) leaves 1252×783, which every screen fits. A saved 1.3 reads as Large.
+const UI_SCALE_MAX := 1.15
 
 signal changed
 
@@ -29,6 +35,7 @@ var data := {
 	"map_land": true, ## v2.0: the board stands on the map's own land in 3D (false: the chart); L in the game
 	"motion": "all", ## v1.9: all (cutscenes and living paintings) | paintings (no cutscenes) | off (stills)
 	"shields": "ranked", ## v2.4: how a garrison's shield shows its depth: ranked (Alex's pick) | number | chevrons (map_board.gd)
+	"land_quality": 0, ## v2.5: the step the land's watchdog settled on, on this machine (land.gd)
 }
 
 
@@ -38,6 +45,7 @@ func _ready() -> void:
 		for k in data.keys():
 			if cfg.has_section_key("prefs", k):
 				data[k] = cfg.get_value("prefs", k)
+	data["ui_scale"] = clampf(float(data["ui_scale"]), 1.0, UI_SCALE_MAX)
 	apply()
 
 
@@ -78,7 +86,9 @@ func apply() -> void:
 	var is_full: bool = win.mode == Window.MODE_FULLSCREEN or win.mode == Window.MODE_EXCLUSIVE_FULLSCREEN
 	if want_full != is_full and not DisplayServer.get_name().begins_with("headless"):
 		win.mode = Window.MODE_FULLSCREEN if want_full else Window.MODE_WINDOWED
-	win.content_scale_factor = float(data["ui_scale"])
+		if not want_full and OS.get_name() != "macOS":
+			WindowFit.apply(win, false) ## v2.5: out of fullscreen, a window the screen holds (maximized on a small one)
+	win.content_scale_factor = clampf(float(data["ui_scale"]), 1.0, UI_SCALE_MAX)
 	var audio := get_node_or_null("/root/Audio")
 	if audio:
 		audio.apply_volumes()
