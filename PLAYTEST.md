@@ -56,6 +56,24 @@ shown: fine" is as useful as a bug.
   take every recruit. Since v2.3 the game says so once in the log and the tally ("· 2 no room") rather
   than asking about them.
 
+## v2.6: the war's chips (this push)
+
+No rule change (rules 23), nothing in `engine/` or `session.gd`: every save replays as it was played. Alex's call
+C17: the war's chips were 22 to 24 px tall on a 1366×768 laptop. `docs/CHANGELOG.md` (v2.6) has the numbers.
+
+- **The chips:** every chip on the war's bar and under the battle's dice stands 36 px at 1440×900 (25 before),
+  about 32 on a laptop. **Poke:** `./scripts/probes.sh v26` (73 facts).
+  - It sets the window to four sizes, up to 1920×985. If your screen is smaller, its log says what window it got
+    (`the window is … here`), and the facts are about that one.
+  - Send its `chip heights` table.
+- **The advisor's panel:** his plan, the latest dispatches and the pages of his advice (‹ 1 / 6 ›) share one line
+  under his words. His words shrink a point at a time to fit a narrow bar, never below 14 px. **Poke:** any probe's
+  shots of the war. Nothing on the bar should run off the foot of the screen: say if a word does.
+- **The battlefield's foot** (`game/ui/battle_controls.gd`, peeled out of `battle_theater.gd`): the ROLL dial is
+  whole now (it hung 4 px below the screen). Space, Enter, Esc and the calls' letters are unchanged. **Poke:** the
+  probes that open battles (v202, v21, v22, v23, v24p).
+- **New:** probe `v26`, `game/ui/battle_controls.gd`.
+
 ## v2.5: Dad's laptop (this push)
 
 No rule change (rules 23), nothing in `engine/`: every save replays as it was played. A first-time player's

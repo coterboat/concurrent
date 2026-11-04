@@ -177,6 +177,11 @@ points as noise.
   has pointed `WarRecords.DIR` at a folder of its own).
 - Screens must fit **1440×900**: the setup screen (the Rules row replaced five rows for this)
   and the settings panel are near the limit. Screenshot-check after adding rows.
+- **The war's bar is full** at 1440×900 with Large text (1252 design px wide). Its chips stand `Style.CHIP_H` (v2.6,
+  Alex's C17), and `command_bar.gd` `_fit` shrinks the advisor's words to hold them; probe `v26` checks four screens.
+  Don't flip an autowrap Label's `text_overrun_behavior` or `max_lines_visible` and then set its font size in one
+  call: Godot 4.7.1 crashed there (signal 11, v2.6's first `_fit`). Measure words with
+  `Font.get_multiline_string_size`, and set each label once.
 
 ## The engine's laws (engine/)
 

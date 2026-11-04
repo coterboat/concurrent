@@ -20,6 +20,7 @@ const FortunePips := preload("res://game/ui/fortune_pips.gd")
 const Moments := preload("res://game/ui/moments.gd")
 const LandField := preload("res://game/world3d/land_field.gd")
 const FrontMarks := preload("res://game/ui/front_marks.gd")
+const BattleControls := preload("res://game/ui/battle_controls.gd")
 
 signal finished(skip_rest: bool)
 
@@ -271,31 +272,15 @@ func _ready() -> void:
 		_btn_fortune.expand_icon = false
 		_btn_fortune.add_theme_constant_override("icon_max_width", 30)
 	_calls.add_child(_btn_fortune)
-	## controls
-	var ctl := HBoxContainer.new()
-	ctl.set_anchors_and_offsets_preset(PRESET_CENTER_BOTTOM)
-	ctl.offset_bottom = -12
-	ctl.offset_top = -92
-	ctl.grow_horizontal = Control.GROW_DIRECTION_BOTH
-	ctl.alignment = BoxContainer.ALIGNMENT_CENTER
-	ctl.add_theme_constant_override("separation", 18)
+	## the foot: Auto-roll, the dial, ? Dice, Skip battles (v2.6: battle_controls.gd)
+	var ctl := BattleControls.new()
 	add_child(ctl)
-	_auto_btn = Style.chip("Auto-roll ▶", func(): _set_manual(not manual), Style.CREAM, 16)
-	_auto_btn.size_flags_vertical = Control.SIZE_SHRINK_CENTER
-	ctl.add_child(_auto_btn)
-	_dial = load("res://game/ui/command_bar.gd")._Dial.new()
-	_dial.custom_minimum_size = Vector2(96, 96)
-	_dial.size = Vector2(96, 96)
-	_dial.pressed.connect(func(): press())
-	ctl.add_child(_dial)
-	var dh := Style.chip("? Dice", func(): _toggle_help(), Style.PARCH, 15)
-	dh.size_flags_vertical = Control.SIZE_SHRINK_CENTER
-	dh.tooltip_text = "How a throw is scored, and why big armies roll finer dice"
-	ctl.add_child(dh)
-	var skip := Style.chip("Skip battles ▶▶", func(): _skip(), Style.PARCH, 16)
-	skip.size_flags_vertical = Control.SIZE_SHRINK_CENTER
-	skip.tooltip_text = "Settle this round's remaining battles on the map (Esc): your standing orders decide the calls"
-	ctl.add_child(skip)
+	ctl.auto_pressed.connect(func(): _set_manual(not manual))
+	ctl.dial_pressed.connect(func(): press())
+	ctl.help_pressed.connect(func(): _toggle_help())
+	ctl.skip_pressed.connect(func(): _skip())
+	_auto_btn = ctl.auto_btn
+	_dial = ctl.dial
 	## the chief of staff, at your elbow
 	_advisor = LeaderFace.new()
 	_advisor.bubble_side = "top" ## above his ring, clear of the dice table

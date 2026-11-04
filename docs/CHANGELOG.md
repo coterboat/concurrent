@@ -2,6 +2,103 @@
 
 The bible says amendments come with a dated entry and the test or band that justified them. Everything below has both.
 
+## v2.6 — 3 Nov 2026: the war's chips, a laptop's size (no rule change: rules 23)
+
+Alex's call C17 (v2.5): the war's small chips were 22 to 24 px tall on a 1366×768 laptop, so "raise them to about
+32 px, in a pass of their own". They're 32 there now, and the bar they sit in is re-laid out to hold them. Nothing
+in `engine/` or `session.gd` changed: every save replays as it was played. Dad's build (v2.5) has the chips as they
+were.
+
+### The chips
+
+Every chip on the war's bar and under the battle's dice stands 36 design px tall (`Style.CHIP_H`; 25 before), its
+words at 16 (14). Heights measured by the new probe `v26` (every phase's chips, in each screen's own pixels; v2.5's
+bar measured by the same probe):
+
+| chips | 1440×900 | 1440×900, Large | 1366×768 laptop, Large | 1920×1080 at 150%, Large |
+|---|---|---|---|---|
+| Auto-place, Clear, Cards, Review, ◀ Recruits, Advisor's pick, Hurry ▶▶, Advisor's marches | 25 → 36 | 28.7 → 41.4 | 22.5 → 32.4 | 31.5 → 45.3 |
+| ❚❚ / ▶, Skip ▶▶ (the battle report) | 30 → 36 | 34.5 → 41.4 | 27 → 32.4 | 37.8 → 45.3 |
+| ✦ Advisor's plan | 31 → 36 | 35.6 → 41.4 | 27.9 → 32.4 | 39 → 45.3 |
+| Auto-roll ▶, Skip battles ▶▶ | 26.6 → 36 | 30.6 → 41.4 | 24 → 32.4 | 33.5 → 45.3 |
+| ? Dice | 24.6 → 36 | 28.3 → 41.4 | 22.2 → 32.4 | 31 → 45.3 |
+
+- One design height for every screen keeps the chips about the same size in the hand on both of Dad's possible
+  laptops: 32 px on a 1366×768 14-inch is 7.3 mm, and 45 px on a 1080p 14-inch at 150% is 7.2 mm (30 px as Windows
+  counts there).
+- **The pages of his advice** (‹ ›) were bare arrows on buttons 42 px tall at 1440, with no edge to show where to
+  click. They're 36 px square chips now, on the same line as his plan.
+- Their bigger ways round still work, and `v26` clicks each: the dial (PICK, SEAL, ORDERS, MARCH), Space, Esc, C.
+
+### The bar was full
+
+The bigger chips needed room the bar didn't have. `v26` found, on v2.5's bar:
+- **At 1440×900 with Large text** (1252 design px wide, the narrowest the war is drawn), the advisor's advice ran
+  to four and five lines. It pushed ✦ Advisor's plan off the foot of the screen in round 1's recruits (its top at
+  764 of 782). In the regroup it cut his last dispatches.
+- **The tutorial's round-2 lesson** (330 characters, the longest he has) pushed ✦ Advisor's plan wholly below the
+  screen on all four screens. At 1440 Large it took its own last lines with it.
+
+Now:
+- **One line under his words** (`command_bar.gd`): his plan, the latest dispatches, the pages of his advice. The
+  pages stood beside his words, which they made narrower, and the plan stood under the dispatches. Where neither
+  his plan nor his pages are up, the dispatches follow his words as they did.
+- **The bar holds its words on every screen** (`_fit`):
+  1. The dispatches give way first, where they stand under his words alone.
+  2. Then his advice, a point at a time, never below 14 px on the screen.
+  3. At the last it's cut short at a word, every word in its tooltip.
+
+  The tally's hint does the same in its column, and steps aside where not a word of it fits. The words are measured
+  with their font, and each label is set once a fit.
+  - The longest lesson now reads in full on all four screens: at 16 on the laptop (14 px), 13 at 1440 Large (15 px),
+    and 16 at 1440 and at 1080p 150%.
+  - Everyday advice stays at 18 on all four screens. So does the tally at its longest, late in a war ("12 of 12
+    recruits placed · 2 no room" over "3 cards in hand · Click your lands…"), its hint at 15.
+  - Only words longer than the game has get cut: twice the longest lesson (cut on three screens, whole at 15 px at
+    1080p 150%), and a hint three times the longest (cut on all four).
+- **A dispatch too long for its room ends in "…"**: it was cut mid-word ("Deploy yo").
+- **A refreshed bar's old chips leave its row at once.** They stood beside the new ones until the end of the frame.
+- **On the way:** the fit's first draft cut the advice by switching its label's overrun and line limit, and then
+  set its font size, in one call. Godot 4.7.1 crashed there (signal 11, in `add_theme_font_size_override`).
+  The fit measures with the font now, and sets each label once (CLAUDE.md, gotchas).
+
+### The battle's foot
+
+- **The ROLL dial hung 4 px below the foot of the screen**, on every screen: its strip was 80 px tall for a 96 px
+  dial (v2.5 at 1440×900: the dial at y 808 to 904).
+- The strip is the dial's height now, its chips 36 (`game/ui/battle_controls.gd`, peeled out of
+  `battle_theater.gd`).
+
+### Evidence
+
+On the PC (Godot 4.7.1, Forward+):
+- **Probe `v26`, 73 facts, all passing.** It walks a war from the claims to the regroup and a second round's battle.
+  At each step it checks four screens: 1440×900 at Normal and at Large, a 1366×768 laptop's maximized window
+  (1366×705) at Large, and a 1920×1080 laptop's at 150% (1920×985) at Large. On each, as facts:
+  - every chip at least 30 px tall;
+  - none off the screen, or over another, the dial or the bar's words;
+  - the dial whole;
+  - the bar's words all inside the bar, his advice at 14 px or more and in full.
+
+  It does the same with the longest lesson, the tally at its longest, and the two oversized cases above. It also
+  clicks every chip, the dial, Space, Esc and C, and checks what each does.
+- **The same probe on v2.5's bar** (before its last three cases, in a throwaway worktree at `ec97c35`) fails:
+  - all nine height facts;
+  - the plan off the screen, in round 1's recruits at 1440 Large, and with the longest lesson on all four screens;
+  - the ROLL dial;
+  - the bar's words, with the longest lesson and in the regroup at 1440 Large.
+
+  Its other word facts read the bar's new `_said` and don't apply there.
+- **Every probe, windowed, one at a time: 38 of 38**, 702 facts:
+  - 36 passed in the full run, v25 (45) and v26 (73) among them.
+  - v21 failed there at its big battle: the shot at that fact shows the pause menu over round 2's regroup. The battle
+    had been left and the menu opened, which takes Esc or a click, and v21 sends neither. Run alone it passes, 13
+    of 13.
+  - v24p failed there by one frame: its swoop fact allows 6 frames drawn twice, and it saw 7 of 197. Run alone it
+    passes (6 of 196), and on v2.5's code it sits at the same edge (6 of 138, 6 of 194).
+- **The full suite:** `CONCURRENT ok passed=831 failed=0`, no SCRIPT ERROR (no test changed: this is the screen's,
+  held by its probe). **`check.sh`:** green.
+
 ## v2.5 — 3 Nov 2026: Dad's laptop (no rule change: rules 23)
 
 Alex: "let's address these bugs, start another general pass, and then let's be ready with a final version i

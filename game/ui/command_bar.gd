@@ -1,5 +1,7 @@
 ## The command bar: commander medallion, the advisor's dispatches, the order tally,
 ## and the big dial. Risk II's bottom strip, brought forward.
+## v2.6 (Alex's call C17): its chips stand Style.CHIP_H tall, and it holds its words on every screen it's drawn
+## on (_fit). The advisor's plan, his latest dispatches and the pages of his advice share one line under his words.
 extends Control
 
 const Style := preload("res://game/core/style.gd")
@@ -9,6 +11,12 @@ const Session := preload("res://game/core/session.gd")
 const LeaderFace := preload("res://game/ui/leader_face.gd")
 
 const HEIGHT := 156
+const PAD_TOP := 16 ## the row under the brass rim
+const PAD_BOTTOM := 10
+const CHIP_FS := 16 ## v2.6: a chip's words (14 before)
+const COUNSEL_FS := 18 ## his advice; where the bar is narrow it gives way a point at a time (_fit)
+const SUB_FS := 15 ## the tally's hint, the same
+const LEAST_PX := 14.0 ## ...but neither goes below this, in the screen's own pixels
 
 var session: Node
 var gs: Control
@@ -20,6 +28,9 @@ var _counsel: Label
 var _counsel_nav: Label
 var _log: VBoxContainer
 var _plan_btn: Button
+var _b: PanelContainer ## the advisor's dispatches
+var _foot: HBoxContainer ## under his words: his plan, the dispatches, the pages
+var _pager: HBoxContainer ## the pages of his advice: ‹ 1 / 6 ›
 var _tally_title: Label
 var _tally: Label
 var _tally_sub: Label
@@ -28,6 +39,9 @@ var _dial: _Dial
 var _coins: Array = []
 var _items: Array = []
 var _item_i := 0
+var _fit_due := false
+var _said := "" ## his advice in full (the label may hold it cut short to fit: _fit)
+var _hint := "" ## the tally's hint in full, the same
 
 
 func _ready() -> void:
@@ -35,10 +49,10 @@ func _ready() -> void:
 	mouse_filter = Control.MOUSE_FILTER_STOP
 	var row := HBoxContainer.new()
 	row.set_anchors_and_offsets_preset(PRESET_FULL_RECT)
-	row.offset_top = 16
+	row.offset_top = PAD_TOP
 	row.offset_left = 16
 	row.offset_right = -12
-	row.offset_bottom = -10
+	row.offset_bottom = -PAD_BOTTOM
 	row.add_theme_constant_override("separation", 14)
 	add_child(row)
 	## A — the commander at the table
@@ -72,13 +86,13 @@ func _ready() -> void:
 	_coin.size = Vector2(56, 56)
 	a.add_child(_coin)
 	## B — dispatches from the advisor
-	var b := PanelContainer.new()
-	b.size_flags_horizontal = Control.SIZE_EXPAND_FILL
-	b.add_theme_stylebox_override("panel", Style.flat(Color(0.93, 0.87, 0.74, 0.96), Color(0.36, 0.26, 0.14), 2, 8, 10))
-	row.add_child(b)
+	_b = PanelContainer.new()
+	_b.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	_b.add_theme_stylebox_override("panel", Style.flat(Color(0.93, 0.87, 0.74, 0.96), Color(0.36, 0.26, 0.14), 2, 8, 10))
+	row.add_child(_b)
 	var bh := HBoxContainer.new()
 	bh.add_theme_constant_override("separation", 10)
-	b.add_child(bh)
+	_b.add_child(bh)
 	advisor = LeaderFace.new()
 	advisor.custom_minimum_size = Vector2(76, 76)
 	advisor.size_flags_vertical = Control.SIZE_SHRINK_CENTER
@@ -89,31 +103,34 @@ func _ready() -> void:
 	bv.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 	bv.add_theme_constant_override("separation", 2)
 	bh.add_child(bv)
-	var top := HBoxContainer.new()
-	top.add_theme_constant_override("separation", 8)
-	bv.add_child(top)
-	_counsel = Style.label("", 18, Color(0.14, 0.09, 0.05), "bold")
+	_counsel = Style.label("", COUNSEL_FS, Color(0.14, 0.09, 0.05), "bold")
 	_counsel.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
 	_counsel.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	_counsel.size_flags_vertical = Control.SIZE_EXPAND_FILL
 	_counsel.custom_minimum_size = Vector2(200, 0)
-	top.add_child(_counsel)
-	var nav := VBoxContainer.new()
-	top.add_child(nav)
-	_counsel_nav = Style.label("", 13, Color(0.35, 0.25, 0.15), "bold")
-	_counsel_nav.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
-	nav.add_child(_counsel_nav)
-	var navb := HBoxContainer.new()
-	nav.add_child(navb)
-	navb.add_child(_mini("‹", func(): _step(-1)))
-	navb.add_child(_mini("›", func(): _step(1)))
+	_counsel.resized.connect(_fit_soon) ## (a new width wraps his words afresh)
+	bv.add_child(_counsel)
+	## v2.6: one line under his words: his plan, the latest dispatches, the pages of his advice. The plan stood
+	## under the dispatches, and on a 1440×900 window at Large text it ran off the foot of the screen; the pages'
+	## ‹ › stood beside his words, which they made narrower, as bare arrows with no edge to show where to click
+	_foot = HBoxContainer.new()
+	_foot.add_theme_constant_override("separation", 10)
+	bv.add_child(_foot)
+	_plan_btn = _parch_chip("✦ Advisor's plan", func(): gs.open_plan())
+	_foot.add_child(_plan_btn)
 	_log = VBoxContainer.new()
+	_log.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	_log.size_flags_vertical = Control.SIZE_SHRINK_CENTER
 	_log.add_theme_constant_override("separation", -3)
-	bv.add_child(_log)
-	_plan_btn = Style.chip("✦ Advisor's plan", func(): gs.open_plan(), Color(0.45, 0.18, 0.1), 15)
-	_plan_btn.add_theme_stylebox_override("normal", Style.flat(Color(0.98, 0.93, 0.8), Color(0.45, 0.18, 0.1), 1, 5, 8))
-	_plan_btn.add_theme_stylebox_override("hover", Style.flat(Color(1, 0.97, 0.86), Color(0.6, 0.2, 0.1), 2, 5, 8))
-	_plan_btn.size_flags_horizontal = Control.SIZE_SHRINK_BEGIN
-	bv.add_child(_plan_btn)
+	_foot.add_child(_log)
+	_pager = HBoxContainer.new()
+	_pager.add_theme_constant_override("separation", 4)
+	_foot.add_child(_pager)
+	_pager.add_child(_page_chip("‹", -1))
+	_counsel_nav = Style.label("", 13, Color(0.35, 0.25, 0.15), "bold")
+	_counsel_nav.vertical_alignment = VERTICAL_ALIGNMENT_CENTER
+	_pager.add_child(_counsel_nav)
+	_pager.add_child(_page_chip("›", 1))
 	## C — order tally
 	var c := VBoxContainer.new()
 	c.custom_minimum_size = Vector2(250, 0)
@@ -124,8 +141,9 @@ func _ready() -> void:
 	_tally = Style.label("", 20, Style.CREAM, "bold")
 	_tally.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
 	c.add_child(_tally)
-	_tally_sub = Style.label("", 15, Style.PARCH)
+	_tally_sub = Style.label("", SUB_FS, Style.PARCH)
 	_tally_sub.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
+	_tally_sub.resized.connect(_fit_soon)
 	c.add_child(_tally_sub)
 	_tally_row = HBoxContainer.new()
 	_tally_row.add_theme_constant_override("separation", 6)
@@ -155,17 +173,104 @@ func _ready() -> void:
 		_coins.append(cb)
 
 
-func _mini(t: String, cb: Callable) -> Button:
-	var b := Button.new()
-	b.text = t
-	b.flat = true
-	b.focus_mode = Control.FOCUS_NONE
-	b.add_theme_font_size_override("font_size", 20)
-	b.add_theme_color_override("font_color", Color(0.35, 0.25, 0.15))
-	b.add_theme_color_override("font_hover_color", Color(0.6, 0.2, 0.1))
-	b.custom_minimum_size = Vector2(22, 22)
-	b.pressed.connect(cb)
+func _chip(t: String, cb: Callable, color: Color = Style.CREAM) -> Button:
+	## v2.6: a chip on the bar, Style.CHIP_H tall (Alex's call C17)
+	var b := Style.chip(t, cb, color, CHIP_FS)
+	b.custom_minimum_size.y = Style.CHIP_H
+	b.size_flags_vertical = Control.SIZE_SHRINK_CENTER
 	return b
+
+
+func _parch_chip(t: String, cb: Callable) -> Button:
+	## a chip on the advisor's parchment: his plan, and the pages of his advice (as wide as it's tall at least)
+	var ink := Color(0.45, 0.18, 0.1)
+	var b := _chip(t, cb, ink)
+	b.custom_minimum_size.x = Style.CHIP_H
+	b.add_theme_stylebox_override("normal", Style.flat(Color(0.98, 0.93, 0.8), ink, 1, 5, 8))
+	b.add_theme_stylebox_override("hover", Style.flat(Color(1, 0.97, 0.86), Color(0.6, 0.2, 0.1), 2, 5, 8))
+	return b
+
+
+func _page_chip(t: String, d: int) -> Button:
+	## back or on through his advice (the arrows at their own size, as before)
+	var b := _parch_chip(t, func(): _step(d))
+	b.add_theme_font_size_override("font_size", 20)
+	return b
+
+
+func _fit_soon() -> void:
+	if not _fit_due:
+		_fit_due = true
+		_fit.call_deferred()
+
+
+func _fit() -> void:
+	## v2.6: the bar holds its words on every screen it's drawn on. The narrowest is 1252 wide (a 1440×900 window
+	## at Large text), where his advice ran to four or five lines and pushed his plan and his dispatches off the
+	## foot of the screen. First the dispatches give way, where they stand under his words on their own; then his
+	## advice, a point at a time, down to LEAST_PX on the screen; at the last it's cut short at a word, all of it
+	## in its tooltip. The tally's hint does the same in its column. The words are measured with their font at the
+	## width last laid out (a new width comes back here through resized), and each label is set once
+	_fit_due = false
+	if not is_inside_tree():
+		return
+	var k: float = maxf(get_viewport().get_final_transform().get_scale().y, 0.01)
+	var room: float = HEIGHT - PAD_TOP - PAD_BOTTOM
+	var b_room: float = room - _b.get_theme_stylebox("panel").get_minimum_size().y
+	var lines: Array = _log.get_children().filter(func(l): return not l.is_queued_for_deletion())
+	for l in lines:
+		(l as Control).visible = true
+	var alone: bool = not _plan_btn.visible and not _pager.visible
+	## (chips stand at his panel's foot; the dispatches on their own follow his words, as they always did)
+	_counsel.size_flags_vertical = Control.SIZE_FILL if alone else Control.SIZE_EXPAND_FILL
+	if alone:
+		while not lines.is_empty() and _words_h(_counsel, _said, COUNSEL_FS) + _under(_foot) > b_room:
+			(lines.pop_front() as Control).visible = false
+	_fit_words(_counsel, _said, COUNSEL_FS, mini(ceili(LEAST_PX / k), COUNSEL_FS), b_room - _under(_foot))
+	var c_room: float = room - _tally_title.get_combined_minimum_size().y - _under(_tally) - _under(_tally_row) - 2.0
+	_fit_words(_tally_sub, _hint, SUB_FS, mini(ceili(LEAST_PX / k), SUB_FS), c_room)
+
+
+func _fit_words(l: Label, text: String, full: int, least: int, h: float) -> void:
+	## the largest size from full down to least at which the words take no more than h; at least, as many words
+	## as fit, then …, all of them in the tooltip (and where not one fits, the label steps aside)
+	var fs := full
+	while fs > least and _words_h(l, text, fs) > h:
+		fs -= 1
+	var said := text
+	if _words_h(l, text, fs) > h:
+		var words: PackedStringArray = text.split(" ")
+		var lo := 0
+		var hi := words.size()
+		while lo < hi:
+			var mid: int = (lo + hi + 1) / 2
+			if _words_h(l, " ".join(words.slice(0, mid)) + "…", fs) <= h:
+				lo = mid
+			else:
+				hi = mid - 1
+		said = " ".join(words.slice(0, lo)) + "…" if lo > 0 else ""
+	if l.text != said:
+		l.text = said
+	l.visible = said != "" or text == ""
+	l.tooltip_text = text if said != text else ""
+	if l.get_theme_font_size("font_size") != fs:
+		l.add_theme_font_size_override("font_size", fs)
+
+
+func _words_h(l: Label, text: String, fs: int) -> float:
+	## how tall the label stands with these words at this size, wrapped at its width
+	if text == "":
+		return 0.0
+	var f: Font = l.get_theme_font("font")
+	var sz: Vector2 = f.get_multiline_string_size(text, HORIZONTAL_ALIGNMENT_LEFT, l.size.x, fs, -1,
+		TextServer.BREAK_MANDATORY | TextServer.BREAK_WORD_BOUND | TextServer.BREAK_ADAPTIVE)
+	var n: int = maxi(roundi(sz.y / f.get_height(fs)), 1)
+	return sz.y + (n - 1) * l.get_theme_constant("line_spacing")
+
+
+func _under(c: Control) -> float:
+	## what a box takes in its column, with the column's gap above it
+	return c.get_combined_minimum_size().y + 2.0 if c.visible else 0.0
 
 
 func _draw() -> void:
@@ -196,9 +301,11 @@ func _show_item() -> void:
 	if _items.is_empty():
 		return
 	var it: Dictionary = _items[_item_i]
-	_counsel.text = str(it["text"])
+	_said = str(it["text"])
+	_counsel.text = _said
 	_counsel_nav.text = "%d / %d" % [_item_i + 1, _items.size()]
 	advisor._set_mood(str({"alarmed": "alarm", "pleased": "happy"}.get(str(it["mood"]), "neutral")))
+	_fit_soon()
 
 
 func set_counsel(items: Array, keep: bool = true) -> void:
@@ -208,18 +315,22 @@ func set_counsel(items: Array, keep: bool = true) -> void:
 	for i in _items.size():
 		if str(_items[i]["key"]) == key:
 			_item_i = i
-	_counsel_nav.get_parent().visible = _items.size() > 1
+	_pager.visible = _items.size() > 1
 	if _items.is_empty():
+		_said = ""
 		_counsel.text = ""
+		_fit_soon()
 		return
 	_show_item()
 
 
 func set_message(text: String, mood: String = "neutral") -> void:
 	_items = []
-	_counsel_nav.get_parent().visible = false
+	_pager.visible = false
+	_said = text
 	_counsel.text = text
 	advisor._set_mood(mood)
+	_fit_soon()
 
 
 func refresh() -> void:
@@ -243,24 +354,26 @@ func refresh() -> void:
 		_coin.queue_redraw()
 	## log
 	for c in _log.get_children():
+		c.hide() ## (out of the layout now: the fit below mustn't count it)
 		c.queue_free()
 	var lines: Array = gs.log_lines.slice(maxi(0, gs.log_lines.size() - (2 if planning else 3)))
 	for l in lines:
 		var lab := Style.label("· " + str(l[0]), 14, Color(l[1]).darkened(0.35), "italic")
-		lab.clip_text = true
+		lab.text_overrun_behavior = TextServer.OVERRUN_TRIM_ELLIPSIS ## (v2.6: beside his plan on a narrow bar, cut with …)
 		_log.add_child(lab)
 	## tally + dial
 	for c in _tally_row.get_children():
+		c.hide()
 		c.queue_free()
 	match ph:
 		Session.Phase.OPENING:
 			_tally_title.text = "DEPLOYMENT"
 			_tally.text = "%d of %d placed" % [s.placed_total(), s.income_total()]
-			_tally_sub.text = "Each land takes up to 2 × (1 + your neighboring lands)."
-			_tally_row.add_child(Style.chip("Auto-place", func():
+			_hint = "Each land takes up to 2 × (1 + your neighboring lands)."
+			_tally_row.add_child(_chip("Auto-place", func():
 				s.auto_deploy()
-				Audio.sfx("place"), Style.CREAM, 14))
-			_tally_row.add_child(Style.chip("Clear", func(): s.clear_placements(), Style.MUTED, 14))
+				Audio.sfx("place"), Style.CREAM))
+			_tally_row.add_child(_chip("Clear", func(): s.clear_placements(), Style.MUTED))
 			_dial.set_label("SEAL", "deployment")
 		Session.Phase.PLANNING when s.plan_step == "reinforce":
 			## v1.5 the reinforcement phase: recruits (and cards) first
@@ -271,13 +384,13 @@ func refresh() -> void:
 			var sub_r := "Click your lands to place them · right-click takes one back"
 			if s.map.cards and s.hand().size() > 0:
 				sub_r = "%d card%s in hand · %s" % [s.hand().size(), "" if s.hand().size() == 1 else "s", sub_r]
-			_tally_sub.text = sub_r
-			var ap2 := Style.chip("Auto-place", func():
+			_hint = sub_r
+			var ap2 := _chip("Auto-place", func():
 				s.auto_deploy()
-				Audio.sfx("place"), Style.CREAM, 14)
+				Audio.sfx("place"), Style.CREAM)
 			ap2.disabled = s.placeable_left() <= 0
 			_tally_row.add_child(ap2)
-			_tally_row.add_child(Style.chip("Clear", func(): s.clear_placements(), Style.MUTED, 14))
+			_tally_row.add_child(_chip("Clear", func(): s.clear_placements(), Style.MUTED))
 			if s.map.cards:
 				var ready2: bool = s.best_set().size() == 3
 				var label2 := "Cards (%d)" % s.hand().size()
@@ -285,7 +398,7 @@ func refresh() -> void:
 					label2 = "Cards ✓ +%d" % s.set_value_now()
 				elif ready2:
 					label2 = "Cards ✦ set!"
-				var cc2: Control = Style.chip(label2, func(): gs.open_cards(), Style.GOLD if ready2 or not s.sheet().cash_set.is_empty() else Style.CREAM, 14)
+				var cc2: Control = _chip(label2, func(): gs.open_cards(), Style.GOLD if ready2 or not s.sheet().cash_set.is_empty() else Style.CREAM)
 				cc2.tooltip_text = "Your hand of cards (C): three alike or one of each turn in for fresh troops"
 				_tally_row.add_child(cc2)
 			_dial.set_label("ORDERS", "next ▸")
@@ -306,9 +419,9 @@ func refresh() -> void:
 				sub += " · %d card%s" % [s.hand().size(), "" if s.hand().size() == 1 else "s"]
 				if not s.sheet().cash_set.is_empty():
 					sub += " (trading +%d)" % s.set_value_now()
-			_tally_sub.text = sub
-			_tally_row.add_child(Style.chip("◀ Recruits", func(): s.back_to_reinforce(), Style.PARCH, 14))
-			_tally_row.add_child(Style.chip("Review", func(): gs.open_drawer(), Style.CREAM, 14))
+			_hint = sub
+			_tally_row.add_child(_chip("◀ Recruits", func(): s.back_to_reinforce(), Style.PARCH))
+			_tally_row.add_child(_chip("Review", func(): gs.open_drawer(), Style.CREAM))
 			if s.map.cards:
 				## the hand opens on the table; a set glows when one is ready
 				var ready: bool = s.best_set().size() == 3
@@ -317,7 +430,7 @@ func refresh() -> void:
 					label = "Cards ✓ +%d" % s.set_value_now()
 				elif ready:
 					label = "Cards ✦ set!"
-				var cc: Control = Style.chip(label, func(): gs.open_cards(), Style.GOLD if ready or not s.sheet().cash_set.is_empty() else Style.CREAM, 14)
+				var cc: Control = _chip(label, func(): gs.open_cards(), Style.GOLD if ready or not s.sheet().cash_set.is_empty() else Style.CREAM)
 				cc.tooltip_text = "Your hand of cards (C): three alike or one of each turn in for fresh troops"
 				_tally_row.add_child(cc)
 			_dial.set_label("SEAL", "orders")
@@ -330,14 +443,14 @@ func refresh() -> void:
 			for t in s.map.territory_ids():
 				if s.world.get_territory(str(t)).owner == Types.UNOCCUPIED:
 					free += 1
-			_tally_sub.text = "%d land%s each · %d still free" % [int(s.draft.get("quota", 0)), "" if int(s.draft.get("quota", 0)) == 1 else "s", free]
+			_hint = "%d land%s each · %d still free" % [int(s.draft.get("quota", 0)), "" if int(s.draft.get("quota", 0)) == 1 else "s", free]
 			if picking and s.is_human(turn):
-				_tally_row.add_child(Style.chip("Advisor's pick", func(): gs.draft_advise(), Style.CREAM, 14))
+				_tally_row.add_child(_chip("Advisor's pick", func(): gs.draft_advise(), Style.CREAM))
 				_dial.set_label("PICK", "for me")
 			else:
-				_tally_row.add_child(Style.chip("Hurry ▶▶" if not gs.draft_fast else "Normal pace", func():
+				_tally_row.add_child(_chip("Hurry ▶▶" if not gs.draft_fast else "Normal pace", func():
 					gs.draft_fast = not gs.draft_fast
-					refresh(), Style.PARCH, 14))
+					refresh(), Style.PARCH))
 				_dial.set_label("…", "")
 		Session.Phase.MANEUVER:
 			var men := 0
@@ -346,30 +459,32 @@ func refresh() -> void:
 			var k: int = s.my_moves().size()
 			_tally_title.text = "REGROUP PHASE"
 			_tally.text = ("%d march%s · %d soldier%s" % [k, "" if k == 1 else "es", men, "" if men == 1 else "s"]) if k > 0 else "Every post holds"
-			_tally_sub.text = "Drag between your lands. One land per soldier."
-			_tally_row.add_child(Style.chip("Advisor's marches", func():
+			_hint = "Drag between your lands. One land per soldier."
+			_tally_row.add_child(_chip("Advisor's marches", func():
 				s.advise_moves()
-				Audio.sfx("maneuver", -4.0), Style.CREAM, 14))
-			_tally_row.add_child(Style.chip("Clear", func(): s.clear_moves(), Style.MUTED, 14))
+				Audio.sfx("maneuver", -4.0), Style.CREAM))
+			_tally_row.add_child(_chip("Clear", func(): s.clear_moves(), Style.MUTED))
 			_dial.set_label("MARCH", "done")
 		Session.Phase.CINEMA:
 			_tally_title.text = "BATTLE REPORT"
 			_tally.text = gs.cinema_progress()
-			_tally_sub.text = "Space: next · P: pause · Esc: skip"
-			_tally_row.add_child(Style.chip("❚❚ / ▶", func(): gs.cinema.toggle_pause(), Style.CREAM, 14))
-			_tally_row.add_child(Style.chip("Skip ▶▶", func(): gs.cinema.skip(), Style.PARCH, 14))
+			_hint = "Space: next · P: pause · Esc: skip"
+			_tally_row.add_child(_chip("❚❚ / ▶", func(): gs.cinema.toggle_pause(), Style.CREAM))
+			_tally_row.add_child(_chip("Skip ▶▶", func(): gs.cinema.skip(), Style.PARCH))
 			_dial.set_label("NEXT", "")
 		Session.Phase.RESOLVING:
 			_tally_title.text = "SEALED"
 			_tally.text = "The others are writing theirs…"
-			_tally_sub.text = ""
+			_hint = ""
 			_dial.set_label("…", "")
 		_:
 			_tally_title.text = ""
 			_tally.text = ""
-			_tally_sub.text = ""
+			_hint = ""
 			_dial.set_label("NEXT", "")
+	_tally_sub.text = _hint
 	queue_redraw()
+	_fit_soon()
 
 
 func bump_coin(big: bool = false) -> void:

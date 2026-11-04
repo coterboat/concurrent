@@ -11,6 +11,10 @@ const GOLD := Color(0.86, 0.69, 0.34)
 const CRIMSON := Color(0.74, 0.2, 0.16)
 const GOOD := Color(0.45, 0.72, 0.42)
 const WARN := Color(0.93, 0.55, 0.25)
+## v2.6: the least height of a chip on the war's bar and under the battle's dice (Alex's call C17): about 32 px on
+## a 1366×768 laptop at Large text, the smallest the war is drawn. They were 25, so 22 px there: small for a
+## touchpad and older eyes
+const CHIP_H := 36
 
 const SEATS := {
 	"red": {"color": Color(0.78, 0.22, 0.17), "shape": "circle", "label": "Crimson"},
