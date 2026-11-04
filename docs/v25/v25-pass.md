@@ -321,6 +321,9 @@ land settled at 2 in the first and 4 in the second, then started the second war 
 
 ## Open questions (my pick first)
 
+Answered (Alex, 3 Nov, after the build): the pick on all six, C12 to C17 in the CHANGELOG. The chips (6) get a
+pass of their own.
+
 1. **Extra large is gone** (it hid the ORDERS dial). Large is the most the screens hold.
    - a) leave it so, my pick;
    - b) rework the bar, How to Play, the settings and the setup to fit 1108×692, a bigger job.

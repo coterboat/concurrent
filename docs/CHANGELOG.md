@@ -93,21 +93,24 @@ both changed in `land.gd`, the watchdog's, was the same in each):
 
 ### Alex's calls (C12-C17)
 
-Open when v2.5 was built (each with the pass's pick, which the coordinator shares):
+Open when v2.5 was built, each with the pass's pick, which the coordinator shared. Alex took the pick on all
+six (3 Nov, after the build), so v2.5 stands as built and C17's chips get a pass of their own:
 - **C12: Extra large text is gone** (it hid the ORDERS dial). a) leave it so, the pick; b) rework the bar,
-  How to Play, the settings and the setup to fit bigger text.
+  How to Play, the settings and the setup to fit bigger text. **Alex: leave it so.**
 - **C13: the setup's map cards cut their names at Large text** (the chosen map's is whole). a) leave it, the
-  pick; b) rework the card.
+  pick; b) rework the card. **Alex: leave it.**
 - **C14: the final round's voiced line** ("Throw in everything. Leave nothing in the barracks.") now says the
   opposite of the advice under it. a) keep the advisor's voice, the pick; b) a new take.
+  **Alex: keep the voice.**
 - **C15: OpenGL's first-use hitches** (100 to 600 ms, the first time a battle's pieces are drawn, once a
   launch). a) leave them, the pick: they no longer cost the land its quality; b) draw every battle material
-  once, offscreen, while the land is built.
+  once, offscreen, while the land is built. **Alex: leave them.**
 - **C16: small words left:** the hotseat's "Pass the computer to You", two map blurbs that overstate, a few
-  subtitles' stray commas. a) leave them, the pick; b) fix the words.
+  subtitles' stray commas. a) leave them, the pick; b) fix the words. **Alex: leave them.**
 - **C17: the war's chips are 22 to 24 px on a laptop** (Auto-place, Clear, Cards, Review, ◀ Recruits, ? Dice,
   Auto-roll, Skip battles). a) raise them to about 32 px in a pass of their own, the pick: the command bar is
   full, so it's a re-layout; b) leave them (each has a bigger way round: the dial, Space, Esc).
+  **Alex: raise them, in a pass of their own** (after v2.5: Dad's build has them as they are).
 
 ## v2.4.2 — 3 Nov 2026: the bot's four probes on a slow box (no rule change: rules 23)
 
