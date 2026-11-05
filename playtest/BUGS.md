@@ -6,40 +6,25 @@ running ledger kept by bug clerk from playtester's reports. one file per red run
 
 | id | severity | title | first seen | latest report |
 |---|---|---|---|---|
-| B-016 | glitch | v24p token meshes don't match the old drawing on this box | d6c1f58 | [2026-10-31-0207-91128e7](reports/2026-10-31-0207-91128e7.md) |
-| B-015 | broken | v21 never sees the battle's loser at 0, reports -1 left standing | d6c1f58 | [2026-10-31-0207-91128e7](reports/2026-10-31-0207-91128e7.md) |
-| B-014 | broken | v22 never sees the musket shots fly, and the fall-timing fact gets no samples | bacccac | [2026-10-31-0207-91128e7](reports/2026-10-31-0207-91128e7.md) |
-| B-013 | broken | v202 border-clash probe never sees the winner, then hangs on a script error | bacccac | [2026-10-31-0207-91128e7](reports/2026-10-31-0207-91128e7.md) |
+| B-016 | v24p token meshes don't match the old drawing (glitch; first seen d6c1f58) | 1953944 (v2.4.2) | 2026-11-04 |
+| B-015 | v21 reports -1 left standing (broken; first seen d6c1f58) | 1953944 (v2.4.2) | 2026-11-04 |
+| B-014 | v22 never sees the musket shots fly (broken; first seen bacccac) | 1953944 (v2.4.2) | 2026-11-04 |
+| B-013 | v202 border-clash probe hangs (broken; first seen bacccac) | 1953944 (v2.4.2) | 2026-11-04 |
+| B-018 | broken | tools/first_war.gd step 2 stalls at round 6 in the cinema and cascades | ec97c35 | [2026-11-04-1943-ec97c35](reports/2026-11-04-1943-ec97c35.md) |
+| B-017 | broken | v204 "sits in the land" fact expects the seating coat v2.5 removed on Compatibility | ec97c35 | [2026-11-04-1943-ec97c35](reports/2026-11-04-1943-ec97c35.md) |
 
-### B-016: v24p token meshes don't match the old drawing on this box
+### B-018: tools/first_war.gd step 2 stalls at round 6 in the cinema and cascades
 - repro:
-  1. `cd $R && DISPLAY=:5 GODOT=$G PROBE_SECS=5400 sh scripts/probes.sh v24p`
-- error: `PROBE FAIL the tokens, shields and rings drawn from meshes look as they did: 19.6/255 apart on average over 177518 pixels, 26.2% off by more than 24/255 (where an antialiased edge falls in a pixel); 28.84% two pixels across` (limits: mean <6.0, coarse <1%)
-- latest (91128e7): identical numbers 3/3 runs; once under load also 0 musket-ball streaks
-- suspect: `game/board/token_mesh.gd` vs shape draw; check at `tools/shots/v24p.gd:193-215`
+  1. `XDG_DATA_HOME=<empty dir> DISPLAY=:5 $G --path . --script res://tools/first_war.gd -- step=1` (passes, 0 failed, 530 s)
+  2. the same with `step=2`
+- error: `WALK FAIL the war stood still for 30 s at 5|6|orders|-|24|false (the draft , rolling , seating [], claim wait false, whose turn -)` then `WALK FAIL the war plays to its end (round 6, nobody won)`, `WALK FAIL the ending is shown`, `WALK FAIL a button to click was missing`, `WALK FAIL back on the title, nothing left to continue` (5 failed, 976 s)
+- suspect: `tools/first_war.gd:184-191` the 30 s wall-clock watchdog keys only on phase/round/plan_step/theater/claimed/cinema._waiting; phase 5 is CINEMA with `_waiting` false and the theater hidden, so a long cinema on llvmpipe (acted on only every 15 frames, `:228-230`) never changes the mark. Not proven: a real stuck cinema would read the same.
 
-### B-015: v21 never sees the battle's loser at 0, reports -1 left standing
+### B-017: v204 "sits in the land" fact fails on Compatibility: the probe still expects the seating coat v2.5 removed there
 - repro:
-  1. `cd $R && DISPLAY=:5 GODOT=$G PROBE_SECS=5400 sh scripts/probes.sh v21`
-- error: `PROBE FAIL the battle's loser is destroyed to the last piece, its horse and guns too (-1 left standing)`
-- latest (91128e7): same, 3/3 runs; one run also `PROBE FAIL rules 21: the clash on Ridge's border leaves Dad's column from Harbor marching on The Gate with all its men (-1)`
-- suspect: `tools/shots/v21.gd:310-328` (`standing` stays -1: the theater closed or reached "done" with no army at n==0, so the count never ran)
-
-### B-014: v22 never sees the musket shots fly, and the fall-timing fact gets no samples
-- repro:
-  1. `cd /home/box/playtester/concurrent && DISPLAY=:5 GODOT=/home/box/playtester/godot/godot sh scripts/probes.sh v22`
-- error: run 1 `PROBE FAIL the shots fly: 4 seen, each from the side that won its pair at the men facing it across the field (1 sides fired)` and `PROBE FAIL the first man falls as the first ball reaches him, never before it (0 volleys timed, 0 early)`; run 2 `PROBE FAIL the shots fly: 0 seen … (0 sides fired)`, `PROBE FAIL a moment with a thread and shots in the air was caught (v22_01)`, `PROBE FAIL the first man falls as the first ball reaches him, never before it (1 volleys timed, 1 early)`
-- latest (91128e7): 18 facts ok then `PROBE FAIL then Dad's assault on Mill from Ridge` (exit 1)
-- earlier (d6c1f58): now a crash, 2 facts ok then `handle_crash: Program crashed with signal 11` (exit 134) after ~630 s; earlier run exit 1
-- suspect: `tools/shots/v22.gd:229` and `:314` (samples `dio.tracers` once per frame); tracers may spawn and finish between frames at this box's frame rate. Counts change run to run, so possibly frame-rate sensitive, but it fails every time here. Tags, threads, colours, Fortune rebate line and free-for-all ordering facts all pass.
-
-### B-013: v202 border-clash probe never sees the winner, then hangs on a script error
-- repro:
-  1. `cd /home/box/playtester/concurrent && DISPLAY=:5 GODOT=/home/box/playtester/godot/godot sh scripts/probes.sh v202`
-- error: `PROBE FAIL the dice land and the clash knows its winner (red)` then `SCRIPT ERROR: Invalid access to property or key 'meet' on a base object of type 'Dictionary'.` at `_clash (res://tools/shots/v202.gd:180)`; probe never quits (killed after 900 s). Same on both runs.
-- latest (91128e7): 0 facts, killed after 900 s
-- earlier (d6c1f58): under PROBE_SECS=5400 got only 1 fact (`a red land and a blue land share a border...`), then killed after 5400 s (2/2 runs)
-- suspect: `tools/shots/v202.gd:180` indexes `b.drawn_clash["meet"]` with no empty check (line 183 has one); underlying: `game/board/map_board.gd:1055-1056` returns before setting `drawn_clash` once `w >= 1.0` (CLASH_PUSH 0.65 s), after `:813` cleared it, so a frame carrying `winner` may never be drawn at this box's low software-GL frame rate. Facts before the break (meet head-on, camera lean-in, lands clear of the card) all pass.
+  1. `cd /home/box/playtester/concurrent && DISPLAY=:5 GODOT=/home/box/playtester/godot/godot PROBE_SECS=5400 sh scripts/probes.sh v204`
+- error: `PROBE FAIL known24: and sits in the land (its plate's lime toned down, its foot darkened: 0 of 33)` / `PROBE FAIL world30: ... 0 of 52`
+- suspect: `tools/shots/v204.gd:76-82` counts `material_override.next_pass`; `game/world3d/scenery.gd:458-459` (32031a4) now returns early on `gl_compatibility`, and v25 asserts `0 coated` on the same renderer. The two probes contradict each other on this box.
 
 ## fixed
 
