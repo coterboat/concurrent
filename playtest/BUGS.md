@@ -6,21 +6,15 @@ running ledger kept by bug clerk from playtester's reports. one file per red run
 
 | id | severity | title | first seen | latest report |
 |---|---|---|---|---|
-| B-018 | broken | tools/first_war.gd step 2 stalls at round 6 in the cinema and cascades | ec97c35 | [2026-11-04-1943-ec97c35](reports/2026-11-04-1943-ec97c35.md) |
-| B-017 | broken | v204 "sits in the land" fact expects the seating coat v2.5 removed on Compatibility | ec97c35 | [2026-11-04-1943-ec97c35](reports/2026-11-04-1943-ec97c35.md) |
+| B-017 | v204 "sits in the land" fact expects the seating coat v2.5 removed on Compatibility (broken; first seen ec97c35) | f43f499 (v2.6) | 2026-11-05 |
+| B-018 | broken | tools/first_war.gd 30 s watchdog still trips on this box | ec97c35 | [2026-11-05-1613-f43f499](reports/2026-11-05-1613-f43f499.md) |
 
-### B-018: tools/first_war.gd step 2 stalls at round 6 in the cinema and cascades
+### B-018: tools/first_war.gd 30 s watchdog still trips on this box
 - repro:
-  1. `XDG_DATA_HOME=<empty dir> DISPLAY=:5 $G --path . --script res://tools/first_war.gd -- step=1` (passes, 0 failed, 530 s)
-  2. the same with `step=2`
-- error: `WALK FAIL the war stood still for 30 s at 5|6|orders|-|24|false (the draft , rolling , seating [], claim wait false, whose turn -)` then `WALK FAIL the war plays to its end (round 6, nobody won)`, `WALK FAIL the ending is shown`, `WALK FAIL a button to click was missing`, `WALK FAIL back on the title, nothing left to continue` (5 failed, 976 s)
-- suspect: `tools/first_war.gd:184-191` the 30 s wall-clock watchdog keys only on phase/round/plan_step/theater/claimed/cinema._waiting; phase 5 is CINEMA with `_waiting` false and the theater hidden, so a long cinema on llvmpipe (acted on only every 15 frames, `:228-230`) never changes the mark. Not proven: a real stuck cinema would read the same.
-
-### B-017: v204 "sits in the land" fact fails on Compatibility: the probe still expects the seating coat v2.5 removed there
-- repro:
-  1. `cd /home/box/playtester/concurrent && DISPLAY=:5 GODOT=/home/box/playtester/godot/godot PROBE_SECS=5400 sh scripts/probes.sh v204`
-- error: `PROBE FAIL known24: and sits in the land (its plate's lime toned down, its foot darkened: 0 of 33)` / `PROBE FAIL world30: ... 0 of 52`
-- suspect: `tools/shots/v204.gd:76-82` counts `material_override.next_pass`; `game/world3d/scenery.gd:458-459` (32031a4) now returns early on `gl_compatibility`, and v25 asserts `0 coated` on the same renderer. The two probes contradict each other on this box.
+  1. `XDG_DATA_HOME=/home/box/playtester/runs/f43f499/fw_home DISPLAY=:5 /home/box/playtester/godot/godot --path /home/box/playtester/concurrent --script res://tools/first_war.gd -- step=1`
+  2. then `-- step=2`
+- error: step 1: `WALK FAIL the war stood still for 30 s at 5|3|orders|done|24|true 6/10 (the draft done, rolling , seating [], claim wait false, whose turn -)` then `WALK FAIL two rounds played on the land, his battles opened and rolled (round 3)` — `WALK done, 2 failed, 682 s`; step 2: `WALK FAIL the war stood still for 30 s at 5|8|orders|-|24|false -1/6 (...)` then cascade `the war plays to its end (round 8, nobody won)` / `the ending is shown` / `a button to click was missing` / `back on the title, nothing left to continue` — `WALK done, 5 failed, 1662 s`
+- suspect: `tools/first_war.gd:191-205` (30 s wall-clock on unchanged mark). f43f499 added cinema `index/beats` to the mark and raised step-2 budget to 5400 s, but a stuck `true 6/10` (theater `_state=done`, waiting) or `false -1/6` still never changes. When `th.visible`, the loop presses and `continue`s past the CINEMA `advance()` path (`:207-216` vs `:236-238`).
 
 ## fixed
 
