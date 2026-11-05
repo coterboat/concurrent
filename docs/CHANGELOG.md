@@ -6,8 +6,8 @@ The bible says amendments come with a dated entry and the test or band that just
 
 Alex's call C17 (v2.5): the war's small chips were 22 to 24 px tall on a 1366×768 laptop, so "raise them to about
 32 px, in a pass of their own". They're 32 there now, and the bar they sit in is re-laid out to hold them. Nothing
-in `engine/` or `session.gd` changed: every save replays as it was played. Dad's build (v2.5) has the chips as they
-were.
+in `engine/` or `session.gd` changed: every save replays as it was played. Dad's zip is rebuilt from v2.6 (Alex, 5
+Nov: "Land and rebuild"), with the bot's two new bugs on v2.5 fixed on the way (both in our tools, below).
 
 ### The chips
 
@@ -68,6 +68,35 @@ Now:
   dial (v2.5 at 1440×900: the dial at y 808 to 904).
 - The strip is the dial's height now, its chips 36 (`game/ui/battle_controls.gd`, peeled out of
   `battle_theater.gd`).
+
+### The bot's verdict on v2.5 (`ec97c35`): B-013 to B-016 fixed, B-017 and B-018 new
+
+The playtest bot confirmed v2.4.2's four fixes on its box and found two new bugs, both in our tools. Neither is in
+the game.
+- **B-017** (`v204`, "and sits in the land": 0 of 33 and 0 of 52 on the bot's box). The probe still expected every
+  building's seating coat, which v2.5 took off on the Compatibility renderer (OpenGL, where it drew them
+  near-black), and `v25_gl` holds them uncoated there. On any box that draws with OpenGL the two probes disagreed.
+  Reproduced on the PC with `--rendering-driver opengl3`: the same 0 of 33 and 0 of 52. `v204` now expects no coat
+  on Compatibility and every coat elsewhere: 6 of 6 on OpenGL, 6 of 6 on Vulkan.
+- **B-018** (`tools/first_war.gd` step 2: "the war stood still for 30 s" in round 6's report, and the four failures
+  after it). The walk took the war for stuck when nothing it watched changed for 30 s, and it didn't watch the
+  report's beats. On the bot's box, about a frame a second, a long round's report runs past 30 s beat by beat. The
+  report's beat now counts as the war moving on (its `index` and `beats` in the walk's mark): a report that stops
+  still fails in 30 s. Step 2's limit is 90 minutes, from 40 (a round takes about five minutes on the bot's box).
+  - Reproduced on the PC with Godot's `--frame-delay 1000`, a frame a second: the old walk stood still in round
+    3's report (`5|3|orders|-|24|false`), then failed the same four facts after it as on the bot.
+  - The new walk at `--frame-delay 500`: 0 failed, the war played to its end in round 9, in 1735 s.
+
+### Evidence on the merged branch (5 Nov)
+
+`v26`: main at `ba5a415` (the bot's verdict), the C17 commit on it, then the two fixes. On the PC:
+- `check.sh` green, and `v204` 6 of 6 on OpenGL and on Vulkan.
+- **The full suite:** 830 of 831. The one is a timing guard, `general plans a 5-seat world30 turn` under 1500 ms,
+  which took 1794 ms. Three Iron Veil runs from other sessions held the PC at 100% then: two test hosts and a
+  120-campaign sim. v2.6 changes nothing it measures (no change in `engine/`). Rerun alone under the same load it
+  took 1418 to 2986 ms. With the PC quiet, on the C17 branch, the suite was 831 of 831.
+- **The Windows export** (592 MB) loads every map's art and data, starts a war on all six, and keeps its own war
+  record (rules 23). The real `.exe` boots with no error.
 
 ### Evidence
 
@@ -207,7 +236,7 @@ six (3 Nov, after the build), so v2.5 stands as built and C17's chips get a pass
 - **C17: the war's chips are 22 to 24 px on a laptop** (Auto-place, Clear, Cards, Review, ◀ Recruits, ? Dice,
   Auto-roll, Skip battles). a) raise them to about 32 px in a pass of their own, the pick: the command bar is
   full, so it's a re-layout; b) leave them (each has a bigger way round: the dial, Space, Esc).
-  **Alex: raise them, in a pass of their own** (after v2.5: Dad's build has them as they are).
+  **Alex: raise them, in a pass of their own**: v2.6, which Dad's zip was rebuilt from (5 Nov).
 
 ## v2.4.2 — 3 Nov 2026: the bot's four probes on a slow box (no rule change: rules 23)
 

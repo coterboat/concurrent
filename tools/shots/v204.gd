@@ -79,7 +79,12 @@ func _facts(mid: String, land: Node) -> void:
 		if not mis.is_empty() and (mis[0] as MeshInstance3D).material_override != null and ((mis[0] as MeshInstance3D).material_override as Material).next_pass != null:
 			coated += 1
 	p.ok(grounded == built.size(), "%s: every building stands on its own shadow (%d of %d)" % [mid, grounded, built.size()])
-	p.ok(coated == built.size(), "%s: and sits in the land (its plate's lime toned down, its foot darkened: %d of %d)" % [mid, coated, built.size()])
+	## B-017: on the Compatibility renderer (OpenGL) the buildings go without the coat since v2.5 (it drew them
+	## near-black there: scenery.gd `_seat_coat`, and v25_gl.gd holds it); on Forward+ every one wears it
+	if RenderingServer.get_current_rendering_method() == "gl_compatibility":
+		p.ok(coated == 0, "%s: on Compatibility the buildings go without the seating coat, as since v2.5 (%d of %d coated)" % [mid, coated, built.size()])
+	else:
+		p.ok(coated == built.size(), "%s: and sits in the land (its plate's lime toned down, its foot darkened: %d of %d)" % [mid, coated, built.size()])
 	## the countryside: woods and copses, but none on a land's battlefield
 	var art = land.wv.art
 	var trees := 0

@@ -73,8 +73,14 @@ C17: the war's chips were 22 to 24 px tall on a 1366×768 laptop. `docs/CHANGELO
   whole now (it hung 4 px below the screen). Space, Enter, Esc and the calls' letters are unchanged. **Poke:** the
   probes that open battles (v202, v21, v22, v23, v24p).
 - **New:** probe `v26`, `game/ui/battle_controls.gd`.
+- **Your report on `ec97c35`:** B-013 to B-016 are in the ledger as fixed. B-017 and B-018 were both in our tools:
+  - **B-017:** `v204` now expects no seating coat on Compatibility (your box), as `v25_gl` does, and every coat
+    elsewhere. **Poke:** `./scripts/probes.sh v204`.
+  - **B-018:** the first-time walk counts the report's beats as the war moving on, so a long report on your box no
+    longer reads as standing still. A report that stops still fails in 30 s. **Poke:** `tools/first_war.gd` step 1,
+    then step 2, as before. On your box step 2 may take over an hour (its limit is 90 minutes).
 
-## v2.5: Dad's laptop (this push)
+## v2.5: Dad's laptop
 
 No rule change (rules 23), nothing in `engine/`: every save replays as it was played. A first-time player's
 pass aimed at Alex's dad's laptop (integrated graphics, a small screen). `docs/CHANGELOG.md` (v2.5) has it all.
@@ -93,7 +99,7 @@ pass aimed at Alex's dad's laptop (integrated graphics, a small screen). `docs/C
   `savegame.unreadable.json`, with a line on the title.
 - **New tests and probes:** `test_v25`, `v25`, `tools/first_war.gd`.
 
-## v2.4.2: your report on d6c1f58 and 91128e7 (this push)
+## v2.4.2: your report on d6c1f58 and 91128e7
 
 B-013 to B-016 are fixed, all in probes, plus one line in the land's watchdog. `docs/CHANGELOG.md` (v2.4.2)
 has the evidence.

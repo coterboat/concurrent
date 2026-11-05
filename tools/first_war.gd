@@ -151,7 +151,8 @@ func _second_launch() -> void:
 	ok(s.world != null and s.world.round == 3 and s.map.id == "known24", "Continue picks the war up at round %d" % (s.world.round if s.world else -1))
 	var built: bool = await _land_built()
 	ok(built and gs.land_board.active(), "back on the land it was left on")
-	await _play_until(func(): return s.phase == Session.Phase.GAME_OVER, 2400.0)
+	## the bot's box plays a round in about five minutes (B-018): the watchdog, not this, catches a stall
+	await _play_until(func(): return s.phase == Session.Phase.GAME_OVER, 5400.0)
 	ok(s.phase == Session.Phase.GAME_OVER, "the war plays to its end (round %d, %s won)" % [s.world.round, s.name_of(s.winner) if s.winner != "" else "nobody"])
 	var guard := 0
 	while not gs.game_over.visible and guard < 1200:
@@ -182,7 +183,10 @@ func _play_until(done: Callable, secs: float) -> void:
 		if s.world != null:
 			for t in s.world.territories.values():
 				claimed += 1 if str(t.owner) != "" else 0
-		var now: String = "%d|%d|%s|%s|%d|%s" % [s.phase, s.world.round if s.world else -1, s.plan_step, str(th._state) if th.visible else "-", claimed, str(gs.cinema._waiting) if gs.cinema.visible else "-"]
+		## the report's beat counts as the war moving on (B-018: on a slow box a long round's report runs past
+		## 30 s beat by beat, and read as standing still)
+		var reel: String = "%s %d/%d" % [str(gs.cinema._waiting), gs.cinema.index, gs.cinema.beats.size()] if gs.cinema.visible else "-"
+		var now: String = "%d|%d|%s|%s|%d|%s" % [s.phase, s.world.round if s.world else -1, s.plan_step, str(th._state) if th.visible else "-", claimed, reel]
 		if now != mark:
 			since = Time.get_ticks_msec()
 		mark = now
