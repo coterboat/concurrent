@@ -6,10 +6,6 @@ running ledger kept by bug clerk from playtester's reports. one file per red run
 
 | id | severity | title | first seen | latest report |
 |---|---|---|---|---|
-| B-016 | v24p token meshes don't match the old drawing (glitch; first seen d6c1f58) | 1953944 (v2.4.2) | 2026-11-04 |
-| B-015 | v21 reports -1 left standing (broken; first seen d6c1f58) | 1953944 (v2.4.2) | 2026-11-04 |
-| B-014 | v22 never sees the musket shots fly (broken; first seen bacccac) | 1953944 (v2.4.2) | 2026-11-04 |
-| B-013 | v202 border-clash probe hangs (broken; first seen bacccac) | 1953944 (v2.4.2) | 2026-11-04 |
 | B-018 | broken | tools/first_war.gd step 2 stalls at round 6 in the cinema and cascades | ec97c35 | [2026-11-04-1943-ec97c35](reports/2026-11-04-1943-ec97c35.md) |
 | B-017 | broken | v204 "sits in the land" fact expects the seating coat v2.5 removed on Compatibility | ec97c35 | [2026-11-04-1943-ec97c35](reports/2026-11-04-1943-ec97c35.md) |
 
@@ -30,6 +26,10 @@ running ledger kept by bug clerk from playtester's reports. one file per red run
 
 | id | title | fixed in | date |
 |---|---|---|---|
+| B-016 | v24p token meshes don't match the old drawing (glitch; first seen d6c1f58) | 1953944 (v2.4.2) | 2026-11-04 |
+| B-015 | v21 reports -1 left standing (broken; first seen d6c1f58) | 1953944 (v2.4.2) | 2026-11-04 |
+| B-014 | v22 never sees the musket shots fly (broken; first seen bacccac) | 1953944 (v2.4.2) | 2026-11-04 |
+| B-013 | v202 border-clash probe hangs (broken; first seen bacccac) | 1953944 (v2.4.2) | 2026-11-04 |
 | B-012 | recap lead-change line "takes the lead from You." / "You takes the lead from ..." (glitch; `game/ui/recap.gd:50`, first seen cd3b208, [report](reports/2026-09-29-1253-cd3b208.md)) | 115854f (v1.14) | 2026-10-01 |
 | B-011 | claiming phase reads "You's pick" (glitch; `game/ui/command_bar.gd:322`, first seen cd3b208, [report](reports/2026-09-29-1253-cd3b208.md)) | 115854f (v1.14) | 2026-10-01 |
 | B-010 | defeat notice reads "You has been defeated" (renders "YOU HAS BEEN DEFEATED") (glitch; `game/ui/game_screen.gd:1810`, first seen cd3b208, [report](reports/2026-09-29-1253-cd3b208.md)) | 115854f (v1.14) | 2026-10-01 |
