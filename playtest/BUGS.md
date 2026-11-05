@@ -6,7 +6,6 @@ running ledger kept by bug clerk from playtester's reports. one file per red run
 
 | id | severity | title | first seen | latest report |
 |---|---|---|---|---|
-| B-017 | v204 "sits in the land" fact expects the seating coat v2.5 removed on Compatibility (broken; first seen ec97c35) | f43f499 (v2.6) | 2026-11-05 |
 | B-018 | broken | tools/first_war.gd 30 s watchdog still trips on this box | ec97c35 | [2026-11-05-1613-f43f499](reports/2026-11-05-1613-f43f499.md) |
 
 ### B-018: tools/first_war.gd 30 s watchdog still trips on this box
@@ -20,6 +19,7 @@ running ledger kept by bug clerk from playtester's reports. one file per red run
 
 | id | title | fixed in | date |
 |---|---|---|---|
+| B-017 | v204 "sits in the land" fact expects the seating coat v2.5 removed on Compatibility (broken; first seen ec97c35) | f43f499 (v2.6) | 2026-11-05 |
 | B-016 | v24p token meshes don't match the old drawing (glitch; first seen d6c1f58) | 1953944 (v2.4.2) | 2026-11-04 |
 | B-015 | v21 reports -1 left standing (broken; first seen d6c1f58) | 1953944 (v2.4.2) | 2026-11-04 |
 | B-014 | v22 never sees the musket shots fly (broken; first seen bacccac) | 1953944 (v2.4.2) | 2026-11-04 |
